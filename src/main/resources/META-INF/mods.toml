@@ -1,0 +1,37 @@
+modLoader="javafml"
+loaderVersion="47,)"
+license="All Rights Reserved, DragN0007"
+#issueTrackerURL="https://discord.gg/2WznNTtVac"
+[[mods]]
+modId="dragnpets"
+version="${1.0}"
+displayName="DragN's Livestock Overhaul: Pets Addon!"
+logoFile="dlo_logo.png"
+authors="DragN0007"
+description='''
+An overhaul for pets!
+'''
+[[dependencies.dragnpets]]
+modId = "forge"
+mandatory = true
+versionRange = "[47,)"
+ordering = "NONE"
+side = "BOTH"
+[[dependencies.dragnpets]]
+modId = "minecraft"
+mandatory = true
+versionRange = "[1.20.1]"
+ordering = "NONE"
+side = "BOTH"
+[[dependencies.dragnpets]]
+modId="geckolib"
+mandatory=true
+versionRange = "[4.4.4,)"
+ordering="NONE"
+side="BOTH"
+[[dependencies.dragnpets]]
+modId="dragnlivestock"
+mandatory=true
+versionRange = "[1.5,)"
+ordering="NONE"
+side="BOTH"
