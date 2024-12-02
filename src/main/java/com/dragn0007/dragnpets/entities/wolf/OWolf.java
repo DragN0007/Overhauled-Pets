@@ -65,8 +65,8 @@ import java.util.stream.Stream;
 public class OWolf extends TamableAnimal implements NeutralMob, GeoEntity {
    private static final EntityDataAccessor<Integer> DATA_COLLAR_COLOR = SynchedEntityData.defineId(OWolf.class, EntityDataSerializers.INT);
    private static final EntityDataAccessor<Integer> DATA_REMAINING_ANGER_TIME = SynchedEntityData.defineId(OWolf.class, EntityDataSerializers.INT);
-   public static final Predicate<LivingEntity> PREY_SELECTOR = (p_289448_) -> {
-      EntityType<?> entitytype = p_289448_.getType();
+   public static final Predicate<LivingEntity> PREY_SELECTOR = (entity) -> {
+      EntityType<?> entitytype = entity.getType();
       return entitytype == EntityTypes.O_SHEEP_ENTITY.get() ||
               entitytype == EntityTypes.O_RABBIT_ENTITY.get() ||
               entitytype == EntityTypes.O_GOAT_ENTITY.get() ||
@@ -90,7 +90,7 @@ public class OWolf extends TamableAnimal implements NeutralMob, GeoEntity {
 
    protected void registerGoals() {
       this.goalSelector.addGoal(1, new FloatGoal(this));
-      this.goalSelector.addGoal(1, new OWolf.WolfPanicGoal(1.5D));
+      this.goalSelector.addGoal(1, new OWolf.WolfPanicGoal(2D));
       this.goalSelector.addGoal(2, new SitWhenOrderedToGoal(this));
       this.goalSelector.addGoal(3, new OWolf.WolfAvoidEntityGoal<>(this, OLlama.class, 24.0F, 1.5D, 1.5D));
       this.goalSelector.addGoal(3, new OWolf.WolfAvoidEntityGoal<>(this, Ox.class, 24.0F, 1.5D, 1.5D));
@@ -126,7 +126,7 @@ public class OWolf extends TamableAnimal implements NeutralMob, GeoEntity {
 
    private <T extends GeoAnimatable> PlayState predicate(software.bernie.geckolib.core.animation.AnimationState<T> tAnimationState) {
       double currentSpeed = this.getDeltaMovement().lengthSqr();
-      double speedThreshold = 0.02;
+      double speedThreshold = 0.01;
 
       AnimationController<T> controller = tAnimationState.getController();
 
