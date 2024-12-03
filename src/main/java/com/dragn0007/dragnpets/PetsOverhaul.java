@@ -5,6 +5,7 @@ import com.dragn0007.dragnpets.gui.POMenuTypes;
 import com.dragn0007.dragnpets.items.POItemGroupModifier;
 import com.dragn0007.dragnpets.items.POItems;
 import com.dragn0007.dragnpets.spawn.CreatureSpawnGeneration;
+import com.dragn0007.dragnpets.util.PetsOverhaulClientConfig;
 import com.dragn0007.dragnpets.util.PetsOverhaulCommonConfig;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -41,12 +42,13 @@ public class PetsOverhaul
         IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
         POItems.register(eventBus);
+        POItemGroupModifier.register(eventBus);
         EntityTypes.ENTITY_TYPES.register(eventBus);
         POMenuTypes.register(eventBus);
         BIOME_MODIFIER_SERIALIZERS.register(eventBus);
 
         GeckoLib.initialize();
-//        ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, LivestockOverhaulClientConfig.SPEC, "livestock-overhaul-pets-client.toml");
+        ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, PetsOverhaulClientConfig.SPEC, "livestock-overhaul-pets-client.toml");
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, PetsOverhaulCommonConfig.SPEC, "livestock-overhaul-pets-common.toml");
 
         MinecraftForge.EVENT_BUS.register(this);

@@ -1,6 +1,7 @@
 package com.dragn0007.dragnpets.entities;
 
 import com.dragn0007.dragnlivestock.LivestockOverhaul;
+import com.dragn0007.dragnpets.entities.ocelot.OOcelot;
 import com.dragn0007.dragnpets.entities.wolf.OWolf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
@@ -20,6 +21,12 @@ public class EntityTypes {
                             MobCategory.CREATURE)
                     .sized(0.9f,0.9f)
                     .build(new ResourceLocation(LivestockOverhaul.MODID,"o_wolf").toString()));
+
+    public static final RegistryObject<EntityType<OOcelot>> O_OCELOT_ENTITY = ENTITY_TYPES.register("o_ocelot",
+            () -> EntityType.Builder.of(OOcelot::new,
+                            MobCategory.CREATURE)
+                    .sized(0.8f,0.8f)
+                    .build(new ResourceLocation(LivestockOverhaul.MODID,"o_ocelot").toString()));
 
 }
 

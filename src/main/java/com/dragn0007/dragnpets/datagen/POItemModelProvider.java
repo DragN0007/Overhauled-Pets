@@ -1,6 +1,7 @@
 package com.dragn0007.dragnpets.datagen;
 
 import com.dragn0007.dragnpets.PetsOverhaul;
+import com.dragn0007.dragnpets.items.POItems;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
@@ -16,7 +17,12 @@ public class POItemModelProvider extends ItemModelProvider {
 
     @Override
     protected void registerModels() {
+        simpleItem(POItems.PETS_OVERHAUL);
 
+        simpleItem(POItems.WOLF);
+        simpleItem(POItems.COOKED_WOLF);
+        simpleItem(POItems.CAT);
+        simpleItem(POItems.COOKED_CAT);
     }
 
     private ItemModelBuilder simpleItem(RegistryObject<Item> item) {

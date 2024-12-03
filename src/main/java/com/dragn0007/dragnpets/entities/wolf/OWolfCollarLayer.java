@@ -1,6 +1,7 @@
 package com.dragn0007.dragnpets.entities.wolf;
 
 import com.dragn0007.dragnpets.PetsOverhaul;
+import com.dragn0007.dragnpets.util.PetsOverhaulClientConfig;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -35,6 +36,10 @@ public class OWolfCollarLayer extends GeoRenderLayer<OWolf> {
             new ResourceLocation(PetsOverhaul.MODID, "textures/entity/collar/black.png")
     };
 
+    private static final ResourceLocation FEMALE_INDICATOR = new ResourceLocation(PetsOverhaul.MODID, "textures/entity/collar/female_indicator.png");
+    private static final ResourceLocation MALE_INDICATOR = new ResourceLocation(PetsOverhaul.MODID, "textures/entity/collar/male_indicator.png");
+
+
     public OWolfCollarLayer(GeoRenderer<OWolf> entityRendererIn) {
         super(entityRendererIn);
     }
@@ -64,5 +69,24 @@ public class OWolfCollarLayer extends GeoRenderLayer<OWolf> {
                 renderType1,
                 bufferSource.getBuffer(renderType1), partialTick, packedLight, OverlayTexture.NO_OVERLAY,
                 1, 1, 1, 1);
+
+
+        if (PetsOverhaulClientConfig.COLLAR_GENDER_INDICATOR.get()) {
+            ResourceLocation genderIndicator = animatable.isFemale() ? FEMALE_INDICATOR : MALE_INDICATOR;
+
+
+            RenderType genderRenderType = RenderType.entityCutout(genderIndicator);
+            poseStack.pushPose();
+            poseStack.scale(1.0f, 1.0f, 1.0f);
+            poseStack.translate(0.0d, 0.0d, 0.1d);
+            poseStack.popPose();
+            getRenderer().reRender(getDefaultBakedModel(animatable),
+                    poseStack,
+                    bufferSource,
+                    animatable,
+                    genderRenderType,
+                    bufferSource.getBuffer(genderRenderType), partialTick, packedLight, OverlayTexture.NO_OVERLAY,
+                    1, 1, 1, 1);
+        }
     }
 }

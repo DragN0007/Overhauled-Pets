@@ -13,7 +13,11 @@ public class POTags {
 
     public static class Items {
 
+        public static final TagKey<Item> DOG_FOOD = forgeTag("dog_food");
+        public static final TagKey<Item> CAT_FOOD = forgeTag("cat_food");
 
+
+        public static final TagKey<Item> TRAINING_TREAT = forgeTag("training_treat");
 
         public static TagKey<Item> forgeTag (String name) {
             return ItemTags.create(new ResourceLocation("forge", name));

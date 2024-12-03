@@ -1,4 +1,15 @@
 {
+  "itemGroup.overhauled_pets": "Overhauled Pets",
+
   "item.dragnpets.o_wolf_spawn_egg": "O-Wolf Spawn Egg",
-  "entity.dragnpets.o_wolf": "O-Wolf"
+  "entity.dragnpets.o_wolf": "O-Wolf",
+
+  "item.dragnpets.o_ocelot_spawn_egg": "O-Ocelot Spawn Egg",
+  "entity.dragnpets.o_ocelot": "O-Ocelot",
+
+  "item.dragnpets.wolf": "Dog",
+  "item.dragnpets.cooked_wolf": "Cooked Dog",
+
+  "item.dragnpets.cat": "Cat",
+  "item.dragnpets.cooked_cat": "Cooked Cat"
 }

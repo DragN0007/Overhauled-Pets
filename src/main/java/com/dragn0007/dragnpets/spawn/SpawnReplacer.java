@@ -4,9 +4,12 @@ import com.dragn0007.dragnlivestock.entities.cow.OCowModel;
 import com.dragn0007.dragnlivestock.util.LivestockOverhaulCommonConfig;
 import com.dragn0007.dragnpets.PetsOverhaul;
 import com.dragn0007.dragnpets.entities.EntityTypes;
+import com.dragn0007.dragnpets.entities.ocelot.OOcelot;
 import com.dragn0007.dragnpets.entities.wolf.OWolf;
+import com.dragn0007.dragnpets.entities.wolf.OWolfModel;
 import com.dragn0007.dragnpets.util.PetsOverhaulCommonConfig;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.animal.Ocelot;
 import net.minecraft.world.entity.animal.Wolf;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -37,8 +40,11 @@ public class SpawnReplacer {
                 oWolf.setCustomName(vanillaWolf.getCustomName());
                 oWolf.setAge(vanillaWolf.getAge());
 
-                int randomVariant = event.getLevel().getRandom().nextInt(OCowModel.Variant.values().length);
+                int randomVariant = event.getLevel().getRandom().nextInt(OWolfModel.Variant.values().length);
                 oWolf.setVariant(randomVariant);
+
+                int randomGender = event.getLevel().getRandom().nextInt(OWolf.Gender.values().length);
+                oWolf.setGender(randomGender);
 
                 if (event.getLevel().isClientSide) {
                     vanillaWolf.remove(Entity.RemovalReason.DISCARDED);
@@ -46,6 +52,38 @@ public class SpawnReplacer {
 
                 event.getLevel().addFreshEntity(oWolf);
                 vanillaWolf.remove(Entity.RemovalReason.DISCARDED);
+
+                event.setCanceled(true);
+            }
+        }
+
+        //Ocelot
+        if (!LivestockOverhaulCommonConfig.FAILSAFE_REPLACER.get() && PetsOverhaulCommonConfig.REPLACE_OCELOTS.get() && event.getEntity() instanceof Ocelot) {
+            Ocelot vanillaOcelot = (Ocelot) event.getEntity();
+
+            if (event.getLevel().isClientSide) {
+                return;
+            }
+
+            OOcelot oOcelot = EntityTypes.O_OCELOT_ENTITY.get().create(event.getLevel());
+            if (oOcelot != null) {
+                oOcelot.copyPosition(vanillaOcelot);
+
+                oOcelot.setCustomName(vanillaOcelot.getCustomName());
+                oOcelot.setAge(vanillaOcelot.getAge());
+
+                int randomVariant = event.getLevel().getRandom().nextInt(OCowModel.Variant.values().length);
+                oOcelot.setVariant(randomVariant);
+
+                int randomGender = event.getLevel().getRandom().nextInt(OOcelot.Gender.values().length);
+                oOcelot.setGender(randomGender);
+
+                if (event.getLevel().isClientSide) {
+                    vanillaOcelot.remove(Entity.RemovalReason.DISCARDED);
+                }
+
+                event.getLevel().addFreshEntity(oOcelot);
+                vanillaOcelot.remove(Entity.RemovalReason.DISCARDED);
 
                 event.setCanceled(true);
             }
