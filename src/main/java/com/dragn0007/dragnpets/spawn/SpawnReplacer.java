@@ -4,11 +4,16 @@ import com.dragn0007.dragnlivestock.entities.cow.OCowModel;
 import com.dragn0007.dragnlivestock.util.LivestockOverhaulCommonConfig;
 import com.dragn0007.dragnpets.PetsOverhaul;
 import com.dragn0007.dragnpets.entities.EntityTypes;
+import com.dragn0007.dragnpets.entities.fox.OFox;
+import com.dragn0007.dragnpets.entities.fox.OFoxMarkingLayer;
+import com.dragn0007.dragnpets.entities.fox.OFoxModel;
 import com.dragn0007.dragnpets.entities.ocelot.OOcelot;
+import com.dragn0007.dragnpets.entities.ocelot.OOcelotModel;
 import com.dragn0007.dragnpets.entities.wolf.OWolf;
 import com.dragn0007.dragnpets.entities.wolf.OWolfModel;
 import com.dragn0007.dragnpets.util.PetsOverhaulCommonConfig;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.animal.Fox;
 import net.minecraft.world.entity.animal.Ocelot;
 import net.minecraft.world.entity.animal.Wolf;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
@@ -72,7 +77,7 @@ public class SpawnReplacer {
                 oOcelot.setCustomName(vanillaOcelot.getCustomName());
                 oOcelot.setAge(vanillaOcelot.getAge());
 
-                int randomVariant = event.getLevel().getRandom().nextInt(OCowModel.Variant.values().length);
+                int randomVariant = event.getLevel().getRandom().nextInt(OOcelotModel.Variant.values().length);
                 oOcelot.setVariant(randomVariant);
 
                 int randomGender = event.getLevel().getRandom().nextInt(OOcelot.Gender.values().length);
@@ -84,6 +89,41 @@ public class SpawnReplacer {
 
                 event.getLevel().addFreshEntity(oOcelot);
                 vanillaOcelot.remove(Entity.RemovalReason.DISCARDED);
+
+                event.setCanceled(true);
+            }
+        }
+
+        //Fox
+        if (!LivestockOverhaulCommonConfig.FAILSAFE_REPLACER.get() && PetsOverhaulCommonConfig.REPLACE_FOXES.get() && event.getEntity() instanceof Fox) {
+            Fox vanillaFox = (Fox) event.getEntity();
+
+            if (event.getLevel().isClientSide) {
+                return;
+            }
+
+            OFox oFox = EntityTypes.O_FOX_ENTITY.get().create(event.getLevel());
+            if (oFox != null) {
+                oFox.copyPosition(vanillaFox);
+
+                oFox.setCustomName(vanillaFox.getCustomName());
+                oFox.setAge(vanillaFox.getAge());
+
+                int randomVariant = event.getLevel().getRandom().nextInt(OFoxModel.Variant.values().length);
+                oFox.setVariant(randomVariant);
+
+                int randomOverlay = event.getLevel().getRandom().nextInt(OFoxMarkingLayer.Overlay.values().length);
+                oFox.setOverlayVariant(randomOverlay);
+
+                int randomGender = event.getLevel().getRandom().nextInt(OOcelot.Gender.values().length);
+                oFox.setGender(randomGender);
+
+                if (event.getLevel().isClientSide) {
+                    vanillaFox.remove(Entity.RemovalReason.DISCARDED);
+                }
+
+                event.getLevel().addFreshEntity(oFox);
+                vanillaFox.remove(Entity.RemovalReason.DISCARDED);
 
                 event.setCanceled(true);
             }

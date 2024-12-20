@@ -53,7 +53,7 @@ public class OOcelotCollarLayer extends GeoRenderLayer<OOcelot> {
             resourceLocation = TEXTURE_LOCATION[dyeColor.getId()];
         }
 
-        if (resourceLocation == null) {
+        if (resourceLocation == null || !PetsOverhaulClientConfig.RENDER_COLLARS.get()) {
             return;
         }
 

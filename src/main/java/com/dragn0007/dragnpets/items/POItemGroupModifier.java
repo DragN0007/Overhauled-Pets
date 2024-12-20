@@ -19,6 +19,7 @@ public class POItemGroupModifier {
 
                         output.accept(POItems.O_WOLF_SPAWN_EGG.get());
                         output.accept(POItems.O_OCELOT_SPAWN_EGG.get());
+                        output.accept(POItems.O_FOX_SPAWN_EGG.get());
 
                         output.accept(POItems.WOLF.get());
                         output.accept(POItems.COOKED_WOLF.get());

@@ -537,7 +537,7 @@ public class OWolf extends TamableAnimal implements NeutralMob, GeoEntity {
       return this.getGender() == 1;
    }
 
-   public static final EntityDataAccessor<Integer> GENDER = SynchedEntityData.defineId(ORabbit.class, EntityDataSerializers.INT);
+   public static final EntityDataAccessor<Integer> GENDER = SynchedEntityData.defineId(OWolf.class, EntityDataSerializers.INT);
 
    public int getGender() {
       return this.entityData.get(GENDER);

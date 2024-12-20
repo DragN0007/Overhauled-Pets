@@ -1,13 +1,13 @@
-package com.dragn0007.dragnpets.entities.ocelot;
+package com.dragn0007.dragnpets.entities.fox;
 
 import com.dragn0007.dragnlivestock.LivestockOverhaul;
 import com.dragn0007.dragnlivestock.entities.EntityTypes;
+import com.dragn0007.dragnlivestock.entities.horse.BreedModel;
 import com.dragn0007.dragnlivestock.entities.rabbit.ORabbit;
 import com.dragn0007.dragnlivestock.items.LOItems;
 import com.dragn0007.dragnlivestock.util.LivestockOverhaulCommonConfig;
 import com.dragn0007.dragnpets.util.POTags;
-import net.minecraft.core.particles.ParticleOptions;
-import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -25,16 +25,26 @@ import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.*;
+import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NonTameRandomTargetGoal;
+import net.minecraft.world.entity.animal.AbstractFish;
+import net.minecraft.world.entity.animal.AbstractSchoolingFish;
 import net.minecraft.world.entity.animal.Animal;
-import net.minecraft.world.entity.animal.horse.AbstractHorse;
-import net.minecraft.world.entity.monster.Creeper;
-import net.minecraft.world.entity.monster.Ghast;
+import net.minecraft.world.entity.animal.Turtle;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.*;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemUtils;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.CaveVines;
+import net.minecraft.world.level.block.SweetBerryBushBlock;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
@@ -52,15 +62,13 @@ import javax.annotation.Nullable;
 import java.util.Random;
 import java.util.function.Predicate;
 
-public class OOcelot extends TamableAnimal implements GeoEntity {
+public class OFox extends TamableAnimal implements GeoEntity {
 
-   @javax.annotation.Nullable
-   private OOcelot.OcelotAvoidEntityGoal<Player> ocelotAvoidPlayersGoal;
-   @Nullable
-   private OOcelot.OcelotTemptGoal temptGoal;
+   private Goal turtleEggTargetGoal;
+   private Goal fishTargetGoal;
 
-   private static final ResourceLocation LOOT_TABLE = new ResourceLocation(LivestockOverhaul.MODID, "entities/o_ocelot");
-   private static final ResourceLocation VANILLA_LOOT_TABLE = new ResourceLocation("minecraft", "entities/ocelot");
+   private static final ResourceLocation LOOT_TABLE = new ResourceLocation(LivestockOverhaul.MODID, "entities/o_fox");
+   private static final ResourceLocation VANILLA_LOOT_TABLE = new ResourceLocation("minecraft", "entities/fox");
    @Override
    public @NotNull ResourceLocation getDefaultLootTable() {
       if (LivestockOverhaulCommonConfig.USE_VANILLA_LOOT.get()) {
@@ -68,19 +76,7 @@ public class OOcelot extends TamableAnimal implements GeoEntity {
       }
       return LOOT_TABLE;
    }
-
-   protected void reassessTrustingGoals() {
-      if (this.ocelotAvoidPlayersGoal == null) {
-         this.ocelotAvoidPlayersGoal = new OOcelot.OcelotAvoidEntityGoal<>(this, Player.class, 16.0F, 0.8D, 1.33D);
-      }
-
-      this.goalSelector.removeGoal(this.ocelotAvoidPlayersGoal);
-      this.goalSelector.addGoal(4, this.ocelotAvoidPlayersGoal);
-
-   }
-
-   private static final EntityDataAccessor<Integer> DATA_COLLAR_COLOR = SynchedEntityData.defineId(OOcelot.class, EntityDataSerializers.INT);
-   private static final EntityDataAccessor<Integer> DATA_REMAINING_ANGER_TIME = SynchedEntityData.defineId(OOcelot.class, EntityDataSerializers.INT);
+   
    public static final Predicate<LivingEntity> PREY_SELECTOR = (entity) -> {
       EntityType<?> entitytype = entity.getType();
       return entitytype == EntityTypes.O_RABBIT_ENTITY.get() ||
@@ -88,17 +84,14 @@ public class OOcelot extends TamableAnimal implements GeoEntity {
               entitytype == EntityTypes.O_FROG_ENTITY.get();
    };
 
-   public OOcelot(EntityType<? extends OOcelot> entityType, Level level) {
+   public OFox(EntityType<? extends OFox> entityType, Level level) {
       super(entityType, level);
       this.setTame(false);
-      this.reassessTrustingGoals();
    }
 
    protected void registerGoals() {
       this.goalSelector.addGoal(1, new FloatGoal(this));
-      this.temptGoal = new OOcelot.OcelotTemptGoal(this, 0.6D, FOOD_ITEMS, true);
-      this.goalSelector.addGoal(3, this.temptGoal);
-      this.goalSelector.addGoal(8, new OcelotAttackGoal(this));
+      this.goalSelector.addGoal(3, new AvoidEntityGoal(this, Player.class, 24.0F, 1.5D, 1.5D));
       this.goalSelector.addGoal(2, new SitWhenOrderedToGoal(this));
       this.goalSelector.addGoal(4, new LeapAtTargetGoal(this, 0.4F));
       this.goalSelector.addGoal(5, new MeleeAttackGoal(this, 1.5D, true));
@@ -108,13 +101,20 @@ public class OOcelot extends TamableAnimal implements GeoEntity {
       this.goalSelector.addGoal(10, new LookAtPlayerGoal(this, Player.class, 8.0F));
       this.goalSelector.addGoal(10, new RandomLookAroundGoal(this));
       this.targetSelector.addGoal(5, new NonTameRandomTargetGoal<>(this, Animal.class, false, PREY_SELECTOR));
+      this.turtleEggTargetGoal = new NearestAttackableTargetGoal<>(this, Turtle.class, 10, false, false, Turtle.BABY_ON_LAND_SELECTOR);
+      this.fishTargetGoal = new NearestAttackableTargetGoal<>(this, AbstractFish.class, 20, false, false, (p_28600_) -> {
+         return p_28600_ instanceof AbstractSchoolingFish;
+      });
+      this.goalSelector.addGoal(0, new ClimbOnTopOfPowderSnowGoal(this, this.level()));
+      this.goalSelector.addGoal(10, new OFox.FoxEatBerriesGoal((double)1.2F, 12, 1));
    }
 
    public static AttributeSupplier.Builder createAttributes() {
       return Mob.createMobAttributes()
-              .add(Attributes.MAX_HEALTH, 10.0D).
-              add(Attributes.MOVEMENT_SPEED, (double)0.3F)
-              .add(Attributes.ATTACK_DAMAGE, 3.0D);
+              .add(Attributes.MOVEMENT_SPEED, (double)0.3F)
+              .add(Attributes.MAX_HEALTH, 10.0D)
+              .add(Attributes.FOLLOW_RANGE, 32.0D)
+              .add(Attributes.ATTACK_DAMAGE, 2.0D);
    }
 
    private final AnimatableInstanceCache geoCache = GeckoLibUtil.createInstanceCache(this);
@@ -155,29 +155,17 @@ public class OOcelot extends TamableAnimal implements GeoEntity {
       return this.geoCache;
    }
 
-   public void customServerAiStep() {
-      if (this.getMoveControl().hasWanted()) {
-         double d0 = this.getMoveControl().getSpeedModifier();
-         if (d0 == 0.6D) {
-            this.setPose(Pose.CROUCHING);
-            this.setSprinting(false);
-         } else if (d0 == 1.33D) {
-            this.setPose(Pose.STANDING);
-            this.setSprinting(true);
-         } else {
-            this.setPose(Pose.STANDING);
-            this.setSprinting(false);
-         }
-      } else {
-         this.setPose(Pose.STANDING);
-         this.setSprinting(false);
-      }
+   public SoundEvent getEatingSound(ItemStack p_28540_) {
+      return SoundEvents.FOX_EAT;
+   }
 
+   protected boolean isImmobile() {
+      return this.isDeadOrDying();
    }
 
    @Override
    public float getStepHeight() {
-      return 2F;
+      return 1.6F;
    }
 
    protected float getSoundVolume() {
@@ -192,21 +180,17 @@ public class OOcelot extends TamableAnimal implements GeoEntity {
       return super.hurt(damageSource, v);
    }
 
-   @javax.annotation.Nullable
+   @Nullable
    protected SoundEvent getAmbientSound() {
-      return SoundEvents.OCELOT_AMBIENT;
-   }
-
-   public int getAmbientSoundInterval() {
-      return 900;
+      return SoundEvents.FOX_AMBIENT;
    }
 
    protected SoundEvent getHurtSound(DamageSource p_29035_) {
-      return SoundEvents.OCELOT_HURT;
+      return SoundEvents.FOX_HURT;
    }
 
    protected SoundEvent getDeathSound() {
-      return SoundEvents.OCELOT_DEATH;
+      return SoundEvents.FOX_DEATH;
    }
 
    private float getAttackDamage() {
@@ -248,7 +232,7 @@ public class OOcelot extends TamableAnimal implements GeoEntity {
       }
 
       if (this.level().isClientSide) {
-         boolean flag = this.isOwnedBy(player) || this.isTame() || itemstack.is(POTags.Items.CAT_FOOD) && !this.isTame();
+         boolean flag = this.isOwnedBy(player) || this.isTame() || itemstack.is(POTags.Items.FOX_FOOD) && !this.isTame();
          return flag ? InteractionResult.CONSUME : InteractionResult.PASS;
       } else if (this.isTame()) {
          if (this.isFood(itemstack) && this.getHealth() < this.getMaxHealth()) {
@@ -259,24 +243,8 @@ public class OOcelot extends TamableAnimal implements GeoEntity {
 
             this.gameEvent(GameEvent.EAT, this);
             return InteractionResult.SUCCESS;
+            
          } else {
-            if (item instanceof DyeItem) {
-               DyeItem dyeitem = (DyeItem)item;
-               if (this.isOwnedBy(player)) {
-                  DyeColor dyecolor = dyeitem.getDyeColor();
-                  if (dyecolor != this.getCollarColor()) {
-                     this.setCollarColor(dyecolor);
-                     if (!player.getAbilities().instabuild) {
-                        itemstack.shrink(1);
-                     }
-
-                     return InteractionResult.SUCCESS;
-                  }
-
-                  return super.mobInteract(player, hand);
-               }
-            }
-
             InteractionResult interactionresult = super.mobInteract(player, hand);
             if ((!interactionresult.consumesAction() || this.isBaby()) && this.isOwnedBy(player)) {
                this.setOrderedToSit(!this.isOrderedToSit());
@@ -288,7 +256,7 @@ public class OOcelot extends TamableAnimal implements GeoEntity {
                return interactionresult;
             }
          }
-      } else if (itemstack.is(POTags.Items.CAT_FOOD)) {
+      } else if (itemstack.is(POTags.Items.FOX_FOOD)) {
          if (!player.getAbilities().instabuild) {
             itemstack.shrink(1);
          }
@@ -309,28 +277,30 @@ public class OOcelot extends TamableAnimal implements GeoEntity {
       }
    }
 
-   private static final Ingredient FOOD_ITEMS = Ingredient.of(POTags.Items.CAT_FOOD);
+   private static final Ingredient FOOD_ITEMS = Ingredient.of(POTags.Items.FOX_FOOD);
 
    @Override
    public boolean isFood(ItemStack itemStack) {
       return FOOD_ITEMS.test(itemStack);
    }
 
-   public DyeColor getCollarColor() {
-      return DyeColor.byId(this.entityData.get(DATA_COLLAR_COLOR));
-   }
-
-   public void setCollarColor(DyeColor p_30398_) {
-      this.entityData.set(DATA_COLLAR_COLOR, p_30398_.getId());
-   }
-
 
    // Generates the base texture
    public ResourceLocation getTextureResource() {
-      return OOcelotModel.Variant.variantFromOrdinal(getVariant()).resourceLocation;
+      return OFoxModel.Variant.variantFromOrdinal(getVariant()).resourceLocation;
    }
 
-   public static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(OOcelot.class, EntityDataSerializers.INT);
+   public ResourceLocation getOverlayResource() {
+      return OFoxMarkingLayer.Overlay.overlayFromOrdinal(getOverlayVariant()).resourceLocation;
+   }
+
+   public ResourceLocation getDomesticResource() {
+      return OFoxModel.DomesticVariant.domesticVariantFromOrdinal(getDomesticVariant()).resourceLocation;
+   }
+
+   public static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(OFox.class, EntityDataSerializers.INT);
+   public static final EntityDataAccessor<Integer> OVERLAY_VARIANT = SynchedEntityData.defineId(OFox.class, EntityDataSerializers.INT);
+   public static final EntityDataAccessor<Integer> DOMESTIC_VARIANT = SynchedEntityData.defineId(OFox.class, EntityDataSerializers.INT);
 
    public int getVariant() {
       return this.entityData.get(VARIANT);
@@ -340,29 +310,51 @@ public class OOcelot extends TamableAnimal implements GeoEntity {
       this.entityData.set(VARIANT, variant);
    }
 
+   public int getOverlayVariant() {
+      return this.entityData.get(OVERLAY_VARIANT);
+   }
+
+   public void setOverlayVariant(int variant) {
+      this.entityData.set(OVERLAY_VARIANT, variant);
+   }
+
+   public int getDomesticVariant() {
+      return this.entityData.get(DOMESTIC_VARIANT);
+   }
+
+   public void setDomestictVariant(int variant) {
+      this.entityData.set(DOMESTIC_VARIANT, variant);
+   }
+
    protected void defineSynchedData() {
       super.defineSynchedData();
-      this.entityData.define(DATA_COLLAR_COLOR, DyeColor.RED.getId());
-      this.entityData.define(DATA_REMAINING_ANGER_TIME, 0);
       this.entityData.define(VARIANT, 0);
+      this.entityData.define(OVERLAY_VARIANT, 0);
+      this.entityData.define(DOMESTIC_VARIANT, 0);
       this.entityData.define(GENDER, 0);
    }
 
    public void addAdditionalSaveData(CompoundTag tag) {
       super.addAdditionalSaveData(tag);
-      tag.putByte("CollarColor", (byte)this.getCollarColor().getId());
       tag.putInt("Variant", getVariant());
+      tag.putInt("Overlay", getOverlayVariant());
+      tag.putInt("DomesticVariant", getDomesticVariant());
       tag.putInt("Gender", this.getGender());
    }
 
    public void readAdditionalSaveData(CompoundTag tag) {
       super.readAdditionalSaveData(tag);
-      if (tag.contains("CollarColor", 99)) {
-         this.setCollarColor(DyeColor.byId(tag.getInt("CollarColor")));
-      }
 
       if (tag.contains("Variant")) {
          setVariant(tag.getInt("Variant"));
+      }
+
+      if (tag.contains("Overlay")) {
+         setOverlayVariant(tag.getInt("Overlay"));
+      }
+
+      if (tag.contains("DomesticVariant")) {
+         setDomestictVariant(tag.getInt("DomesticVariant"));
       }
 
       if (tag.contains("Gender")) {
@@ -371,13 +363,13 @@ public class OOcelot extends TamableAnimal implements GeoEntity {
    }
 
    @Override
-   @javax.annotation.Nullable
-   public SpawnGroupData finalizeSpawn(ServerLevelAccessor serverLevelAccessor, DifficultyInstance instance, MobSpawnType spawnType, @javax.annotation.Nullable SpawnGroupData data, @javax.annotation.Nullable CompoundTag tag) {
+   @Nullable
+   public SpawnGroupData finalizeSpawn(ServerLevelAccessor serverLevelAccessor, DifficultyInstance instance, MobSpawnType spawnType, @Nullable SpawnGroupData data, @Nullable CompoundTag tag) {
       if (data == null) {
          data = new AgeableMobGroupData(0.2F);
       }
       Random random = new Random();
-      setVariant(random.nextInt(OOcelotModel.Variant.values().length));
+      setVariant(random.nextInt(OFoxModel.Variant.values().length));
       setGender(random.nextInt(Gender.values().length));
 
       return super.finalizeSpawn(serverLevelAccessor, instance, spawnType, data, tag);
@@ -396,7 +388,7 @@ public class OOcelot extends TamableAnimal implements GeoEntity {
       return this.getGender() == 1;
    }
 
-   public static final EntityDataAccessor<Integer> GENDER = SynchedEntityData.defineId(OOcelot.class, EntityDataSerializers.INT);
+   public static final EntityDataAccessor<Integer> GENDER = SynchedEntityData.defineId(OFox.class, EntityDataSerializers.INT);
 
    public int getGender() {
       return this.entityData.get(GENDER);
@@ -413,13 +405,13 @@ public class OOcelot extends TamableAnimal implements GeoEntity {
    public boolean canMate(Animal animal) {
       if (animal == this) {
          return false;
-      } else if (!(animal instanceof OOcelot)) {
+      } else if (!(animal instanceof OFox)) {
          return false;
       } else {
          if (!LivestockOverhaulCommonConfig.GENDERS_AFFECT_BREEDING.get()) {
-            return this.canParent() && ((OOcelot) animal).canParent();
+            return this.canParent() && ((OFox) animal).canParent();
          } else {
-            OOcelot partner = (OOcelot) animal;
+            OFox partner = (OFox) animal;
             if (this.canParent() && partner.canParent() && this.getGender() != partner.getGender()) {
                return true;
             }
@@ -435,50 +427,44 @@ public class OOcelot extends TamableAnimal implements GeoEntity {
       return false;
    }
 
+   public boolean isDomestic = false;
+
+   public boolean isDomestic() {
+      return isDomestic;
+   }
+
+   public void setDomestic(boolean domestic) {
+      this.isDomestic = domestic;
+   }
+
    @Override
    public AgeableMob getBreedOffspring(ServerLevel serverLevel, AgeableMob ageableMob) {
-      OOcelot oOcelot = (OOcelot) ageableMob;
-      if (ageableMob instanceof OOcelot) {
-         OOcelot ocelot = (OOcelot) ageableMob;
-         oOcelot = com.dragn0007.dragnpets.entities.EntityTypes.O_OCELOT_ENTITY.get().create(serverLevel);
+      OFox oFox = (OFox) ageableMob;
+      if (ageableMob instanceof OFox) {
+         OFox fox = (OFox) ageableMob;
+         oFox = com.dragn0007.dragnpets.entities.EntityTypes.O_FOX_ENTITY.get().create(serverLevel);
 
-         int i = this.random.nextInt(9);
+         int j = this.random.nextInt(9);
          int variant;
-         if (i < 4) {
-            variant = this.getVariant();
-         } else if (i < 8) {
-            variant = ocelot.getVariant();
+
+         if (j < 3) {
+            variant = this.random.nextBoolean() ? this.getVariant() : fox.getVariant();
          } else {
-            variant = this.random.nextInt(OOcelotModel.Variant.values().length);
+            variant = this.random.nextBoolean() ? fox.getVariant() : this.getVariant();
          }
 
-         int gender;
-         gender = this.random.nextInt(OOcelot.Gender.values().length);
+         int gender = this.random.nextInt(OFox.Gender.values().length);
 
-         oOcelot.setVariant(variant);
-         oOcelot.setGender(gender);
+         oFox.setVariant(variant);
+         oFox.setGender(gender);
+
+         oFox.setDomestic(variant == OFoxModel.DomesticVariant.values().length);
+
       }
 
-      return oOcelot;
+      return oFox;
    }
 
-
-   public boolean wantsToAttack(LivingEntity entity, LivingEntity p_30390_) {
-      if (!(entity instanceof Creeper) && !(entity instanceof Ghast)) {
-         if (entity instanceof OOcelot) {
-            OOcelot wolf = (OOcelot)entity;
-            return !wolf.isTame() || wolf.getOwner() != p_30390_;
-         } else if (entity instanceof Player && p_30390_ instanceof Player && !((Player)p_30390_).canHarmPlayer((Player)entity)) {
-            return false;
-         } else if (entity instanceof AbstractHorse && ((AbstractHorse)entity).isTamed()) {
-            return false;
-         } else {
-            return !(entity instanceof TamableAnimal) || !((TamableAnimal)entity).isTame();
-         }
-      } else {
-         return false;
-      }
-   }
 
    public boolean canBeLeashed(Player p_30396_) {
       return super.canBeLeashed(p_30396_);
@@ -488,63 +474,82 @@ public class OOcelot extends TamableAnimal implements GeoEntity {
       return new Vec3(0.0D, (double)(0.6F * this.getEyeHeight()), (double)(this.getBbWidth() * 0.4F));
    }
 
-   public void handleEntityEvent(byte p_28995_) {
-      if (p_28995_ == 41) {
-         this.spawnTrustingParticles(true);
-      } else if (p_28995_ == 40) {
-         this.spawnTrustingParticles(false);
-      } else {
-         super.handleEntityEvent(p_28995_);
+   public class FoxEatBerriesGoal extends MoveToBlockGoal {
+      private static final int WAIT_TICKS = 40;
+      protected int ticksWaited;
+
+      public FoxEatBerriesGoal(double p_28675_, int p_28676_, int p_28677_) {
+         super(OFox.this, p_28675_, p_28676_, p_28677_);
       }
 
-   }
-
-   private void spawnTrustingParticles(boolean p_29048_) {
-      ParticleOptions particleoptions = ParticleTypes.HEART;
-      if (!p_29048_) {
-         particleoptions = ParticleTypes.SMOKE;
+      public double acceptedDistance() {
+         return 2.0D;
       }
 
-      for(int i = 0; i < 7; ++i) {
-         double d0 = this.random.nextGaussian() * 0.02D;
-         double d1 = this.random.nextGaussian() * 0.02D;
-         double d2 = this.random.nextGaussian() * 0.02D;
-         this.level().addParticle(particleoptions, this.getRandomX(1.0D), this.getRandomY() + 0.5D, this.getRandomZ(1.0D), d0, d1, d2);
+      public boolean shouldRecalculatePath() {
+         return this.tryTicks % 100 == 0;
       }
 
-   }
+      protected boolean isValidTarget(LevelReader p_28680_, BlockPos p_28681_) {
+         BlockState blockstate = p_28680_.getBlockState(p_28681_);
+         return blockstate.is(Blocks.SWEET_BERRY_BUSH) && blockstate.getValue(SweetBerryBushBlock.AGE) >= 2 || CaveVines.hasGlowBerries(blockstate);
+      }
 
-   public boolean isSteppingCarefully() {
-      return this.isCrouching() || super.isSteppingCarefully();
-   }
+      public void tick() {
+         if (this.isReachedTarget()) {
+            if (this.ticksWaited >= 40) {
+               this.onReachedTarget();
+            } else {
+               ++this.ticksWaited;
+            }
+         } else if (!this.isReachedTarget() && OFox.this.random.nextFloat() < 0.05F) {
+            OFox.this.playSound(SoundEvents.FOX_SNIFF, 1.0F, 1.0F);
+         }
 
-   static class OcelotAvoidEntityGoal<T extends LivingEntity> extends AvoidEntityGoal<T> {
-      private final OOcelot ocelot;
+         super.tick();
+      }
 
-      public OcelotAvoidEntityGoal(OOcelot p_29051_, Class<T> p_29052_, float p_29053_, double p_29054_, double p_29055_) {
-         super(p_29051_, p_29052_, p_29053_, p_29054_, p_29055_, EntitySelector.NO_CREATIVE_OR_SPECTATOR::test);
-         this.ocelot = p_29051_;
+      protected void onReachedTarget() {
+         if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(OFox.this.level(), OFox.this)) {
+            BlockState blockstate = OFox.this.level().getBlockState(this.blockPos);
+            if (blockstate.is(Blocks.SWEET_BERRY_BUSH)) {
+               this.pickSweetBerries(blockstate);
+            } else if (CaveVines.hasGlowBerries(blockstate)) {
+               this.pickGlowBerry(blockstate);
+            }
+
+         }
+      }
+
+      private void pickGlowBerry(BlockState p_148927_) {
+         CaveVines.use(OFox.this, p_148927_, OFox.this.level(), this.blockPos);
+      }
+
+      private void pickSweetBerries(BlockState p_148929_) {
+         int i = p_148929_.getValue(SweetBerryBushBlock.AGE);
+         p_148929_.setValue(SweetBerryBushBlock.AGE, Integer.valueOf(1));
+         int j = 1 + OFox.this.level().random.nextInt(2) + (i == 3 ? 1 : 0);
+         ItemStack itemstack = OFox.this.getItemBySlot(EquipmentSlot.MAINHAND);
+         if (itemstack.isEmpty()) {
+            OFox.this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.SWEET_BERRIES));
+            --j;
+         }
+
+         if (j > 0) {
+            Block.popResource(OFox.this.level(), this.blockPos, new ItemStack(Items.SWEET_BERRIES, j));
+         }
+
+         OFox.this.playSound(SoundEvents.SWEET_BERRY_BUSH_PICK_BERRIES, 1.0F, 1.0F);
+         OFox.this.level().setBlock(this.blockPos, p_148929_.setValue(SweetBerryBushBlock.AGE, Integer.valueOf(1)), 2);
       }
 
       public boolean canUse() {
-         return super.canUse();
+         return !OFox.this.isSleeping() && super.canUse();
       }
 
-      public boolean canContinueToUse() {
-         return super.canContinueToUse();
-      }
-   }
-
-   static class OcelotTemptGoal extends TemptGoal {
-      private final OOcelot ocelot;
-
-      public OcelotTemptGoal(OOcelot p_29060_, double p_29061_, Ingredient p_29062_, boolean p_29063_) {
-         super(p_29060_, p_29061_, p_29062_, p_29063_);
-         this.ocelot = p_29060_;
-      }
-
-      protected boolean canScare() {
-         return super.canScare();
+      public void start() {
+         this.ticksWaited = 0;
+         super.start();
       }
    }
 }

@@ -2,6 +2,8 @@ package com.dragn0007.dragnpets.event;
 
 import com.dragn0007.dragnpets.PetsOverhaul;
 import com.dragn0007.dragnpets.entities.EntityTypes;
+import com.dragn0007.dragnpets.entities.fox.OFox;
+import com.dragn0007.dragnpets.entities.fox.OFoxRender;
 import com.dragn0007.dragnpets.entities.ocelot.OOcelot;
 import com.dragn0007.dragnpets.entities.ocelot.OOcelotRender;
 import com.dragn0007.dragnpets.entities.wolf.OWolf;
@@ -20,11 +22,13 @@ public class PetsOverhaulEvent {
     public static void entityAttrbiuteCreationEvent(EntityAttributeCreationEvent event) {
         event.put(EntityTypes.O_WOLF_ENTITY.get(), OWolf.createAttributes().build());
         event.put(EntityTypes.O_OCELOT_ENTITY.get(), OOcelot.createAttributes().build());
+        event.put(EntityTypes.O_FOX_ENTITY.get(), OFox.createAttributes().build());
     }
 
     @SubscribeEvent
     public static void clientSetupEvent(FMLClientSetupEvent event) {
         EntityRenderers.register(EntityTypes.O_WOLF_ENTITY.get(), OWolfRender::new);
         EntityRenderers.register(EntityTypes.O_OCELOT_ENTITY.get(), OOcelotRender::new);
+        EntityRenderers.register(EntityTypes.O_FOX_ENTITY.get(), OFoxRender::new);
     }
 }

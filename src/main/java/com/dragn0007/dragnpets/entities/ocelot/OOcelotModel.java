@@ -23,7 +23,7 @@ public class OOcelotModel extends GeoModel<OOcelot> {
     }
 
     public static final ResourceLocation MODEL = new ResourceLocation(PetsOverhaul.MODID, "geo/ocelot_overhaul.geo.json");
-    public static final ResourceLocation ANIMATION = new ResourceLocation(PetsOverhaul.MODID, "animations/wolf_overhaul.animation.json");
+    public static final ResourceLocation ANIMATION = new ResourceLocation(PetsOverhaul.MODID, "animations/cat_overhaul.animation.json");
 
     @Override
     public ResourceLocation getModelResource(OOcelot object) {
