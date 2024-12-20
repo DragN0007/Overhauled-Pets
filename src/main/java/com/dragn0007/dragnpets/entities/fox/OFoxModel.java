@@ -9,7 +9,16 @@ public class OFoxModel extends GeoModel<OFox> {
     public enum Variant {
         RED(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/fox/fox_red.png")),
         SILVER(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/fox/fox_silver.png")),
-        SNOW(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/fox/fox_snow.png"));
+        SNOW(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/fox/fox_snow.png")),
+        ALBINO(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/fox/fox_albino.png")),
+        BLACK(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/fox/fox_black.png")),
+        BLONDE(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/fox/fox_blonde.png")),
+        BURGUNDY(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/fox/fox_burgundy.png")),
+        DARK_GREY(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/fox/fox_dark_grey.png")),
+        DARK_RED(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/fox/fox_dark_red.png")),
+        LEUCISTIC(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/fox/fox_leucistic.png")),
+        LIGHT_GREY(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/fox/fox_light_grey.png")),
+        SANDY(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/fox/fox_sandy.png"));
 
         public final ResourceLocation resourceLocation;
         Variant(ResourceLocation resourceLocation) {
@@ -41,7 +50,7 @@ public class OFoxModel extends GeoModel<OFox> {
     }
 
     public static final ResourceLocation MODEL = new ResourceLocation(PetsOverhaul.MODID, "geo/fox_overhaul.geo.json");
-    public static final ResourceLocation ANIMATION = new ResourceLocation(PetsOverhaul.MODID, "animations/cat_overhaul.animation.json");
+    public static final ResourceLocation ANIMATION = new ResourceLocation(PetsOverhaul.MODID, "animations/fox_overhaul.animation.json");
 
     @Override
     public ResourceLocation getModelResource(OFox object) {

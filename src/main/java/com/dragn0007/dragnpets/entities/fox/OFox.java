@@ -2,8 +2,7 @@ package com.dragn0007.dragnpets.entities.fox;
 
 import com.dragn0007.dragnlivestock.LivestockOverhaul;
 import com.dragn0007.dragnlivestock.entities.EntityTypes;
-import com.dragn0007.dragnlivestock.entities.horse.BreedModel;
-import com.dragn0007.dragnlivestock.entities.rabbit.ORabbit;
+import com.dragn0007.dragnlivestock.entities.horse.OHorseMarkingLayer;
 import com.dragn0007.dragnlivestock.items.LOItems;
 import com.dragn0007.dragnlivestock.util.LivestockOverhaulCommonConfig;
 import com.dragn0007.dragnpets.util.POTags;
@@ -20,7 +19,6 @@ import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -32,10 +30,7 @@ import net.minecraft.world.entity.animal.AbstractSchoolingFish;
 import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.animal.Turtle;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.ItemUtils;
-import net.minecraft.world.item.Items;
+import net.minecraft.world.item.*;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
@@ -121,7 +116,7 @@ public class OFox extends TamableAnimal implements GeoEntity {
 
    private <T extends GeoAnimatable> PlayState predicate(software.bernie.geckolib.core.animation.AnimationState<T> tAnimationState) {
       double currentSpeed = this.getDeltaMovement().lengthSqr();
-      double speedThreshold = 0.015;
+      double speedThreshold = 0.02;
 
       AnimationController<T> controller = tAnimationState.getController();
 
@@ -172,14 +167,6 @@ public class OFox extends TamableAnimal implements GeoEntity {
       return 0.4F;
    }
 
-   @Override
-   public boolean hurt(DamageSource damageSource, float v) {
-      if (damageSource.is(DamageTypes.FALL)) {
-         return false;
-      }
-      return super.hurt(damageSource, v);
-   }
-
    @Nullable
    protected SoundEvent getAmbientSound() {
       return SoundEvents.FOX_AMBIENT;
@@ -213,6 +200,7 @@ public class OFox extends TamableAnimal implements GeoEntity {
       this.getAttribute(Attributes.ATTACK_DAMAGE).setBaseValue(4.0D);
    }
 
+   @Override
    public InteractionResult mobInteract(Player player, InteractionHand hand) {
       ItemStack itemstack = player.getItemInHand(hand);
       Item item = itemstack.getItem();
@@ -243,8 +231,11 @@ public class OFox extends TamableAnimal implements GeoEntity {
 
             this.gameEvent(GameEvent.EAT, this);
             return InteractionResult.SUCCESS;
-            
          } else {
+            if (item instanceof DyeItem) {
+                  return super.mobInteract(player, hand);
+            }
+
             InteractionResult interactionresult = super.mobInteract(player, hand);
             if ((!interactionresult.consumesAction() || this.isBaby()) && this.isOwnedBy(player)) {
                this.setOrderedToSit(!this.isOrderedToSit());
@@ -370,6 +361,7 @@ public class OFox extends TamableAnimal implements GeoEntity {
       }
       Random random = new Random();
       setVariant(random.nextInt(OFoxModel.Variant.values().length));
+      setOverlayVariant(random.nextInt(OFoxMarkingLayer.Overlay.values().length));
       setGender(random.nextInt(Gender.values().length));
 
       return super.finalizeSpawn(serverLevelAccessor, instance, spawnType, data, tag);
@@ -444,22 +436,31 @@ public class OFox extends TamableAnimal implements GeoEntity {
          OFox fox = (OFox) ageableMob;
          oFox = com.dragn0007.dragnpets.entities.EntityTypes.O_FOX_ENTITY.get().create(serverLevel);
 
-         int j = this.random.nextInt(9);
+         int j = this.random.nextInt(5);
          int variant;
-
-         if (j < 3) {
-            variant = this.random.nextBoolean() ? this.getVariant() : fox.getVariant();
+         if (j < 1) {
+            variant = this.getVariant();
+         } else if (j < 3) {
+            variant = oFox.getVariant();
          } else {
-            variant = this.random.nextBoolean() ? fox.getVariant() : this.getVariant();
+            variant = this.random.nextInt(OFoxModel.Variant.values().length);
+         }
+
+         int k = this.random.nextInt(5);
+         int overlay;
+         if (k < 2) {
+            overlay = this.getOverlayVariant();
+         } else if (j < 4) {
+            overlay = oFox.getOverlayVariant();
+         } else {
+            overlay = this.random.nextInt(OFoxMarkingLayer.Overlay.values().length);
          }
 
          int gender = this.random.nextInt(OFox.Gender.values().length);
 
          oFox.setVariant(variant);
          oFox.setGender(gender);
-
-         oFox.setDomestic(variant == OFoxModel.DomesticVariant.values().length);
-
+         oFox.setOverlayVariant(overlay);
       }
 
       return oFox;
