@@ -1,15 +1,13 @@
 package com.dragn0007.dragnpets.spawn;
 
-import com.dragn0007.dragnlivestock.entities.cow.OCowHornLayer;
-import com.dragn0007.dragnlivestock.entities.cow.OCowMarkingLayer;
-import com.dragn0007.dragnlivestock.entities.cow.OCowModel;
 import com.dragn0007.dragnlivestock.util.LivestockOverhaulCommonConfig;
 import com.dragn0007.dragnpets.PetsOverhaul;
 import com.dragn0007.dragnpets.entities.EntityTypes;
+import com.dragn0007.dragnpets.entities.axolotl.OAxolotl;
+import com.dragn0007.dragnpets.entities.axolotl.OAxolotlMarkingLayer;
+import com.dragn0007.dragnpets.entities.axolotl.OAxolotlModel;
 import com.dragn0007.dragnpets.entities.fox.OFox;
 import com.dragn0007.dragnpets.entities.fox.OFoxMarkingLayer;
-import com.dragn0007.dragnpets.entities.fox.OFoxModel;
-import com.dragn0007.dragnpets.entities.fox.OFoxRender;
 import com.dragn0007.dragnpets.entities.ocelot.OOcelot;
 import com.dragn0007.dragnpets.entities.ocelot.OOcelotModel;
 import com.dragn0007.dragnpets.entities.wolf.OWolf;
@@ -19,8 +17,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.animal.Fox;
 import net.minecraft.world.entity.animal.Ocelot;
 import net.minecraft.world.entity.animal.Wolf;
-import net.minecraft.world.level.biome.Biomes;
-import net.minecraftforge.common.Tags;
+import net.minecraft.world.entity.animal.axolotl.Axolotl;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -108,52 +105,66 @@ public class SpawnReplacer {
                 return;
             }
 
-//            if (event.getLevel().getBiome(event.getEntity().blockPosition()).is(Biomes.SNOWY_TAIGA) ||
-//                    event.getLevel().getBiome(event.getEntity().blockPosition()).is(Biomes.TAIGA) ||
-//                    event.getLevel().getBiome(event.getEntity().blockPosition()).is(Biomes.OLD_GROWTH_PINE_TAIGA) ||
-//                    event.getLevel().getBiome(event.getEntity().blockPosition()).is(Biomes.OLD_GROWTH_SPRUCE_TAIGA) ||
-//                    event.getLevel().getBiome(event.getEntity().blockPosition()).is(Tags.Biomes.IS_CONIFEROUS) ||
-//                    event.getLevel().getBiome(event.getEntity().blockPosition()).is(Tags.Biomes.IS_COLD) ||
-//                    event.getLevel().getBiome(event.getEntity().blockPosition()).is(Tags.Biomes.IS_SNOWY)) {
-//
-//                if (oFox != null) {
-//                    oFox.copyPosition(vanillaFox);
-//                    event.getLevel().addFreshEntity(oFox);
-//
-//                    int snowyVariant = 2;
-//                    oFox.setVariant(snowyVariant);
-//
-//                    if (event.getLevel().isClientSide) {
-//                        vanillaFox.remove(Entity.RemovalReason.DISCARDED);
-//                    }
-//
-//                    event.getLevel().addFreshEntity(oFox);
-//                    vanillaFox.remove(Entity.RemovalReason.DISCARDED);
-//                }
-//            } else {
-                if (oFox != null) {
-                    oFox.copyPosition(vanillaFox);
+            if (oFox != null) {
+                oFox.copyPosition(vanillaFox);
 
-                    oFox.setCustomName(vanillaFox.getCustomName());
-                    oFox.setAge(vanillaFox.getAge());
+                oFox.setCustomName(vanillaFox.getCustomName());
+                oFox.setAge(vanillaFox.getAge());
 
-                    int randomVariant = event.getLevel().getRandom().nextInt(3);
-                    oFox.setVariant(randomVariant);
+                int randomVariant = event.getLevel().getRandom().nextInt(3);
+                oFox.setVariant(randomVariant);
 
-                    int randomOverlay = event.getLevel().getRandom().nextInt(OFoxMarkingLayer.Overlay.values().length);
-                    oFox.setOverlayVariant(randomOverlay);
+                int randomOverlay = event.getLevel().getRandom().nextInt(OFoxMarkingLayer.Overlay.values().length);
+                oFox.setOverlayVariant(randomOverlay);
 
-                    int randomGender = event.getLevel().getRandom().nextInt(OFox.Gender.values().length);
-                    oFox.setGender(randomGender);
+                int randomGender = event.getLevel().getRandom().nextInt(OFox.Gender.values().length);
+                oFox.setGender(randomGender);
 
-                    if (event.getLevel().isClientSide) {
-                        vanillaFox.remove(Entity.RemovalReason.DISCARDED);
-                    }
-
-                    event.getLevel().addFreshEntity(oFox);
+                if (event.getLevel().isClientSide) {
                     vanillaFox.remove(Entity.RemovalReason.DISCARDED);
                 }
+
+                event.getLevel().addFreshEntity(oFox);
+                vanillaFox.remove(Entity.RemovalReason.DISCARDED);
+
+                event.setCanceled(true);
             }
+        }
+
+        //Axolotl
+        if (!LivestockOverhaulCommonConfig.FAILSAFE_REPLACER.get() && PetsOverhaulCommonConfig.REPLACE_AXOLOTLS.get() && event.getEntity() instanceof Axolotl) {
+            Axolotl vanillaAxolotl = (Axolotl) event.getEntity();
+            OAxolotl oAxolotl = EntityTypes.O_AXOLOTL_ENTITY.get().create(event.getLevel());
+
+            if (event.getLevel().isClientSide) {
+                return;
+            }
+
+            if (oAxolotl != null) {
+                oAxolotl.copyPosition(vanillaAxolotl);
+
+                oAxolotl.setCustomName(vanillaAxolotl.getCustomName());
+                oAxolotl.setAge(vanillaAxolotl.getAge());
+
+                int randomVariant = event.getLevel().getRandom().nextInt(OAxolotlModel.Variant.values().length);
+                oAxolotl.setVariant(randomVariant);
+
+                int randomOverlay = event.getLevel().getRandom().nextInt(OAxolotlMarkingLayer.Overlay.values().length);
+                oAxolotl.setOverlayVariant(randomOverlay);
+
+                int randomGills = event.getLevel().getRandom().nextInt(OAxolotl.Gills.values().length);
+                oAxolotl.setGills(randomGills);
+
+                if (event.getLevel().isClientSide) {
+                    vanillaAxolotl.remove(Entity.RemovalReason.DISCARDED);
+                }
+
+                event.getLevel().addFreshEntity(oAxolotl);
+                vanillaAxolotl.remove(Entity.RemovalReason.DISCARDED);
+
+                event.setCanceled(true);
+            }
+        }
 
 
     }

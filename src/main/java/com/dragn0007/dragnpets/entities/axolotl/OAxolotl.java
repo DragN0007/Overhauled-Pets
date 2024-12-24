@@ -1,13 +1,11 @@
 package com.dragn0007.dragnpets.entities.axolotl;
 
 import com.dragn0007.dragnlivestock.LivestockOverhaul;
-import com.dragn0007.dragnlivestock.entities.frog.OFrog;
-import com.dragn0007.dragnlivestock.entities.frog.OFrogMarkingLayer;
-import com.dragn0007.dragnlivestock.entities.frog.OFrogModel;
 import com.dragn0007.dragnlivestock.entities.util.AbstractOFish;
 import com.dragn0007.dragnlivestock.util.LOTags;
 import com.dragn0007.dragnlivestock.util.LivestockOverhaulCommonConfig;
 import com.dragn0007.dragnpets.entities.EntityTypes;
+import com.dragn0007.dragnpets.items.POItems;
 import com.dragn0007.dragnpets.util.POTags;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -18,11 +16,14 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.DifficultyInstance;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.control.SmoothSwimmingMoveControl;
 import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.animal.Animal;
@@ -33,6 +34,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.pathfinder.BlockPathTypes;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import software.bernie.geckolib.animatable.GeoEntity;
@@ -52,6 +54,34 @@ public class OAxolotl extends Animal implements GeoEntity, Bucketable {
 
 	public OAxolotl(EntityType<? extends OAxolotl> type, Level level) {
 		super(type, level);
+		this.setPathfindingMalus(BlockPathTypes.WATER, 0.0F);
+		this.moveControl = new OAxolotl.AxolotlMoveControl(this);
+		this.setMaxUpStep(0.0F);
+	}
+
+	@Override
+	public float getStepHeight() {
+		return 0.0F;
+	}
+
+	static class AxolotlMoveControl extends SmoothSwimmingMoveControl {
+		private final OAxolotl oAxolotl;
+
+		public AxolotlMoveControl(OAxolotl oAxolotl) {
+			super(oAxolotl, 85, 10, 0.1F, 0.5F, false);
+			this.oAxolotl = oAxolotl;
+		}
+	}
+
+	public void travel(Vec3 vec3) {
+		if (this.isControlledByLocalInstance() && this.isInWater()) {
+			this.moveRelative(this.getSpeed(), vec3);
+			this.move(MoverType.SELF, this.getDeltaMovement());
+			this.setDeltaMovement(this.getDeltaMovement().scale(0.9D));
+		} else {
+			super.travel(vec3);
+		}
+
 	}
 
 	private static final ResourceLocation LOOT_TABLE = new ResourceLocation(LivestockOverhaul.MODID, "entities/o_axolotl");
@@ -71,7 +101,7 @@ public class OAxolotl extends Animal implements GeoEntity, Bucketable {
 	}
 
 	public int getMaxAirSupply() {
-		return 6000;
+		return 3000;
 	}
 
 	public boolean canBreatheUnderwater() {
@@ -89,7 +119,7 @@ public class OAxolotl extends Animal implements GeoEntity, Bucketable {
 	public static AttributeSupplier.Builder createAttributes() {
 		return Mob.createMobAttributes()
 				.add(Attributes.MAX_HEALTH, 14.0D)
-				.add(Attributes.MOVEMENT_SPEED, 1.0D)
+				.add(Attributes.MOVEMENT_SPEED, 0.5D)
 				.add(Attributes.ATTACK_DAMAGE, 2.0D);
 
 	}
@@ -123,9 +153,12 @@ public class OAxolotl extends Animal implements GeoEntity, Bucketable {
 		return super.hurt(damageSource, v);
 	}
 
-	@Override
-	public float getStepHeight() {
-		return 1F;
+	public InteractionResult mobInteract(Player p_149155_, InteractionHand p_149156_) {
+		return Bucketable.bucketMobPickup(p_149155_, p_149156_, this).orElse(super.mobInteract(p_149155_, p_149156_));
+	}
+
+	public boolean removeWhenFarAway(double p_149183_) {
+		return !this.fromBucket() && !this.hasCustomName();
 	}
 
 	private final AnimatableInstanceCache geoCache = GeckoLibUtil.createInstanceCache(this);
@@ -138,13 +171,15 @@ public class OAxolotl extends Animal implements GeoEntity, Bucketable {
 
 		if (tAnimationState.isMoving()) {
 			if (currentSpeed > speedThreshold) {
-				controller.setAnimation(RawAnimation.begin().then("hop", Animation.LoopType.LOOP));
+				controller.setAnimation(RawAnimation.begin().then("swim", Animation.LoopType.LOOP));
 				controller.setAnimationSpeed(2.0);
 			} else {
-				controller.setAnimation(RawAnimation.begin().then("hop", Animation.LoopType.LOOP));
+				controller.setAnimation(RawAnimation.begin().then("swim", Animation.LoopType.LOOP));
+				controller.setAnimationSpeed(1.0);
 			}
 		} else {
-			controller.setAnimation(RawAnimation.begin().then("idle", Animation.LoopType.LOOP));
+			controller.setAnimation(RawAnimation.begin().then("swim", Animation.LoopType.LOOP));
+			controller.setAnimationSpeed(0.6);
 		}
 
 		return PlayState.CONTINUE;
@@ -195,15 +230,30 @@ public class OAxolotl extends Animal implements GeoEntity, Bucketable {
 
 	// Generates the base texture
 	public ResourceLocation getTextureLocation() {
-		return OFrogModel.Variant.variantFromOrdinal(getVariant()).resourceLocation;
+		return OAxolotlModel.Variant.variantFromOrdinal(getVariant()).resourceLocation;
 	}
 
 	public ResourceLocation getOverlayLocation() {
-		return OFrogMarkingLayer.Overlay.overlayFromOrdinal(getOverlayVariant()).resourceLocation;
+		return OAxolotlMarkingLayer.Overlay.overlayFromOrdinal(getOverlayVariant()).resourceLocation;
 	}
 
-	public static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(OFrog.class, EntityDataSerializers.INT);
-	public static final EntityDataAccessor<Integer> OVERLAY = SynchedEntityData.defineId(OFrog.class, EntityDataSerializers.INT);
+	public static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(OAxolotl.class, EntityDataSerializers.INT);
+	public static final EntityDataAccessor<Integer> OVERLAY = SynchedEntityData.defineId(OAxolotl.class, EntityDataSerializers.INT);
+	private static final EntityDataAccessor<Boolean> FROM_BUCKET = SynchedEntityData.defineId(OAxolotl.class, EntityDataSerializers.BOOLEAN);
+	private static final EntityDataAccessor<Integer> GILL_LENGTH = SynchedEntityData.defineId(OAxolotl.class, EntityDataSerializers.INT);
+
+	public enum Gills {
+		SHORT,
+		LONG
+	}
+
+	public boolean hasShortGills() {
+		return this.getGills() == 0;
+	}
+
+	public boolean hasLongGills() {
+		return this.getGills() == 1;
+	}
 
 	public int getVariant() {
 		return this.entityData.get(VARIANT);
@@ -211,12 +261,18 @@ public class OAxolotl extends Animal implements GeoEntity, Bucketable {
 	public int getOverlayVariant() {
 		return this.entityData.get(OVERLAY);
 	}
+	public int getGills() {
+		return this.entityData.get(GILL_LENGTH);
+	}
 
 	public void setVariant(int variant) {
 		this.entityData.set(VARIANT, variant);
 	}
 	public void setOverlayVariant(int overlayVariant) {
 		this.entityData.set(OVERLAY, overlayVariant);
+	}
+	public void setGills(int gills) {
+		this.entityData.set(GILL_LENGTH, gills);
 	}
 
 	@Override
@@ -230,14 +286,21 @@ public class OAxolotl extends Animal implements GeoEntity, Bucketable {
 		if (tag.contains("Overlay")) {
 			setOverlayVariant(tag.getInt("Overlay"));
 		}
+
+		if (tag.contains("Gills")) {
+			setGills(tag.getInt("Gills"));
+		}
+
+		this.setFromBucket(tag.getBoolean("FromBucket"));
 	}
 
 	@Override
 	public void addAdditionalSaveData(CompoundTag tag) {
 		super.addAdditionalSaveData(tag);
 		tag.putInt("Variant", getVariant());
-
 		tag.putInt("Overlay", getOverlayVariant());
+		tag.putBoolean("FromBucket", this.fromBucket());
+		tag.putInt("Gills", getGills());
 	}
 
 	@Override
@@ -247,8 +310,9 @@ public class OAxolotl extends Animal implements GeoEntity, Bucketable {
 			data = new AgeableMobGroupData(0.2F);
 		}
 		Random random = new Random();
-		setVariant(random.nextInt(OFrogModel.Variant.values().length));
-		setOverlayVariant(random.nextInt(OFrogMarkingLayer.Overlay.values().length));
+		setVariant(random.nextInt(OAxolotlModel.Variant.values().length));
+		setOverlayVariant(random.nextInt(OAxolotlMarkingLayer.Overlay.values().length));
+		setGills(random.nextInt(OAxolotl.Gills.values().length));
 
 		return super.finalizeSpawn(serverLevelAccessor, instance, spawnType, data, tag);
 	}
@@ -258,6 +322,25 @@ public class OAxolotl extends Animal implements GeoEntity, Bucketable {
 		super.defineSynchedData();
 		this.entityData.define(VARIANT, 0);
 		this.entityData.define(OVERLAY, 0);
+		this.entityData.define(FROM_BUCKET, false);
+		this.entityData.define(GILL_LENGTH, 0);
+	}
+
+	public void saveToBucketTag(ItemStack itemStack) {
+		Bucketable.saveDefaultDataToBucketTag(this, itemStack);
+		CompoundTag compoundtag = itemStack.getOrCreateTag();
+		compoundtag.putInt("Variant", this.getVariant());
+		compoundtag.putInt("Overlay", this.getOverlayVariant());
+		compoundtag.putInt("Age", this.getAge());
+	}
+
+	public void loadFromBucketTag(CompoundTag compoundTag) {
+		Bucketable.loadDefaultDataFromBucketTag(this, compoundTag);
+		this.setVariant(compoundTag.getInt("Variant"));
+		this.setOverlayVariant(compoundTag.getInt("Overlay"));
+		if (compoundTag.contains("Age")) {
+			this.setAge(compoundTag.getInt("Age"));
+		}
 	}
 
 	public boolean canParent() {
@@ -273,33 +356,19 @@ public class OAxolotl extends Animal implements GeoEntity, Bucketable {
 		return EntityTypes.O_AXOLOTL_ENTITY.get().create(serverLevel);
 	}
 
-	@Override
 	public boolean fromBucket() {
-		return false;
+		return this.entityData.get(FROM_BUCKET);
 	}
 
-	@Override
-	public void setFromBucket(boolean p_148834_) {
-
+	public void setFromBucket(boolean p_149196_) {
+		this.entityData.set(FROM_BUCKET, p_149196_);
 	}
 
-	@Override
-	public void saveToBucketTag(ItemStack p_148833_) {
-
-	}
-
-	@Override
-	public void loadFromBucketTag(CompoundTag p_148832_) {
-
-	}
-
-	@Override
 	public ItemStack getBucketItemStack() {
-		return null;
+		return new ItemStack(POItems.O_AXOLOTL_BUCKET.get());
 	}
 
-	@Override
 	public SoundEvent getPickupSound() {
-		return null;
+		return SoundEvents.BUCKET_FILL_AXOLOTL;
 	}
 }

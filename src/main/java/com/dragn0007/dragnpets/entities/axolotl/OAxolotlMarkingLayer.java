@@ -1,7 +1,6 @@
 package com.dragn0007.dragnpets.entities.axolotl;
 
 import com.dragn0007.dragnpets.PetsOverhaul;
-import com.dragn0007.dragnpets.entities.fox.OFox;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -12,15 +11,15 @@ import software.bernie.geckolib.cache.object.BakedGeoModel;
 import software.bernie.geckolib.renderer.GeoRenderer;
 import software.bernie.geckolib.renderer.layer.GeoRenderLayer;
 
-public class OAxolotlMarkingLayer extends GeoRenderLayer<OFox> {
+public class OAxolotlMarkingLayer extends GeoRenderLayer<OAxolotl> {
     public OAxolotlMarkingLayer(GeoRenderer entityRendererIn) {
         super(entityRendererIn);
     }
 
     @Override
-    public void render(PoseStack poseStack, OFox animatable, BakedGeoModel bakedModel, RenderType renderType, MultiBufferSource bufferSource, VertexConsumer buffer, float partialTick, int packedLight, int packedOverlay) {
+    public void render(PoseStack poseStack, OAxolotl animatable, BakedGeoModel bakedModel, RenderType renderType, MultiBufferSource bufferSource, VertexConsumer buffer, float partialTick, int packedLight, int packedOverlay) {
 
-        RenderType renderMarkingType = RenderType.entityCutout(animatable.getOverlayResource());
+        RenderType renderMarkingType = RenderType.entityCutout(animatable.getOverlayLocation());
         poseStack.pushPose();
         poseStack.scale(1.0f, 1.0f, 1.0f);
         poseStack.translate(0.0d, 0.0d, 0.0d);

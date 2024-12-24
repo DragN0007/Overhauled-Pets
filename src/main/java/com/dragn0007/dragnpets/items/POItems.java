@@ -2,8 +2,11 @@ package com.dragn0007.dragnpets.items;
 
 import com.dragn0007.dragnpets.PetsOverhaul;
 import com.dragn0007.dragnpets.entities.EntityTypes;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.MobBucketItem;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.common.ForgeSpawnEggItem;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
@@ -22,6 +25,8 @@ public class POItems {
             () -> new ForgeSpawnEggItem(EntityTypes.O_OCELOT_ENTITY, 0xf6d587, 0x5e381b, new Item.Properties().stacksTo(64)));
     public static final RegistryObject<Item> O_FOX_SPAWN_EGG = ITEMS.register("o_fox_spawn_egg",
             () -> new ForgeSpawnEggItem(EntityTypes.O_FOX_ENTITY, 0xd5701c, 0x62483c, new Item.Properties().stacksTo(64)));
+    public static final RegistryObject<Item> O_AXOLOTL_SPAWN_EGG = ITEMS.register("o_axolotl_spawn_egg",
+            () -> new ForgeSpawnEggItem(EntityTypes.O_AXOLOTL_ENTITY, 0xeed0cb, 0xc7a49e, new Item.Properties().stacksTo(64)));
 
 
     //Food
@@ -33,6 +38,10 @@ public class POItems {
             () -> new Item(new Item.Properties().food(new FoodProperties.Builder().nutrition(2).saturationMod(1).build())));
     public static final RegistryObject<Item> COOKED_CAT = ITEMS.register("cooked_cat",
             () -> new Item(new Item.Properties().food(new FoodProperties.Builder().nutrition(3).saturationMod(1).build())));
+
+
+    public static final RegistryObject<Item> O_AXOLOTL_BUCKET = ITEMS.register("o_axolotl_bucket",
+            () -> new MobBucketItem(EntityTypes.O_AXOLOTL_ENTITY, () -> Fluids.WATER, () -> SoundEvents.BUCKET_FILL_AXOLOTL, new Item.Properties().stacksTo(1)));
 
 
     //Mod Item Tab Icon (UNOBTAINABLE)

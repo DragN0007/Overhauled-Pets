@@ -7,9 +7,17 @@
   "item.dragnpets.o_ocelot_spawn_egg": "O-Ocelot Spawn Egg",
   "entity.dragnpets.o_ocelot": "O-Ocelot",
 
+  "item.dragnpets.o_fox_spawn_egg": "O-Fox Spawn Egg",
+  "entity.dragnpets.o_fox": "O-Fox",
+
+  "item.dragnpets.o_axolotl_spawn_egg": "O-Axolotl Spawn Egg",
+  "entity.dragnpets.o_axolotl": "O-Axolotl",
+
   "item.dragnpets.wolf": "Dog",
   "item.dragnpets.cooked_wolf": "Cooked Dog",
 
   "item.dragnpets.cat": "Cat",
-  "item.dragnpets.cooked_cat": "Cooked Cat"
+  "item.dragnpets.cooked_cat": "Cooked Cat",
+
+  "item.dragnpets.o_axolotl_bucket": "O-Axolotl Bucket"
 }
