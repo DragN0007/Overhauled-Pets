@@ -7,6 +7,7 @@ import com.dragn0007.dragnpets.entities.ocelot.OOcelot;
 import com.dragn0007.dragnpets.entities.parrot.Cockatiel;
 import com.dragn0007.dragnpets.entities.parrot.Macaw;
 import com.dragn0007.dragnpets.entities.parrot.Ringneck;
+import com.dragn0007.dragnpets.entities.tropical_fish.OTropicalFish;
 import com.dragn0007.dragnpets.entities.wolf.OWolf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
@@ -62,6 +63,12 @@ public class EntityTypes {
                             MobCategory.CREATURE)
                     .sized(0.4f,0.4f)
                     .build(new ResourceLocation(LivestockOverhaul.MODID,"ringneck").toString()));
+
+    public static final RegistryObject<EntityType<OTropicalFish>> O_TROPICAL_FISH_ENTITY = ENTITY_TYPES.register("o_tropical_fish",
+            () -> EntityType.Builder.of(OTropicalFish::new,
+                            MobCategory.CREATURE)
+                    .sized(0.4f,0.4f)
+                    .build(new ResourceLocation(LivestockOverhaul.MODID,"o_tropical_fish").toString()));
 
 }
 

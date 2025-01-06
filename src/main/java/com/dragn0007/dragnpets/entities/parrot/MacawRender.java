@@ -1,8 +1,5 @@
 package com.dragn0007.dragnpets.entities.parrot;
 
-import com.dragn0007.dragnpets.entities.ocelot.OOcelot;
-import com.dragn0007.dragnpets.entities.ocelot.OOcelotCollarLayer;
-import com.dragn0007.dragnpets.entities.ocelot.OOcelotModel;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;

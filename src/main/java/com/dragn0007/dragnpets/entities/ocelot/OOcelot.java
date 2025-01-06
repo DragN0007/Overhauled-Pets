@@ -4,6 +4,7 @@ import com.dragn0007.dragnlivestock.LivestockOverhaul;
 import com.dragn0007.dragnlivestock.entities.EntityTypes;
 import com.dragn0007.dragnlivestock.items.LOItems;
 import com.dragn0007.dragnlivestock.util.LivestockOverhaulCommonConfig;
+import com.dragn0007.dragnpets.PetsOverhaul;
 import com.dragn0007.dragnpets.util.POTags;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
@@ -58,7 +59,7 @@ public class OOcelot extends TamableAnimal implements GeoEntity {
    @Nullable
    private OOcelot.OcelotTemptGoal temptGoal;
 
-   private static final ResourceLocation LOOT_TABLE = new ResourceLocation(LivestockOverhaul.MODID, "entities/o_ocelot");
+   private static final ResourceLocation LOOT_TABLE = new ResourceLocation(PetsOverhaul.MODID, "entities/o_ocelot");
    private static final ResourceLocation VANILLA_LOOT_TABLE = new ResourceLocation("minecraft", "entities/ocelot");
    @Override
    public @NotNull ResourceLocation getDefaultLootTable() {

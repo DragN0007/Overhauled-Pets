@@ -8,6 +8,7 @@ import com.dragn0007.dragnlivestock.entities.llama.OLlama;
 import com.dragn0007.dragnlivestock.entities.mule.OMule;
 import com.dragn0007.dragnlivestock.items.LOItems;
 import com.dragn0007.dragnlivestock.util.LivestockOverhaulCommonConfig;
+import com.dragn0007.dragnpets.PetsOverhaul;
 import com.dragn0007.dragnpets.entities.ai.CanineFollowPackLeaderGoal;
 import com.dragn0007.dragnpets.entities.ocelot.OOcelot;
 import com.dragn0007.dragnpets.util.POTags;
@@ -68,7 +69,7 @@ import java.util.stream.Stream;
 
 public class OWolf extends TamableAnimal implements NeutralMob, GeoEntity {
 
-   private static final ResourceLocation LOOT_TABLE = new ResourceLocation(LivestockOverhaul.MODID, "entities/o_wolf");
+   private static final ResourceLocation LOOT_TABLE = new ResourceLocation(PetsOverhaul.MODID, "entities/o_wolf");
    private static final ResourceLocation VANILLA_LOOT_TABLE = new ResourceLocation("minecraft", "entities/wolf");
    @Override
    public @NotNull ResourceLocation getDefaultLootTable() {

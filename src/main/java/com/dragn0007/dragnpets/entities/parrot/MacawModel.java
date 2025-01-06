@@ -1,7 +1,6 @@
 package com.dragn0007.dragnpets.entities.parrot;
 
 import com.dragn0007.dragnpets.PetsOverhaul;
-import com.dragn0007.dragnpets.entities.ocelot.OOcelot;
 import net.minecraft.resources.ResourceLocation;
 import software.bernie.geckolib.model.GeoModel;
 

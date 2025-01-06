@@ -1,7 +1,9 @@
 package com.dragn0007.dragnpets.items;
 
+import com.dragn0007.dragnlivestock.items.custom.CodRoeItem;
 import com.dragn0007.dragnpets.PetsOverhaul;
 import com.dragn0007.dragnpets.entities.EntityTypes;
+import com.dragn0007.dragnpets.items.custom.TropicalFishRoeItem;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.Item;
@@ -27,6 +29,8 @@ public class POItems {
             () -> new ForgeSpawnEggItem(EntityTypes.O_FOX_ENTITY, 0xd5701c, 0x62483c, new Item.Properties().stacksTo(64)));
     public static final RegistryObject<Item> O_AXOLOTL_SPAWN_EGG = ITEMS.register("o_axolotl_spawn_egg",
             () -> new ForgeSpawnEggItem(EntityTypes.O_AXOLOTL_ENTITY, 0xeed0cb, 0xc7a49e, new Item.Properties().stacksTo(64)));
+    public static final RegistryObject<Item> O_TROPICAL_FISH_SPAWN_EGG = ITEMS.register("o_tropical_fish_spawn_egg",
+            () -> new ForgeSpawnEggItem(EntityTypes.O_TROPICAL_FISH_ENTITY, 0xce7b22, 0xffffff, new Item.Properties().stacksTo(64)));
     public static final RegistryObject<Item> MACAW_SPAWN_EGG = ITEMS.register("macaw_spawn_egg",
             () -> new ForgeSpawnEggItem(EntityTypes.MACAW_ENTITY, 0xab2f23, 0xda9e35, new Item.Properties().stacksTo(64)));
     public static final RegistryObject<Item> COCKATIEL_SPAWN_EGG = ITEMS.register("cockatiel_spawn_egg",
@@ -49,9 +53,13 @@ public class POItems {
     public static final RegistryObject<Item> COOKED_PARROT_THIGH = ITEMS.register("cooked_parrot_thigh",
             () -> new Item(new Item.Properties().food(new FoodProperties.Builder().nutrition(3).saturationMod(1).build())));
 
+    public static final RegistryObject<Item> TROPICAL_FISH_ROE = ITEMS.register("tropical_fish_roe",
+            () -> new TropicalFishRoeItem(new Item.Properties().food(new FoodProperties.Builder().nutrition(3).build())));
 
     public static final RegistryObject<Item> O_AXOLOTL_BUCKET = ITEMS.register("o_axolotl_bucket",
             () -> new MobBucketItem(EntityTypes.O_AXOLOTL_ENTITY, () -> Fluids.WATER, () -> SoundEvents.BUCKET_FILL_AXOLOTL, new Item.Properties().stacksTo(1)));
+    public static final RegistryObject<Item> O_TROPICAL_FISH_BUCKET = ITEMS.register("o_tropical_fish_bucket",
+            () -> new MobBucketItem(EntityTypes.O_TROPICAL_FISH_ENTITY, () -> Fluids.WATER, () -> SoundEvents.BUCKET_FILL_FISH, new Item.Properties().stacksTo(1)));
 
 
     //Mod Item Tab Icon (UNOBTAINABLE)

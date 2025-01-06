@@ -21,6 +21,7 @@ public class POItemGroupModifier {
                         output.accept(POItems.O_OCELOT_SPAWN_EGG.get());
                         output.accept(POItems.O_FOX_SPAWN_EGG.get());
                         output.accept(POItems.O_AXOLOTL_SPAWN_EGG.get());
+                        output.accept(POItems.O_TROPICAL_FISH_SPAWN_EGG.get());
 
                         output.accept(POItems.MACAW_SPAWN_EGG.get());
                         output.accept(POItems.COCKATIEL_SPAWN_EGG.get());
@@ -33,7 +34,10 @@ public class POItemGroupModifier {
                         output.accept(POItems.PARROT_THIGH.get());
                         output.accept(POItems.COOKED_PARROT_THIGH.get());
 
+                        output.accept(POItems.TROPICAL_FISH_ROE.get());
+
                         output.accept(POItems.O_AXOLOTL_BUCKET.get());
+                        output.accept(POItems.O_TROPICAL_FISH_BUCKET.get());
 
                     }).build());
 

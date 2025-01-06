@@ -13,6 +13,9 @@
   "item.dragnpets.o_axolotl_spawn_egg": "O-Axolotl Spawn Egg",
   "entity.dragnpets.o_axolotl": "O-Axolotl",
 
+  "item.dragnpets.o_tropical_fish_spawn_egg": "O-Tropical Fish Spawn Egg",
+  "entity.dragnpets.o_tropical_fish": "O-Tropical Fish",
+
   "item.dragnpets.macaw_spawn_egg": "Macaw Spawn Egg",
   "entity.dragnpets.macaw": "Macaw",
 
@@ -31,5 +34,8 @@
   "item.dragnpets.parrot_thigh": "Raw Parrot Thigh",
   "item.dragnpets.cooked_parrot_thigh": "Cooked Parrot Thigh",
 
-  "item.dragnpets.o_axolotl_bucket": "O-Axolotl Bucket"
+  "item.dragnpets.tropical_fish_roe": "Tropical Fish Roe",
+
+  "item.dragnpets.o_axolotl_bucket": "O-Axolotl Bucket",
+  "item.dragnpets.o_tropical_fish_bucket": "O-Tropical Fish Bucket"
 }

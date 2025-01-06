@@ -10,13 +10,16 @@ import com.dragn0007.dragnpets.entities.fox.OFox;
 import com.dragn0007.dragnpets.entities.fox.OFoxMarkingLayer;
 import com.dragn0007.dragnpets.entities.ocelot.OOcelot;
 import com.dragn0007.dragnpets.entities.ocelot.OOcelotModel;
+import com.dragn0007.dragnpets.entities.parrot.*;
+import com.dragn0007.dragnpets.entities.tropical_fish.OTropicalFish;
+import com.dragn0007.dragnpets.entities.tropical_fish.OTropicalFishMarkingLayer;
+import com.dragn0007.dragnpets.entities.tropical_fish.OTropicalFishModel;
 import com.dragn0007.dragnpets.entities.wolf.OWolf;
 import com.dragn0007.dragnpets.entities.wolf.OWolfModel;
+import com.dragn0007.dragnpets.items.custom.TropicalFishRoeItem;
 import com.dragn0007.dragnpets.util.PetsOverhaulCommonConfig;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.animal.Fox;
-import net.minecraft.world.entity.animal.Ocelot;
-import net.minecraft.world.entity.animal.Wolf;
+import net.minecraft.world.entity.animal.*;
 import net.minecraft.world.entity.animal.axolotl.Axolotl;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -161,6 +164,117 @@ public class SpawnReplacer {
 
                 event.getLevel().addFreshEntity(oAxolotl);
                 vanillaAxolotl.remove(Entity.RemovalReason.DISCARDED);
+
+                event.setCanceled(true);
+            }
+        }
+
+        //Parrot
+        if (!LivestockOverhaulCommonConfig.FAILSAFE_REPLACER.get() && PetsOverhaulCommonConfig.REPLACE_PARROTS.get() && event.getEntity() instanceof Parrot) {
+            Parrot vanillaParrot = (Parrot) event.getEntity();
+            Macaw macaw = EntityTypes.MACAW_ENTITY.get().create(event.getLevel());
+            Cockatiel cockatiel = EntityTypes.COCKATIEL_ENTITY.get().create(event.getLevel());
+            Ringneck ringneck = EntityTypes.RINGNECK_ENTITY.get().create(event.getLevel());
+
+            if (event.getLevel().isClientSide) {
+                return;
+            }
+
+            int i = event.getLevel().getRandom().nextInt(3);
+
+            if (macaw != null) {
+                if (i == 0) {
+                    macaw.copyPosition(vanillaParrot);
+
+                    macaw.setCustomName(vanillaParrot.getCustomName());
+                    macaw.setAge(vanillaParrot.getAge());
+
+                    int randomVariant = event.getLevel().getRandom().nextInt(MacawModel.Variant.values().length);
+                    macaw.setVariant(randomVariant);
+
+                    if (event.getLevel().isClientSide) {
+                        vanillaParrot.remove(Entity.RemovalReason.DISCARDED);
+                    }
+
+                    event.getLevel().addFreshEntity(macaw);
+                    vanillaParrot.remove(Entity.RemovalReason.DISCARDED);
+
+                    event.setCanceled(true);
+                }
+            }
+
+            if (cockatiel != null) {
+                if (i == 1) {
+                    cockatiel.copyPosition(vanillaParrot);
+
+                    cockatiel.setCustomName(vanillaParrot.getCustomName());
+                    cockatiel.setAge(vanillaParrot.getAge());
+
+                    int randomVariant = event.getLevel().getRandom().nextInt(CockatielModel.Variant.values().length);
+                    cockatiel.setVariant(randomVariant);
+
+                    if (event.getLevel().isClientSide) {
+                        vanillaParrot.remove(Entity.RemovalReason.DISCARDED);
+                    }
+
+                    event.getLevel().addFreshEntity(cockatiel);
+                    vanillaParrot.remove(Entity.RemovalReason.DISCARDED);
+
+                    event.setCanceled(true);
+                }
+            }
+
+            if (ringneck != null) {
+                if (i == 2) {
+                    ringneck.copyPosition(vanillaParrot);
+
+                    ringneck.setCustomName(vanillaParrot.getCustomName());
+                    ringneck.setAge(vanillaParrot.getAge());
+
+                    int randomVariant = event.getLevel().getRandom().nextInt(RingneckModel.Variant.values().length);
+                    ringneck.setVariant(randomVariant);
+
+                    if (event.getLevel().isClientSide) {
+                        vanillaParrot.remove(Entity.RemovalReason.DISCARDED);
+                    }
+
+                    event.getLevel().addFreshEntity(ringneck);
+                    vanillaParrot.remove(Entity.RemovalReason.DISCARDED);
+
+                    event.setCanceled(true);
+                }
+            }
+        }
+
+        //Tropical Fish
+        if (!LivestockOverhaulCommonConfig.FAILSAFE_REPLACER.get() && PetsOverhaulCommonConfig.REPLACE_TROPICAL_FISH.get() && event.getEntity() instanceof TropicalFish) {
+            TropicalFish vanillaTropicalFish = (TropicalFish) event.getEntity();
+            OTropicalFish oTropicalFish = EntityTypes.O_TROPICAL_FISH_ENTITY.get().create(event.getLevel());
+
+            if (event.getLevel().isClientSide) {
+                return;
+            }
+
+            if (oTropicalFish != null) {
+                oTropicalFish.copyPosition(vanillaTropicalFish);
+
+                oTropicalFish.setCustomName(vanillaTropicalFish.getCustomName());
+
+                int randomVariant = event.getLevel().getRandom().nextInt(OTropicalFishModel.Variant.values().length);
+                oTropicalFish.setVariant(randomVariant);
+
+                int randomOverlay = event.getLevel().getRandom().nextInt(OTropicalFishMarkingLayer.Overlay.values().length);
+                oTropicalFish.setOverlay(randomOverlay);
+
+                int randomSpecies = event.getLevel().getRandom().nextInt(OTropicalFish.Species.values().length);
+                oTropicalFish.setSpecies(randomSpecies);
+
+                if (event.getLevel().isClientSide) {
+                    vanillaTropicalFish.remove(Entity.RemovalReason.DISCARDED);
+                }
+
+                event.getLevel().addFreshEntity(oTropicalFish);
+                vanillaTropicalFish.remove(Entity.RemovalReason.DISCARDED);
 
                 event.setCanceled(true);
             }
