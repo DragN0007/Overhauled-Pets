@@ -8,6 +8,7 @@ import com.dragn0007.dragnpets.entities.fox.OFox;
 import com.dragn0007.dragnpets.entities.fox.OFoxRender;
 import com.dragn0007.dragnpets.entities.ocelot.OOcelot;
 import com.dragn0007.dragnpets.entities.ocelot.OOcelotRender;
+import com.dragn0007.dragnpets.entities.parrot.*;
 import com.dragn0007.dragnpets.entities.wolf.OWolf;
 import com.dragn0007.dragnpets.entities.wolf.OWolfRender;
 import net.minecraft.client.renderer.entity.EntityRenderers;
@@ -26,6 +27,9 @@ public class PetsOverhaulEvent {
         event.put(EntityTypes.O_OCELOT_ENTITY.get(), OOcelot.createAttributes().build());
         event.put(EntityTypes.O_FOX_ENTITY.get(), OFox.createAttributes().build());
         event.put(EntityTypes.O_AXOLOTL_ENTITY.get(), OAxolotl.createAttributes().build());
+        event.put(EntityTypes.MACAW_ENTITY.get(), Macaw.createAttributes().build());
+        event.put(EntityTypes.COCKATIEL_ENTITY.get(), Cockatiel.createAttributes().build());
+        event.put(EntityTypes.RINGNECK_ENTITY.get(), Ringneck.createAttributes().build());
     }
 
     @SubscribeEvent
@@ -34,5 +38,8 @@ public class PetsOverhaulEvent {
         EntityRenderers.register(EntityTypes.O_OCELOT_ENTITY.get(), OOcelotRender::new);
         EntityRenderers.register(EntityTypes.O_FOX_ENTITY.get(), OFoxRender::new);
         EntityRenderers.register(EntityTypes.O_AXOLOTL_ENTITY.get(), OAxolotlRender::new);
+        EntityRenderers.register(EntityTypes.MACAW_ENTITY.get(), MacawRender::new);
+        EntityRenderers.register(EntityTypes.COCKATIEL_ENTITY.get(), CockatielRender::new);
+        EntityRenderers.register(EntityTypes.RINGNECK_ENTITY.get(), RingneckRender::new);
     }
 }

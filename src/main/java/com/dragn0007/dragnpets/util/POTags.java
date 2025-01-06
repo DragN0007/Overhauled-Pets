@@ -17,6 +17,7 @@ public class POTags {
         public static final TagKey<Item> CAT_FOOD = forgeTag("cat_food");
         public static final TagKey<Item> FOX_FOOD = forgeTag("fox_food");
         public static final TagKey<Item> AXOLOTL_FOOD = forgeTag("axolotl_food");
+        public static final TagKey<Item> PARROT_FOOD = forgeTag("parrot_food");
 
 
         public static final TagKey<Item> TRAINING_TREAT = forgeTag("training_treat");

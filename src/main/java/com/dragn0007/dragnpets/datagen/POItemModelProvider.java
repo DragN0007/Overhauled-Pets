@@ -23,6 +23,8 @@ public class POItemModelProvider extends ItemModelProvider {
         simpleItem(POItems.COOKED_WOLF);
         simpleItem(POItems.CAT);
         simpleItem(POItems.COOKED_CAT);
+        simpleItem(POItems.PARROT_THIGH);
+        simpleItem(POItems.COOKED_PARROT_THIGH);
     }
 
     private ItemModelBuilder simpleItem(RegistryObject<Item> item) {

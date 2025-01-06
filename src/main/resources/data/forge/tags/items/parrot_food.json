@@ -1,0 +1,14 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:melon_slice",
+    "minecraft:apple",
+    "minecraft:sweet_berries",
+    "minecraft:wheat_seeds",
+    "minecraft:beetroot_seeds",
+    "minecraft:pumpkin_seeds",
+    "minecraft:melon_seeds",
+    "minecraft:torchflower_seeds",
+    "minecraft:pitcher_pod"
+  ]
+}

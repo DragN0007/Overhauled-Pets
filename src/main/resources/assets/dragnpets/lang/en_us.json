@@ -13,11 +13,23 @@
   "item.dragnpets.o_axolotl_spawn_egg": "O-Axolotl Spawn Egg",
   "entity.dragnpets.o_axolotl": "O-Axolotl",
 
-  "item.dragnpets.wolf": "Dog",
+  "item.dragnpets.macaw_spawn_egg": "Macaw Spawn Egg",
+  "entity.dragnpets.macaw": "Macaw",
+
+  "item.dragnpets.cockatiel_spawn_egg": "Cockatiel Spawn Egg",
+  "entity.dragnpets.cockatiel": "Cockatiel",
+
+  "item.dragnpets.ringneck_spawn_egg": "Ringneck Parrot Spawn Egg",
+  "entity.dragnpets.ringneck": "Ringneck Parrot",
+
+  "item.dragnpets.wolf": "Raw Dog",
   "item.dragnpets.cooked_wolf": "Cooked Dog",
 
-  "item.dragnpets.cat": "Cat",
+  "item.dragnpets.cat": "Raw Cat",
   "item.dragnpets.cooked_cat": "Cooked Cat",
+
+  "item.dragnpets.parrot_thigh": "Raw Parrot Thigh",
+  "item.dragnpets.cooked_parrot_thigh": "Cooked Parrot Thigh",
 
   "item.dragnpets.o_axolotl_bucket": "O-Axolotl Bucket"
 }

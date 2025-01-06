@@ -8,6 +8,10 @@
 
     "dragnlivestock:cooked_frog",
     "minecraft:cooked_salmon",
-    "minecraft:cooked_cod"
+    "minecraft:cooked_cod",
+
+    "minecraft:sweet_berries",
+    "minecraft:beetroot",
+    "minecraft:glowberries"
   ]
 }

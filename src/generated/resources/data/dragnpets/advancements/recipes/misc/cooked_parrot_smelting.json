@@ -1,0 +1,35 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_parrot": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "dragnpets:parrot_thigh"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "dragnpets:cooked_parrot_smelting"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_parrot",
+      "has_the_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "dragnpets:cooked_parrot_smelting"
+    ]
+  },
+  "sends_telemetry_event": false
+}

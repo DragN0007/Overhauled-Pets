@@ -32,5 +32,13 @@ public class PORecipeMaker extends RecipeProvider implements IConditionBuilder {
                 .unlockedBy("has_cat", has(POItems.CAT.get())).save(pFinishedRecipeConsumer, new ResourceLocation("dragnpets", "cooked_cat_smelting"));
         SimpleCookingRecipeBuilder.campfireCooking(Ingredient.of(POItems.CAT.get()), RecipeCategory.MISC, POItems.COOKED_CAT.get(), 0.35F, 600)
                 .unlockedBy("has_cat", has(POItems.CAT.get())).save(pFinishedRecipeConsumer, new ResourceLocation("dragnpets", "cooked_cat_campfire_cooking"));
+
+        SimpleCookingRecipeBuilder.smoking(Ingredient.of(POItems.PARROT_THIGH.get()), RecipeCategory.MISC, POItems.COOKED_PARROT_THIGH.get(), 0.35F, 100)
+                .unlockedBy("has_parrot", has(POItems.PARROT_THIGH.get())).save(pFinishedRecipeConsumer, new ResourceLocation("dragnpets", "cooked_parrot_smoking"));
+        SimpleCookingRecipeBuilder.smelting(Ingredient.of(POItems.PARROT_THIGH.get()), RecipeCategory.MISC, POItems.COOKED_PARROT_THIGH.get(), 0.35F, 200)
+                .unlockedBy("has_parrot", has(POItems.PARROT_THIGH.get())).save(pFinishedRecipeConsumer, new ResourceLocation("dragnpets", "cooked_parrot_smelting"));
+        SimpleCookingRecipeBuilder.campfireCooking(Ingredient.of(POItems.PARROT_THIGH.get()), RecipeCategory.MISC, POItems.COOKED_PARROT_THIGH.get(), 0.35F, 600)
+                .unlockedBy("has_parrot", has(POItems.PARROT_THIGH.get())).save(pFinishedRecipeConsumer, new ResourceLocation("dragnpets", "cooked_parrot_campfire_cooking"));
+
     }
 }

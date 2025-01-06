@@ -4,6 +4,9 @@ import com.dragn0007.dragnlivestock.LivestockOverhaul;
 import com.dragn0007.dragnpets.entities.axolotl.OAxolotl;
 import com.dragn0007.dragnpets.entities.fox.OFox;
 import com.dragn0007.dragnpets.entities.ocelot.OOcelot;
+import com.dragn0007.dragnpets.entities.parrot.Cockatiel;
+import com.dragn0007.dragnpets.entities.parrot.Macaw;
+import com.dragn0007.dragnpets.entities.parrot.Ringneck;
 import com.dragn0007.dragnpets.entities.wolf.OWolf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
@@ -41,6 +44,24 @@ public class EntityTypes {
                             MobCategory.CREATURE)
                     .sized(0.4f,0.4f)
                     .build(new ResourceLocation(LivestockOverhaul.MODID,"o_axolotl").toString()));
+
+    public static final RegistryObject<EntityType<Macaw>> MACAW_ENTITY = ENTITY_TYPES.register("macaw",
+            () -> EntityType.Builder.of(Macaw::new,
+                            MobCategory.CREATURE)
+                    .sized(0.4f,0.4f)
+                    .build(new ResourceLocation(LivestockOverhaul.MODID,"macaw").toString()));
+
+    public static final RegistryObject<EntityType<Cockatiel>> COCKATIEL_ENTITY = ENTITY_TYPES.register("cockatiel",
+            () -> EntityType.Builder.of(Cockatiel::new,
+                            MobCategory.CREATURE)
+                    .sized(0.4f,0.4f)
+                    .build(new ResourceLocation(LivestockOverhaul.MODID,"cockatiel").toString()));
+
+    public static final RegistryObject<EntityType<Ringneck>> RINGNECK_ENTITY = ENTITY_TYPES.register("ringneck",
+            () -> EntityType.Builder.of(Ringneck::new,
+                            MobCategory.CREATURE)
+                    .sized(0.4f,0.4f)
+                    .build(new ResourceLocation(LivestockOverhaul.MODID,"ringneck").toString()));
 
 }
 
