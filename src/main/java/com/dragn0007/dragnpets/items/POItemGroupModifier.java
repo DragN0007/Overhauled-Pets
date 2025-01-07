@@ -33,6 +33,8 @@ public class POItemGroupModifier {
                         output.accept(POItems.COOKED_CAT.get());
                         output.accept(POItems.PARROT_THIGH.get());
                         output.accept(POItems.COOKED_PARROT_THIGH.get());
+                        output.accept(POItems.TROPICAL_FISH_FILLET.get());
+                        output.accept(POItems.COOKED_TROPICAL_FISH_FILLET.get());
 
                         output.accept(POItems.TROPICAL_FISH_ROE.get());
 

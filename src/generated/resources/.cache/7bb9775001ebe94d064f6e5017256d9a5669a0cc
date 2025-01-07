@@ -1,9 +1,11 @@
-// 1.20.1	2025-01-06T05:26:03.7280952	Item Models: dragnpets
+// 1.20.1	2025-01-06T20:53:37.6397221	Item Models: dragnpets
 c06440fe3e7419a08ea9fcf6157dbc438089b7f9 assets/dragnpets/models/item/cat.json
 720f11c51712a885550537de7b53654f2ac03b4c assets/dragnpets/models/item/cooked_cat.json
 484a0588d1fe8dd8d9d44d4678ca082d780d0175 assets/dragnpets/models/item/cooked_parrot_thigh.json
+9ac06c8a466bfbc77bbaf4787ec1bbdc17d01362 assets/dragnpets/models/item/cooked_tropical_fish_fillet.json
 df5a4ff62248bdd45b8e2e99169ac4c3e7d4d0de assets/dragnpets/models/item/cooked_wolf.json
 84cfadf13d91e2394ea42d5f6695a712b81e9f0e assets/dragnpets/models/item/parrot_thigh.json
 ce7663d022cae35cf7b0899191ed0c3340e07066 assets/dragnpets/models/item/pets_overhaul.json
+5bad5077b65b2d9ddae1179d5b58171df1030646 assets/dragnpets/models/item/tropical_fish_fillet.json
 f4d0f8426c1af2c47ac0accd7f1c0c09f57c25c1 assets/dragnpets/models/item/tropical_fish_roe.json
 40b773b1423822aeb41edb034a1ee169c0089aeb assets/dragnpets/models/item/wolf.json

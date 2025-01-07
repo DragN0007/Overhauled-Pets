@@ -1,0 +1,35 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "dragnpets:cooked_tropical_fish_fillet_smelting"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "has_tropical_fish_fillet": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "dragnpets:tropical_fish_fillet"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "has_tropical_fish_fillet",
+      "has_the_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "dragnpets:cooked_tropical_fish_fillet_smelting"
+    ]
+  },
+  "sends_telemetry_event": false
+}

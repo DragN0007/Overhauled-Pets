@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "minecraft:tropical_fish"
+    }
+  ],
+  "result": {
+    "count": 2,
+    "item": "dragnpets:tropical_fish_fillet"
+  }
+}
