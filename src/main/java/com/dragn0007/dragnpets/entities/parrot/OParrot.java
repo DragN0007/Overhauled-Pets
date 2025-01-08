@@ -3,13 +3,17 @@ package com.dragn0007.dragnpets.entities.parrot;
 import com.dragn0007.dragnlivestock.items.LOItems;
 import com.dragn0007.dragnlivestock.util.LivestockOverhaulCommonConfig;
 import com.dragn0007.dragnpets.PetsOverhaul;
+import com.dragn0007.dragnpets.entities.ai.ParrotFollowOwnerGoal;
 import com.dragn0007.dragnpets.util.POTags;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -171,7 +175,7 @@ public class OParrot extends TamableAnimal implements GeoEntity, FlyingAnimal {
       this.goalSelector.addGoal(0, new FloatGoal(this));
       this.goalSelector.addGoal(1, new LookAtPlayerGoal(this, Player.class, 8.0F));
       this.goalSelector.addGoal(2, new SitWhenOrderedToGoal(this));
-      this.goalSelector.addGoal(2, new FollowOwnerGoal(this, 1.0D, 5.0F, 1.0F, true));
+      this.goalSelector.addGoal(2, new ParrotFollowOwnerGoal(this, 1.0D, 5.0F, 1.0F, true));
       this.goalSelector.addGoal(2, new OParrot.ParrotWanderGoal(this, 1.0D));
       this.goalSelector.addGoal(3, new FollowMobGoal(this, 1.0D, 3.0F, 7.0F));
       this.goalSelector.addGoal(1, new BreedGoal(this, 1.0D));
@@ -225,6 +229,22 @@ public class OParrot extends TamableAnimal implements GeoEntity, FlyingAnimal {
       return this.geoCache;
    }
 
+   public int regenHealthCounter = 0;
+
+   @Override
+   public void tick() {
+      super.tick();
+
+      regenHealthCounter++;
+
+      if (this.getHealth() < this.getMaxHealth() && regenHealthCounter >= 150 && this.isTame()) {
+         this.setHealth(this.getHealth() + 2);
+         regenHealthCounter = 0;
+         this.level().addParticle(ParticleTypes.HEART, this.getRandomX(0.6D), this.getRandomY(), this.getRandomZ(0.6D), 0.7D, 0.7D, 0.7D);
+      }
+
+   }
+
    public InteractionResult mobInteract(Player player, InteractionHand hand) {
       ItemStack itemstack = player.getItemInHand(hand);
 
@@ -239,6 +259,18 @@ public class OParrot extends TamableAnimal implements GeoEntity, FlyingAnimal {
          player.playSound(SoundEvents.BEEHIVE_EXIT, 1.0F, 1.0F);
          ItemStack itemstack1 = ItemUtils.createFilledResult(itemstack, player, LOItems.MALE_GENDER_TEST_STRIP.get().getDefaultInstance());
          player.setItemInHand(hand, itemstack1);
+         return InteractionResult.SUCCESS;
+      }
+
+      if (player.isShiftKeyDown() && !this.isFood(itemstack) && !this.isOrderedToSit() && !this.wasToldToWander()) {
+         this.setToldToWander(true);
+         player.displayClientMessage(Component.translatable("tooltip.dragnpets.wandering.tooltip").withStyle(ChatFormatting.GOLD), true);
+         return InteractionResult.SUCCESS;
+      }
+
+      if (player.isShiftKeyDown() && !this.isFood(itemstack) && !this.isOrderedToSit() && this.wasToldToWander()) {
+         this.setToldToWander(false);
+         player.displayClientMessage(Component.translatable("tooltip.dragnpets.following.tooltip").withStyle(ChatFormatting.GOLD), true);
          return InteractionResult.SUCCESS;
       }
 
@@ -295,6 +327,20 @@ public class OParrot extends TamableAnimal implements GeoEntity, FlyingAnimal {
       } else {
          return super.mobInteract(player, hand);
       }
+   }
+
+   private boolean toldToWander = false;
+
+   public boolean wasToldToWander() {
+      return this.toldToWander;
+   }
+
+   public boolean getToldToWander() {
+      return this.toldToWander;
+   }
+
+   public void setToldToWander(boolean toldToWander) {
+      this.toldToWander = toldToWander;
    }
 
    protected void checkFallDamage(double p_29370_, boolean p_29371_, BlockState p_29372_, BlockPos p_29373_) { }
@@ -388,6 +434,7 @@ public class OParrot extends TamableAnimal implements GeoEntity, FlyingAnimal {
       super.addAdditionalSaveData(tag);
       tag.putInt("Variant", getVariant());
       tag.putInt("Gender", this.getGender());
+      tag.putBoolean("Wandering", this.getToldToWander());
    }
 
    public void readAdditionalSaveData(CompoundTag tag) {
@@ -399,6 +446,10 @@ public class OParrot extends TamableAnimal implements GeoEntity, FlyingAnimal {
 
       if (tag.contains("Gender")) {
          this.setGender(tag.getInt("Gender"));
+      }
+
+      if (tag.contains("Wandering")) {
+         this.setToldToWander(tag.getBoolean("Wandering"));
       }
    }
 

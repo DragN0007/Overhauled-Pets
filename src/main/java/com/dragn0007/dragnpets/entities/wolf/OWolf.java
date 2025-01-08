@@ -10,6 +10,7 @@ import com.dragn0007.dragnlivestock.util.LivestockOverhaulCommonConfig;
 import com.dragn0007.dragnpets.PetsOverhaul;
 import com.dragn0007.dragnpets.entities.ai.CanineFollowPackLeaderGoal;
 import com.dragn0007.dragnpets.entities.ai.WolfFollowOwnerGoal;
+import com.dragn0007.dragnpets.entities.dog.Doberman;
 import com.dragn0007.dragnpets.util.POTags;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -92,7 +93,11 @@ public class OWolf extends TamableAnimal implements NeutralMob, GeoEntity {
               entitytype == EntityTypes.O_COW_ENTITY.get() ||
               entitytype == EntityTypes.O_CHICKEN_ENTITY.get() ||
               entitytype == EntityTypes.O_PIG_ENTITY.get() ||
-              entitytype == EntityType.FOX;
+              entitytype == com.dragn0007.dragnpets.entities.EntityTypes.O_FOX_ENTITY.get() ||
+              entitytype == com.dragn0007.dragnpets.entities.EntityTypes.O_OCELOT_ENTITY.get() ||
+              entitytype == com.dragn0007.dragnpets.entities.EntityTypes.DOBERMAN_ENTITY.get()||
+              entitytype == com.dragn0007.dragnpets.entities.EntityTypes.O_CAT_ENTITY.get()
+              ;
    };
 
    private static final UniformInt PERSISTENT_ANGER_TIME = TimeUtil.rangeOfSeconds(20, 39);
@@ -110,11 +115,11 @@ public class OWolf extends TamableAnimal implements NeutralMob, GeoEntity {
       this.goalSelector.addGoal(1, new FloatGoal(this));
       this.goalSelector.addGoal(1, new OWolf.WolfPanicGoal(1.4D));
       this.goalSelector.addGoal(2, new SitWhenOrderedToGoal(this));
-      this.goalSelector.addGoal(3, new OWolf.WolfAvoidEntityGoal<>(this, OLlama.class, 24.0F, 1.5D, 1.5D));
-      this.goalSelector.addGoal(3, new OWolf.WolfAvoidEntityGoal<>(this, Ox.class, 24.0F, 1.5D, 1.5D));
-      this.goalSelector.addGoal(3, new OWolf.WolfAvoidEntityGoal<>(this, Camel.class, 24.0F, 1.5D, 1.5D));
-      this.goalSelector.addGoal(3, new OWolf.WolfAvoidEntityGoal<>(this, ODonkey.class, 24.0F, 1.5D, 1.5D));
-      this.goalSelector.addGoal(3, new OWolf.WolfAvoidEntityGoal<>(this, OMule.class, 24.0F, 1.5D, 1.5D));
+      this.goalSelector.addGoal(3, new AvoidEntityGoal<>(this, OLlama.class, 24.0F, 1.5D, 1.5D));
+      this.goalSelector.addGoal(3, new AvoidEntityGoal<>(this, Ox.class, 24.0F, 1.5D, 1.5D));
+      this.goalSelector.addGoal(3, new AvoidEntityGoal<>(this, Camel.class, 24.0F, 1.5D, 1.5D));
+      this.goalSelector.addGoal(3, new AvoidEntityGoal(this, ODonkey.class, 24.0F, 1.5D, 1.5D));
+      this.goalSelector.addGoal(3, new AvoidEntityGoal(this, OMule.class, 24.0F, 1.5D, 1.5D));
       this.goalSelector.addGoal(4, new LeapAtTargetGoal(this, 0.4F));
       this.goalSelector.addGoal(5, new MeleeAttackGoal(this, 1.5D, true));
       this.goalSelector.addGoal(7, new BreedGoal(this, 1.0D));
@@ -611,11 +616,11 @@ public class OWolf extends TamableAnimal implements NeutralMob, GeoEntity {
    }
 
    @Override
-   public AgeableMob getBreedOffspring(ServerLevel serverLevel, AgeableMob ageableMob) {
-      OWolf oWolf1 = (OWolf) ageableMob;
-      if (ageableMob instanceof OWolf) {
-         OWolf oWolf = (OWolf) ageableMob;
-         oWolf1 = com.dragn0007.dragnpets.entities.EntityTypes.O_WOLF_ENTITY.get().create(serverLevel);
+   public AgeableMob getBreedOffspring(ServerLevel serverLevel, AgeableMob wolf) {
+      OWolf oWolf1 = (OWolf) wolf;
+      if (wolf instanceof OWolf) {
+         OWolf oWolf;
+         oWolf = com.dragn0007.dragnpets.entities.EntityTypes.O_WOLF_ENTITY.get().create(serverLevel);
 
          int i = this.random.nextInt(9);
          int variant;

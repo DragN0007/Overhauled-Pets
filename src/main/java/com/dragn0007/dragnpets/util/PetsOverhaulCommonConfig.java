@@ -13,6 +13,8 @@ public class PetsOverhaulCommonConfig {
     public static final ForgeConfigSpec.BooleanValue REPLACE_PARROTS;
     public static final ForgeConfigSpec.BooleanValue REPLACE_CATS;
     public static final ForgeConfigSpec.BooleanValue REPLACE_TROPICAL_FISH;
+    public static final ForgeConfigSpec.BooleanValue REPLACE_WOLVES_WITH_DOGS;
+    public static final ForgeConfigSpec.BooleanValue CATS_GIVE_GIFTS;
 
     static {
         BUILDER.push("Spawning");
@@ -32,8 +34,8 @@ public class PetsOverhaulCommonConfig {
         REPLACE_PARROTS = BUILDER.comment("Should parrots be replaced by O-Parrots?")
                 .define("Replace Parrots", true);
 
-        REPLACE_CATS = BUILDER.comment("Should cats be replaced by O-Cats?")
-                .define("Replace Cats", true);
+        REPLACE_CATS = BUILDER.comment("Should cats be replaced by O-Cats & O-Dogs?")
+                .define("Replace Cats & Add Dogs", true);
 
         REPLACE_TROPICAL_FISH = BUILDER.comment("Should tropical fish be replaced by O-Tropical Fish?")
                 .define("Replace Tropical Fish", true);
@@ -42,7 +44,11 @@ public class PetsOverhaulCommonConfig {
 
         BUILDER.push("Miscellaneous");
 
+        REPLACE_WOLVES_WITH_DOGS = BUILDER.comment("Should wolves be replaced by O-Wolves AND O-Dogs? May be useful for playthroughs that don't have villages/ cats. Turn off \"Replace Wolves\" to use this.")
+                .define("Replace Wolves w/ O-Wolves & O-Dogs", false);
 
+        CATS_GIVE_GIFTS = BUILDER.comment("Should your O-Cats give you gifts once in a while?")
+                .define("Cats Give Gifts", false);
 
         BUILDER.pop();
 

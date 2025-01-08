@@ -1,12 +1,14 @@
-package com.dragn0007.dragnpets.entities.ocelot;
+package com.dragn0007.dragnpets.entities.cat;
 
 import com.dragn0007.dragnlivestock.entities.EntityTypes;
+import com.dragn0007.dragnlivestock.entities.chicken.OChickenModel;
 import com.dragn0007.dragnlivestock.items.LOItems;
 import com.dragn0007.dragnlivestock.util.LivestockOverhaulCommonConfig;
 import com.dragn0007.dragnpets.PetsOverhaul;
-import com.dragn0007.dragnpets.entities.ai.OcelotFollowOwnerGoal;
-import com.dragn0007.dragnpets.entities.dog.ODog;
+import com.dragn0007.dragnpets.entities.ai.CatFollowOwnerGoal;
+import com.dragn0007.dragnpets.items.POItems;
 import com.dragn0007.dragnpets.util.POTags;
+import com.dragn0007.dragnpets.util.PetsOverhaulCommonConfig;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
@@ -19,6 +21,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -30,15 +33,19 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.ai.goal.target.NonTameRandomTargetGoal;
 import net.minecraft.world.entity.animal.Animal;
+import net.minecraft.world.entity.animal.Cat;
 import net.minecraft.world.entity.animal.horse.AbstractHorse;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.monster.Ghast;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraft.world.level.storage.loot.BuiltInLootTables;
+import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import software.bernie.geckolib.animatable.GeoEntity;
@@ -52,25 +59,24 @@ import software.bernie.geckolib.core.object.PlayState;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 import javax.annotation.Nullable;
-import java.util.List;
 import java.util.Random;
 import java.util.function.Predicate;
 
-public class OOcelot extends TamableAnimal implements GeoEntity {
+public class OCat extends TamableAnimal implements GeoEntity {
 
-   public OOcelot(EntityType<? extends OOcelot> entityType, Level level) {
+   public OCat(EntityType<? extends OCat> entityType, Level level) {
       super(entityType, level);
       this.setTame(false);
       this.reassessTrustingGoals();
    }
 
-   @javax.annotation.Nullable
-   private OOcelot.OcelotAvoidEntityGoal<Player> ocelotAvoidPlayersGoal;
    @Nullable
-   private OOcelot.OcelotTemptGoal temptGoal;
+   private OCat.OcelotAvoidEntityGoal<Player> ocelotAvoidPlayersGoal;
+   @Nullable
+   private OCat.OcelotTemptGoal temptGoal;
 
    private static final ResourceLocation LOOT_TABLE = new ResourceLocation(PetsOverhaul.MODID, "entities/o_ocelot");
-   private static final ResourceLocation VANILLA_LOOT_TABLE = new ResourceLocation("minecraft", "entities/ocelot");
+   private static final ResourceLocation VANILLA_LOOT_TABLE = new ResourceLocation("minecraft", "entities/cat");
    @Override
    public @NotNull ResourceLocation getDefaultLootTable() {
       if (LivestockOverhaulCommonConfig.USE_VANILLA_LOOT.get()) {
@@ -81,7 +87,7 @@ public class OOcelot extends TamableAnimal implements GeoEntity {
 
    protected void reassessTrustingGoals() {
       if (this.ocelotAvoidPlayersGoal == null) {
-         this.ocelotAvoidPlayersGoal = new OOcelot.OcelotAvoidEntityGoal<>(this, Player.class, 16.0F, 0.8D, 1.33D);
+         this.ocelotAvoidPlayersGoal = new OCat.OcelotAvoidEntityGoal<>(this, Player.class, 16.0F, 0.8D, 1.33D);
       }
 
       this.goalSelector.removeGoal(this.ocelotAvoidPlayersGoal);
@@ -89,8 +95,8 @@ public class OOcelot extends TamableAnimal implements GeoEntity {
 
    }
 
-   private static final EntityDataAccessor<Integer> DATA_COLLAR_COLOR = SynchedEntityData.defineId(OOcelot.class, EntityDataSerializers.INT);
-   private static final EntityDataAccessor<Integer> DATA_REMAINING_ANGER_TIME = SynchedEntityData.defineId(OOcelot.class, EntityDataSerializers.INT);
+   private static final EntityDataAccessor<Integer> DATA_COLLAR_COLOR = SynchedEntityData.defineId(OCat.class, EntityDataSerializers.INT);
+   private static final EntityDataAccessor<Integer> DATA_REMAINING_ANGER_TIME = SynchedEntityData.defineId(OCat.class, EntityDataSerializers.INT);
    public static final Predicate<LivingEntity> PREY_SELECTOR = (entity) -> {
       EntityType<?> entitytype = entity.getType();
       return entitytype == EntityTypes.O_RABBIT_ENTITY.get() ||
@@ -104,13 +110,13 @@ public class OOcelot extends TamableAnimal implements GeoEntity {
 
    protected void registerGoals() {
       this.goalSelector.addGoal(1, new FloatGoal(this));
-      this.temptGoal = new OOcelot.OcelotTemptGoal(this, 0.6D, FOOD_ITEMS, true);
+      this.temptGoal = new OCat.OcelotTemptGoal(this, 0.6D, FOOD_ITEMS, true);
       this.goalSelector.addGoal(3, this.temptGoal);
       this.goalSelector.addGoal(8, new OcelotAttackGoal(this));
       this.goalSelector.addGoal(2, new SitWhenOrderedToGoal(this));
       this.goalSelector.addGoal(4, new LeapAtTargetGoal(this, 0.4F));
       this.goalSelector.addGoal(5, new MeleeAttackGoal(this, 1.5D, true));
-      this.goalSelector.addGoal(6, new OcelotFollowOwnerGoal(this, 1.0D, 10.0F, 2.0F, false));
+      this.goalSelector.addGoal(6, new CatFollowOwnerGoal(this, 1.0D, 10.0F, 2.0F, false));
       this.goalSelector.addGoal(7, new BreedGoal(this, 1.0D));
       this.goalSelector.addGoal(8, new WaterAvoidingRandomStrollGoal(this, 1.0D));
       this.goalSelector.addGoal(10, new LookAtPlayerGoal(this, Player.class, 8.0F));
@@ -120,9 +126,60 @@ public class OOcelot extends TamableAnimal implements GeoEntity {
 
    public static AttributeSupplier.Builder createAttributes() {
       return Mob.createMobAttributes()
-              .add(Attributes.MAX_HEALTH, 10.0D).
+              .add(Attributes.MAX_HEALTH, 8.0D).
               add(Attributes.MOVEMENT_SPEED, (double)0.3F)
               .add(Attributes.ATTACK_DAMAGE, 3.0D);
+   }
+
+   public int giftTime = this.random.nextInt(100) + 100;
+
+   public void aiStep() {
+      super.aiStep();
+
+      if (!this.level().isClientSide && this.isAlive() && !this.isBaby() && --this.giftTime <= 0 && PetsOverhaulCommonConfig.CATS_GIVE_GIFTS.get() && this.isTame() && !this.toldToWander) {
+         this.playSound(SoundEvents.CAT_PURREOW, 1.0F, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.0F);
+
+         int i = this.getRandom().nextInt(100);
+
+         if (i < 15) {
+            this.spawnAtLocation(Items.STRING);
+         } else if (i < 20) {
+            this.spawnAtLocation(Items.RABBIT_HIDE);
+         } else if (i < 25) {
+            this.spawnAtLocation(Items.FEATHER);
+         } else if (i < 35) {
+            this.spawnAtLocation(Items.RED_MUSHROOM);
+         } else if (i < 45) {
+            this.spawnAtLocation(Items.BONE_MEAL);
+         } else if (i < 55) {
+            this.spawnAtLocation(Items.STICK);
+         } else if (i < 65) {
+            this.spawnAtLocation(LOItems.CHICKEN_THIGH.get());
+         } else if (i < 70) {
+            this.spawnAtLocation(POItems.PARROT_THIGH.get());
+         } else if (i < 75) {
+            this.spawnAtLocation(LOItems.FROG.get());
+         } else if (i < 80) {
+            this.spawnAtLocation(Items.SALMON);
+         } else if (i < 85) {
+            this.spawnAtLocation(Items.COD);
+         } else if (i < 90) {
+            this.spawnAtLocation(Items.WHITE_WOOL);
+         } else if (i < 95) {
+            this.spawnAtLocation(Items.GUNPOWDER);
+         } else if (i < 98.5) {
+            this.spawnAtLocation(Items.RABBIT_FOOT);
+         } else if (i < 99.0) {
+            this.spawnAtLocation(LOItems.COOKED_CHICKEN_THIGH.get());
+         } else if (i < 99.5) {
+            this.spawnAtLocation(Items.MUSIC_DISC_CAT);
+         } else if (i < 100) {
+            this.spawnAtLocation(Items.CREEPER_HEAD);
+         }
+
+         this.giftTime = this.random.nextInt(100) + 100;
+      }
+
    }
 
    private final AnimatableInstanceCache geoCache = GeckoLibUtil.createInstanceCache(this);
@@ -130,13 +187,17 @@ public class OOcelot extends TamableAnimal implements GeoEntity {
    private <T extends GeoAnimatable> PlayState predicate(software.bernie.geckolib.core.animation.AnimationState<T> tAnimationState) {
       double currentSpeed = this.getDeltaMovement().lengthSqr();
       double speedThreshold = 0.015;
+      double followSpeedThreshold = 0.25;
 
       AnimationController<T> controller = tAnimationState.getController();
 
       if (tAnimationState.isMoving()) {
-         if (currentSpeed > speedThreshold) {
+         if (currentSpeed > followSpeedThreshold) {
             controller.setAnimation(RawAnimation.begin().then("run", Animation.LoopType.LOOP));
-            controller.setAnimationSpeed(1.3);
+            controller.setAnimationSpeed(1.8);
+         } else if (currentSpeed > speedThreshold) {
+            controller.setAnimation(RawAnimation.begin().then("run", Animation.LoopType.LOOP));
+            controller.setAnimationSpeed(1.4);
          } else {
             controller.setAnimation(RawAnimation.begin().then("walk", Animation.LoopType.LOOP));
             controller.setAnimationSpeed(1.3);
@@ -201,36 +262,36 @@ public class OOcelot extends TamableAnimal implements GeoEntity {
 
    @Override
    public float getStepHeight() {
-      return 2F;
+      return 1F;
    }
 
-   protected float getSoundVolume() {
-      return 0.4F;
-   }
-
-   @Override
-   public boolean hurt(DamageSource damageSource, float v) {
-      if (damageSource.is(DamageTypes.FALL)) {
-         return false;
-      }
-      return super.hurt(damageSource, v);
-   }
-
-   @javax.annotation.Nullable
+   @Nullable
    protected SoundEvent getAmbientSound() {
-      return SoundEvents.OCELOT_AMBIENT;
+      if (this.isTame()) {
+         if (this.isInLove()) {
+            return SoundEvents.CAT_PURR;
+         } else {
+            return this.random.nextInt(4) == 0 ? SoundEvents.CAT_PURREOW : SoundEvents.CAT_AMBIENT;
+         }
+      } else {
+         return SoundEvents.CAT_STRAY_AMBIENT;
+      }
    }
 
    public int getAmbientSoundInterval() {
-      return 900;
+      return 120;
    }
 
-   protected SoundEvent getHurtSound(DamageSource p_29035_) {
-      return SoundEvents.OCELOT_HURT;
+   public void hiss() {
+      this.playSound(SoundEvents.CAT_HISS, this.getSoundVolume(), this.getVoicePitch());
+   }
+
+   protected SoundEvent getHurtSound(DamageSource p_28160_) {
+      return SoundEvents.CAT_HURT;
    }
 
    protected SoundEvent getDeathSound() {
-      return SoundEvents.OCELOT_DEATH;
+      return SoundEvents.CAT_DEATH;
    }
 
    private float getAttackDamage() {
@@ -244,13 +305,13 @@ public class OOcelot extends TamableAnimal implements GeoEntity {
    public void setTame(boolean p_30443_) {
       super.setTame(p_30443_);
       if (p_30443_) {
-         this.getAttribute(Attributes.MAX_HEALTH).setBaseValue(20.0D);
-         this.setHealth(20.0F);
+         this.getAttribute(Attributes.MAX_HEALTH).setBaseValue(10.0D);
+         this.setHealth(10.0F);
       } else {
          this.getAttribute(Attributes.MAX_HEALTH).setBaseValue(8.0D);
       }
 
-      this.getAttribute(Attributes.ATTACK_DAMAGE).setBaseValue(4.0D);
+      this.getAttribute(Attributes.ATTACK_DAMAGE).setBaseValue(2.0D);
    }
 
    public InteractionResult mobInteract(Player player, InteractionHand hand) {
@@ -377,17 +438,37 @@ public class OOcelot extends TamableAnimal implements GeoEntity {
 
    // Generates the base texture
    public ResourceLocation getTextureResource() {
-      return OOcelotModel.Variant.variantFromOrdinal(getVariant()).resourceLocation;
+      return OCatModel.Variant.variantFromOrdinal(getVariant()).resourceLocation;
+   }
+   public ResourceLocation getOverlayResource() {
+      return OCatMarkingLayer.Overlay.overlayFromOrdinal(getOverlay()).resourceLocation;
+   }
+   public ResourceLocation getEyesResource() {
+      return OCatEyeLayer.Eyes.overlayFromOrdinal(getEyes()).resourceLocation;
    }
 
-   public static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(OOcelot.class, EntityDataSerializers.INT);
+   public static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(OCat.class, EntityDataSerializers.INT);
+   public static final EntityDataAccessor<Integer> OVERLAY = SynchedEntityData.defineId(OCat.class, EntityDataSerializers.INT);
+   public static final EntityDataAccessor<Integer> EYES = SynchedEntityData.defineId(OCat.class, EntityDataSerializers.INT);
 
    public int getVariant() {
       return this.entityData.get(VARIANT);
    }
+   public int getOverlay() {
+      return this.entityData.get(OVERLAY);
+   }
+   public int getEyes() {
+      return this.entityData.get(EYES);
+   }
 
    public void setVariant(int variant) {
       this.entityData.set(VARIANT, variant);
+   }
+   public void setOverlay(int overlay) {
+      this.entityData.set(OVERLAY, overlay);
+   }
+   public void setEyes(int eyes) {
+      this.entityData.set(EYES, eyes);
    }
 
    protected void defineSynchedData() {
@@ -395,6 +476,8 @@ public class OOcelot extends TamableAnimal implements GeoEntity {
       this.entityData.define(DATA_COLLAR_COLOR, DyeColor.RED.getId());
       this.entityData.define(DATA_REMAINING_ANGER_TIME, 0);
       this.entityData.define(VARIANT, 0);
+      this.entityData.define(OVERLAY, 0);
+      this.entityData.define(EYES, 0);
       this.entityData.define(GENDER, 0);
    }
 
@@ -402,6 +485,8 @@ public class OOcelot extends TamableAnimal implements GeoEntity {
       super.addAdditionalSaveData(tag);
       tag.putByte("CollarColor", (byte)this.getCollarColor().getId());
       tag.putInt("Variant", getVariant());
+      tag.putInt("Overlay", getOverlay());
+      tag.putInt("Eyes", getEyes());
       tag.putInt("Gender", this.getGender());
       tag.putBoolean("Wandering", this.getToldToWander());
    }
@@ -416,6 +501,14 @@ public class OOcelot extends TamableAnimal implements GeoEntity {
          setVariant(tag.getInt("Variant"));
       }
 
+      if (tag.contains("Overlay")) {
+         setOverlay(tag.getInt("Overlay"));
+      }
+
+      if (tag.contains("Eyes")) {
+         setEyes(tag.getInt("Eyes"));
+      }
+
       if (tag.contains("Gender")) {
          this.setGender(tag.getInt("Gender"));
       }
@@ -426,14 +519,16 @@ public class OOcelot extends TamableAnimal implements GeoEntity {
    }
 
    @Override
-   @javax.annotation.Nullable
-   public SpawnGroupData finalizeSpawn(ServerLevelAccessor serverLevelAccessor, DifficultyInstance instance, MobSpawnType spawnType, @javax.annotation.Nullable SpawnGroupData data, @javax.annotation.Nullable CompoundTag tag) {
+   @Nullable
+   public SpawnGroupData finalizeSpawn(ServerLevelAccessor serverLevelAccessor, DifficultyInstance instance, MobSpawnType spawnType, @Nullable SpawnGroupData data, @Nullable CompoundTag tag) {
       if (data == null) {
          data = new AgeableMobGroupData(0.2F);
       }
       Random random = new Random();
-      setVariant(random.nextInt(OOcelotModel.Variant.values().length));
-      setGender(random.nextInt(OOcelot.Gender.values().length));
+      setVariant(random.nextInt(OCatModel.Variant.values().length));
+      setOverlay(random.nextInt(OCatMarkingLayer.Overlay.values().length));
+      setEyes(random.nextInt(OCatEyeLayer.Eyes.values().length));
+      setGender(random.nextInt(OCat.Gender.values().length));
 
       return super.finalizeSpawn(serverLevelAccessor, instance, spawnType, data, tag);
    }
@@ -451,7 +546,7 @@ public class OOcelot extends TamableAnimal implements GeoEntity {
       return this.getGender() == 1;
    }
 
-   public static final EntityDataAccessor<Integer> GENDER = SynchedEntityData.defineId(OOcelot.class, EntityDataSerializers.INT);
+   public static final EntityDataAccessor<Integer> GENDER = SynchedEntityData.defineId(OCat.class, EntityDataSerializers.INT);
 
    public int getGender() {
       return this.entityData.get(GENDER);
@@ -468,13 +563,13 @@ public class OOcelot extends TamableAnimal implements GeoEntity {
    public boolean canMate(Animal animal) {
       if (animal == this) {
          return false;
-      } else if (!(animal instanceof OOcelot)) {
+      } else if (!(animal instanceof OCat)) {
          return false;
       } else {
          if (!LivestockOverhaulCommonConfig.GENDERS_AFFECT_BREEDING.get()) {
-            return this.canParent() && ((OOcelot) animal).canParent();
+            return this.canParent() && ((OCat) animal).canParent();
          } else {
-            OOcelot partner = (OOcelot) animal;
+            OCat partner = (OCat) animal;
             if (this.canParent() && partner.canParent() && this.getGender() != partner.getGender()) {
                return true;
             }
@@ -492,47 +587,51 @@ public class OOcelot extends TamableAnimal implements GeoEntity {
 
    @Override
    public AgeableMob getBreedOffspring(ServerLevel serverLevel, AgeableMob ageableMob) {
-      OOcelot oOcelot = (OOcelot) ageableMob;
-      if (ageableMob instanceof OOcelot) {
-         OOcelot ocelot = (OOcelot) ageableMob;
-         oOcelot = com.dragn0007.dragnpets.entities.EntityTypes.O_OCELOT_ENTITY.get().create(serverLevel);
+      OCat oCat = (OCat) ageableMob;
+      if (ageableMob instanceof OCat) {
+         OCat oCat1 = (OCat) ageableMob;
+         oCat = com.dragn0007.dragnpets.entities.EntityTypes.O_CAT_ENTITY.get().create(serverLevel);
 
          int i = this.random.nextInt(9);
          int variant;
          if (i < 4) {
             variant = this.getVariant();
          } else if (i < 8) {
-            variant = ocelot.getVariant();
+            variant = oCat1.getVariant();
          } else {
-            variant = this.random.nextInt(OOcelotModel.Variant.values().length);
+            variant = this.random.nextInt(OCatModel.Variant.values().length);
+         }
+
+         int j = this.random.nextInt(9);
+         int overlay;
+         if (j < 4) {
+            overlay = this.getVariant();
+         } else if (j < 8) {
+            overlay = oCat1.getVariant();
+         } else {
+            overlay = this.random.nextInt(OCatMarkingLayer.Overlay.values().length);
+         }
+
+         int k = this.random.nextInt(9);
+         int eyes;
+         if (k < 4) {
+            eyes = this.getVariant();
+         } else if (k < 8) {
+            eyes = oCat1.getVariant();
+         } else {
+            eyes = this.random.nextInt(OCatEyeLayer.Eyes.values().length);
          }
 
          int gender;
-         gender = this.random.nextInt(OOcelot.Gender.values().length);
+         gender = this.random.nextInt(OCat.Gender.values().length);
 
-         oOcelot.setVariant(variant);
-         oOcelot.setGender(gender);
+         oCat.setVariant(variant);
+         oCat.setVariant(overlay);
+         oCat.setVariant(eyes);
+         oCat.setGender(gender);
       }
 
-      return oOcelot;
-   }
-
-
-   public boolean wantsToAttack(LivingEntity entity, LivingEntity p_30390_) {
-      if (!(entity instanceof Creeper) && !(entity instanceof Ghast)) {
-         if (entity instanceof OOcelot) {
-            OOcelot wolf = (OOcelot)entity;
-            return !wolf.isTame() || wolf.getOwner() != p_30390_;
-         } else if (entity instanceof Player && p_30390_ instanceof Player && !((Player)p_30390_).canHarmPlayer((Player)entity)) {
-            return false;
-         } else if (entity instanceof AbstractHorse && ((AbstractHorse)entity).isTamed()) {
-            return false;
-         } else {
-            return !(entity instanceof TamableAnimal) || !((TamableAnimal)entity).isTame();
-         }
-      } else {
-         return false;
-      }
+      return oCat;
    }
 
    public boolean canBeLeashed(Player p_30396_) {
@@ -574,9 +673,9 @@ public class OOcelot extends TamableAnimal implements GeoEntity {
    }
 
    static class OcelotAvoidEntityGoal<T extends LivingEntity> extends AvoidEntityGoal<T> {
-      private final OOcelot ocelot;
+      private final OCat ocelot;
 
-      public OcelotAvoidEntityGoal(OOcelot p_29051_, Class<T> p_29052_, float p_29053_, double p_29054_, double p_29055_) {
+      public OcelotAvoidEntityGoal(OCat p_29051_, Class<T> p_29052_, float p_29053_, double p_29054_, double p_29055_) {
          super(p_29051_, p_29052_, p_29053_, p_29054_, p_29055_, EntitySelector.NO_CREATIVE_OR_SPECTATOR::test);
          this.ocelot = p_29051_;
       }
@@ -591,9 +690,9 @@ public class OOcelot extends TamableAnimal implements GeoEntity {
    }
 
    static class OcelotTemptGoal extends TemptGoal {
-      private final OOcelot ocelot;
+      private final OCat ocelot;
 
-      public OcelotTemptGoal(OOcelot p_29060_, double p_29061_, Ingredient p_29062_, boolean p_29063_) {
+      public OcelotTemptGoal(OCat p_29060_, double p_29061_, Ingredient p_29062_, boolean p_29063_) {
          super(p_29060_, p_29061_, p_29062_, p_29063_);
          this.ocelot = p_29060_;
       }

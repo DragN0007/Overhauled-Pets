@@ -4,6 +4,8 @@ import com.dragn0007.dragnpets.PetsOverhaul;
 import com.dragn0007.dragnpets.entities.EntityTypes;
 import com.dragn0007.dragnpets.entities.axolotl.OAxolotl;
 import com.dragn0007.dragnpets.entities.axolotl.OAxolotlRender;
+import com.dragn0007.dragnpets.entities.cat.OCat;
+import com.dragn0007.dragnpets.entities.cat.OCatRender;
 import com.dragn0007.dragnpets.entities.dog.Doberman;
 import com.dragn0007.dragnpets.entities.dog.DobermanRender;
 import com.dragn0007.dragnpets.entities.fox.OFox;
@@ -36,6 +38,7 @@ public class PetsOverhaulEvent {
         event.put(EntityTypes.COCKATIEL_ENTITY.get(), Cockatiel.createAttributes().build());
         event.put(EntityTypes.RINGNECK_ENTITY.get(), Ringneck.createAttributes().build());
         event.put(EntityTypes.DOBERMAN_ENTITY.get(), Doberman.createAttributes().build());
+        event.put(EntityTypes.O_CAT_ENTITY.get(), OCat.createAttributes().build());
     }
 
     @SubscribeEvent
@@ -49,5 +52,6 @@ public class PetsOverhaulEvent {
         EntityRenderers.register(EntityTypes.COCKATIEL_ENTITY.get(), CockatielRender::new);
         EntityRenderers.register(EntityTypes.RINGNECK_ENTITY.get(), RingneckRender::new);
         EntityRenderers.register(EntityTypes.DOBERMAN_ENTITY.get(), DobermanRender::new);
+        EntityRenderers.register(EntityTypes.O_CAT_ENTITY.get(), OCatRender::new);
     }
 }

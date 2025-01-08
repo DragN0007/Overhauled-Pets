@@ -4,9 +4,13 @@ import com.dragn0007.dragnlivestock.entities.EntityTypes;
 import com.dragn0007.dragnlivestock.items.LOItems;
 import com.dragn0007.dragnlivestock.util.LivestockOverhaulCommonConfig;
 import com.dragn0007.dragnpets.PetsOverhaul;
+import com.dragn0007.dragnpets.entities.ai.FoxFollowOwnerGoal;
 import com.dragn0007.dragnpets.util.POTags;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -89,13 +93,12 @@ public class OFox extends TamableAnimal implements GeoEntity {
       this.goalSelector.addGoal(2, new SitWhenOrderedToGoal(this));
       this.goalSelector.addGoal(4, new LeapAtTargetGoal(this, 0.4F));
       this.goalSelector.addGoal(5, new MeleeAttackGoal(this, 1.5D, true));
-      this.goalSelector.addGoal(6, new FollowOwnerGoal(this, 1.0D, 10.0F, 2.0F, false));
+      this.goalSelector.addGoal(6, new FoxFollowOwnerGoal(this, 1.0D, 10.0F, 2.0F, false));
       this.goalSelector.addGoal(7, new BreedGoal(this, 1.0D));
       this.goalSelector.addGoal(8, new WaterAvoidingRandomStrollGoal(this, 1.0D));
       this.goalSelector.addGoal(10, new LookAtPlayerGoal(this, Player.class, 8.0F));
       this.goalSelector.addGoal(10, new RandomLookAroundGoal(this));
       this.targetSelector.addGoal(5, new NonTameRandomTargetGoal<>(this, Animal.class, false, PREY_SELECTOR));
-      this.turtleEggTargetGoal = new NearestAttackableTargetGoal<>(this, Turtle.class, 10, false, false, Turtle.BABY_ON_LAND_SELECTOR);
       this.fishTargetGoal = new NearestAttackableTargetGoal<>(this, AbstractFish.class, 20, false, false, (p_28600_) -> {
          return p_28600_ instanceof AbstractSchoolingFish;
       });
@@ -190,13 +193,29 @@ public class OFox extends TamableAnimal implements GeoEntity {
    public void setTame(boolean p_30443_) {
       super.setTame(p_30443_);
       if (p_30443_) {
-         this.getAttribute(Attributes.MAX_HEALTH).setBaseValue(20.0D);
-         this.setHealth(20.0F);
+         this.getAttribute(Attributes.MAX_HEALTH).setBaseValue(10.0D);
+         this.setHealth(10.0F);
       } else {
          this.getAttribute(Attributes.MAX_HEALTH).setBaseValue(8.0D);
       }
 
-      this.getAttribute(Attributes.ATTACK_DAMAGE).setBaseValue(4.0D);
+      this.getAttribute(Attributes.ATTACK_DAMAGE).setBaseValue(2.0D);
+   }
+
+   public int regenHealthCounter = 0;
+
+   @Override
+   public void tick() {
+      super.tick();
+
+      regenHealthCounter++;
+
+      if (this.getHealth() < this.getMaxHealth() && regenHealthCounter >= 150 && this.isTame()) {
+         this.setHealth(this.getHealth() + 2);
+         regenHealthCounter = 0;
+         this.level().addParticle(ParticleTypes.HEART, this.getRandomX(0.6D), this.getRandomY(), this.getRandomZ(0.6D), 0.7D, 0.7D, 0.7D);
+      }
+
    }
 
    @Override
@@ -215,6 +234,18 @@ public class OFox extends TamableAnimal implements GeoEntity {
          player.playSound(SoundEvents.BEEHIVE_EXIT, 1.0F, 1.0F);
          ItemStack itemstack1 = ItemUtils.createFilledResult(itemstack, player, LOItems.MALE_GENDER_TEST_STRIP.get().getDefaultInstance());
          player.setItemInHand(hand, itemstack1);
+         return InteractionResult.SUCCESS;
+      }
+
+      if (player.isShiftKeyDown() && !this.isFood(itemstack) && !this.isOrderedToSit() && !this.wasToldToWander()) {
+         this.setToldToWander(true);
+         player.displayClientMessage(Component.translatable("tooltip.dragnpets.wandering.tooltip").withStyle(ChatFormatting.GOLD), true);
+         return InteractionResult.SUCCESS;
+      }
+
+      if (player.isShiftKeyDown() && !this.isFood(itemstack) && !this.isOrderedToSit() && this.wasToldToWander()) {
+         this.setToldToWander(false);
+         player.displayClientMessage(Component.translatable("tooltip.dragnpets.following.tooltip").withStyle(ChatFormatting.GOLD), true);
          return InteractionResult.SUCCESS;
       }
 
@@ -267,6 +298,20 @@ public class OFox extends TamableAnimal implements GeoEntity {
       }
    }
 
+   private boolean toldToWander = false;
+
+   public boolean wasToldToWander() {
+      return this.toldToWander;
+   }
+
+   public boolean getToldToWander() {
+      return this.toldToWander;
+   }
+
+   public void setToldToWander(boolean toldToWander) {
+      this.toldToWander = toldToWander;
+   }
+
    private static final Ingredient FOOD_ITEMS = Ingredient.of(POTags.Items.FOX_FOOD);
 
    @Override
@@ -282,10 +327,6 @@ public class OFox extends TamableAnimal implements GeoEntity {
 
    public ResourceLocation getOverlayResource() {
       return OFoxMarkingLayer.Overlay.overlayFromOrdinal(getOverlayVariant()).resourceLocation;
-   }
-
-   public ResourceLocation getDomesticResource() {
-      return OFoxModel.DomesticVariant.domesticVariantFromOrdinal(getDomesticVariant()).resourceLocation;
    }
 
    public static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(OFox.class, EntityDataSerializers.INT);
@@ -330,6 +371,7 @@ public class OFox extends TamableAnimal implements GeoEntity {
       tag.putInt("Overlay", getOverlayVariant());
       tag.putInt("DomesticVariant", getDomesticVariant());
       tag.putInt("Gender", this.getGender());
+      tag.putBoolean("Wandering", this.getToldToWander());
    }
 
    public void readAdditionalSaveData(CompoundTag tag) {
@@ -349,6 +391,10 @@ public class OFox extends TamableAnimal implements GeoEntity {
 
       if (tag.contains("Gender")) {
          this.setGender(tag.getInt("Gender"));
+      }
+
+      if (tag.contains("Wandering")) {
+         this.setToldToWander(tag.getBoolean("Wandering"));
       }
    }
 
@@ -416,16 +462,6 @@ public class OFox extends TamableAnimal implements GeoEntity {
          }
       }
       return false;
-   }
-
-   public boolean isDomestic = false;
-
-   public boolean isDomestic() {
-      return isDomestic;
-   }
-
-   public void setDomestic(boolean domestic) {
-      this.isDomestic = domestic;
    }
 
    @Override
