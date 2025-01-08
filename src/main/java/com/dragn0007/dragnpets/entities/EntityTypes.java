@@ -2,6 +2,7 @@ package com.dragn0007.dragnpets.entities;
 
 import com.dragn0007.dragnlivestock.LivestockOverhaul;
 import com.dragn0007.dragnpets.entities.axolotl.OAxolotl;
+import com.dragn0007.dragnpets.entities.dog.Doberman;
 import com.dragn0007.dragnpets.entities.fox.OFox;
 import com.dragn0007.dragnpets.entities.ocelot.OOcelot;
 import com.dragn0007.dragnpets.entities.parrot.Cockatiel;
@@ -69,6 +70,12 @@ public class EntityTypes {
                             MobCategory.CREATURE)
                     .sized(0.4f,0.4f)
                     .build(new ResourceLocation(LivestockOverhaul.MODID,"o_tropical_fish").toString()));
+
+    public static final RegistryObject<EntityType<Doberman>> DOBERMAN_ENTITY = ENTITY_TYPES.register("doberman",
+            () -> EntityType.Builder.of(Doberman::new,
+                            MobCategory.CREATURE)
+                    .sized(0.9f,0.9f)
+                    .build(new ResourceLocation(LivestockOverhaul.MODID,"doberman").toString()));
 
 }
 

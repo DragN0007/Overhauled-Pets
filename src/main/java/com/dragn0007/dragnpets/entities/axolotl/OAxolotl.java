@@ -353,7 +353,47 @@ public class OAxolotl extends Animal implements GeoEntity, Bucketable {
 
 	@Override
 	public AgeableMob getBreedOffspring(ServerLevel serverLevel, AgeableMob ageableMob) {
-		return EntityTypes.O_AXOLOTL_ENTITY.get().create(serverLevel);
+		OAxolotl oAxolotl = (OAxolotl) ageableMob;
+		if (ageableMob instanceof OAxolotl) {
+			OAxolotl oAxolotl1 = (OAxolotl) ageableMob;
+			oAxolotl = EntityTypes.O_AXOLOTL_ENTITY.get().create(serverLevel);
+
+			int i = this.random.nextInt(9);
+			int variant;
+			if (i < 4) {
+				variant = this.getVariant();
+			} else if (i < 8) {
+				variant = oAxolotl1.getVariant();
+			} else {
+				variant = this.random.nextInt(OAxolotlModel.Variant.values().length);
+			}
+
+			int j = this.random.nextInt(9);
+			int overlay;
+			if (j < 4) {
+				overlay = this.getOverlayVariant();
+			} else if (j < 8) {
+				overlay = oAxolotl1.getOverlayVariant();
+			} else {
+				overlay = this.random.nextInt(OAxolotlMarkingLayer.Overlay.values().length);
+			}
+
+			int k = this.random.nextInt(9);
+			int gills;
+			if (k < 4) {
+				gills = this.getGills();
+			} else if (k < 8) {
+				gills = oAxolotl1.getGills();
+			} else {
+				gills = this.random.nextInt(OAxolotl.Gills.values().length);
+			}
+
+			oAxolotl.setVariant(variant);
+			oAxolotl.setOverlayVariant(overlay);
+			oAxolotl.setGills(gills);
+		}
+
+		return oAxolotl;
 	}
 
 	public boolean fromBucket() {

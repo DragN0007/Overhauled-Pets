@@ -1,6 +1,5 @@
 package com.dragn0007.dragnpets.entities.ocelot;
 
-import com.dragn0007.dragnlivestock.LivestockOverhaul;
 import com.dragn0007.dragnlivestock.entities.EntityTypes;
 import com.dragn0007.dragnlivestock.items.LOItems;
 import com.dragn0007.dragnlivestock.util.LivestockOverhaulCommonConfig;
@@ -54,6 +53,12 @@ import java.util.function.Predicate;
 
 public class OOcelot extends TamableAnimal implements GeoEntity {
 
+   public OOcelot(EntityType<? extends OOcelot> entityType, Level level) {
+      super(entityType, level);
+      this.setTame(false);
+      this.reassessTrustingGoals();
+   }
+
    @javax.annotation.Nullable
    private OOcelot.OcelotAvoidEntityGoal<Player> ocelotAvoidPlayersGoal;
    @Nullable
@@ -87,12 +92,6 @@ public class OOcelot extends TamableAnimal implements GeoEntity {
               entitytype == EntityTypes.O_CHICKEN_ENTITY.get() ||
               entitytype == EntityTypes.O_FROG_ENTITY.get();
    };
-
-   public OOcelot(EntityType<? extends OOcelot> entityType, Level level) {
-      super(entityType, level);
-      this.setTame(false);
-      this.reassessTrustingGoals();
-   }
 
    protected void registerGoals() {
       this.goalSelector.addGoal(1, new FloatGoal(this));
@@ -378,7 +377,7 @@ public class OOcelot extends TamableAnimal implements GeoEntity {
       }
       Random random = new Random();
       setVariant(random.nextInt(OOcelotModel.Variant.values().length));
-      setGender(random.nextInt(Gender.values().length));
+      setGender(random.nextInt(OOcelot.Gender.values().length));
 
       return super.finalizeSpawn(serverLevelAccessor, instance, spawnType, data, tag);
    }

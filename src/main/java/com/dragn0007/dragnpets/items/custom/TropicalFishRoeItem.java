@@ -1,6 +1,5 @@
 package com.dragn0007.dragnpets.items.custom;
 
-import com.dragn0007.dragnlivestock.entities.cod.OCod;
 import com.dragn0007.dragnpets.entities.EntityTypes;
 import com.dragn0007.dragnpets.entities.tropical_fish.OTropicalFish;
 import com.dragn0007.dragnpets.entities.tropical_fish.OTropicalFishMarkingLayer;

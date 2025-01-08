@@ -16,7 +16,6 @@ import com.dragn0007.dragnpets.entities.tropical_fish.OTropicalFishMarkingLayer;
 import com.dragn0007.dragnpets.entities.tropical_fish.OTropicalFishModel;
 import com.dragn0007.dragnpets.entities.wolf.OWolf;
 import com.dragn0007.dragnpets.entities.wolf.OWolfModel;
-import com.dragn0007.dragnpets.items.custom.TropicalFishRoeItem;
 import com.dragn0007.dragnpets.util.PetsOverhaulCommonConfig;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.animal.*;

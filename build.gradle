@@ -21,7 +21,7 @@ plugins {
 apply plugin: 'org.spongepowered.mixin'
 
 
-version = '1.20.1-1.0'
+version = '1.20.1-0.9-DevBETA'
 group = mod_group_id
 
 base {
@@ -94,6 +94,8 @@ dependencies {
     minecraft "net.minecraftforge:forge:1.20.1-47.2.0"
     implementation fg.deobf('software.bernie.geckolib:geckolib-forge-1.20.1:4.4.4')
     implementation fg.deobf("curse.maven:dragns-livestock-overhaul-1131669:5989738")
+
+//    implementation fg.deobf("curse.maven:jade-324717:5876199")
 }
 
 tasks.named('processResources', ProcessResources).configure {

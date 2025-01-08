@@ -111,7 +111,7 @@ public class Ringneck extends OParrot implements GeoEntity, FlyingAnimal {
    }
 
    public boolean canParent() {
-      return !this.isBaby() && this.getHealth() >= this.getMaxHealth() && this.isInLove();
+      return !this.isBaby() && this.isInLove();
    }
 
    public boolean canMate(Animal animal) {

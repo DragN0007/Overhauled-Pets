@@ -1,6 +1,5 @@
 package com.dragn0007.dragnpets.datagen;
 
-import com.dragn0007.dragnlivestock.items.LOItems;
 import com.dragn0007.dragnpets.items.POItems;
 import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.data.PackOutput;

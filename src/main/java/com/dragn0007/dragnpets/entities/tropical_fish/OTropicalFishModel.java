@@ -2,9 +2,7 @@ package com.dragn0007.dragnpets.entities.tropical_fish;
 
 import com.dragn0007.dragnlivestock.LivestockOverhaul;
 import com.dragn0007.dragnpets.PetsOverhaul;
-import com.dragn0007.dragnpets.entities.axolotl.OAxolotl;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.animal.TropicalFish;
 import software.bernie.geckolib.model.GeoModel;
 
 public class OTropicalFishModel extends GeoModel<OTropicalFish> {

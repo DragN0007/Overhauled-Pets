@@ -1,6 +1,5 @@
 package com.dragn0007.dragnpets.items;
 
-import com.dragn0007.dragnlivestock.items.custom.CodRoeItem;
 import com.dragn0007.dragnpets.PetsOverhaul;
 import com.dragn0007.dragnpets.entities.EntityTypes;
 import com.dragn0007.dragnpets.items.custom.TropicalFishRoeItem;
@@ -37,6 +36,8 @@ public class POItems {
             () -> new ForgeSpawnEggItem(EntityTypes.COCKATIEL_ENTITY, 0x9d9d9d, 0xfff469, new Item.Properties().stacksTo(64)));
     public static final RegistryObject<Item> RINGNECK_SPAWN_EGG = ITEMS.register("ringneck_spawn_egg",
             () -> new ForgeSpawnEggItem(EntityTypes.RINGNECK_ENTITY, 0xa3a855, 0x2f3515, new Item.Properties().stacksTo(64)));
+    public static final RegistryObject<Item> DOBERMAN_SPAWN_EGG = ITEMS.register("doberman_spawn_egg",
+            () -> new ForgeSpawnEggItem(EntityTypes.DOBERMAN_ENTITY, 0x232323, 0x8c4716, new Item.Properties().stacksTo(64)));
 
 
     //Food

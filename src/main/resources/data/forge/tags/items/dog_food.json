@@ -53,6 +53,14 @@
     "dragnlivestock:cooked_chevon",
     "dragnlivestock:cooked_chevon_loin",
     "dragnlivestock:cooked_chevon_rib",
-    "dragnlivestock:cooked_frog"
+    "dragnlivestock:cooked_frog",
+
+    "dragnpets:wolf",
+    "dragnpets:cat",
+    "dragnpets:parrot_thigh",
+
+    "dragnpets:cooked_wolf",
+    "dragnpets:cooked_cat",
+    "dragnpets:cooked_parrot_thigh"
   ]
 }

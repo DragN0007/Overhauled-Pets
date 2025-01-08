@@ -1,6 +1,9 @@
 {
   "itemGroup.overhauled_pets": "Overhauled Pets",
 
+  "tooltip.dragnpets.wandering.tooltip": "Your Companion is Wandering",
+  "tooltip.dragnpets.following.tooltip": "Your Companion is Following",
+
   "item.dragnpets.o_wolf_spawn_egg": "O-Wolf Spawn Egg",
   "entity.dragnpets.o_wolf": "O-Wolf",
 
@@ -24,6 +27,9 @@
 
   "item.dragnpets.ringneck_spawn_egg": "Ringneck Parrot Spawn Egg",
   "entity.dragnpets.ringneck": "Ringneck Parrot",
+
+  "item.dragnpets.doberman_spawn_egg": "Doberman Pinscher Spawn Egg",
+  "entity.dragnpets.doberman": "Doberman Pinscher",
 
   "item.dragnpets.wolf": "Dog",
   "item.dragnpets.cooked_wolf": "Cooked Dog",

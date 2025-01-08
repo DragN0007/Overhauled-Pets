@@ -1,6 +1,5 @@
 package com.dragn0007.dragnpets.entities.parrot;
 
-import com.dragn0007.dragnlivestock.LivestockOverhaul;
 import com.dragn0007.dragnlivestock.items.LOItems;
 import com.dragn0007.dragnlivestock.util.LivestockOverhaulCommonConfig;
 import com.dragn0007.dragnpets.PetsOverhaul;
@@ -38,7 +37,6 @@ import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.ai.util.LandRandomPos;
 import net.minecraft.world.entity.animal.FlyingAnimal;
-import net.minecraft.world.entity.animal.ShoulderRidingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -68,7 +66,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.function.Predicate;
 
-public class OParrot extends ShoulderRidingEntity implements GeoEntity, FlyingAnimal {
+public class OParrot extends TamableAnimal implements GeoEntity, FlyingAnimal {
 
    private static final ResourceLocation LOOT_TABLE = new ResourceLocation(PetsOverhaul.MODID, "entities/o_parrot");
    private static final ResourceLocation VANILLA_LOOT_TABLE = new ResourceLocation("minecraft", "entities/parrot");
@@ -177,7 +175,6 @@ public class OParrot extends ShoulderRidingEntity implements GeoEntity, FlyingAn
       this.goalSelector.addGoal(2, new OParrot.ParrotWanderGoal(this, 1.0D));
       this.goalSelector.addGoal(3, new FollowMobGoal(this, 1.0D, 3.0F, 7.0F));
       this.goalSelector.addGoal(1, new BreedGoal(this, 1.0D));
-      this.goalSelector.addGoal(3, new LandOnOwnersShoulderGoal(this));
    }
 
    public static AttributeSupplier.Builder createAttributes() {

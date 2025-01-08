@@ -15,6 +15,10 @@
     "dragnlivestock:cooked_rabbit_thigh",
     "dragnlivestock:cooked_frog",
     "minecraft:cooked_salmon",
-    "minecraft:cooked_cod"
+    "minecraft:cooked_cod",
+
+    "dragnpets:parrot_thigh",
+
+    "dragnpets:cooked_parrot_thigh"
   ]
 }

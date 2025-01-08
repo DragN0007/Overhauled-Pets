@@ -1,8 +1,5 @@
 package com.dragn0007.dragnpets.entities.tropical_fish;
 
-import com.dragn0007.dragnpets.entities.axolotl.OAxolotl;
-import com.dragn0007.dragnpets.entities.axolotl.OAxolotlMarkingLayer;
-import com.dragn0007.dragnpets.entities.axolotl.OAxolotlModel;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;

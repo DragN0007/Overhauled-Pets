@@ -12,6 +12,12 @@
 
     "minecraft:sweet_berries",
     "minecraft:beetroot",
-    "minecraft:glowberries"
+    "minecraft:glowberries",
+
+    "dragnpets:cat",
+    "dragnpets:parrot_thigh",
+
+    "dragnpets:cooked_cat",
+    "dragnpets:cooked_parrot_thigh"
   ]
 }
