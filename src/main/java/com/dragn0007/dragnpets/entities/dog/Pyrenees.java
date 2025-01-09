@@ -91,7 +91,7 @@ public class Pyrenees extends ODog implements NeutralMob, GeoEntity {
       this.goalSelector.addGoal(9, new FollowRabbitGoal(this, 1.0D, 6.0F, 7.0F));
       this.goalSelector.addGoal(9, new FollowChickenGoal(this, 1.0D, 6.0F, 7.0F));
 
-      this.goalSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, LivingEntity.class, 10, true, false,
+      this.goalSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, LivingEntity.class, 2, true, false,
               entity -> entity.getType().is(LOTags.Entity_Types.WOLVES) && (entity instanceof TamableAnimal && !((TamableAnimal) entity).isTame()))  {
          @Override
          public boolean canUse() {
@@ -103,7 +103,7 @@ public class Pyrenees extends ODog implements NeutralMob, GeoEntity {
          }
       });
 
-      this.goalSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, LivingEntity.class, 10, true, false,
+      this.goalSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, LivingEntity.class, 2, true, false,
               entity -> entity.getType().is(POTags.Entity_Types.O_WOLVES) && (entity instanceof TamableAnimal && !((TamableAnimal) entity).isTame()))  {
          @Override
          public boolean canUse() {
@@ -115,7 +115,7 @@ public class Pyrenees extends ODog implements NeutralMob, GeoEntity {
          }
       });
 
-      this.goalSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, LivingEntity.class, 10, true, false,
+      this.goalSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, LivingEntity.class, 2, true, false,
               entity -> entity.getType().is(POTags.Entity_Types.FOXES) && (entity instanceof TamableAnimal && !((TamableAnimal) entity).isTame()))  {
          @Override
          public boolean canUse() {
@@ -127,7 +127,7 @@ public class Pyrenees extends ODog implements NeutralMob, GeoEntity {
          }
       });
 
-      this.goalSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, LivingEntity.class, 10, true, false,
+      this.goalSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, LivingEntity.class, 2, true, false,
               entity -> entity.getType().is(POTags.Entity_Types.O_FOXES) && (entity instanceof TamableAnimal && !((TamableAnimal) entity).isTame()))  {
          @Override
          public boolean canUse() {
