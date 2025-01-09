@@ -71,7 +71,7 @@ public class Doberman extends ODog implements NeutralMob, GeoEntity {
       this.goalSelector.addGoal(1, new Doberman.WolfPanicGoal(1.4D));
       this.goalSelector.addGoal(2, new SitWhenOrderedToGoal(this));
       this.goalSelector.addGoal(4, new LeapAtTargetGoal(this, 0.4F));
-      this.goalSelector.addGoal(5, new MeleeAttackGoal(this, 1.5D, true));
+      this.goalSelector.addGoal(5, new MeleeAttackGoal(this, 1.8D, true));
       this.goalSelector.addGoal(7, new BreedGoal(this, 1.0D));
       this.goalSelector.addGoal(8, new WaterAvoidingRandomStrollGoal(this, 1.0D));
       this.goalSelector.addGoal(10, new LookAtPlayerGoal(this, Player.class, 8.0F));

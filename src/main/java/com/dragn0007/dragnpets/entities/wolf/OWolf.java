@@ -5,12 +5,14 @@ import com.dragn0007.dragnlivestock.entities.cow.ox.Ox;
 import com.dragn0007.dragnlivestock.entities.donkey.ODonkey;
 import com.dragn0007.dragnlivestock.entities.llama.OLlama;
 import com.dragn0007.dragnlivestock.entities.mule.OMule;
+import com.dragn0007.dragnlivestock.entities.sheep.OSheep;
 import com.dragn0007.dragnlivestock.items.LOItems;
 import com.dragn0007.dragnlivestock.util.LivestockOverhaulCommonConfig;
 import com.dragn0007.dragnpets.PetsOverhaul;
 import com.dragn0007.dragnpets.entities.ai.CanineFollowPackLeaderGoal;
 import com.dragn0007.dragnpets.entities.ai.WolfFollowOwnerGoal;
 import com.dragn0007.dragnpets.util.POTags;
+import com.dragn0007.dragnpets.util.PetsOverhaulCommonConfig;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
@@ -35,6 +37,7 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.ai.goal.target.*;
 import net.minecraft.world.entity.animal.Animal;
+import net.minecraft.world.entity.animal.Cat;
 import net.minecraft.world.entity.animal.Turtle;
 import net.minecraft.world.entity.animal.camel.Camel;
 import net.minecraft.world.entity.animal.horse.AbstractHorse;
@@ -51,6 +54,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.pathfinder.BlockPathTypes;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.fml.ModList;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.animatable.GeoEntity;
@@ -182,6 +186,38 @@ public class OWolf extends TamableAnimal implements NeutralMob, GeoEntity {
       return this.geoCache;
    }
 
+   public int spawnWolfEventCounter = this.random.nextInt(48000) + 48000;
+   public int regenHealthCounter = 0;
+
+   public void tick() {
+      super.tick();
+      if (this.hasFollowers() && this.level().random.nextInt(200) == 1) {
+         List<? extends OWolf> list = this.level().getEntitiesOfClass(this.getClass(), this.getBoundingBox().inflate(20.0D, 20.0D, 20.0D));
+         if (list.size() <= 1) {
+            this.packSize = 1;
+         }
+      }
+
+      regenHealthCounter++;
+
+      if (this.getHealth() < this.getMaxHealth() && regenHealthCounter >= 150 && this.isTame()) {
+         this.setHealth(this.getHealth() + 2);
+         regenHealthCounter = 0;
+         this.level().addParticle(ParticleTypes.HEART, this.getRandomX(0.6D), this.getRandomY(), this.getRandomZ(0.6D), 0.7D, 0.7D, 0.7D);
+      }
+
+      spawnWolfEventCounter++;
+
+//      if (--this.spawnWolfEventCounter <= 0 && PetsOverhaulCommonConfig.WOLF_EVENT.get()) {
+//         OSheep oSheep = (OSheep);
+//         if (oSheep.isFollower() || oSheep.hasFollowers() || oSheep.hasCustomName()) {
+//            this.copyPosition(oSheep);
+//         }
+//
+//         this.sendSystemMessage(Component.translatable("tooltip.dragnpets.wolf_event.tooltip").withStyle(ChatFormatting.RED));
+//      }
+
+   }
 
    public OWolf leader;
    public int packSize = 1;
@@ -211,27 +247,6 @@ public class OWolf extends TamableAnimal implements NeutralMob, GeoEntity {
 
    public boolean canBeFollowed() {
       return this.hasFollowers() && this.packSize < this.getMaxHerdSize();
-   }
-
-   public int regenHealthCounter = 0;
-
-   public void tick() {
-      super.tick();
-      if (this.hasFollowers() && this.level().random.nextInt(200) == 1) {
-         List<? extends OWolf> list = this.level().getEntitiesOfClass(this.getClass(), this.getBoundingBox().inflate(20.0D, 20.0D, 20.0D));
-         if (list.size() <= 1) {
-            this.packSize = 1;
-         }
-      }
-
-      regenHealthCounter++;
-
-      if (this.getHealth() < this.getMaxHealth() && regenHealthCounter >= 150 && this.isTame()) {
-         this.setHealth(this.getHealth() + 2);
-         regenHealthCounter = 0;
-         this.level().addParticle(ParticleTypes.HEART, this.getRandomX(0.6D), this.getRandomY(), this.getRandomZ(0.6D), 0.7D, 0.7D, 0.7D);
-      }
-
    }
 
    public int getMaxHerdSize() {

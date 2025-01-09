@@ -3,6 +3,7 @@
 
   "tooltip.dragnpets.wandering.tooltip": "Your Companion is Wandering",
   "tooltip.dragnpets.following.tooltip": "Your Companion is Following",
+  "tooltip.dragnpets.wolf_event.tooltip": "A pack of wolves was spotted near your sheep!",
 
   "item.dragnpets.o_wolf_spawn_egg": "O-Wolf Spawn Egg",
   "entity.dragnpets.o_wolf": "O-Wolf",

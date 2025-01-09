@@ -70,7 +70,7 @@ public class Pyrenees extends ODog implements NeutralMob, GeoEntity {
       this.goalSelector.addGoal(1, new WolfPanicGoal(1.4D));
       this.goalSelector.addGoal(2, new SitWhenOrderedToGoal(this));
       this.goalSelector.addGoal(4, new LeapAtTargetGoal(this, 0.4F));
-      this.goalSelector.addGoal(5, new MeleeAttackGoal(this, 1.5D, true));
+      this.goalSelector.addGoal(5, new MeleeAttackGoal(this, 1.8D, true));
       this.goalSelector.addGoal(7, new BreedGoal(this, 1.0D));
       this.goalSelector.addGoal(10, new WaterAvoidingRandomStrollGoal(this, 1.0D));
       this.goalSelector.addGoal(10, new LookAtPlayerGoal(this, Player.class, 8.0F));
@@ -84,7 +84,7 @@ public class Pyrenees extends ODog implements NeutralMob, GeoEntity {
 
       this.goalSelector.addGoal(6, new DogFollowOwnerGoal(this, 1.0D, 10.0F, 2.0F, false));
 
-      this.goalSelector.addGoal(7, new FollowSheepGoal(this, 1.0D, 6.0F, 15.0F));
+      this.goalSelector.addGoal(7, new FollowSheepGoal(this, 1.0D, 6.0F, 7.0F));
       this.goalSelector.addGoal(7, new FollowGoatGoal(this, 1.0D, 3.0F, 7.0F));
       this.goalSelector.addGoal(8, new FollowCowGoal(this, 1.0D, 3.0F, 7.0F));
       this.goalSelector.addGoal(8, new FollowPigGoal(this, 1.0D, 3.0F, 7.0F));
@@ -142,7 +142,7 @@ public class Pyrenees extends ODog implements NeutralMob, GeoEntity {
 
    public static AttributeSupplier.Builder createAttributes() {
       return Mob.createMobAttributes()
-              .add(Attributes.MOVEMENT_SPEED, 0.26F)
+              .add(Attributes.MOVEMENT_SPEED, 0.28F)
               .add(Attributes.MAX_HEALTH, 14.0D)
               .add(Attributes.ATTACK_DAMAGE, 3.0D);
    }
