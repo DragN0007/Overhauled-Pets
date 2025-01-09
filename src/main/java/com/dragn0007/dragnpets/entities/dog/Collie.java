@@ -85,9 +85,9 @@ public class Collie extends ODog implements NeutralMob, GeoEntity {
 
       this.goalSelector.addGoal(6, new DogFollowOwnerGoal(this, 1.0D, 10.0F, 2.0F, false));
 
-      this.goalSelector.addGoal(7, new FollowSheepGoal(this, 1.0D, 6.0F, 2.0F));
-      this.goalSelector.addGoal(7, new FollowGoatGoal(this, 1.0D, 3.0F, 2.0F));
-      this.goalSelector.addGoal(8, new FollowCowGoal(this, 1.0D, 3.0F, 2.0F));
+      this.goalSelector.addGoal(7, new FollowSheepGoal(this, 1.5D, 6.0F, 7.0F));
+      this.goalSelector.addGoal(7, new FollowGoatGoal(this, 1.5D, 6.0F, 7.0F));
+      this.goalSelector.addGoal(8, new FollowCowGoal(this, 1.5D, 6.0F, 7.0F));
    }
 
    public static AttributeSupplier.Builder createAttributes() {

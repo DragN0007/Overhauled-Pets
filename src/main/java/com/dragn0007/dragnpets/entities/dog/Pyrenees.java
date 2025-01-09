@@ -85,11 +85,11 @@ public class Pyrenees extends ODog implements NeutralMob, GeoEntity {
       this.goalSelector.addGoal(6, new DogFollowOwnerGoal(this, 1.0D, 10.0F, 2.0F, false));
 
       this.goalSelector.addGoal(7, new FollowSheepGoal(this, 1.0D, 6.0F, 7.0F));
-      this.goalSelector.addGoal(7, new FollowGoatGoal(this, 1.0D, 3.0F, 7.0F));
-      this.goalSelector.addGoal(8, new FollowCowGoal(this, 1.0D, 3.0F, 7.0F));
-      this.goalSelector.addGoal(8, new FollowPigGoal(this, 1.0D, 3.0F, 7.0F));
-      this.goalSelector.addGoal(9, new FollowRabbitGoal(this, 1.0D, 3.0F, 7.0F));
-      this.goalSelector.addGoal(9, new FollowChickenGoal(this, 1.0D, 3.0F, 7.0F));
+      this.goalSelector.addGoal(7, new FollowGoatGoal(this, 1.0D, 6.0F, 7.0F));
+      this.goalSelector.addGoal(8, new FollowCowGoal(this, 1.0D, 6.0F, 7.0F));
+      this.goalSelector.addGoal(8, new FollowPigGoal(this, 1.0D, 6.0F, 7.0F));
+      this.goalSelector.addGoal(9, new FollowRabbitGoal(this, 1.0D, 6.0F, 7.0F));
+      this.goalSelector.addGoal(9, new FollowChickenGoal(this, 1.0D, 6.0F, 7.0F));
 
       this.goalSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, LivingEntity.class, 10, true, false,
               entity -> entity.getType().is(LOTags.Entity_Types.WOLVES) && (entity instanceof TamableAnimal && !((TamableAnimal) entity).isTame()))  {

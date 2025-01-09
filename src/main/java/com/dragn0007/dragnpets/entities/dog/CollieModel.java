@@ -9,13 +9,13 @@ public class CollieModel extends GeoModel<Collie> {
     public enum Variant {
         BLACK(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/dog/border_collie/collie_black.png")),
         BLACK_BROWN(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/dog/border_collie/collie_black_brown.png")),
-        GREY(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/dog/collie/border_collie_grey.png")),
+        GREY(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/dog/border_collie/collie_grey.png")),
         GREY_BROWN(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/dog/border_collie/collie_grey_brown.png")),
-        BROWN(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/dog/collie/border_brown_grey.png")),
+        BROWN(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/dog/border_collie/collie_brown.png")),
         BROWN_BROWN(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/dog/border_collie/collie_brown_brown.png")),
-        FAWN(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/dog/collie/border_collie_fawn.png")),
+        FAWN(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/dog/border_collie/collie_fawn.png")),
         FAWN_BROWN(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/dog/border_collie/collie_fawn_brown.png")),
-        RED(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/dog/collie/collie_red.png")),
+        RED(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/dog/border_collie/collie_red.png")),
         RED_BROWN(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/dog/border_collie/collie_red_brown.png"));
 
         public final ResourceLocation resourceLocation;
