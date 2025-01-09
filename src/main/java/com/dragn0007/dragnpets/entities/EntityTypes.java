@@ -6,7 +6,7 @@ import com.dragn0007.dragnpets.entities.cat.OCat;
 import com.dragn0007.dragnpets.entities.dog.Doberman;
 import com.dragn0007.dragnpets.entities.dog.Husky;
 import com.dragn0007.dragnpets.entities.dog.Labrador;
-import com.dragn0007.dragnpets.entities.dog.LabradorModel;
+import com.dragn0007.dragnpets.entities.dog.Pyrenees;
 import com.dragn0007.dragnpets.entities.fox.OFox;
 import com.dragn0007.dragnpets.entities.ocelot.OOcelot;
 import com.dragn0007.dragnpets.entities.parrot.Cockatiel;
@@ -98,6 +98,12 @@ public class EntityTypes {
                             MobCategory.CREATURE)
                     .sized(0.8f,0.8f)
                     .build(new ResourceLocation(LivestockOverhaul.MODID,"husky").toString()));
+
+    public static final RegistryObject<EntityType<Pyrenees>> PYRENEES_ENTITY = ENTITY_TYPES.register("pyrenees",
+            () -> EntityType.Builder.of(Pyrenees::new,
+                            MobCategory.CREATURE)
+                    .sized(0.9f,0.9f)
+                    .build(new ResourceLocation(LivestockOverhaul.MODID,"pyrenees").toString()));
 
 }
 

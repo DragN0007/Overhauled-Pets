@@ -3,7 +3,6 @@ package com.dragn0007.dragnpets.entities.dog;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.world.entity.monster.Husk;
 import software.bernie.geckolib.renderer.GeoEntityRenderer;
 
 public class HuskyRender extends GeoEntityRenderer<Husky> {

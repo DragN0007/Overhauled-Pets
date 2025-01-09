@@ -1,7 +1,6 @@
 package com.dragn0007.dragnpets.entities.dog;
 
 import com.dragn0007.dragnlivestock.util.LivestockOverhaulCommonConfig;
-import com.dragn0007.dragnpets.PetsOverhaul;
 import com.dragn0007.dragnpets.entities.EntityTypes;
 import com.dragn0007.dragnpets.entities.ai.DogFollowOwnerGoal;
 import com.dragn0007.dragnpets.entities.ai.DogFollowPackLeaderGoal;
@@ -37,7 +36,6 @@ import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.pathfinder.BlockPathTypes;
 import net.minecraft.world.phys.Vec3;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.core.animatable.GeoAnimatable;
@@ -83,7 +81,7 @@ public class Doberman extends ODog implements NeutralMob, GeoEntity {
       this.targetSelector.addGoal(3, (new HurtByTargetGoal(this)).setAlertOthers());
       this.targetSelector.addGoal(4, new NearestAttackableTargetGoal<>(this, Player.class, 10, true, false, this::isAngryAt));
       this.targetSelector.addGoal(8, new ResetUniversalAngerTargetGoal<>(this, true));
-      this.goalSelector.addGoal(3, new DogFollowPackLeaderGoal(this));
+      this.goalSelector.addGoal(7, new DogFollowPackLeaderGoal(this));
 
       this.goalSelector.addGoal(6, new DogFollowOwnerGoal(this, 1.0D, 10.0F, 2.0F, false));
 

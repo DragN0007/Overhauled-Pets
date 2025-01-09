@@ -1,21 +1,19 @@
-package com.dragn0007.dragnpets.entities.cat;
+package com.dragn0007.dragnpets.entities.dog;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import software.bernie.geckolib.renderer.GeoEntityRenderer;
 
-public class OCatRender extends GeoEntityRenderer<OCat> {
+public class PyreneesRender extends GeoEntityRenderer<Pyrenees> {
 
-    public OCatRender(EntityRendererProvider.Context renderManager) {
-        super(renderManager, new OCatModel());
-        this.addRenderLayer(new OCatCollarLayer(this));
-        this.addRenderLayer(new OCatMarkingLayer(this));
-        this.addRenderLayer(new OCatEyeLayer(this));
+    public PyreneesRender(EntityRendererProvider.Context renderManager) {
+        super(renderManager, new PyreneesModel());
+        this.addRenderLayer(new PyreneesCollarLayer(this));
     }
 
     @Override
-    public void render(OCat entity, float entityYaw, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight) {
+    public void render(Pyrenees entity, float entityYaw, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight) {
 
         if (entity.isTame()) {
             model.getBone("collar").ifPresent(b -> b.setHidden(false));

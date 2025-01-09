@@ -10,7 +10,6 @@ import com.dragn0007.dragnlivestock.util.LivestockOverhaulCommonConfig;
 import com.dragn0007.dragnpets.PetsOverhaul;
 import com.dragn0007.dragnpets.entities.ai.CanineFollowPackLeaderGoal;
 import com.dragn0007.dragnpets.entities.ai.WolfFollowOwnerGoal;
-import com.dragn0007.dragnpets.entities.dog.Doberman;
 import com.dragn0007.dragnpets.util.POTags;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -134,7 +133,7 @@ public class OWolf extends TamableAnimal implements NeutralMob, GeoEntity {
       this.targetSelector.addGoal(6, new NonTameRandomTargetGoal<>(this, Turtle.class, false, Turtle.BABY_ON_LAND_SELECTOR));
       this.targetSelector.addGoal(7, new NearestAttackableTargetGoal<>(this, AbstractSkeleton.class, false));
       this.targetSelector.addGoal(8, new ResetUniversalAngerTargetGoal<>(this, true));
-      this.goalSelector.addGoal(3, new CanineFollowPackLeaderGoal(this));
+      this.goalSelector.addGoal(7, new CanineFollowPackLeaderGoal(this));
       this.goalSelector.addGoal(6, new WolfFollowOwnerGoal(this, 1.0D, 10.0F, 2.0F, false));
    }
 

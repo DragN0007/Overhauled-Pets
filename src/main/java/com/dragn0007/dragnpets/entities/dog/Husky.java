@@ -1,10 +1,6 @@
 package com.dragn0007.dragnpets.entities.dog;
 
 import com.dragn0007.dragnlivestock.entities.Chestable;
-import com.dragn0007.dragnlivestock.entities.chicken.OChicken;
-import com.dragn0007.dragnlivestock.entities.llama.OLlama;
-import com.dragn0007.dragnlivestock.entities.util.AbstractOMount;
-import com.dragn0007.dragnlivestock.gui.OMountMenu;
 import com.dragn0007.dragnlivestock.items.LOItems;
 import com.dragn0007.dragnlivestock.util.LivestockOverhaulCommonConfig;
 import com.dragn0007.dragnpets.entities.EntityTypes;
@@ -36,11 +32,9 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.ai.goal.target.*;
 import net.minecraft.world.entity.animal.Animal;
-import net.minecraft.world.entity.animal.horse.AbstractChestedHorse;
 import net.minecraft.world.entity.animal.horse.AbstractHorse;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.monster.Ghast;
-import net.minecraft.world.entity.monster.Husk;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.item.*;
@@ -48,7 +42,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
-import net.minecraft.world.level.pathfinder.BlockPathTypes;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.wrapper.InvWrapper;
@@ -80,8 +73,6 @@ public class Husky extends ODog implements NeutralMob, GeoEntity, Chestable, Con
       super(entityType, level);
       this.setTame(false);
       this.updateInventory();
-      this.setPathfindingMalus(BlockPathTypes.POWDER_SNOW, -1.0F);
-      this.setPathfindingMalus(BlockPathTypes.DANGER_POWDER_SNOW, -1.0F);
    }
 
    protected void registerGoals() {
@@ -99,7 +90,7 @@ public class Husky extends ODog implements NeutralMob, GeoEntity, Chestable, Con
       this.targetSelector.addGoal(3, (new HurtByTargetGoal(this)).setAlertOthers());
       this.targetSelector.addGoal(4, new NearestAttackableTargetGoal<>(this, Player.class, 10, true, false, this::isAngryAt));
       this.targetSelector.addGoal(8, new ResetUniversalAngerTargetGoal<>(this, true));
-      this.goalSelector.addGoal(3, new DogFollowPackLeaderGoal(this));
+      this.goalSelector.addGoal(7, new DogFollowPackLeaderGoal(this));
 
       this.goalSelector.addGoal(6, new DogFollowOwnerGoal(this, 1.0D, 10.0F, 2.0F, false));
    }

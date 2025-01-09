@@ -5,7 +5,6 @@ import com.dragn0007.dragnlivestock.items.LOItems;
 import com.dragn0007.dragnlivestock.util.LivestockOverhaulCommonConfig;
 import com.dragn0007.dragnpets.PetsOverhaul;
 import com.dragn0007.dragnpets.entities.ai.OcelotFollowOwnerGoal;
-import com.dragn0007.dragnpets.entities.dog.ODog;
 import com.dragn0007.dragnpets.util.POTags;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.particles.ParticleOptions;
@@ -52,7 +51,6 @@ import software.bernie.geckolib.core.object.PlayState;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 import javax.annotation.Nullable;
-import java.util.List;
 import java.util.Random;
 import java.util.function.Predicate;
 

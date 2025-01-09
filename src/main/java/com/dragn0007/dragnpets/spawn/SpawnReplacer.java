@@ -21,7 +21,6 @@ import com.dragn0007.dragnpets.entities.tropical_fish.OTropicalFishMarkingLayer;
 import com.dragn0007.dragnpets.entities.tropical_fish.OTropicalFishModel;
 import com.dragn0007.dragnpets.entities.wolf.OWolf;
 import com.dragn0007.dragnpets.entities.wolf.OWolfModel;
-import com.dragn0007.dragnpets.gui.HuskyScreen;
 import com.dragn0007.dragnpets.util.PetsOverhaulCommonConfig;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.animal.*;
@@ -302,12 +301,13 @@ public class SpawnReplacer {
             Doberman doberman = EntityTypes.DOBERMAN_ENTITY.get().create(event.getLevel());
             Labrador labrador = EntityTypes.LABRADOR_ENTITY.get().create(event.getLevel());
             Husky husky = EntityTypes.HUSKY_ENTITY.get().create(event.getLevel());
+            Pyrenees pyrenees = EntityTypes.PYRENEES_ENTITY.get().create(event.getLevel());
 
             if (event.getLevel().isClientSide) {
                 return;
             }
 
-            int i = event.getLevel().getRandom().nextInt(5);
+            int i = event.getLevel().getRandom().nextInt(6);
 
             if (event.getLevel().getBiome(event.getEntity().blockPosition()).is(Biomes.SWAMP)) {
                 if (commonCat != null) {
@@ -432,6 +432,30 @@ public class SpawnReplacer {
                     }
 
                     event.getLevel().addFreshEntity(husky);
+                    cat.remove(Entity.RemovalReason.DISCARDED);
+
+                    event.setCanceled(true);
+                }
+            }
+
+            if (pyrenees != null) {
+                if (i == 5 && !event.getLevel().getBiome(event.getEntity().blockPosition()).is(Biomes.SWAMP)) {
+                    pyrenees.copyPosition(cat);
+
+                    pyrenees.setCustomName(cat.getCustomName());
+                    pyrenees.setAge(cat.getAge());
+
+                    int randomVariant = event.getLevel().getRandom().nextInt(PyreneesModel.Variant.values().length);
+                    pyrenees.setVariant(randomVariant);
+
+                    int randomGender = event.getLevel().getRandom().nextInt(ODog.Gender.values().length);
+                    pyrenees.setGender(randomGender);
+
+                    if (event.getLevel().isClientSide) {
+                        cat.remove(Entity.RemovalReason.DISCARDED);
+                    }
+
+                    event.getLevel().addFreshEntity(pyrenees);
                     cat.remove(Entity.RemovalReason.DISCARDED);
 
                     event.setCanceled(true);

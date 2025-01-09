@@ -1,10 +1,10 @@
 package com.dragn0007.dragnpets.entities.dog;
 
-import com.dragn0007.dragnlivestock.entities.chicken.OChicken;
+import com.dragn0007.dragnlivestock.util.LOTags;
 import com.dragn0007.dragnlivestock.util.LivestockOverhaulCommonConfig;
 import com.dragn0007.dragnpets.entities.EntityTypes;
-import com.dragn0007.dragnpets.entities.ai.DogFollowOwnerGoal;
-import com.dragn0007.dragnpets.entities.ai.DogFollowPackLeaderGoal;
+import com.dragn0007.dragnpets.entities.ai.*;
+import com.dragn0007.dragnpets.util.POTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -49,16 +49,16 @@ import software.bernie.geckolib.util.GeckoLibUtil;
 import java.util.Random;
 import java.util.UUID;
 
-public class Labrador extends ODog implements NeutralMob, GeoEntity {
+public class Pyrenees extends ODog implements NeutralMob, GeoEntity {
 
-   private static final EntityDataAccessor<Integer> DATA_COLLAR_COLOR = SynchedEntityData.defineId(Labrador.class, EntityDataSerializers.INT);
-   private static final EntityDataAccessor<Integer> DATA_REMAINING_ANGER_TIME = SynchedEntityData.defineId(Labrador.class, EntityDataSerializers.INT);
+   private static final EntityDataAccessor<Integer> DATA_COLLAR_COLOR = SynchedEntityData.defineId(Pyrenees.class, EntityDataSerializers.INT);
+   private static final EntityDataAccessor<Integer> DATA_REMAINING_ANGER_TIME = SynchedEntityData.defineId(Pyrenees.class, EntityDataSerializers.INT);
 
    private static final UniformInt PERSISTENT_ANGER_TIME = TimeUtil.rangeOfSeconds(20, 39);
    @Nullable
    private UUID persistentAngerTarget;
 
-   public Labrador(EntityType<? extends Labrador> entityType, Level level) {
+   public Pyrenees(EntityType<? extends Pyrenees> entityType, Level level) {
       super(entityType, level);
       this.setTame(false);
       this.setPathfindingMalus(BlockPathTypes.POWDER_SNOW, -1.0F);
@@ -72,7 +72,7 @@ public class Labrador extends ODog implements NeutralMob, GeoEntity {
       this.goalSelector.addGoal(4, new LeapAtTargetGoal(this, 0.4F));
       this.goalSelector.addGoal(5, new MeleeAttackGoal(this, 1.5D, true));
       this.goalSelector.addGoal(7, new BreedGoal(this, 1.0D));
-      this.goalSelector.addGoal(8, new WaterAvoidingRandomStrollGoal(this, 1.0D));
+      this.goalSelector.addGoal(10, new WaterAvoidingRandomStrollGoal(this, 1.0D));
       this.goalSelector.addGoal(10, new LookAtPlayerGoal(this, Player.class, 8.0F));
       this.goalSelector.addGoal(10, new RandomLookAroundGoal(this));
       this.targetSelector.addGoal(1, new OwnerHurtByTargetGoal(this));
@@ -80,27 +80,70 @@ public class Labrador extends ODog implements NeutralMob, GeoEntity {
       this.targetSelector.addGoal(3, (new HurtByTargetGoal(this)).setAlertOthers());
       this.targetSelector.addGoal(4, new NearestAttackableTargetGoal<>(this, Player.class, 10, true, false, this::isAngryAt));
       this.targetSelector.addGoal(8, new ResetUniversalAngerTargetGoal<>(this, true));
-      this.goalSelector.addGoal(7, new DogFollowPackLeaderGoal(this));
+      this.goalSelector.addGoal(10, new DogFollowPackLeaderGoal(this));
 
       this.goalSelector.addGoal(6, new DogFollowOwnerGoal(this, 1.0D, 10.0F, 2.0F, false));
 
-      this.targetSelector.addGoal(7, new NearestAttackableTargetGoal<>(this, OChicken.class, false) {
+      this.goalSelector.addGoal(7, new FollowSheepGoal(this, 1.0D, 6.0F, 15.0F));
+      this.goalSelector.addGoal(7, new FollowGoatGoal(this, 1.0D, 3.0F, 7.0F));
+      this.goalSelector.addGoal(8, new FollowCowGoal(this, 1.0D, 3.0F, 7.0F));
+      this.goalSelector.addGoal(8, new FollowPigGoal(this, 1.0D, 3.0F, 7.0F));
+      this.goalSelector.addGoal(9, new FollowRabbitGoal(this, 1.0D, 3.0F, 7.0F));
+      this.goalSelector.addGoal(9, new FollowChickenGoal(this, 1.0D, 3.0F, 7.0F));
+
+      this.goalSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, LivingEntity.class, 10, true, false,
+              entity -> entity.getType().is(LOTags.Entity_Types.WOLVES) && (entity instanceof TamableAnimal && !((TamableAnimal) entity).isTame()))  {
          @Override
          public boolean canUse() {
-            if (this.mob instanceof Labrador) {
-               Labrador customMob = (Labrador) this.mob;
+            if (this.mob instanceof Pyrenees) {
+               Pyrenees customMob = (Pyrenees) this.mob;
                return customMob.wasToldToWander() && super.canUse();
             }
             return super.canUse();
          }
       });
 
+      this.goalSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, LivingEntity.class, 10, true, false,
+              entity -> entity.getType().is(POTags.Entity_Types.O_WOLVES) && (entity instanceof TamableAnimal && !((TamableAnimal) entity).isTame()))  {
+         @Override
+         public boolean canUse() {
+            if (this.mob instanceof Pyrenees) {
+               Pyrenees customMob = (Pyrenees) this.mob;
+               return customMob.wasToldToWander() && super.canUse();
+            }
+            return super.canUse();
+         }
+      });
+
+      this.goalSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, LivingEntity.class, 10, true, false,
+              entity -> entity.getType().is(POTags.Entity_Types.FOXES) && (entity instanceof TamableAnimal && !((TamableAnimal) entity).isTame()))  {
+         @Override
+         public boolean canUse() {
+            if (this.mob instanceof Pyrenees) {
+               Pyrenees customMob = (Pyrenees) this.mob;
+               return customMob.wasToldToWander() && super.canUse();
+            }
+            return super.canUse();
+         }
+      });
+
+      this.goalSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, LivingEntity.class, 10, true, false,
+              entity -> entity.getType().is(POTags.Entity_Types.O_FOXES) && (entity instanceof TamableAnimal && !((TamableAnimal) entity).isTame()))  {
+         @Override
+         public boolean canUse() {
+            if (this.mob instanceof Pyrenees) {
+               Pyrenees customMob = (Pyrenees) this.mob;
+               return customMob.wasToldToWander() && super.canUse();
+            }
+            return super.canUse();
+         }
+      });
    }
 
    public static AttributeSupplier.Builder createAttributes() {
       return Mob.createMobAttributes()
               .add(Attributes.MOVEMENT_SPEED, 0.26F)
-              .add(Attributes.MAX_HEALTH, 12.0D)
+              .add(Attributes.MAX_HEALTH, 14.0D)
               .add(Attributes.ATTACK_DAMAGE, 3.0D);
    }
 
@@ -211,13 +254,13 @@ public class Labrador extends ODog implements NeutralMob, GeoEntity {
    public void setTame(boolean p_30443_) {
       super.setTame(p_30443_);
       if (p_30443_) {
-         this.getAttribute(Attributes.MAX_HEALTH).setBaseValue(18.0D);
+         this.getAttribute(Attributes.MAX_HEALTH).setBaseValue(20.0D);
          this.setHealth(20.0F);
       } else {
          this.getAttribute(Attributes.MAX_HEALTH).setBaseValue(7.0D);
       }
 
-      this.getAttribute(Attributes.ATTACK_DAMAGE).setBaseValue(2.5D);
+      this.getAttribute(Attributes.ATTACK_DAMAGE).setBaseValue(3.0D);
    }
 
    public int getRemainingPersistentAngerTime() {
@@ -252,10 +295,10 @@ public class Labrador extends ODog implements NeutralMob, GeoEntity {
 
    // Generates the base texture
    public ResourceLocation getTextureResource() {
-      return LabradorModel.Variant.variantFromOrdinal(getVariant()).resourceLocation;
+      return PyreneesModel.Variant.variantFromOrdinal(getVariant()).resourceLocation;
    }
 
-   public static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(Labrador.class, EntityDataSerializers.INT);
+   public static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(Pyrenees.class, EntityDataSerializers.INT);
 
    public int getVariant() {
       return this.entityData.get(VARIANT);
@@ -315,8 +358,8 @@ public class Labrador extends ODog implements NeutralMob, GeoEntity {
          data = new AgeableMobGroupData(0.2F);
       }
       Random random = new Random();
-      setVariant(random.nextInt(LabradorModel.Variant.values().length));
-      setGender(random.nextInt(Labrador.Gender.values().length));
+      setVariant(random.nextInt(PyreneesModel.Variant.values().length));
+      setGender(random.nextInt(Pyrenees.Gender.values().length));
 
       return super.finalizeSpawn(serverLevelAccessor, instance, spawnType, data, tag);
    }
@@ -334,7 +377,7 @@ public class Labrador extends ODog implements NeutralMob, GeoEntity {
       return this.getGender() == 1;
    }
 
-   public static final EntityDataAccessor<Integer> GENDER = SynchedEntityData.defineId(Labrador.class, EntityDataSerializers.INT);
+   public static final EntityDataAccessor<Integer> GENDER = SynchedEntityData.defineId(Pyrenees.class, EntityDataSerializers.INT);
 
    public int getGender() {
       return this.entityData.get(GENDER);
@@ -351,13 +394,13 @@ public class Labrador extends ODog implements NeutralMob, GeoEntity {
    public boolean canMate(Animal animal) {
       if (animal == this) {
          return false;
-      } else if (!(animal instanceof Labrador)) {
+      } else if (!(animal instanceof Pyrenees)) {
          return false;
       } else {
          if (!LivestockOverhaulCommonConfig.GENDERS_AFFECT_BREEDING.get()) {
-            return this.canParent() && ((Labrador) animal).canParent();
+            return this.canParent() && ((Pyrenees) animal).canParent();
          } else {
-            Labrador partner = (Labrador) animal;
+            Pyrenees partner = (Pyrenees) animal;
             if (this.canParent() && partner.canParent() && this.getGender() != partner.getGender()) {
                return true;
             }
@@ -375,10 +418,10 @@ public class Labrador extends ODog implements NeutralMob, GeoEntity {
 
    @Override
    public AgeableMob getBreedOffspring(ServerLevel serverLevel, AgeableMob ageableMob) {
-      Labrador oWolf1 = (Labrador) ageableMob;
-      if (ageableMob instanceof Labrador) {
-         Labrador oWolf = (Labrador) ageableMob;
-         oWolf1 = EntityTypes.LABRADOR_ENTITY.get().create(serverLevel);
+      Pyrenees oWolf1 = (Pyrenees) ageableMob;
+      if (ageableMob instanceof Pyrenees) {
+         Pyrenees oWolf = (Pyrenees) ageableMob;
+         oWolf1 = EntityTypes.PYRENEES_ENTITY.get().create(serverLevel);
 
          int i = this.random.nextInt(9);
          int variant;
@@ -387,11 +430,11 @@ public class Labrador extends ODog implements NeutralMob, GeoEntity {
          } else if (i < 8) {
             variant = oWolf.getVariant();
          } else {
-            variant = this.random.nextInt(LabradorModel.Variant.values().length);
+            variant = this.random.nextInt(PyreneesModel.Variant.values().length);
          }
 
          int gender;
-         gender = this.random.nextInt(Labrador.Gender.values().length);
+         gender = this.random.nextInt(Pyrenees.Gender.values().length);
 
          oWolf1.setVariant(variant);
          oWolf1.setGender(gender);
@@ -402,8 +445,8 @@ public class Labrador extends ODog implements NeutralMob, GeoEntity {
 
    public boolean wantsToAttack(LivingEntity entity, LivingEntity p_30390_) {
       if (!(entity instanceof Creeper) && !(entity instanceof Ghast)) {
-         if (entity instanceof Labrador) {
-            Labrador wolf = (Labrador)entity;
+         if (entity instanceof Pyrenees) {
+            Pyrenees wolf = (Pyrenees)entity;
             return !wolf.isTame() || wolf.getOwner() != p_30390_;
          } else if (entity instanceof Player && p_30390_ instanceof Player && !((Player)p_30390_).canHarmPlayer((Player)entity)) {
             return false;

@@ -1,7 +1,6 @@
 package com.dragn0007.dragnpets.entities.ai;
 
 
-import com.dragn0007.dragnpets.entities.cat.OCat;
 import com.dragn0007.dragnpets.entities.ocelot.OOcelot;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.LivingEntity;

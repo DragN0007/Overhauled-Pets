@@ -2,7 +2,6 @@ package com.dragn0007.dragnpets.entities.dog;
 
 import com.dragn0007.dragnpets.PetsOverhaul;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.monster.Husk;
 import software.bernie.geckolib.model.GeoModel;
 
 public class HuskyModel extends GeoModel<Husky> {

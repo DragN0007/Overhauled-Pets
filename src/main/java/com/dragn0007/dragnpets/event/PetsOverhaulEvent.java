@@ -1,7 +1,5 @@
 package com.dragn0007.dragnpets.event;
 
-import com.dragn0007.dragnlivestock.gui.LOMenuTypes;
-import com.dragn0007.dragnlivestock.gui.OMountScreen;
 import com.dragn0007.dragnpets.PetsOverhaul;
 import com.dragn0007.dragnpets.entities.EntityTypes;
 import com.dragn0007.dragnpets.entities.axolotl.OAxolotl;
@@ -45,6 +43,7 @@ public class PetsOverhaulEvent {
         event.put(EntityTypes.O_CAT_ENTITY.get(), OCat.createAttributes().build());
         event.put(EntityTypes.LABRADOR_ENTITY.get(), Labrador.createAttributes().build());
         event.put(EntityTypes.HUSKY_ENTITY.get(), Husky.createAttributes().build());
+        event.put(EntityTypes.PYRENEES_ENTITY.get(), Pyrenees.createAttributes().build());
     }
 
     @SubscribeEvent
@@ -61,6 +60,7 @@ public class PetsOverhaulEvent {
         EntityRenderers.register(EntityTypes.O_CAT_ENTITY.get(), OCatRender::new);
         EntityRenderers.register(EntityTypes.LABRADOR_ENTITY.get(), LabradorRender::new);
         EntityRenderers.register(EntityTypes.HUSKY_ENTITY.get(), HuskyRender::new);
+        EntityRenderers.register(EntityTypes.PYRENEES_ENTITY.get(), PyreneesRender::new);
 
         MenuScreens.register(POMenuTypes.HUSKY_MENU.get(), HuskyScreen::new);
     }

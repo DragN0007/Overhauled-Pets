@@ -1,4 +1,4 @@
-package com.dragn0007.dragnpets.entities.cat;
+package com.dragn0007.dragnpets.entities.dog;
 
 import com.dragn0007.dragnpets.PetsOverhaul;
 import com.dragn0007.dragnpets.util.PetsOverhaulClientConfig;
@@ -16,7 +16,7 @@ import software.bernie.geckolib.renderer.GeoRenderer;
 import software.bernie.geckolib.renderer.layer.GeoRenderLayer;
 
 @OnlyIn(Dist.CLIENT)
-public class OCatCollarLayer extends GeoRenderLayer<OCat> {
+public class PyreneesCollarLayer extends GeoRenderLayer<Pyrenees> {
     public static final ResourceLocation[] TEXTURE_LOCATION = new ResourceLocation[]{
             new ResourceLocation(PetsOverhaul.MODID, "textures/entity/collar/white.png"),
             new ResourceLocation(PetsOverhaul.MODID, "textures/entity/collar/orange.png"),
@@ -40,12 +40,12 @@ public class OCatCollarLayer extends GeoRenderLayer<OCat> {
     private static final ResourceLocation MALE_INDICATOR = new ResourceLocation(PetsOverhaul.MODID, "textures/entity/collar/male_indicator.png");
 
 
-    public OCatCollarLayer(GeoRenderer<OCat> entityRendererIn) {
+    public PyreneesCollarLayer(GeoRenderer<Pyrenees> entityRendererIn) {
         super(entityRendererIn);
     }
 
     @Override
-    public void render(PoseStack poseStack, OCat animatable, BakedGeoModel bakedModel, RenderType renderType, MultiBufferSource bufferSource, VertexConsumer buffer, float partialTick, int packedLight, int packedOverlay) {
+    public void render(PoseStack poseStack, Pyrenees animatable, BakedGeoModel bakedModel, RenderType renderType, MultiBufferSource bufferSource, VertexConsumer buffer, float partialTick, int packedLight, int packedOverlay) {
         DyeColor dyeColor = animatable.getCollarColor();
         ResourceLocation resourceLocation = null;
 

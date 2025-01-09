@@ -2,7 +2,6 @@ package com.dragn0007.dragnpets.entities.ai;
 
 
 import com.dragn0007.dragnpets.entities.fox.OFox;
-import com.dragn0007.dragnpets.entities.parrot.OParrot;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.goal.Goal;
