@@ -1,20 +1,18 @@
-package com.dragn0007.dragnpets.entities.wolf;
+package com.dragn0007.dragnpets.entities.dog;
 
-import com.dragn0007.dragnlivestock.entities.EntityTypes;
-import com.dragn0007.dragnlivestock.entities.cow.ox.Ox;
-import com.dragn0007.dragnlivestock.entities.donkey.ODonkey;
+import com.dragn0007.dragnlivestock.entities.Chestable;
+import com.dragn0007.dragnlivestock.entities.chicken.OChicken;
 import com.dragn0007.dragnlivestock.entities.llama.OLlama;
-import com.dragn0007.dragnlivestock.entities.mule.OMule;
+import com.dragn0007.dragnlivestock.gui.OMountMenu;
 import com.dragn0007.dragnlivestock.items.LOItems;
 import com.dragn0007.dragnlivestock.util.LivestockOverhaulCommonConfig;
-import com.dragn0007.dragnpets.PetsOverhaul;
-import com.dragn0007.dragnpets.entities.ai.CanineFollowPackLeaderGoal;
-import com.dragn0007.dragnpets.entities.ai.WolfFollowOwnerGoal;
-import com.dragn0007.dragnpets.entities.dog.Doberman;
+import com.dragn0007.dragnpets.entities.EntityTypes;
+import com.dragn0007.dragnpets.entities.ai.DogFollowOwnerGoal;
+import com.dragn0007.dragnpets.entities.ai.DogFollowPackLeaderGoal;
+import com.dragn0007.dragnpets.gui.HuskyMenu;
 import com.dragn0007.dragnpets.util.POTags;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -22,13 +20,13 @@ import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.TimeUtil;
 import net.minecraft.util.valueproviders.UniformInt;
-import net.minecraft.world.DifficultyInstance;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.*;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -36,23 +34,23 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.ai.goal.target.*;
 import net.minecraft.world.entity.animal.Animal;
-import net.minecraft.world.entity.animal.Turtle;
-import net.minecraft.world.entity.animal.camel.Camel;
+import net.minecraft.world.entity.animal.horse.AbstractChestedHorse;
 import net.minecraft.world.entity.animal.horse.AbstractHorse;
-import net.minecraft.world.entity.monster.AbstractSkeleton;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.monster.Ghast;
+import net.minecraft.world.entity.monster.Husk;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.item.*;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.pathfinder.BlockPathTypes;
 import net.minecraft.world.phys.Vec3;
-import org.jetbrains.annotations.NotNull;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.items.wrapper.InvWrapper;
+import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.core.animatable.GeoAnimatable;
@@ -64,47 +62,19 @@ import software.bernie.geckolib.core.animation.RawAnimation;
 import software.bernie.geckolib.core.object.PlayState;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
-import java.util.List;
 import java.util.Random;
 import java.util.UUID;
-import java.util.function.Predicate;
-import java.util.stream.Stream;
 
-public class OWolf extends TamableAnimal implements NeutralMob, GeoEntity {
+public class Husky extends ODog implements NeutralMob, GeoEntity, Chestable, ContainerListener {
 
-   private static final ResourceLocation LOOT_TABLE = new ResourceLocation(PetsOverhaul.MODID, "entities/o_wolf");
-   private static final ResourceLocation VANILLA_LOOT_TABLE = new ResourceLocation("minecraft", "entities/wolf");
-   @Override
-   public @NotNull ResourceLocation getDefaultLootTable() {
-      if (LivestockOverhaulCommonConfig.USE_VANILLA_LOOT.get()) {
-         return VANILLA_LOOT_TABLE;
-      }
-      return LOOT_TABLE;
-   }
-
-   private static final EntityDataAccessor<Integer> DATA_COLLAR_COLOR = SynchedEntityData.defineId(OWolf.class, EntityDataSerializers.INT);
-   private static final EntityDataAccessor<Integer> DATA_REMAINING_ANGER_TIME = SynchedEntityData.defineId(OWolf.class, EntityDataSerializers.INT);
-   public static final Predicate<LivingEntity> PREY_SELECTOR = (entity) -> {
-      EntityType<?> entitytype = entity.getType();
-      return entitytype == EntityTypes.O_SHEEP_ENTITY.get() ||
-              entitytype == EntityTypes.O_RABBIT_ENTITY.get() ||
-              entitytype == EntityTypes.O_GOAT_ENTITY.get() ||
-              entitytype == EntityTypes.O_HORSE_ENTITY.get() ||
-              entitytype == EntityTypes.O_COW_ENTITY.get() ||
-              entitytype == EntityTypes.O_CHICKEN_ENTITY.get() ||
-              entitytype == EntityTypes.O_PIG_ENTITY.get() ||
-              entitytype == com.dragn0007.dragnpets.entities.EntityTypes.O_FOX_ENTITY.get() ||
-              entitytype == com.dragn0007.dragnpets.entities.EntityTypes.O_OCELOT_ENTITY.get() ||
-              entitytype == com.dragn0007.dragnpets.entities.EntityTypes.DOBERMAN_ENTITY.get()||
-              entitytype == com.dragn0007.dragnpets.entities.EntityTypes.O_CAT_ENTITY.get()
-              ;
-   };
+   private static final EntityDataAccessor<Integer> DATA_COLLAR_COLOR = SynchedEntityData.defineId(Husky.class, EntityDataSerializers.INT);
+   private static final EntityDataAccessor<Integer> DATA_REMAINING_ANGER_TIME = SynchedEntityData.defineId(Husky.class, EntityDataSerializers.INT);
 
    private static final UniformInt PERSISTENT_ANGER_TIME = TimeUtil.rangeOfSeconds(20, 39);
    @Nullable
    private UUID persistentAngerTarget;
 
-   public OWolf(EntityType<? extends OWolf> entityType, Level level) {
+   public Husky(EntityType<? extends Husky> entityType, Level level) {
       super(entityType, level);
       this.setTame(false);
       this.setPathfindingMalus(BlockPathTypes.POWDER_SNOW, -1.0F);
@@ -113,13 +83,8 @@ public class OWolf extends TamableAnimal implements NeutralMob, GeoEntity {
 
    protected void registerGoals() {
       this.goalSelector.addGoal(1, new FloatGoal(this));
-      this.goalSelector.addGoal(1, new OWolf.WolfPanicGoal(1.4D));
+      this.goalSelector.addGoal(1, new WolfPanicGoal(1.4D));
       this.goalSelector.addGoal(2, new SitWhenOrderedToGoal(this));
-      this.goalSelector.addGoal(3, new AvoidEntityGoal<>(this, OLlama.class, 24.0F, 1.5D, 1.5D));
-      this.goalSelector.addGoal(3, new AvoidEntityGoal<>(this, Ox.class, 24.0F, 1.5D, 1.5D));
-      this.goalSelector.addGoal(3, new AvoidEntityGoal<>(this, Camel.class, 24.0F, 1.5D, 1.5D));
-      this.goalSelector.addGoal(3, new AvoidEntityGoal(this, ODonkey.class, 24.0F, 1.5D, 1.5D));
-      this.goalSelector.addGoal(3, new AvoidEntityGoal(this, OMule.class, 24.0F, 1.5D, 1.5D));
       this.goalSelector.addGoal(4, new LeapAtTargetGoal(this, 0.4F));
       this.goalSelector.addGoal(5, new MeleeAttackGoal(this, 1.5D, true));
       this.goalSelector.addGoal(7, new BreedGoal(this, 1.0D));
@@ -130,19 +95,17 @@ public class OWolf extends TamableAnimal implements NeutralMob, GeoEntity {
       this.targetSelector.addGoal(2, new OwnerHurtTargetGoal(this));
       this.targetSelector.addGoal(3, (new HurtByTargetGoal(this)).setAlertOthers());
       this.targetSelector.addGoal(4, new NearestAttackableTargetGoal<>(this, Player.class, 10, true, false, this::isAngryAt));
-      this.targetSelector.addGoal(5, new NonTameRandomTargetGoal<>(this, Animal.class, false, PREY_SELECTOR));
-      this.targetSelector.addGoal(6, new NonTameRandomTargetGoal<>(this, Turtle.class, false, Turtle.BABY_ON_LAND_SELECTOR));
-      this.targetSelector.addGoal(7, new NearestAttackableTargetGoal<>(this, AbstractSkeleton.class, false));
       this.targetSelector.addGoal(8, new ResetUniversalAngerTargetGoal<>(this, true));
-      this.goalSelector.addGoal(3, new CanineFollowPackLeaderGoal(this));
-      this.goalSelector.addGoal(6, new WolfFollowOwnerGoal(this, 1.0D, 10.0F, 2.0F, false));
+      this.goalSelector.addGoal(3, new DogFollowPackLeaderGoal(this));
+
+      this.goalSelector.addGoal(6, new DogFollowOwnerGoal(this, 1.0D, 10.0F, 2.0F, false));
    }
 
    public static AttributeSupplier.Builder createAttributes() {
       return Mob.createMobAttributes()
-              .add(Attributes.MOVEMENT_SPEED, 0.28F)
-              .add(Attributes.MAX_HEALTH, 14.0D)
-              .add(Attributes.ATTACK_DAMAGE, 4.0D);
+              .add(Attributes.MOVEMENT_SPEED, 0.26F)
+              .add(Attributes.MAX_HEALTH, 12.0D)
+              .add(Attributes.ATTACK_DAMAGE, 3.0D);
    }
 
    private final AnimatableInstanceCache geoCache = GeckoLibUtil.createInstanceCache(this);
@@ -159,7 +122,7 @@ public class OWolf extends TamableAnimal implements NeutralMob, GeoEntity {
             controller.setAnimationSpeed(1.3);
          } else {
             controller.setAnimation(RawAnimation.begin().then("walk", Animation.LoopType.LOOP));
-            controller.setAnimationSpeed(1.3);
+            controller.setAnimationSpeed(1.2);
          }
       } else {
          if (isInSittingPose()) {
@@ -183,161 +146,9 @@ public class OWolf extends TamableAnimal implements NeutralMob, GeoEntity {
       return this.geoCache;
    }
 
-
-   public OWolf leader;
-   public int packSize = 1;
-
-   public boolean isFollower() {
-      return this.leader != null && this.leader.isAlive();
-   }
-
-   public OWolf startFollowing(OWolf wolf) {
-      this.leader = wolf;
-      wolf.addFollower();
-      return wolf;
-   }
-
-   public void stopFollowing() {
-      this.leader.removeFollower();
-      this.leader = null;
-   }
-
-   public void addFollower() {
-      ++this.packSize;
-   }
-
-   public void removeFollower() {
-      --this.packSize;
-   }
-
-   public boolean canBeFollowed() {
-      return this.hasFollowers() && this.packSize < this.getMaxHerdSize();
-   }
-
-   public int regenHealthCounter = 0;
-
-   public void tick() {
-      super.tick();
-      if (this.hasFollowers() && this.level().random.nextInt(200) == 1) {
-         List<? extends OWolf> list = this.level().getEntitiesOfClass(this.getClass(), this.getBoundingBox().inflate(20.0D, 20.0D, 20.0D));
-         if (list.size() <= 1) {
-            this.packSize = 1;
-         }
-      }
-
-      regenHealthCounter++;
-
-      if (this.getHealth() < this.getMaxHealth() && regenHealthCounter >= 150 && this.isTame()) {
-         this.setHealth(this.getHealth() + 2);
-         regenHealthCounter = 0;
-         this.level().addParticle(ParticleTypes.HEART, this.getRandomX(0.6D), this.getRandomY(), this.getRandomZ(0.6D), 0.7D, 0.7D, 0.7D);
-      }
-
-   }
-
-   public int getMaxHerdSize() {
-      return 6;
-   }
-
-   public boolean hasFollowers() {
-      return this.packSize > 1;
-   }
-
-   public boolean inRangeOfLeader() {
-      return this.distanceToSqr(this.leader) <= 121.0D;
-   }
-
-   public void pathToLeader() {
-      if (this.isFollower()) {
-         this.getNavigation().moveTo(this.leader, 1.0D);
-      }
-
-   }
-
-   public void addFollowers(Stream<? extends OWolf> p_27534_) {
-      p_27534_.limit((long)(this.getMaxHerdSize() - this.packSize)).filter((wolf) -> {
-         return wolf != this;
-      }).forEach((wolf) -> {
-         wolf.startFollowing(this);
-      });
-   }
-
    @Override
    public float getStepHeight() {
-      return 2F;
-   }
-
-   protected void playStepSound(BlockPos p_30415_, BlockState p_30416_) {
-      this.playSound(SoundEvents.WOLF_STEP, 0.15F, 1.0F);
-   }
-
-   protected SoundEvent getAmbientSound() {
-      if (this.isAngry()) {
-         return SoundEvents.WOLF_GROWL;
-      } else if (this.random.nextInt(3) == 0) {
-         return this.isTame() && this.getHealth() < 10.0F ? SoundEvents.WOLF_WHINE : SoundEvents.WOLF_PANT;
-      } else {
-         return SoundEvents.WOLF_AMBIENT;
-      }
-   }
-
-   protected SoundEvent getHurtSound(DamageSource p_30424_) {
-      return SoundEvents.WOLF_HURT;
-   }
-
-   protected SoundEvent getDeathSound() {
-      return SoundEvents.WOLF_DEATH;
-   }
-
-   protected float getSoundVolume() {
-      return 0.4F;
-   }
-
-   public void aiStep() {
-      super.aiStep();
-
-      if (!this.level().isClientSide) {
-         this.updatePersistentAnger((ServerLevel)this.level(), true);
-      }
-
-   }
-
-   public boolean hurt(DamageSource damageSource, float p_30387_) {
-      if (this.isInvulnerableTo(damageSource)) {
-         return false;
-      } else {
-         Entity entity = damageSource.getEntity();
-         if (!this.level().isClientSide) {
-            this.setOrderedToSit(false);
-         }
-
-         if (entity != null && !(entity instanceof Player) && !(entity instanceof AbstractArrow)) {
-            p_30387_ = (p_30387_ + 1.0F) / 2.0F;
-         }
-
-         return super.hurt(damageSource, p_30387_);
-      }
-   }
-
-   public boolean doHurtTarget(Entity p_30372_) {
-      boolean flag = p_30372_.hurt(this.damageSources().mobAttack(this), (float)((int)this.getAttributeValue(Attributes.ATTACK_DAMAGE)));
-      if (flag) {
-         this.doEnchantDamageEffects(this, p_30372_);
-      }
-
-      return flag;
-   }
-
-   public void setTame(boolean p_30443_) {
-      super.setTame(p_30443_);
-      if (p_30443_) {
-         this.getAttribute(Attributes.MAX_HEALTH).setBaseValue(20.0D);
-         this.setHealth(20.0F);
-      } else {
-         this.getAttribute(Attributes.MAX_HEALTH).setBaseValue(8.0D);
-      }
-
-      this.getAttribute(Attributes.ATTACK_DAMAGE).setBaseValue(4.0D);
+      return 1F;
    }
 
    public InteractionResult mobInteract(Player player, InteractionHand hand) {
@@ -356,6 +167,36 @@ public class OWolf extends TamableAnimal implements NeutralMob, GeoEntity {
          ItemStack itemstack1 = ItemUtils.createFilledResult(itemstack, player, LOItems.MALE_GENDER_TEST_STRIP.get().getDefaultInstance());
          player.setItemInHand(hand, itemstack1);
          return InteractionResult.SUCCESS;
+      }
+
+      if (!this.hasChest() && itemstack.is(net.minecraft.world.level.block.Blocks.CHEST.asItem()) && this.isOwnedBy(player)) {
+         this.setChest(true);
+         this.playChestEquipsSound();
+         if (!player.getAbilities().instabuild) {
+            itemstack.shrink(1);
+         }
+
+         this.createInventory();
+         return InteractionResult.sidedSuccess(this.level().isClientSide);
+      }
+
+      if (!this.isBaby() && this.isOwnedBy(player)) {
+         if (this.isTame() && player.isSecondaryUseActive() && this.isOrderedToSit()) {
+            this.openInventory(player);
+            return InteractionResult.sidedSuccess(this.level().isClientSide);
+         }
+      }
+
+      if (itemstack.is(Items.SHEARS) && player.isShiftKeyDown() && this.isOwnedBy(player)) {
+         if (this.hasChest()) {
+            this.dropEquipment();
+            this.inventory.removeAllItems();
+
+            this.setChest(false);
+            this.playChestEquipsSound();
+
+            return InteractionResult.sidedSuccess(this.level().isClientSide);
+         }
       }
 
       //doggy talents next compat
@@ -455,21 +296,77 @@ public class OWolf extends TamableAnimal implements NeutralMob, GeoEntity {
       }
    }
 
-   private boolean toldToWander = false;
-
-   public boolean wasToldToWander() {
-      return this.toldToWander;
+   protected void playStepSound(BlockPos p_30415_, BlockState p_30416_) {
+      this.playSound(SoundEvents.WOLF_STEP, 0.15F, 1.0F);
    }
 
-   public void setToldToWander(boolean sheared) {
-      this.toldToWander = sheared;
+   protected SoundEvent getAmbientSound() {
+      if (this.isAngry()) {
+         return SoundEvents.WOLF_GROWL;
+      } else if (this.random.nextInt(3) == 0) {
+         return this.isTame() && this.getHealth() < 10.0F ? SoundEvents.WOLF_WHINE : SoundEvents.WOLF_PANT;
+      } else {
+         return SoundEvents.WOLF_AMBIENT;
+      }
    }
 
-   private static final Ingredient FOOD_ITEMS = Ingredient.of(POTags.Items.DOG_FOOD);
+   protected SoundEvent getHurtSound(DamageSource p_30424_) {
+      return SoundEvents.WOLF_HURT;
+   }
 
-   @Override
-   public boolean isFood(ItemStack itemStack) {
-      return FOOD_ITEMS.test(itemStack);
+   protected SoundEvent getDeathSound() {
+      return SoundEvents.WOLF_DEATH;
+   }
+
+   protected float getSoundVolume() {
+      return 0.4F;
+   }
+
+   public void aiStep() {
+      super.aiStep();
+
+      if (!this.level().isClientSide) {
+         this.updatePersistentAnger((ServerLevel)this.level(), true);
+      }
+
+   }
+
+   public boolean hurt(DamageSource damageSource, float p_30387_) {
+      if (this.isInvulnerableTo(damageSource)) {
+         return false;
+      } else {
+         Entity entity = damageSource.getEntity();
+         if (!this.level().isClientSide) {
+            this.setOrderedToSit(false);
+         }
+
+         if (entity != null && !(entity instanceof Player) && !(entity instanceof AbstractArrow)) {
+            p_30387_ = (p_30387_ + 1.0F) / 2.0F;
+         }
+
+         return super.hurt(damageSource, p_30387_);
+      }
+   }
+
+   public boolean doHurtTarget(Entity p_30372_) {
+      boolean flag = p_30372_.hurt(this.damageSources().mobAttack(this), (float)((int)this.getAttributeValue(Attributes.ATTACK_DAMAGE)));
+      if (flag) {
+         this.doEnchantDamageEffects(this, p_30372_);
+      }
+
+      return flag;
+   }
+
+   public void setTame(boolean p_30443_) {
+      super.setTame(p_30443_);
+      if (p_30443_) {
+         this.getAttribute(Attributes.MAX_HEALTH).setBaseValue(18.0D);
+         this.setHealth(20.0F);
+      } else {
+         this.getAttribute(Attributes.MAX_HEALTH).setBaseValue(7.0D);
+      }
+
+      this.getAttribute(Attributes.ATTACK_DAMAGE).setBaseValue(2.5D);
    }
 
    public int getRemainingPersistentAngerTime() {
@@ -504,10 +401,13 @@ public class OWolf extends TamableAnimal implements NeutralMob, GeoEntity {
 
    // Generates the base texture
    public ResourceLocation getTextureResource() {
-      return OWolfModel.Variant.variantFromOrdinal(getVariant()).resourceLocation;
+      return HuskyModel.Variant.variantFromOrdinal(getVariant()).resourceLocation;
    }
 
-   public static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(OWolf.class, EntityDataSerializers.INT);
+   public static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(Husky.class, EntityDataSerializers.INT);
+   public static final EntityDataAccessor<Boolean> CHESTED = SynchedEntityData.defineId(Husky.class, EntityDataSerializers.BOOLEAN);
+   private static final EntityDataAccessor<Boolean> DATA_ID_CHEST = SynchedEntityData.defineId(Husky.class, EntityDataSerializers.BOOLEAN);
+   private static final EntityDataAccessor<Byte> DATA_ID_FLAGS = SynchedEntityData.defineId(Husky.class, EntityDataSerializers.BYTE);
 
    public int getVariant() {
       return this.entityData.get(VARIANT);
@@ -523,6 +423,8 @@ public class OWolf extends TamableAnimal implements NeutralMob, GeoEntity {
       this.entityData.define(DATA_REMAINING_ANGER_TIME, 0);
       this.entityData.define(VARIANT, 0);
       this.entityData.define(GENDER, 0);
+      this.entityData.define(CHESTED, false);
+      this.entityData.define(DATA_ID_CHEST, false);
    }
 
    public void addAdditionalSaveData(CompoundTag tag) {
@@ -530,6 +432,9 @@ public class OWolf extends TamableAnimal implements NeutralMob, GeoEntity {
       tag.putByte("CollarColor", (byte)this.getCollarColor().getId());
       tag.putInt("Variant", getVariant());
       tag.putInt("Gender", this.getGender());
+      tag.putBoolean("Wandering", this.getToldToWander());
+      tag.putBoolean("Panicking", this.getPanicking());
+      tag.putBoolean("Chested", this.hasChest());
       this.addPersistentAngerSaveData(tag);
    }
 
@@ -547,6 +452,17 @@ public class OWolf extends TamableAnimal implements NeutralMob, GeoEntity {
          this.setGender(tag.getInt("Gender"));
       }
 
+      if (tag.contains("Wandering")) {
+         this.setToldToWander(tag.getBoolean("Wandering"));
+      }
+
+      if (tag.contains("Panicking")) {
+         this.setPanicking(tag.getBoolean("Panicking"));
+      }
+
+      this.setChest(tag.getBoolean("Chested"));
+      this.updateContainerEquipment();
+
       this.readPersistentAngerSaveData(this.level(), tag);
    }
 
@@ -557,10 +473,138 @@ public class OWolf extends TamableAnimal implements NeutralMob, GeoEntity {
          data = new AgeableMobGroupData(0.2F);
       }
       Random random = new Random();
-      setVariant(random.nextInt(OWolfModel.Variant.values().length));
-      setGender(random.nextInt(OWolf.Gender.values().length));
+      setVariant(random.nextInt(HuskyModel.Variant.values().length));
+      setGender(random.nextInt(Husky.Gender.values().length));
 
       return super.finalizeSpawn(serverLevelAccessor, instance, spawnType, data, tag);
+   }
+
+   protected SimpleContainer inventory;
+   public LazyOptional<?> itemHandler = null;
+
+   @Override
+   public boolean isChestable() {
+      return this.isAlive() && !this.isBaby();
+   }
+
+   @Override
+   public void equipChest(@javax.annotation.Nullable SoundSource soundSource) {
+      if(soundSource != null) {
+         this.level().playSound(null, this, SoundEvents.MULE_CHEST, soundSource, 0.5f, 1f);
+      }
+   }
+
+   @Override
+   public boolean isChested() {
+      return this.entityData.get(CHESTED);
+   }
+
+   protected void createInventory() {
+      SimpleContainer simplecontainer = this.inventory;
+      this.inventory = new SimpleContainer(this.getInventorySize());
+      if (simplecontainer != null) {
+         simplecontainer.removeListener(this);
+         int i = Math.min(simplecontainer.getContainerSize(), this.inventory.getContainerSize());
+
+         for(int j = 0; j < i; ++j) {
+            ItemStack itemstack = simplecontainer.getItem(j);
+            if (!itemstack.isEmpty()) {
+               this.inventory.setItem(j, itemstack.copy());
+            }
+         }
+      }
+
+      this.inventory.addListener(this);
+      this.updateContainerEquipment();
+      this.itemHandler = net.minecraftforge.common.util.LazyOptional.of(() -> new net.minecraftforge.items.wrapper.InvWrapper(this.inventory));
+   }
+
+   protected void updateContainerEquipment() {
+      if (!this.level().isClientSide) {
+         this.setFlag(4, !this.inventory.getItem(0).isEmpty());
+      }
+   }
+
+   protected void setFlag(int p_30598_, boolean p_30599_) {
+      byte b0 = this.entityData.get(DATA_ID_FLAGS);
+      if (p_30599_) {
+         this.entityData.set(DATA_ID_FLAGS, (byte)(b0 | p_30598_));
+      } else {
+         this.entityData.set(DATA_ID_FLAGS, (byte)(b0 & ~p_30598_));
+      }
+
+   }
+
+   @Override
+   public void dropEquipment() {
+      if(!this.level().isClientSide) {
+         super.dropEquipment();
+         if(this.isChested()) {
+            this.spawnAtLocation(Items.CHEST);
+         }
+         Containers.dropContents(this.level(), this, this.inventory);
+      }
+   }
+
+   public void updateInventory() {
+      SimpleContainer tempInventory = this.inventory;
+      this.inventory = new SimpleContainer(this.getInventorySize());
+
+      if(tempInventory != null) {
+         tempInventory.removeListener(this);
+         int maxSize = Math.min(tempInventory.getContainerSize(), this.inventory.getContainerSize());
+
+         for(int i = 0; i < maxSize; i++) {
+            ItemStack itemStack = tempInventory.getItem(i);
+            if(!itemStack.isEmpty()) {
+               this.inventory.setItem(i, itemStack.copy());
+            }
+         }
+      }
+      this.inventory.addListener(this);
+      this.itemHandler = LazyOptional.of(() -> new InvWrapper(this.inventory));
+   }
+
+   @Override
+   public void invalidateCaps() {
+      super.invalidateCaps();
+      if(this.itemHandler != null) {
+         LazyOptional<?> oldHandler = this.itemHandler;
+         this.itemHandler = null;
+         oldHandler.invalidate();
+      }
+   }
+
+   public void setChest(boolean p_30505_) {
+      this.entityData.set(DATA_ID_CHEST, p_30505_);
+   }
+
+   protected int getInventorySize() {
+      return 12;
+   }
+
+   public boolean hasChest() {
+      return this.entityData.get(DATA_ID_CHEST);
+   }
+
+   public void playChestEquipsSound() {
+      this.playSound(SoundEvents.LLAMA_CHEST, 1.0F, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.0F);
+   }
+
+   @Override
+   public void containerChanged(Container p_18983_) {
+      return;
+   }
+
+   public void openInventory(Player player) {
+      if(player instanceof ServerPlayer serverPlayer && this.isTame()) {
+         NetworkHooks.openScreen(serverPlayer, new SimpleMenuProvider((containerId, inventory, p) -> {
+            return new HuskyMenu(containerId, inventory, this.inventory, this);
+         }, this.getDisplayName()), (data) -> {
+            data.writeInt(this.getInventorySize());
+            data.writeInt(this.getId());
+         });
+      }
    }
 
    public enum Gender {
@@ -576,7 +620,7 @@ public class OWolf extends TamableAnimal implements NeutralMob, GeoEntity {
       return this.getGender() == 1;
    }
 
-   public static final EntityDataAccessor<Integer> GENDER = SynchedEntityData.defineId(OWolf.class, EntityDataSerializers.INT);
+   public static final EntityDataAccessor<Integer> GENDER = SynchedEntityData.defineId(Husky.class, EntityDataSerializers.INT);
 
    public int getGender() {
       return this.entityData.get(GENDER);
@@ -593,13 +637,13 @@ public class OWolf extends TamableAnimal implements NeutralMob, GeoEntity {
    public boolean canMate(Animal animal) {
       if (animal == this) {
          return false;
-      } else if (!(animal instanceof OWolf)) {
+      } else if (!(animal instanceof Husky)) {
          return false;
       } else {
          if (!LivestockOverhaulCommonConfig.GENDERS_AFFECT_BREEDING.get()) {
-            return this.canParent() && ((OWolf) animal).canParent();
+            return this.canParent() && ((Husky) animal).canParent();
          } else {
-            OWolf partner = (OWolf) animal;
+            Husky partner = (Husky) animal;
             if (this.canParent() && partner.canParent() && this.getGender() != partner.getGender()) {
                return true;
             }
@@ -616,11 +660,11 @@ public class OWolf extends TamableAnimal implements NeutralMob, GeoEntity {
    }
 
    @Override
-   public AgeableMob getBreedOffspring(ServerLevel serverLevel, AgeableMob wolf) {
-      OWolf oWolf1 = (OWolf) wolf;
-      if (wolf instanceof OWolf) {
-         OWolf oWolf;
-         oWolf = com.dragn0007.dragnpets.entities.EntityTypes.O_WOLF_ENTITY.get().create(serverLevel);
+   public AgeableMob getBreedOffspring(ServerLevel serverLevel, AgeableMob ageableMob) {
+      Husky oWolf1 = (Husky) ageableMob;
+      if (ageableMob instanceof Husky) {
+         Husky oWolf = (Husky) ageableMob;
+         oWolf1 = EntityTypes.HUSKY_ENTITY.get().create(serverLevel);
 
          int i = this.random.nextInt(9);
          int variant;
@@ -629,11 +673,11 @@ public class OWolf extends TamableAnimal implements NeutralMob, GeoEntity {
          } else if (i < 8) {
             variant = oWolf.getVariant();
          } else {
-            variant = this.random.nextInt(OWolfModel.Variant.values().length);
+            variant = this.random.nextInt(HuskyModel.Variant.values().length);
          }
 
          int gender;
-         gender = this.random.nextInt(OWolf.Gender.values().length);
+         gender = this.random.nextInt(Husky.Gender.values().length);
 
          oWolf1.setVariant(variant);
          oWolf1.setGender(gender);
@@ -642,11 +686,10 @@ public class OWolf extends TamableAnimal implements NeutralMob, GeoEntity {
       return oWolf1;
    }
 
-
    public boolean wantsToAttack(LivingEntity entity, LivingEntity p_30390_) {
       if (!(entity instanceof Creeper) && !(entity instanceof Ghast)) {
-         if (entity instanceof OWolf) {
-            OWolf wolf = (OWolf)entity;
+         if (entity instanceof Husky) {
+            Husky wolf = (Husky)entity;
             return !wolf.isTame() || wolf.getOwner() != p_30390_;
          } else if (entity instanceof Player && p_30390_ instanceof Player && !((Player)p_30390_).canHarmPlayer((Player)entity)) {
             return false;
@@ -660,52 +703,11 @@ public class OWolf extends TamableAnimal implements NeutralMob, GeoEntity {
       }
    }
 
-   public boolean canBeLeashed(Player p_30396_) {
-      return !this.isAngry() && super.canBeLeashed(p_30396_);
+   public boolean canBeLeashed(Player player) {
+      return !this.isAngry() && super.canBeLeashed(player);
    }
 
    public Vec3 getLeashOffset() {
       return new Vec3(0.0D, (double)(0.6F * this.getEyeHeight()), (double)(this.getBbWidth() * 0.4F));
-   }
-
-   class WolfAvoidEntityGoal<T extends LivingEntity> extends AvoidEntityGoal<T> {
-      private final OWolf wolf;
-
-      public WolfAvoidEntityGoal(OWolf p_30454_, Class<T> p_30455_, float p_30456_, double p_30457_, double p_30458_) {
-         super(p_30454_, p_30455_, p_30456_, p_30457_, p_30458_);
-         this.wolf = p_30454_;
-      }
-
-      public boolean canUse() {
-         if (super.canUse() && this.toAvoid instanceof OLlama) {
-            return !this.wolf.isTame() && this.avoidLlama((OLlama)this.toAvoid);
-         } else {
-            return false;
-         }
-      }
-
-      private boolean avoidLlama(OLlama p_30461_) {
-         return p_30461_.getStrength() >= OWolf.this.random.nextInt(5);
-      }
-
-      public void start() {
-         OWolf.this.setTarget((LivingEntity)null);
-         super.start();
-      }
-
-      public void tick() {
-         OWolf.this.setTarget((LivingEntity)null);
-         super.tick();
-      }
-   }
-
-   class WolfPanicGoal extends PanicGoal {
-      public WolfPanicGoal(double v) {
-         super(OWolf.this, v);
-      }
-
-      protected boolean shouldPanic() {
-         return this.mob.isFreezing() || this.mob.isOnFire() || this.mob.getHealth() < this.mob.getMaxHealth() / 3;
-      }
    }
 }

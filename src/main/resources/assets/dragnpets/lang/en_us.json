@@ -34,6 +34,12 @@
   "item.dragnpets.o_cat_spawn_egg": "Common Cat Spawn Egg",
   "entity.dragnpets.o_cat": "Common Cat",
 
+  "item.dragnpets.labrador_spawn_egg": "Labrador Retriever Spawn Egg",
+  "entity.dragnpets.labrador": "Labrador Retriever",
+
+  "item.dragnpets.husky_spawn_egg": "Husky Spawn Egg",
+  "entity.dragnpets.husky": "Husky",
+
   "item.dragnpets.wolf": "Dog",
   "item.dragnpets.cooked_wolf": "Cooked Dog",
 

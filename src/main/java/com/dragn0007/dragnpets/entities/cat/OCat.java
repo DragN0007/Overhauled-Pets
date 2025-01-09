@@ -131,12 +131,12 @@ public class OCat extends TamableAnimal implements GeoEntity {
               .add(Attributes.ATTACK_DAMAGE, 3.0D);
    }
 
-   public int giftTime = this.random.nextInt(100) + 100;
+   public int giftTime = this.random.nextInt(24000) + 48000;
 
    public void aiStep() {
       super.aiStep();
 
-      if (!this.level().isClientSide && this.isAlive() && !this.isBaby() && --this.giftTime <= 0 && PetsOverhaulCommonConfig.CATS_GIVE_GIFTS.get() && this.isTame() && !this.toldToWander) {
+      if (!this.level().isClientSide && this.isAlive() && !this.isBaby() && --this.giftTime <= 0 && PetsOverhaulCommonConfig.CATS_GIVE_GIFTS.get() && this.isTame() && !this.wasToldToWander() && !this.isOrderedToSit()) {
          this.playSound(SoundEvents.CAT_PURREOW, 1.0F, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.0F);
 
          int i = this.getRandom().nextInt(100);
@@ -177,9 +177,8 @@ public class OCat extends TamableAnimal implements GeoEntity {
             this.spawnAtLocation(Items.CREEPER_HEAD);
          }
 
-         this.giftTime = this.random.nextInt(100) + 100;
+         this.giftTime = this.random.nextInt(24000) + 48000;
       }
-
    }
 
    private final AnimatableInstanceCache geoCache = GeckoLibUtil.createInstanceCache(this);
@@ -332,13 +331,13 @@ public class OCat extends TamableAnimal implements GeoEntity {
          return InteractionResult.SUCCESS;
       }
 
-      if (player.isShiftKeyDown() && !this.isFood(itemstack) && !this.isOrderedToSit() && !this.wasToldToWander()) {
+      if (player.isShiftKeyDown() && !this.isFood(itemstack) && !this.isOrderedToSit() && !this.wasToldToWander() && this.isOwnedBy(player)) {
          this.setToldToWander(true);
          player.displayClientMessage(Component.translatable("tooltip.dragnpets.wandering.tooltip").withStyle(ChatFormatting.GOLD), true);
          return InteractionResult.SUCCESS;
       }
 
-      if (player.isShiftKeyDown() && !this.isFood(itemstack) && !this.isOrderedToSit() && this.wasToldToWander()) {
+      if (player.isShiftKeyDown() && !this.isFood(itemstack) && !this.isOrderedToSit() && this.wasToldToWander() && this.isOwnedBy(player)) {
          this.setToldToWander(false);
          player.displayClientMessage(Component.translatable("tooltip.dragnpets.following.tooltip").withStyle(ChatFormatting.GOLD), true);
          return InteractionResult.SUCCESS;

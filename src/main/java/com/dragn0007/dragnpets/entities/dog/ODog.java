@@ -336,7 +336,7 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity {
       }
 
       //doggy talents next compat
-      if (itemstack.is(POTags.Items.TRAINING_TREAT)) {
+      if (itemstack.is(POTags.Items.TRAINING_TREAT) && this.isOwnedBy(player)) {
          if (!player.level().isClientSide) {
             Entity entity = this;
 
@@ -358,13 +358,13 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity {
          return InteractionResult.SUCCESS;
       }
 
-      if (player.isShiftKeyDown() && !this.isFood(itemstack) && !this.isOrderedToSit() && !this.wasToldToWander()) {
+      if (player.isShiftKeyDown() && !this.isFood(itemstack) && !this.isOrderedToSit() && !this.wasToldToWander() && this.isOwnedBy(player)) {
          this.setToldToWander(true);
          player.displayClientMessage(Component.translatable("tooltip.dragnpets.wandering.tooltip").withStyle(ChatFormatting.GOLD), true);
          return InteractionResult.SUCCESS;
       }
 
-      if (player.isShiftKeyDown() && !this.isFood(itemstack) && !this.isOrderedToSit() && this.wasToldToWander()) {
+      if (player.isShiftKeyDown() && !this.isFood(itemstack) && !this.isOrderedToSit() && this.wasToldToWander() && this.isOwnedBy(player)) {
          this.setToldToWander(false);
          player.displayClientMessage(Component.translatable("tooltip.dragnpets.following.tooltip").withStyle(ChatFormatting.GOLD), true);
          return InteractionResult.SUCCESS;

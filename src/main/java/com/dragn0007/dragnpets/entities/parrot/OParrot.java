@@ -262,13 +262,13 @@ public class OParrot extends TamableAnimal implements GeoEntity, FlyingAnimal {
          return InteractionResult.SUCCESS;
       }
 
-      if (player.isShiftKeyDown() && !this.isFood(itemstack) && !this.isOrderedToSit() && !this.wasToldToWander()) {
+      if (player.isShiftKeyDown() && !this.isFood(itemstack) && !this.isOrderedToSit() && !this.wasToldToWander() && this.isOwnedBy(player)) {
          this.setToldToWander(true);
          player.displayClientMessage(Component.translatable("tooltip.dragnpets.wandering.tooltip").withStyle(ChatFormatting.GOLD), true);
          return InteractionResult.SUCCESS;
       }
 
-      if (player.isShiftKeyDown() && !this.isFood(itemstack) && !this.isOrderedToSit() && this.wasToldToWander()) {
+      if (player.isShiftKeyDown() && !this.isFood(itemstack) && !this.isOrderedToSit() && this.wasToldToWander() && this.isOwnedBy(player)) {
          this.setToldToWander(false);
          player.displayClientMessage(Component.translatable("tooltip.dragnpets.following.tooltip").withStyle(ChatFormatting.GOLD), true);
          return InteractionResult.SUCCESS;

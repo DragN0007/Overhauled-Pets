@@ -79,7 +79,9 @@ public class OFox extends TamableAnimal implements GeoEntity {
       EntityType<?> entitytype = entity.getType();
       return entitytype == EntityTypes.O_RABBIT_ENTITY.get() ||
               entitytype == EntityTypes.O_CHICKEN_ENTITY.get() ||
-              entitytype == EntityTypes.O_FROG_ENTITY.get();
+              entitytype == EntityTypes.O_FROG_ENTITY.get() ||
+              entitytype == com.dragn0007.dragnpets.entities.EntityTypes.O_CAT_ENTITY.get()
+              ;
    };
 
    public OFox(EntityType<? extends OFox> entityType, Level level) {
@@ -237,13 +239,13 @@ public class OFox extends TamableAnimal implements GeoEntity {
          return InteractionResult.SUCCESS;
       }
 
-      if (player.isShiftKeyDown() && !this.isFood(itemstack) && !this.isOrderedToSit() && !this.wasToldToWander()) {
+      if (player.isShiftKeyDown() && !this.isFood(itemstack) && !this.isOrderedToSit() && !this.wasToldToWander() && this.isOwnedBy(player)) {
          this.setToldToWander(true);
          player.displayClientMessage(Component.translatable("tooltip.dragnpets.wandering.tooltip").withStyle(ChatFormatting.GOLD), true);
          return InteractionResult.SUCCESS;
       }
 
-      if (player.isShiftKeyDown() && !this.isFood(itemstack) && !this.isOrderedToSit() && this.wasToldToWander()) {
+      if (player.isShiftKeyDown() && !this.isFood(itemstack) && !this.isOrderedToSit() && this.wasToldToWander() && this.isOwnedBy(player)) {
          this.setToldToWander(false);
          player.displayClientMessage(Component.translatable("tooltip.dragnpets.following.tooltip").withStyle(ChatFormatting.GOLD), true);
          return InteractionResult.SUCCESS;

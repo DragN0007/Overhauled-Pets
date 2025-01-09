@@ -1,13 +1,14 @@
 package com.dragn0007.dragnpets.event;
 
+import com.dragn0007.dragnlivestock.gui.LOMenuTypes;
+import com.dragn0007.dragnlivestock.gui.OMountScreen;
 import com.dragn0007.dragnpets.PetsOverhaul;
 import com.dragn0007.dragnpets.entities.EntityTypes;
 import com.dragn0007.dragnpets.entities.axolotl.OAxolotl;
 import com.dragn0007.dragnpets.entities.axolotl.OAxolotlRender;
 import com.dragn0007.dragnpets.entities.cat.OCat;
 import com.dragn0007.dragnpets.entities.cat.OCatRender;
-import com.dragn0007.dragnpets.entities.dog.Doberman;
-import com.dragn0007.dragnpets.entities.dog.DobermanRender;
+import com.dragn0007.dragnpets.entities.dog.*;
 import com.dragn0007.dragnpets.entities.fox.OFox;
 import com.dragn0007.dragnpets.entities.fox.OFoxRender;
 import com.dragn0007.dragnpets.entities.ocelot.OOcelot;
@@ -17,6 +18,9 @@ import com.dragn0007.dragnpets.entities.tropical_fish.OTropicalFish;
 import com.dragn0007.dragnpets.entities.tropical_fish.OTropicalFishRender;
 import com.dragn0007.dragnpets.entities.wolf.OWolf;
 import com.dragn0007.dragnpets.entities.wolf.OWolfRender;
+import com.dragn0007.dragnpets.gui.HuskyScreen;
+import com.dragn0007.dragnpets.gui.POMenuTypes;
+import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -39,6 +43,8 @@ public class PetsOverhaulEvent {
         event.put(EntityTypes.RINGNECK_ENTITY.get(), Ringneck.createAttributes().build());
         event.put(EntityTypes.DOBERMAN_ENTITY.get(), Doberman.createAttributes().build());
         event.put(EntityTypes.O_CAT_ENTITY.get(), OCat.createAttributes().build());
+        event.put(EntityTypes.LABRADOR_ENTITY.get(), Labrador.createAttributes().build());
+        event.put(EntityTypes.HUSKY_ENTITY.get(), Husky.createAttributes().build());
     }
 
     @SubscribeEvent
@@ -53,5 +59,9 @@ public class PetsOverhaulEvent {
         EntityRenderers.register(EntityTypes.RINGNECK_ENTITY.get(), RingneckRender::new);
         EntityRenderers.register(EntityTypes.DOBERMAN_ENTITY.get(), DobermanRender::new);
         EntityRenderers.register(EntityTypes.O_CAT_ENTITY.get(), OCatRender::new);
+        EntityRenderers.register(EntityTypes.LABRADOR_ENTITY.get(), LabradorRender::new);
+        EntityRenderers.register(EntityTypes.HUSKY_ENTITY.get(), HuskyRender::new);
+
+        MenuScreens.register(POMenuTypes.HUSKY_MENU.get(), HuskyScreen::new);
     }
 }

@@ -9,6 +9,11 @@
     "minecraft:salmon",
     "minecraft:cod",
 
+    "dragnlivestock:salmon_fillet",
+    "dragnlivestock:cod_fillet",
+    "dragnpets:tropical_fish_fillet",
+    "minecraft:tropical_fish",
+
     "minecraft:cooked_chicken",
     "dragnlivestock:cooked_chicken_thigh",
     "minecraft:cooked_rabbit",

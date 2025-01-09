@@ -48,7 +48,7 @@ public class PetsOverhaulCommonConfig {
                 .define("Replace Wolves w/ O-Wolves & O-Dogs", false);
 
         CATS_GIVE_GIFTS = BUILDER.comment("Should your O-Cats give you gifts once in a while?")
-                .define("Cats Give Gifts", false);
+                .define("Cats Give Gifts", true);
 
         BUILDER.pop();
 

@@ -10,9 +10,7 @@ import com.dragn0007.dragnpets.entities.cat.OCat;
 import com.dragn0007.dragnpets.entities.cat.OCatEyeLayer;
 import com.dragn0007.dragnpets.entities.cat.OCatMarkingLayer;
 import com.dragn0007.dragnpets.entities.cat.OCatModel;
-import com.dragn0007.dragnpets.entities.dog.Doberman;
-import com.dragn0007.dragnpets.entities.dog.DobermanModel;
-import com.dragn0007.dragnpets.entities.dog.ODog;
+import com.dragn0007.dragnpets.entities.dog.*;
 import com.dragn0007.dragnpets.entities.fox.OFox;
 import com.dragn0007.dragnpets.entities.fox.OFoxMarkingLayer;
 import com.dragn0007.dragnpets.entities.ocelot.OOcelot;
@@ -23,6 +21,7 @@ import com.dragn0007.dragnpets.entities.tropical_fish.OTropicalFishMarkingLayer;
 import com.dragn0007.dragnpets.entities.tropical_fish.OTropicalFishModel;
 import com.dragn0007.dragnpets.entities.wolf.OWolf;
 import com.dragn0007.dragnpets.entities.wolf.OWolfModel;
+import com.dragn0007.dragnpets.gui.HuskyScreen;
 import com.dragn0007.dragnpets.util.PetsOverhaulCommonConfig;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.animal.*;
@@ -301,12 +300,14 @@ public class SpawnReplacer {
             Cat cat = (Cat) event.getEntity();
             OCat commonCat = EntityTypes.O_CAT_ENTITY.get().create(event.getLevel());
             Doberman doberman = EntityTypes.DOBERMAN_ENTITY.get().create(event.getLevel());
+            Labrador labrador = EntityTypes.LABRADOR_ENTITY.get().create(event.getLevel());
+            Husky husky = EntityTypes.HUSKY_ENTITY.get().create(event.getLevel());
 
             if (event.getLevel().isClientSide) {
                 return;
             }
 
-            int i = event.getLevel().getRandom().nextInt(3);
+            int i = event.getLevel().getRandom().nextInt(5);
 
             if (event.getLevel().getBiome(event.getEntity().blockPosition()).is(Biomes.SWAMP)) {
                 if (commonCat != null) {
@@ -383,6 +384,54 @@ public class SpawnReplacer {
                     }
 
                     event.getLevel().addFreshEntity(doberman);
+                    cat.remove(Entity.RemovalReason.DISCARDED);
+
+                    event.setCanceled(true);
+                }
+            }
+
+            if (labrador != null) {
+                if (i == 3 && !event.getLevel().getBiome(event.getEntity().blockPosition()).is(Biomes.SWAMP)) {
+                    labrador.copyPosition(cat);
+
+                    labrador.setCustomName(cat.getCustomName());
+                    labrador.setAge(cat.getAge());
+
+                    int randomVariant = event.getLevel().getRandom().nextInt(LabradorModel.Variant.values().length);
+                    labrador.setVariant(randomVariant);
+
+                    int randomGender = event.getLevel().getRandom().nextInt(ODog.Gender.values().length);
+                    labrador.setGender(randomGender);
+
+                    if (event.getLevel().isClientSide) {
+                        cat.remove(Entity.RemovalReason.DISCARDED);
+                    }
+
+                    event.getLevel().addFreshEntity(labrador);
+                    cat.remove(Entity.RemovalReason.DISCARDED);
+
+                    event.setCanceled(true);
+                }
+            }
+
+            if (husky != null) {
+                if (i == 4 && !event.getLevel().getBiome(event.getEntity().blockPosition()).is(Biomes.SWAMP)) {
+                    husky.copyPosition(cat);
+
+                    husky.setCustomName(cat.getCustomName());
+                    husky.setAge(cat.getAge());
+
+                    int randomVariant = event.getLevel().getRandom().nextInt(HuskyModel.Variant.values().length);
+                    husky.setVariant(randomVariant);
+
+                    int randomGender = event.getLevel().getRandom().nextInt(ODog.Gender.values().length);
+                    husky.setGender(randomGender);
+
+                    if (event.getLevel().isClientSide) {
+                        cat.remove(Entity.RemovalReason.DISCARDED);
+                    }
+
+                    event.getLevel().addFreshEntity(husky);
                     cat.remove(Entity.RemovalReason.DISCARDED);
 
                     event.setCanceled(true);

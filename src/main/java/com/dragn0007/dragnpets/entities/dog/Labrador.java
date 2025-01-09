@@ -1,5 +1,6 @@
 package com.dragn0007.dragnpets.entities.dog;
 
+import com.dragn0007.dragnlivestock.entities.chicken.OChicken;
 import com.dragn0007.dragnlivestock.util.LivestockOverhaulCommonConfig;
 import com.dragn0007.dragnpets.PetsOverhaul;
 import com.dragn0007.dragnpets.entities.EntityTypes;
@@ -52,16 +53,16 @@ import software.bernie.geckolib.util.GeckoLibUtil;
 import java.util.Random;
 import java.util.UUID;
 
-public class Doberman extends ODog implements NeutralMob, GeoEntity {
+public class Labrador extends ODog implements NeutralMob, GeoEntity {
 
-   private static final EntityDataAccessor<Integer> DATA_COLLAR_COLOR = SynchedEntityData.defineId(Doberman.class, EntityDataSerializers.INT);
-   private static final EntityDataAccessor<Integer> DATA_REMAINING_ANGER_TIME = SynchedEntityData.defineId(Doberman.class, EntityDataSerializers.INT);
+   private static final EntityDataAccessor<Integer> DATA_COLLAR_COLOR = SynchedEntityData.defineId(Labrador.class, EntityDataSerializers.INT);
+   private static final EntityDataAccessor<Integer> DATA_REMAINING_ANGER_TIME = SynchedEntityData.defineId(Labrador.class, EntityDataSerializers.INT);
 
    private static final UniformInt PERSISTENT_ANGER_TIME = TimeUtil.rangeOfSeconds(20, 39);
    @Nullable
    private UUID persistentAngerTarget;
 
-   public Doberman(EntityType<? extends Doberman> entityType, Level level) {
+   public Labrador(EntityType<? extends Labrador> entityType, Level level) {
       super(entityType, level);
       this.setTame(false);
       this.setPathfindingMalus(BlockPathTypes.POWDER_SNOW, -1.0F);
@@ -70,7 +71,7 @@ public class Doberman extends ODog implements NeutralMob, GeoEntity {
 
    protected void registerGoals() {
       this.goalSelector.addGoal(1, new FloatGoal(this));
-      this.goalSelector.addGoal(1, new Doberman.WolfPanicGoal(1.4D));
+      this.goalSelector.addGoal(1, new WolfPanicGoal(1.4D));
       this.goalSelector.addGoal(2, new SitWhenOrderedToGoal(this));
       this.goalSelector.addGoal(4, new LeapAtTargetGoal(this, 0.4F));
       this.goalSelector.addGoal(5, new MeleeAttackGoal(this, 1.5D, true));
@@ -87,13 +88,22 @@ public class Doberman extends ODog implements NeutralMob, GeoEntity {
 
       this.goalSelector.addGoal(6, new DogFollowOwnerGoal(this, 1.0D, 10.0F, 2.0F, false));
 
-      this.targetSelector.addGoal(7, new NearestAttackableTargetGoal<>(this, Monster.class, false));
-      this.targetSelector.addGoal(7, new NearestAttackableTargetGoal<>(this, Slime.class, false));
+      this.targetSelector.addGoal(7, new NearestAttackableTargetGoal<>(this, OChicken.class, false) {
+         @Override
+         public boolean canUse() {
+            if (this.mob instanceof Labrador) {
+               Labrador customMob = (Labrador) this.mob;
+               return customMob.wasToldToWander() && super.canUse();
+            }
+            return super.canUse();
+         }
+      });
+
    }
 
    public static AttributeSupplier.Builder createAttributes() {
       return Mob.createMobAttributes()
-              .add(Attributes.MOVEMENT_SPEED, 0.28F)
+              .add(Attributes.MOVEMENT_SPEED, 0.26F)
               .add(Attributes.MAX_HEALTH, 12.0D)
               .add(Attributes.ATTACK_DAMAGE, 3.0D);
    }
@@ -112,7 +122,7 @@ public class Doberman extends ODog implements NeutralMob, GeoEntity {
             controller.setAnimationSpeed(1.3);
          } else {
             controller.setAnimation(RawAnimation.begin().then("walk", Animation.LoopType.LOOP));
-            controller.setAnimationSpeed(1.3);
+            controller.setAnimationSpeed(1.2);
          }
       } else {
          if (isInSittingPose()) {
@@ -211,7 +221,7 @@ public class Doberman extends ODog implements NeutralMob, GeoEntity {
          this.getAttribute(Attributes.MAX_HEALTH).setBaseValue(7.0D);
       }
 
-      this.getAttribute(Attributes.ATTACK_DAMAGE).setBaseValue(3.0D);
+      this.getAttribute(Attributes.ATTACK_DAMAGE).setBaseValue(2.5D);
    }
 
    public int getRemainingPersistentAngerTime() {
@@ -246,10 +256,10 @@ public class Doberman extends ODog implements NeutralMob, GeoEntity {
 
    // Generates the base texture
    public ResourceLocation getTextureResource() {
-      return DobermanModel.Variant.variantFromOrdinal(getVariant()).resourceLocation;
+      return LabradorModel.Variant.variantFromOrdinal(getVariant()).resourceLocation;
    }
 
-   public static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(Doberman.class, EntityDataSerializers.INT);
+   public static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(Labrador.class, EntityDataSerializers.INT);
 
    public int getVariant() {
       return this.entityData.get(VARIANT);
@@ -309,8 +319,8 @@ public class Doberman extends ODog implements NeutralMob, GeoEntity {
          data = new AgeableMobGroupData(0.2F);
       }
       Random random = new Random();
-      setVariant(random.nextInt(DobermanModel.Variant.values().length));
-      setGender(random.nextInt(Doberman.Gender.values().length));
+      setVariant(random.nextInt(LabradorModel.Variant.values().length));
+      setGender(random.nextInt(Labrador.Gender.values().length));
 
       return super.finalizeSpawn(serverLevelAccessor, instance, spawnType, data, tag);
    }
@@ -328,7 +338,7 @@ public class Doberman extends ODog implements NeutralMob, GeoEntity {
       return this.getGender() == 1;
    }
 
-   public static final EntityDataAccessor<Integer> GENDER = SynchedEntityData.defineId(Doberman.class, EntityDataSerializers.INT);
+   public static final EntityDataAccessor<Integer> GENDER = SynchedEntityData.defineId(Labrador.class, EntityDataSerializers.INT);
 
    public int getGender() {
       return this.entityData.get(GENDER);
@@ -345,13 +355,13 @@ public class Doberman extends ODog implements NeutralMob, GeoEntity {
    public boolean canMate(Animal animal) {
       if (animal == this) {
          return false;
-      } else if (!(animal instanceof Doberman)) {
+      } else if (!(animal instanceof Labrador)) {
          return false;
       } else {
          if (!LivestockOverhaulCommonConfig.GENDERS_AFFECT_BREEDING.get()) {
-            return this.canParent() && ((Doberman) animal).canParent();
+            return this.canParent() && ((Labrador) animal).canParent();
          } else {
-            Doberman partner = (Doberman) animal;
+            Labrador partner = (Labrador) animal;
             if (this.canParent() && partner.canParent() && this.getGender() != partner.getGender()) {
                return true;
             }
@@ -369,10 +379,10 @@ public class Doberman extends ODog implements NeutralMob, GeoEntity {
 
    @Override
    public AgeableMob getBreedOffspring(ServerLevel serverLevel, AgeableMob ageableMob) {
-      Doberman oWolf1 = (Doberman) ageableMob;
-      if (ageableMob instanceof Doberman) {
-         Doberman oWolf = (Doberman) ageableMob;
-         oWolf1 = EntityTypes.DOBERMAN_ENTITY.get().create(serverLevel);
+      Labrador oWolf1 = (Labrador) ageableMob;
+      if (ageableMob instanceof Labrador) {
+         Labrador oWolf = (Labrador) ageableMob;
+         oWolf1 = EntityTypes.LABRADOR_ENTITY.get().create(serverLevel);
 
          int i = this.random.nextInt(9);
          int variant;
@@ -381,11 +391,11 @@ public class Doberman extends ODog implements NeutralMob, GeoEntity {
          } else if (i < 8) {
             variant = oWolf.getVariant();
          } else {
-            variant = this.random.nextInt(DobermanModel.Variant.values().length);
+            variant = this.random.nextInt(LabradorModel.Variant.values().length);
          }
 
          int gender;
-         gender = this.random.nextInt(Doberman.Gender.values().length);
+         gender = this.random.nextInt(Labrador.Gender.values().length);
 
          oWolf1.setVariant(variant);
          oWolf1.setGender(gender);
@@ -396,8 +406,8 @@ public class Doberman extends ODog implements NeutralMob, GeoEntity {
 
    public boolean wantsToAttack(LivingEntity entity, LivingEntity p_30390_) {
       if (!(entity instanceof Creeper) && !(entity instanceof Ghast)) {
-         if (entity instanceof Doberman) {
-            Doberman wolf = (Doberman)entity;
+         if (entity instanceof Labrador) {
+            Labrador wolf = (Labrador)entity;
             return !wolf.isTame() || wolf.getOwner() != p_30390_;
          } else if (entity instanceof Player && p_30390_ instanceof Player && !((Player)p_30390_).canHarmPlayer((Player)entity)) {
             return false;

@@ -40,6 +40,10 @@ public class POItems {
             () -> new ForgeSpawnEggItem(EntityTypes.RINGNECK_ENTITY, 0xa3a855, 0x2f3515, new Item.Properties().stacksTo(64)));
     public static final RegistryObject<Item> DOBERMAN_SPAWN_EGG = ITEMS.register("doberman_spawn_egg",
             () -> new ForgeSpawnEggItem(EntityTypes.DOBERMAN_ENTITY, 0x232323, 0x8c4716, new Item.Properties().stacksTo(64)));
+    public static final RegistryObject<Item> LABRADOR_SPAWN_EGG = ITEMS.register("labrador_spawn_egg",
+            () -> new ForgeSpawnEggItem(EntityTypes.LABRADOR_ENTITY, 0xf2ca8c, 0xc8a56d, new Item.Properties().stacksTo(64)));
+    public static final RegistryObject<Item> HUSKY_SPAWN_EGG = ITEMS.register("husky_spawn_egg",
+            () -> new ForgeSpawnEggItem(EntityTypes.HUSKY_ENTITY, 0x4a4743, 0xfaf4e9, new Item.Properties().stacksTo(64)));
 
 
     //Food
