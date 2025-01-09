@@ -28,7 +28,7 @@ public class HuskyScreen extends AbstractContainerScreen<HuskyMenu> {
         int y = (this.height - this.imageHeight) / 2;
         graphics.blit(HUSKY_INVENTORY_LOCATION, x, y, 0, 0, this.imageWidth, this.imageHeight);
 
-        if (this.husky.hasChest()) {
+        if (this.husky.isChested()) {
             graphics.blit(HUSKY_INVENTORY_LOCATION, x + 57, y + 17, 0, this.imageHeight, 145, 54);
         }
     }

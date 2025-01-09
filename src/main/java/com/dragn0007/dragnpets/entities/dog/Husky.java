@@ -3,6 +3,7 @@ package com.dragn0007.dragnpets.entities.dog;
 import com.dragn0007.dragnlivestock.entities.Chestable;
 import com.dragn0007.dragnlivestock.entities.chicken.OChicken;
 import com.dragn0007.dragnlivestock.entities.llama.OLlama;
+import com.dragn0007.dragnlivestock.entities.util.AbstractOMount;
 import com.dragn0007.dragnlivestock.gui.OMountMenu;
 import com.dragn0007.dragnlivestock.items.LOItems;
 import com.dragn0007.dragnlivestock.util.LivestockOverhaulCommonConfig;
@@ -14,6 +15,7 @@ import com.dragn0007.dragnpets.util.POTags;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -77,6 +79,7 @@ public class Husky extends ODog implements NeutralMob, GeoEntity, Chestable, Con
    public Husky(EntityType<? extends Husky> entityType, Level level) {
       super(entityType, level);
       this.setTame(false);
+      this.updateInventory();
       this.setPathfindingMalus(BlockPathTypes.POWDER_SNOW, -1.0F);
       this.setPathfindingMalus(BlockPathTypes.DANGER_POWDER_SNOW, -1.0F);
    }
@@ -169,18 +172,17 @@ public class Husky extends ODog implements NeutralMob, GeoEntity, Chestable, Con
          return InteractionResult.SUCCESS;
       }
 
-      if (!this.hasChest() && itemstack.is(net.minecraft.world.level.block.Blocks.CHEST.asItem()) && this.isOwnedBy(player)) {
-         this.setChest(true);
+      if (!this.isChested() && itemstack.is(net.minecraft.world.level.block.Blocks.CHEST.asItem()) && this.isOwnedBy(player)) {
          this.playChestEquipsSound();
          if (!player.getAbilities().instabuild) {
             itemstack.shrink(1);
          }
+         this.setChested(true);
 
-         this.createInventory();
          return InteractionResult.sidedSuccess(this.level().isClientSide);
       }
 
-      if (!this.isBaby() && this.isOwnedBy(player)) {
+      if (!this.isBaby() && this.isOwnedBy(player) && !itemstack.is(Items.SHEARS) && this.isChested()) {
          if (this.isTame() && player.isSecondaryUseActive() && this.isOrderedToSit()) {
             this.openInventory(player);
             return InteractionResult.sidedSuccess(this.level().isClientSide);
@@ -188,11 +190,11 @@ public class Husky extends ODog implements NeutralMob, GeoEntity, Chestable, Con
       }
 
       if (itemstack.is(Items.SHEARS) && player.isShiftKeyDown() && this.isOwnedBy(player)) {
-         if (this.hasChest()) {
+         if (this.isChested()) {
             this.dropEquipment();
             this.inventory.removeAllItems();
 
-            this.setChest(false);
+            this.setChested(false);
             this.playChestEquipsSound();
 
             return InteractionResult.sidedSuccess(this.level().isClientSide);
@@ -405,9 +407,7 @@ public class Husky extends ODog implements NeutralMob, GeoEntity, Chestable, Con
    }
 
    public static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(Husky.class, EntityDataSerializers.INT);
-   public static final EntityDataAccessor<Boolean> CHESTED = SynchedEntityData.defineId(Husky.class, EntityDataSerializers.BOOLEAN);
-   private static final EntityDataAccessor<Boolean> DATA_ID_CHEST = SynchedEntityData.defineId(Husky.class, EntityDataSerializers.BOOLEAN);
-   private static final EntityDataAccessor<Byte> DATA_ID_FLAGS = SynchedEntityData.defineId(Husky.class, EntityDataSerializers.BYTE);
+   private static final EntityDataAccessor<Boolean> CHESTED = SynchedEntityData.defineId(Husky.class, EntityDataSerializers.BOOLEAN);
 
    public int getVariant() {
       return this.entityData.get(VARIANT);
@@ -424,7 +424,6 @@ public class Husky extends ODog implements NeutralMob, GeoEntity, Chestable, Con
       this.entityData.define(VARIANT, 0);
       this.entityData.define(GENDER, 0);
       this.entityData.define(CHESTED, false);
-      this.entityData.define(DATA_ID_CHEST, false);
    }
 
    public void addAdditionalSaveData(CompoundTag tag) {
@@ -434,7 +433,24 @@ public class Husky extends ODog implements NeutralMob, GeoEntity, Chestable, Con
       tag.putInt("Gender", this.getGender());
       tag.putBoolean("Wandering", this.getToldToWander());
       tag.putBoolean("Panicking", this.getPanicking());
-      tag.putBoolean("Chested", this.hasChest());
+
+      tag.putBoolean("Chested", this.isChested());
+
+      if(this.isChested()) {
+         ListTag listTag = new ListTag();
+
+         for(int i = 0; i < this.inventory.getContainerSize(); i++) {
+            ItemStack itemStack = this.inventory.getItem(i);
+            if(!itemStack.isEmpty()) {
+               CompoundTag compoundTag = new CompoundTag();
+               compoundTag.putByte("Slot", (byte) i);
+               itemStack.save(compoundTag);
+               listTag.add(compoundTag);
+            }
+         }
+         tag.put("Items", listTag);
+      }
+
       this.addPersistentAngerSaveData(tag);
    }
 
@@ -460,8 +476,22 @@ public class Husky extends ODog implements NeutralMob, GeoEntity, Chestable, Con
          this.setPanicking(tag.getBoolean("Panicking"));
       }
 
-      this.setChest(tag.getBoolean("Chested"));
-      this.updateContainerEquipment();
+      if(tag.contains("Chested")) {
+         this.setChested(tag.getBoolean("Chested"));
+      }
+
+      this.updateInventory();
+      if(this.isChested()) {
+         ListTag listTag = tag.getList("Items", 10);
+
+         for(int i = 0; i < listTag.size(); i++) {
+            CompoundTag compoundTag = listTag.getCompound(i);
+            int j = compoundTag.getByte("Slot") & 255;
+            if(j < this.inventory.getContainerSize()) {
+               this.inventory.setItem(j, ItemStack.of(compoundTag));
+            }
+         }
+      }
 
       this.readPersistentAngerSaveData(this.level(), tag);
    }
@@ -494,59 +524,7 @@ public class Husky extends ODog implements NeutralMob, GeoEntity, Chestable, Con
       }
    }
 
-   @Override
-   public boolean isChested() {
-      return this.entityData.get(CHESTED);
-   }
-
-   protected void createInventory() {
-      SimpleContainer simplecontainer = this.inventory;
-      this.inventory = new SimpleContainer(this.getInventorySize());
-      if (simplecontainer != null) {
-         simplecontainer.removeListener(this);
-         int i = Math.min(simplecontainer.getContainerSize(), this.inventory.getContainerSize());
-
-         for(int j = 0; j < i; ++j) {
-            ItemStack itemstack = simplecontainer.getItem(j);
-            if (!itemstack.isEmpty()) {
-               this.inventory.setItem(j, itemstack.copy());
-            }
-         }
-      }
-
-      this.inventory.addListener(this);
-      this.updateContainerEquipment();
-      this.itemHandler = net.minecraftforge.common.util.LazyOptional.of(() -> new net.minecraftforge.items.wrapper.InvWrapper(this.inventory));
-   }
-
-   protected void updateContainerEquipment() {
-      if (!this.level().isClientSide) {
-         this.setFlag(4, !this.inventory.getItem(0).isEmpty());
-      }
-   }
-
-   protected void setFlag(int p_30598_, boolean p_30599_) {
-      byte b0 = this.entityData.get(DATA_ID_FLAGS);
-      if (p_30599_) {
-         this.entityData.set(DATA_ID_FLAGS, (byte)(b0 | p_30598_));
-      } else {
-         this.entityData.set(DATA_ID_FLAGS, (byte)(b0 & ~p_30598_));
-      }
-
-   }
-
-   @Override
-   public void dropEquipment() {
-      if(!this.level().isClientSide) {
-         super.dropEquipment();
-         if(this.isChested()) {
-            this.spawnAtLocation(Items.CHEST);
-         }
-         Containers.dropContents(this.level(), this, this.inventory);
-      }
-   }
-
-   public void updateInventory() {
+   private void updateInventory() {
       SimpleContainer tempInventory = this.inventory;
       this.inventory = new SimpleContainer(this.getInventorySize());
 
@@ -566,6 +544,26 @@ public class Husky extends ODog implements NeutralMob, GeoEntity, Chestable, Con
    }
 
    @Override
+   public boolean isChested() {
+      return this.entityData.get(CHESTED);
+   }
+
+   private void setChested(boolean chested) {
+      this.entityData.set(CHESTED, chested);
+   }
+
+   @Override
+   public void dropEquipment() {
+      if(!this.level().isClientSide) {
+         super.dropEquipment();
+         if(this.isChested()) {
+            this.spawnAtLocation(Items.CHEST);
+         }
+         Containers.dropContents(this.level(), this, this.inventory);
+      }
+   }
+
+   @Override
    public void invalidateCaps() {
       super.invalidateCaps();
       if(this.itemHandler != null) {
@@ -575,25 +573,17 @@ public class Husky extends ODog implements NeutralMob, GeoEntity, Chestable, Con
       }
    }
 
-   public void setChest(boolean p_30505_) {
-      this.entityData.set(DATA_ID_CHEST, p_30505_);
-   }
-
-   protected int getInventorySize() {
+   private int getInventorySize() {
+//     if (this.isChested()) {
+//        return 12;
+//     } else {
+//        return 0;
+//     }
       return 12;
-   }
-
-   public boolean hasChest() {
-      return this.entityData.get(DATA_ID_CHEST);
    }
 
    public void playChestEquipsSound() {
       this.playSound(SoundEvents.LLAMA_CHEST, 1.0F, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.0F);
-   }
-
-   @Override
-   public void containerChanged(Container p_18983_) {
-      return;
    }
 
    public void openInventory(Player player) {
@@ -605,6 +595,11 @@ public class Husky extends ODog implements NeutralMob, GeoEntity, Chestable, Con
             data.writeInt(this.getId());
          });
       }
+   }
+
+   @Override
+   public void containerChanged(Container p_18983_) {
+      return;
    }
 
    public enum Gender {
