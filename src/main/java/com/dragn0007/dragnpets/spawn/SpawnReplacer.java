@@ -302,12 +302,13 @@ public class SpawnReplacer {
             Labrador labrador = EntityTypes.LABRADOR_ENTITY.get().create(event.getLevel());
             Husky husky = EntityTypes.HUSKY_ENTITY.get().create(event.getLevel());
             Pyrenees pyrenees = EntityTypes.PYRENEES_ENTITY.get().create(event.getLevel());
+            Collie collie = EntityTypes.BORDER_COLLIE_ENTITY.get().create(event.getLevel());
 
             if (event.getLevel().isClientSide) {
                 return;
             }
 
-            int i = event.getLevel().getRandom().nextInt(6);
+            int i = event.getLevel().getRandom().nextInt(7);
 
             if (event.getLevel().getBiome(event.getEntity().blockPosition()).is(Biomes.SWAMP)) {
                 if (commonCat != null) {
@@ -456,6 +457,30 @@ public class SpawnReplacer {
                     }
 
                     event.getLevel().addFreshEntity(pyrenees);
+                    cat.remove(Entity.RemovalReason.DISCARDED);
+
+                    event.setCanceled(true);
+                }
+            }
+
+            if (collie != null) {
+                if (i == 6 && !event.getLevel().getBiome(event.getEntity().blockPosition()).is(Biomes.SWAMP)) {
+                    collie.copyPosition(cat);
+
+                    collie.setCustomName(cat.getCustomName());
+                    collie.setAge(cat.getAge());
+
+                    int randomVariant = event.getLevel().getRandom().nextInt(CollieModel.Variant.values().length);
+                    collie.setVariant(randomVariant);
+
+                    int randomGender = event.getLevel().getRandom().nextInt(ODog.Gender.values().length);
+                    collie.setGender(randomGender);
+
+                    if (event.getLevel().isClientSide) {
+                        cat.remove(Entity.RemovalReason.DISCARDED);
+                    }
+
+                    event.getLevel().addFreshEntity(collie);
                     cat.remove(Entity.RemovalReason.DISCARDED);
 
                     event.setCanceled(true);

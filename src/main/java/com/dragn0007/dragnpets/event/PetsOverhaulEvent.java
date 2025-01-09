@@ -44,6 +44,7 @@ public class PetsOverhaulEvent {
         event.put(EntityTypes.LABRADOR_ENTITY.get(), Labrador.createAttributes().build());
         event.put(EntityTypes.HUSKY_ENTITY.get(), Husky.createAttributes().build());
         event.put(EntityTypes.PYRENEES_ENTITY.get(), Pyrenees.createAttributes().build());
+        event.put(EntityTypes.BORDER_COLLIE_ENTITY.get(), Collie.createAttributes().build());
     }
 
     @SubscribeEvent
@@ -61,6 +62,7 @@ public class PetsOverhaulEvent {
         EntityRenderers.register(EntityTypes.LABRADOR_ENTITY.get(), LabradorRender::new);
         EntityRenderers.register(EntityTypes.HUSKY_ENTITY.get(), HuskyRender::new);
         EntityRenderers.register(EntityTypes.PYRENEES_ENTITY.get(), PyreneesRender::new);
+        EntityRenderers.register(EntityTypes.BORDER_COLLIE_ENTITY.get(), CollieRender::new);
 
         MenuScreens.register(POMenuTypes.HUSKY_MENU.get(), HuskyScreen::new);
     }

@@ -3,10 +3,7 @@ package com.dragn0007.dragnpets.entities;
 import com.dragn0007.dragnlivestock.LivestockOverhaul;
 import com.dragn0007.dragnpets.entities.axolotl.OAxolotl;
 import com.dragn0007.dragnpets.entities.cat.OCat;
-import com.dragn0007.dragnpets.entities.dog.Doberman;
-import com.dragn0007.dragnpets.entities.dog.Husky;
-import com.dragn0007.dragnpets.entities.dog.Labrador;
-import com.dragn0007.dragnpets.entities.dog.Pyrenees;
+import com.dragn0007.dragnpets.entities.dog.*;
 import com.dragn0007.dragnpets.entities.fox.OFox;
 import com.dragn0007.dragnpets.entities.ocelot.OOcelot;
 import com.dragn0007.dragnpets.entities.parrot.Cockatiel;
@@ -104,6 +101,12 @@ public class EntityTypes {
                             MobCategory.CREATURE)
                     .sized(0.9f,0.9f)
                     .build(new ResourceLocation(LivestockOverhaul.MODID,"pyrenees").toString()));
+
+    public static final RegistryObject<EntityType<Collie>> BORDER_COLLIE_ENTITY = ENTITY_TYPES.register("border_collie",
+            () -> EntityType.Builder.of(Collie::new,
+                            MobCategory.CREATURE)
+                    .sized(0.8f,0.8f)
+                    .build(new ResourceLocation(LivestockOverhaul.MODID,"border_collie").toString()));
 
 }
 
