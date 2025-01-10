@@ -4,6 +4,8 @@ import com.dragn0007.dragnpets.PetsOverhaul;
 import com.dragn0007.dragnpets.entities.EntityTypes;
 import com.dragn0007.dragnpets.entities.axolotl.OAxolotl;
 import com.dragn0007.dragnpets.entities.axolotl.OAxolotlRender;
+import com.dragn0007.dragnpets.entities.cat.MaineCoon;
+import com.dragn0007.dragnpets.entities.cat.MaineCoonRender;
 import com.dragn0007.dragnpets.entities.cat.OCat;
 import com.dragn0007.dragnpets.entities.cat.OCatRender;
 import com.dragn0007.dragnpets.entities.dog.*;
@@ -45,6 +47,7 @@ public class PetsOverhaulEvent {
         event.put(EntityTypes.HUSKY_ENTITY.get(), Husky.createAttributes().build());
         event.put(EntityTypes.PYRENEES_ENTITY.get(), Pyrenees.createAttributes().build());
         event.put(EntityTypes.BORDER_COLLIE_ENTITY.get(), Collie.createAttributes().build());
+        event.put(EntityTypes.MAINE_COON_ENTITY.get(), MaineCoon.createAttributes().build());
     }
 
     @SubscribeEvent
@@ -63,6 +66,7 @@ public class PetsOverhaulEvent {
         EntityRenderers.register(EntityTypes.HUSKY_ENTITY.get(), HuskyRender::new);
         EntityRenderers.register(EntityTypes.PYRENEES_ENTITY.get(), PyreneesRender::new);
         EntityRenderers.register(EntityTypes.BORDER_COLLIE_ENTITY.get(), CollieRender::new);
+        EntityRenderers.register(EntityTypes.MAINE_COON_ENTITY.get(), MaineCoonRender::new);
 
         MenuScreens.register(POMenuTypes.HUSKY_MENU.get(), HuskyScreen::new);
     }

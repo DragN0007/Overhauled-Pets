@@ -14,7 +14,7 @@ public class PetsOverhaulCommonConfig {
     public static final ForgeConfigSpec.BooleanValue REPLACE_CATS;
     public static final ForgeConfigSpec.BooleanValue REPLACE_TROPICAL_FISH;
     public static final ForgeConfigSpec.BooleanValue CATS_GIVE_GIFTS;
-    public static final ForgeConfigSpec.BooleanValue WOLF_EVENT;
+//    public static final ForgeConfigSpec.BooleanValue WOLF_EVENT;
 
     static {
         BUILDER.push("Spawning");
@@ -47,8 +47,8 @@ public class PetsOverhaulCommonConfig {
         CATS_GIVE_GIFTS = BUILDER.comment("Should your O-Cats give you gifts once in a while?")
                 .define("Cats Give Gifts", true);
 
-        WOLF_EVENT = BUILDER.comment("Should O-Wolves spawn near sheep uncommonly?")
-                .define("O-Wolf Pack Event", true);
+//        WOLF_EVENT = BUILDER.comment("Should O-Wolves spawn near sheep uncommonly?")
+//                .define("O-Wolf Pack Event", true);
         BUILDER.pop();
 
         SPEC = BUILDER.build();

@@ -134,8 +134,6 @@ public class OAxolotl extends Animal implements GeoEntity, Bucketable {
 		this.goalSelector.addGoal(6, new WaterAvoidingRandomStrollGoal(this, 1.0D));
 		this.goalSelector.addGoal(7, new LookAtPlayerGoal(this, Player.class, 6.0F));
 		this.goalSelector.addGoal(8, new RandomLookAroundGoal(this));
-		this.targetSelector.addGoal(7, new NearestAttackableTargetGoal<>(this, AbstractOFish.class, false));
-
 
 		this.goalSelector.addGoal(1, new AvoidEntityGoal<>(this, LivingEntity.class, 15.0F, 1.8F, 1.8F, livingEntity -> {
 			boolean isOWolf = livingEntity.getType().is(LOTags.Entity_Types.WOLVES);

@@ -2,6 +2,7 @@ package com.dragn0007.dragnpets.entities;
 
 import com.dragn0007.dragnlivestock.LivestockOverhaul;
 import com.dragn0007.dragnpets.entities.axolotl.OAxolotl;
+import com.dragn0007.dragnpets.entities.cat.MaineCoon;
 import com.dragn0007.dragnpets.entities.cat.OCat;
 import com.dragn0007.dragnpets.entities.dog.*;
 import com.dragn0007.dragnpets.entities.fox.OFox;
@@ -107,6 +108,12 @@ public class EntityTypes {
                             MobCategory.CREATURE)
                     .sized(0.8f,0.8f)
                     .build(new ResourceLocation(LivestockOverhaul.MODID,"border_collie").toString()));
+
+    public static final RegistryObject<EntityType<MaineCoon>> MAINE_COON_ENTITY = ENTITY_TYPES.register("maine_coon",
+            () -> EntityType.Builder.of(MaineCoon::new,
+                            MobCategory.CREATURE)
+                    .sized(0.6f,0.6f)
+                    .build(new ResourceLocation(LivestockOverhaul.MODID,"maine_coon").toString()));
 
 }
 

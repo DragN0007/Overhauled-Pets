@@ -318,7 +318,7 @@ public class OParrot extends TamableAnimal implements GeoEntity, FlyingAnimal {
          }
 
          return InteractionResult.sidedSuccess(this.level().isClientSide);
-      } else if (!this.isFlying() && this.isTame() && this.isOwnedBy(player) && !this.isBaby()) {
+      } else if (!this.isFlying() && this.isTame() && this.isOwnedBy(player)) {
          if (!this.level().isClientSide) {
             this.setOrderedToSit(!this.isOrderedToSit());
          }
