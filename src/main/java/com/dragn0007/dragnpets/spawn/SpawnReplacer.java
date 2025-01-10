@@ -6,10 +6,7 @@ import com.dragn0007.dragnpets.entities.EntityTypes;
 import com.dragn0007.dragnpets.entities.axolotl.OAxolotl;
 import com.dragn0007.dragnpets.entities.axolotl.OAxolotlMarkingLayer;
 import com.dragn0007.dragnpets.entities.axolotl.OAxolotlModel;
-import com.dragn0007.dragnpets.entities.cat.OCat;
-import com.dragn0007.dragnpets.entities.cat.OCatEyeLayer;
-import com.dragn0007.dragnpets.entities.cat.OCatMarkingLayer;
-import com.dragn0007.dragnpets.entities.cat.OCatModel;
+import com.dragn0007.dragnpets.entities.cat.*;
 import com.dragn0007.dragnpets.entities.dog.*;
 import com.dragn0007.dragnpets.entities.fox.OFox;
 import com.dragn0007.dragnpets.entities.fox.OFoxMarkingLayer;
@@ -303,12 +300,13 @@ public class SpawnReplacer {
             Husky husky = EntityTypes.HUSKY_ENTITY.get().create(event.getLevel());
             Pyrenees pyrenees = EntityTypes.PYRENEES_ENTITY.get().create(event.getLevel());
             Collie collie = EntityTypes.BORDER_COLLIE_ENTITY.get().create(event.getLevel());
+            MaineCoon maineCoon = EntityTypes.MAINE_COON_ENTITY.get().create(event.getLevel());
 
             if (event.getLevel().isClientSide) {
                 return;
             }
 
-            int i = event.getLevel().getRandom().nextInt(7);
+            int i = event.getLevel().getRandom().nextInt(8);
 
             if (event.getLevel().getBiome(event.getEntity().blockPosition()).is(Biomes.SWAMP)) {
                 if (commonCat != null) {
@@ -481,6 +479,30 @@ public class SpawnReplacer {
                     }
 
                     event.getLevel().addFreshEntity(collie);
+                    cat.remove(Entity.RemovalReason.DISCARDED);
+
+                    event.setCanceled(true);
+                }
+            }
+
+            if (maineCoon != null) {
+                if (i == 6 && !event.getLevel().getBiome(event.getEntity().blockPosition()).is(Biomes.SWAMP)) {
+                    maineCoon.copyPosition(cat);
+
+                    maineCoon.setCustomName(cat.getCustomName());
+                    maineCoon.setAge(cat.getAge());
+
+                    int randomVariant = event.getLevel().getRandom().nextInt(MaineCoonModel.Variant.values().length);
+                    maineCoon.setVariant(randomVariant);
+
+                    int randomGender = event.getLevel().getRandom().nextInt(OCat.Gender.values().length);
+                    maineCoon.setGender(randomGender);
+
+                    if (event.getLevel().isClientSide) {
+                        cat.remove(Entity.RemovalReason.DISCARDED);
+                    }
+
+                    event.getLevel().addFreshEntity(maineCoon);
                     cat.remove(Entity.RemovalReason.DISCARDED);
 
                     event.setCanceled(true);

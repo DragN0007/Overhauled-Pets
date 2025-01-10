@@ -17,7 +17,7 @@ public class MaineCoonRender extends GeoEntityRenderer<MaineCoon> {
     public void render(MaineCoon entity, float entityYaw, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight) {
 
         if (entity.isTame()) {
-            model.getBone("collar").ifPresent(b -> b.setHidden(true));
+            model.getBone("collar").ifPresent(b -> b.setHidden(false));
         } else {
             model.getBone("collar").ifPresent(b -> b.setHidden(true));
         }
