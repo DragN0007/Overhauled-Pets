@@ -486,7 +486,7 @@ public class SpawnReplacer {
             }
 
             if (maineCoon != null) {
-                if (i == 6 && !event.getLevel().getBiome(event.getEntity().blockPosition()).is(Biomes.SWAMP)) {
+                if (i == 7 && !event.getLevel().getBiome(event.getEntity().blockPosition()).is(Biomes.SWAMP)) {
                     maineCoon.copyPosition(cat);
 
                     maineCoon.setCustomName(cat.getCustomName());
