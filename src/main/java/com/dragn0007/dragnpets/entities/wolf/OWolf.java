@@ -475,8 +475,12 @@ public class OWolf extends TamableAnimal implements NeutralMob, GeoEntity {
       return this.toldToWander;
    }
 
-   public void setToldToWander(boolean sheared) {
-      this.toldToWander = sheared;
+   public boolean getToldToWander() {
+      return this.toldToWander;
+   }
+
+   public void setToldToWander(boolean toldToWander) {
+      this.toldToWander = toldToWander;
    }
 
    private static final Ingredient FOOD_ITEMS = Ingredient.of(POTags.Items.DOG_FOOD);
@@ -544,6 +548,8 @@ public class OWolf extends TamableAnimal implements NeutralMob, GeoEntity {
       tag.putByte("CollarColor", (byte)this.getCollarColor().getId());
       tag.putInt("Variant", getVariant());
       tag.putInt("Gender", this.getGender());
+      tag.putBoolean("Wandering", this.getToldToWander());
+      tag.putBoolean("Panicking", this.getPanicking());
       this.addPersistentAngerSaveData(tag);
    }
 
@@ -559,6 +565,14 @@ public class OWolf extends TamableAnimal implements NeutralMob, GeoEntity {
 
       if (tag.contains("Gender")) {
          this.setGender(tag.getInt("Gender"));
+      }
+
+      if (tag.contains("Wandering")) {
+         this.setToldToWander(tag.getBoolean("Wandering"));
+      }
+
+      if (tag.contains("Panicking")) {
+         this.setPanicking(tag.getBoolean("Panicking"));
       }
 
       this.readPersistentAngerSaveData(this.level(), tag);
@@ -711,6 +725,20 @@ public class OWolf extends TamableAnimal implements NeutralMob, GeoEntity {
          OWolf.this.setTarget((LivingEntity)null);
          super.tick();
       }
+   }
+
+   private boolean isPanicking = false;
+
+   public boolean isPanicking() {
+      return this.getHealth() < this.getMaxHealth() / 3;
+   }
+
+   public boolean getPanicking() {
+      return this.isPanicking;
+   }
+
+   public void setPanicking(boolean panicking) {
+      this.isPanicking = panicking;
    }
 
    class WolfPanicGoal extends PanicGoal {
