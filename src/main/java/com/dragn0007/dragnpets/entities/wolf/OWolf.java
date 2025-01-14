@@ -11,6 +11,8 @@ import com.dragn0007.dragnlivestock.util.LivestockOverhaulCommonConfig;
 import com.dragn0007.dragnpets.PetsOverhaul;
 import com.dragn0007.dragnpets.entities.ai.CanineFollowPackLeaderGoal;
 import com.dragn0007.dragnpets.entities.ai.WolfFollowOwnerGoal;
+import com.dragn0007.dragnpets.entities.dog.Collie;
+import com.dragn0007.dragnpets.entities.dog.CollieModel;
 import com.dragn0007.dragnpets.util.POTags;
 import com.dragn0007.dragnpets.util.PetsOverhaulCommonConfig;
 import net.minecraft.ChatFormatting;
@@ -39,6 +41,7 @@ import net.minecraft.world.entity.ai.goal.target.*;
 import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.animal.Cat;
 import net.minecraft.world.entity.animal.Turtle;
+import net.minecraft.world.entity.animal.Wolf;
 import net.minecraft.world.entity.animal.camel.Camel;
 import net.minecraft.world.entity.animal.horse.AbstractHorse;
 import net.minecraft.world.entity.monster.AbstractSkeleton;
@@ -200,7 +203,7 @@ public class OWolf extends TamableAnimal implements NeutralMob, GeoEntity {
 
       regenHealthCounter++;
 
-      if (this.getHealth() < this.getMaxHealth() && regenHealthCounter >= 150 && this.isTame()) {
+      if (this.getHealth() < this.getMaxHealth() && regenHealthCounter >= 150 && this.isTame() && this.isAlive()) {
          this.setHealth(this.getHealth() + 2);
          regenHealthCounter = 0;
          this.level().addParticle(ParticleTypes.HEART, this.getRandomX(0.6D), this.getRandomY(), this.getRandomZ(0.6D), 0.7D, 0.7D, 0.7D);
@@ -644,11 +647,11 @@ public class OWolf extends TamableAnimal implements NeutralMob, GeoEntity {
    }
 
    @Override
-   public AgeableMob getBreedOffspring(ServerLevel serverLevel, AgeableMob wolf) {
-      OWolf oWolf1 = (OWolf) wolf;
-      if (wolf instanceof OWolf) {
-         OWolf oWolf;
-         oWolf = com.dragn0007.dragnpets.entities.EntityTypes.O_WOLF_ENTITY.get().create(serverLevel);
+   public AgeableMob getBreedOffspring(ServerLevel serverLevel, AgeableMob ageableMob) {
+      OWolf oWolf1 = (OWolf) ageableMob;
+      if (ageableMob instanceof OWolf) {
+         OWolf oWolf = (OWolf) ageableMob;
+         oWolf1 = com.dragn0007.dragnpets.entities.EntityTypes.O_WOLF_ENTITY.get().create(serverLevel);
 
          int i = this.random.nextInt(9);
          int variant;
@@ -730,7 +733,7 @@ public class OWolf extends TamableAnimal implements NeutralMob, GeoEntity {
    private boolean isPanicking = false;
 
    public boolean isPanicking() {
-      return this.getHealth() < this.getMaxHealth() / 3;
+      return this.getHealth() < this.getMaxHealth() / 3 && this.isAlive();
    }
 
    public boolean getPanicking() {
@@ -747,7 +750,7 @@ public class OWolf extends TamableAnimal implements NeutralMob, GeoEntity {
       }
 
       protected boolean shouldPanic() {
-         return this.mob.isFreezing() || this.mob.isOnFire() || this.mob.getHealth() < this.mob.getMaxHealth() / 3;
+         return this.mob.isFreezing() || this.mob.isOnFire() || this.mob.getHealth() < this.mob.getMaxHealth() / 3 && this.mob.isAlive();
       }
    }
 }

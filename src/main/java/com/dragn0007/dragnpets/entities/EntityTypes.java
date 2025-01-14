@@ -69,7 +69,7 @@ public class EntityTypes {
 
     public static final RegistryObject<EntityType<OTropicalFish>> O_TROPICAL_FISH_ENTITY = ENTITY_TYPES.register("o_tropical_fish",
             () -> EntityType.Builder.of(OTropicalFish::new,
-                            MobCategory.CREATURE)
+                            MobCategory.WATER_AMBIENT)
                     .sized(0.4f,0.4f)
                     .build(new ResourceLocation(LivestockOverhaul.MODID,"o_tropical_fish").toString()));
 

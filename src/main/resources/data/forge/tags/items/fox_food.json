@@ -6,6 +6,11 @@
     "minecraft:cod",
     "minecraft:tropical_fish",
 
+    "minecraft:chicken",
+    "dragnlivestock:chicken_thigh",
+    "minecraft:rabbit",
+    "dragnlivestock:rabbit_thigh",
+
     "dragnlivestock:cooked_frog",
     "minecraft:cooked_salmon",
     "minecraft:cooked_cod",
