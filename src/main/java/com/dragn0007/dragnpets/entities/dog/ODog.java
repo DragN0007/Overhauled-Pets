@@ -204,7 +204,7 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity {
 
       regenHealthCounter++;
 
-      if (this.getHealth() < this.getMaxHealth() && regenHealthCounter >= 150 && this.isTame()) {
+      if (this.getHealth() < this.getMaxHealth() && regenHealthCounter >= 150 && this.isTame() && this.isAlive()) {
          this.setHealth(this.getHealth() + 2);
          regenHealthCounter = 0;
          this.level().addParticle(ParticleTypes.HEART, this.getRandomX(0.6D), this.getRandomY(), this.getRandomZ(0.6D), 0.7D, 0.7D, 0.7D);
@@ -592,7 +592,7 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity {
    private boolean isPanicking = false;
 
    public boolean isPanicking() {
-      return this.getHealth() < this.getMaxHealth() / 3;
+      return this.getHealth() < this.getMaxHealth() / 3 && this.isAlive();
    }
 
    public boolean getPanicking() {
@@ -609,7 +609,7 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity {
       }
 
       protected boolean shouldPanic() {
-         return this.mob.isFreezing() || this.mob.isOnFire() || this.mob.getHealth() < this.mob.getMaxHealth() / 3;
+         return this.mob.isFreezing() || this.mob.isOnFire() || this.mob.getHealth() < this.mob.getMaxHealth() / 3 && this.mob.isAlive();
       }
    }
 }
