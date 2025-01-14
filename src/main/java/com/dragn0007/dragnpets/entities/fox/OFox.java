@@ -221,7 +221,7 @@ public class OFox extends TamableAnimal implements GeoEntity {
 
       regenHealthCounter++;
 
-      if (this.getHealth() < this.getMaxHealth() && regenHealthCounter >= 150 && this.isTame()) {
+      if (this.getHealth() < this.getMaxHealth() && regenHealthCounter >= 150 && this.isTame() && this.isAlive()) {
          this.setHealth(this.getHealth() + 2);
          regenHealthCounter = 0;
          this.level().addParticle(ParticleTypes.HEART, this.getRandomX(0.6D), this.getRandomY(), this.getRandomZ(0.6D), 0.7D, 0.7D, 0.7D);
