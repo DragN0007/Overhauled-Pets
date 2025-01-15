@@ -147,23 +147,8 @@ public class Husky extends ODog implements NeutralMob, GeoEntity, Chestable, Con
 
    public InteractionResult mobInteract(Player player, InteractionHand hand) {
       ItemStack itemstack = player.getItemInHand(hand);
-      Item item = itemstack.getItem();
 
-      if (itemstack.is(LOItems.GENDER_TEST_STRIP.get()) && this.isFemale()) {
-         player.playSound(SoundEvents.BEEHIVE_EXIT, 1.0F, 1.0F);
-         ItemStack itemstack1 = ItemUtils.createFilledResult(itemstack, player, LOItems.FEMALE_GENDER_TEST_STRIP.get().getDefaultInstance());
-         player.setItemInHand(hand, itemstack1);
-         return InteractionResult.SUCCESS;
-      }
-
-      if (itemstack.is(LOItems.GENDER_TEST_STRIP.get()) && this.isMale()) {
-         player.playSound(SoundEvents.BEEHIVE_EXIT, 1.0F, 1.0F);
-         ItemStack itemstack1 = ItemUtils.createFilledResult(itemstack, player, LOItems.MALE_GENDER_TEST_STRIP.get().getDefaultInstance());
-         player.setItemInHand(hand, itemstack1);
-         return InteractionResult.SUCCESS;
-      }
-
-      if (!this.isChested() && itemstack.is(net.minecraft.world.level.block.Blocks.CHEST.asItem()) && this.isOwnedBy(player)) {
+      if (!this.isChested() && itemstack.is(net.minecraft.world.level.block.Blocks.CHEST.asItem()) && this.isOwnedBy(player) && !this.isBaby()) {
          this.playChestEquipsSound();
          if (!player.getAbilities().instabuild) {
             itemstack.shrink(1);
@@ -173,14 +158,14 @@ public class Husky extends ODog implements NeutralMob, GeoEntity, Chestable, Con
          return InteractionResult.sidedSuccess(this.level().isClientSide);
       }
 
-      if (!this.isBaby() && this.isOwnedBy(player) && !itemstack.is(Items.SHEARS) && this.isChested()) {
+      if (this.isOwnedBy(player) && !itemstack.is(Items.SHEARS) && this.isChested() && !this.isBaby()) {
          if (this.isTame() && player.isSecondaryUseActive() && this.isOrderedToSit()) {
             this.openInventory(player);
             return InteractionResult.sidedSuccess(this.level().isClientSide);
          }
       }
 
-      if (itemstack.is(Items.SHEARS) && player.isShiftKeyDown() && this.isOwnedBy(player)) {
+      if (itemstack.is(Items.SHEARS) && player.isShiftKeyDown() && this.isOwnedBy(player) && !this.isBaby()) {
          if (this.isChested()) {
             this.dropEquipment();
             this.inventory.removeAllItems();
@@ -192,101 +177,7 @@ public class Husky extends ODog implements NeutralMob, GeoEntity, Chestable, Con
          }
       }
 
-      //doggy talents next compat
-      if (itemstack.is(POTags.Items.TRAINING_TREAT) && this.isOwnedBy(player)) {
-         if (!player.level().isClientSide) {
-            Entity entity = this;
-
-            ResourceLocation dtnDogId = new ResourceLocation("doggytalents", "dog");
-
-            EntityType<?> dtnDogType = EntityType.byString(dtnDogId.toString()).orElse(null);
-
-            if (dtnDogType != null) {
-               Entity newEntity = dtnDogType.create(entity.level());
-               if (newEntity != null) {
-                  newEntity.moveTo(entity.getX(), entity.getY(), entity.getZ(), entity.getYRot(), entity.getXRot());
-                  entity.level().addFreshEntity(newEntity);
-                  entity.discard();
-               }
-            } else {
-               return InteractionResult.PASS;
-            }
-         }
-         return InteractionResult.SUCCESS;
-      }
-
-      if (player.isShiftKeyDown() && !this.isFood(itemstack) && !this.isOrderedToSit() && !this.wasToldToWander() && this.isOwnedBy(player)) {
-         this.setToldToWander(true);
-         player.displayClientMessage(Component.translatable("tooltip.dragnpets.wandering.tooltip").withStyle(ChatFormatting.GOLD), true);
-         return InteractionResult.SUCCESS;
-      }
-
-      if (player.isShiftKeyDown() && !this.isFood(itemstack) && !this.isOrderedToSit() && this.wasToldToWander() && this.isOwnedBy(player)) {
-         this.setToldToWander(false);
-         player.displayClientMessage(Component.translatable("tooltip.dragnpets.following.tooltip").withStyle(ChatFormatting.GOLD), true);
-         return InteractionResult.SUCCESS;
-      }
-
-      if (this.level().isClientSide) {
-         boolean flag = this.isOwnedBy(player) || this.isTame() || itemstack.is(Items.BONE) && !this.isTame() && !this.isAngry();
-         return flag ? InteractionResult.CONSUME : InteractionResult.PASS;
-      } else if (this.isTame()) {
-         if (this.isFood(itemstack) && this.getHealth() < this.getMaxHealth()) {
-            this.heal((float)itemstack.getFoodProperties(this).getNutrition());
-            if (!player.getAbilities().instabuild) {
-               itemstack.shrink(1);
-            }
-
-            this.gameEvent(GameEvent.EAT, this);
-            return InteractionResult.SUCCESS;
-         } else {
-            if (item instanceof DyeItem) {
-               DyeItem dyeitem = (DyeItem)item;
-               if (this.isOwnedBy(player)) {
-                  DyeColor dyecolor = dyeitem.getDyeColor();
-                  if (dyecolor != this.getCollarColor()) {
-                     this.setCollarColor(dyecolor);
-                     if (!player.getAbilities().instabuild) {
-                        itemstack.shrink(1);
-                     }
-
-                     return InteractionResult.SUCCESS;
-                  }
-
-                  return super.mobInteract(player, hand);
-               }
-            }
-
-            InteractionResult interactionresult = super.mobInteract(player, hand);
-            if ((!interactionresult.consumesAction() || this.isBaby()) && this.isOwnedBy(player) && !player.isShiftKeyDown()) {
-               this.setOrderedToSit(!this.isOrderedToSit());
-               this.jumping = false;
-               this.navigation.stop();
-               this.setTarget(null);
-               return InteractionResult.SUCCESS;
-            } else {
-               return interactionresult;
-            }
-         }
-      } else if (itemstack.is(Items.BONE) && !this.isAngry()) {
-         if (!player.getAbilities().instabuild) {
-            itemstack.shrink(1);
-         }
-
-         if (this.random.nextInt(3) == 0 && !net.minecraftforge.event.ForgeEventFactory.onAnimalTame(this, player)) {
-            this.tame(player);
-            this.navigation.stop();
-            this.setTarget((LivingEntity)null);
-            this.setOrderedToSit(true);
-            this.level().broadcastEntityEvent(this, (byte)7);
-         } else {
-            this.level().broadcastEntityEvent(this, (byte)6);
-         }
-
-         return InteractionResult.SUCCESS;
-      } else {
-         return super.mobInteract(player, hand);
-      }
+      return super.mobInteract(player, hand);
    }
 
    protected void playStepSound(BlockPos p_30415_, BlockState p_30416_) {
