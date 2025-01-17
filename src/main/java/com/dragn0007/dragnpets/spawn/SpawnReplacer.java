@@ -48,6 +48,7 @@ public class SpawnReplacer {
             OWolf oWolf = EntityTypes.O_WOLF_ENTITY.get().create(event.getLevel());
             if (oWolf != null) {
                 oWolf.copyPosition(vanillaWolf);
+                oWolf.setOwnerUUID(vanillaWolf.getOwnerUUID());
 
                 oWolf.setCustomName(vanillaWolf.getCustomName());
                 oWolf.setAge(vanillaWolf.getAge());
@@ -190,6 +191,7 @@ public class SpawnReplacer {
 
                     macaw.setCustomName(vanillaParrot.getCustomName());
                     macaw.setAge(vanillaParrot.getAge());
+                    macaw.setOwnerUUID(vanillaParrot.getOwnerUUID());
 
                     int randomVariant = event.getLevel().getRandom().nextInt(MacawModel.Variant.values().length);
                     macaw.setVariant(randomVariant);
@@ -214,6 +216,7 @@ public class SpawnReplacer {
 
                     cockatiel.setCustomName(vanillaParrot.getCustomName());
                     cockatiel.setAge(vanillaParrot.getAge());
+                    cockatiel.setOwnerUUID(vanillaParrot.getOwnerUUID());
 
                     int randomVariant = event.getLevel().getRandom().nextInt(CockatielModel.Variant.values().length);
                     cockatiel.setVariant(randomVariant);
@@ -238,6 +241,7 @@ public class SpawnReplacer {
 
                     ringneck.setCustomName(vanillaParrot.getCustomName());
                     ringneck.setAge(vanillaParrot.getAge());
+                    ringneck.setOwnerUUID(vanillaParrot.getOwnerUUID());
 
                     int randomVariant = event.getLevel().getRandom().nextInt(RingneckModel.Variant.values().length);
                     ringneck.setVariant(randomVariant);
@@ -314,6 +318,7 @@ public class SpawnReplacer {
 
                     commonCat.setCustomName(cat.getCustomName());
                     commonCat.setAge(cat.getAge());
+                    commonCat.setOwnerUUID(cat.getOwnerUUID());
 
                     commonCat.setVariant(0);
                     commonCat.setOverlay(0);
@@ -341,6 +346,7 @@ public class SpawnReplacer {
 
                     commonCat.setCustomName(cat.getCustomName());
                     commonCat.setAge(cat.getAge());
+                    commonCat.setOwnerUUID(cat.getOwnerUUID());
 
                     int randomVariant = event.getLevel().getRandom().nextInt(OCatModel.Variant.values().length);
                     commonCat.setVariant(randomVariant);
@@ -371,6 +377,7 @@ public class SpawnReplacer {
 
                     doberman.setCustomName(cat.getCustomName());
                     doberman.setAge(cat.getAge());
+                    doberman.setOwnerUUID(cat.getOwnerUUID());
 
                     int randomVariant = event.getLevel().getRandom().nextInt(DobermanModel.Variant.values().length);
                     doberman.setVariant(randomVariant);
@@ -395,6 +402,7 @@ public class SpawnReplacer {
 
                     labrador.setCustomName(cat.getCustomName());
                     labrador.setAge(cat.getAge());
+                    labrador.setOwnerUUID(cat.getOwnerUUID());
 
                     int randomVariant = event.getLevel().getRandom().nextInt(LabradorModel.Variant.values().length);
                     labrador.setVariant(randomVariant);
@@ -419,6 +427,7 @@ public class SpawnReplacer {
 
                     husky.setCustomName(cat.getCustomName());
                     husky.setAge(cat.getAge());
+                    husky.setOwnerUUID(cat.getOwnerUUID());
 
                     int randomVariant = event.getLevel().getRandom().nextInt(HuskyModel.Variant.values().length);
                     husky.setVariant(randomVariant);
@@ -443,6 +452,7 @@ public class SpawnReplacer {
 
                     pyrenees.setCustomName(cat.getCustomName());
                     pyrenees.setAge(cat.getAge());
+                    pyrenees.setOwnerUUID(cat.getOwnerUUID());
 
                     int randomVariant = event.getLevel().getRandom().nextInt(PyreneesModel.Variant.values().length);
                     pyrenees.setVariant(randomVariant);
@@ -467,6 +477,7 @@ public class SpawnReplacer {
 
                     collie.setCustomName(cat.getCustomName());
                     collie.setAge(cat.getAge());
+                    collie.setOwnerUUID(cat.getOwnerUUID());
 
                     int randomVariant = event.getLevel().getRandom().nextInt(CollieModel.Variant.values().length);
                     collie.setVariant(randomVariant);
@@ -491,6 +502,7 @@ public class SpawnReplacer {
 
                     maineCoon.setCustomName(cat.getCustomName());
                     maineCoon.setAge(cat.getAge());
+                    maineCoon.setOwnerUUID(cat.getOwnerUUID());
 
                     int randomVariant = event.getLevel().getRandom().nextInt(MaineCoonModel.Variant.values().length);
                     maineCoon.setVariant(randomVariant);

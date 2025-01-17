@@ -41,6 +41,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.pathfinder.BlockPathTypes;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.fml.ModList;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.animatable.GeoEntity;
@@ -336,7 +337,7 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity {
       }
 
       //doggy talents next compat
-      if (itemstack.is(POTags.Items.TRAINING_TREAT) && this.isOwnedBy(player)) {
+      if (itemstack.is(POTags.Items.TRAINING_TREAT) && this.isOwnedBy(player) && ModList.get().isLoaded("doggytalents")) {
          if (!player.level().isClientSide) {
             Entity entity = this;
 
@@ -348,6 +349,11 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity {
                Entity newEntity = dtnDogType.create(entity.level());
                if (newEntity != null) {
                   newEntity.moveTo(entity.getX(), entity.getY(), entity.getZ(), entity.getYRot(), entity.getXRot());
+
+                  if (newEntity instanceof TamableAnimal tamable) {
+                     tamable.setOwnerUUID(player.getUUID());
+                  }
+
                   entity.level().addFreshEntity(newEntity);
                   entity.discard();
                }

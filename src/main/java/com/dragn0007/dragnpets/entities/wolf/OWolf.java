@@ -376,7 +376,7 @@ public class OWolf extends TamableAnimal implements NeutralMob, GeoEntity {
       }
 
       //doggy talents next compat
-      if (itemstack.is(POTags.Items.TRAINING_TREAT) && this.isOwnedBy(player)) {
+      if (itemstack.is(POTags.Items.TRAINING_TREAT) && this.isOwnedBy(player) && ModList.get().isLoaded("doggytalents")) {
          if (!player.level().isClientSide) {
             Entity entity = this;
 
@@ -388,6 +388,11 @@ public class OWolf extends TamableAnimal implements NeutralMob, GeoEntity {
                Entity newEntity = dtnDogType.create(entity.level());
                if (newEntity != null) {
                   newEntity.moveTo(entity.getX(), entity.getY(), entity.getZ(), entity.getYRot(), entity.getXRot());
+
+                  if (newEntity instanceof TamableAnimal tamable) {
+                     tamable.setOwnerUUID(player.getUUID());
+                  }
+
                   entity.level().addFreshEntity(newEntity);
                   entity.discard();
                }
