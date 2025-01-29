@@ -109,6 +109,12 @@ public class EntityTypes {
                     .sized(0.8f,0.8f)
                     .build(new ResourceLocation(LivestockOverhaul.MODID,"border_collie").toString()));
 
+    public static final RegistryObject<EntityType<Bernese>> BERNESE_ENTITY = ENTITY_TYPES.register("bernese",
+            () -> EntityType.Builder.of(Bernese::new,
+                            MobCategory.CREATURE)
+                    .sized(0.9f,0.9f)
+                    .build(new ResourceLocation(LivestockOverhaul.MODID,"bernese").toString()));
+
     public static final RegistryObject<EntityType<MaineCoon>> MAINE_COON_ENTITY = ENTITY_TYPES.register("maine_coon",
             () -> EntityType.Builder.of(MaineCoon::new,
                             MobCategory.CREATURE)

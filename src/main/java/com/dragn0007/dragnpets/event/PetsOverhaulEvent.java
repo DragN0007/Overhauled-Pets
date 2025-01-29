@@ -18,6 +18,7 @@ import com.dragn0007.dragnpets.entities.tropical_fish.OTropicalFish;
 import com.dragn0007.dragnpets.entities.tropical_fish.OTropicalFishRender;
 import com.dragn0007.dragnpets.entities.wolf.OWolf;
 import com.dragn0007.dragnpets.entities.wolf.OWolfRender;
+import com.dragn0007.dragnpets.gui.BerneseScreen;
 import com.dragn0007.dragnpets.gui.HuskyScreen;
 import com.dragn0007.dragnpets.gui.POMenuTypes;
 import net.minecraft.client.gui.screens.MenuScreens;
@@ -48,6 +49,7 @@ public class PetsOverhaulEvent {
         event.put(EntityTypes.PYRENEES_ENTITY.get(), Pyrenees.createAttributes().build());
         event.put(EntityTypes.BORDER_COLLIE_ENTITY.get(), Collie.createAttributes().build());
         event.put(EntityTypes.MAINE_COON_ENTITY.get(), MaineCoon.createAttributes().build());
+        event.put(EntityTypes.BERNESE_ENTITY.get(), Bernese.createAttributes().build());
     }
 
     @SubscribeEvent
@@ -67,7 +69,9 @@ public class PetsOverhaulEvent {
         EntityRenderers.register(EntityTypes.PYRENEES_ENTITY.get(), PyreneesRender::new);
         EntityRenderers.register(EntityTypes.BORDER_COLLIE_ENTITY.get(), CollieRender::new);
         EntityRenderers.register(EntityTypes.MAINE_COON_ENTITY.get(), MaineCoonRender::new);
+        EntityRenderers.register(EntityTypes.BERNESE_ENTITY.get(), BerneseRender::new);
 
         MenuScreens.register(POMenuTypes.HUSKY_MENU.get(), HuskyScreen::new);
+        MenuScreens.register(POMenuTypes.BERNESE_MENU.get(), BerneseScreen::new);
     }
 }

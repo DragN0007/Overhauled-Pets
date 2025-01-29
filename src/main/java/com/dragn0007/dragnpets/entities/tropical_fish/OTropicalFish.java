@@ -1,9 +1,6 @@
 package com.dragn0007.dragnpets.entities.tropical_fish;
 
 import com.dragn0007.dragnlivestock.LivestockOverhaul;
-import com.dragn0007.dragnlivestock.entities.caribou.Caribou;
-import com.dragn0007.dragnlivestock.entities.caribou.CaribouMarkingLayer;
-import com.dragn0007.dragnlivestock.entities.caribou.CaribouModel;
 import com.dragn0007.dragnlivestock.entities.util.AbstractSchoolingOFish;
 import com.dragn0007.dragnlivestock.util.LivestockOverhaulCommonConfig;
 import com.dragn0007.dragnpets.PetsOverhaul;

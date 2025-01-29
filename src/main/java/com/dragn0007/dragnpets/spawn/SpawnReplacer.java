@@ -22,7 +22,6 @@ import com.dragn0007.dragnpets.util.PetsOverhaulCommonConfig;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.animal.*;
 import net.minecraft.world.entity.animal.axolotl.Axolotl;
-import net.minecraft.world.entity.animal.horse.Horse;
 import net.minecraft.world.level.biome.Biomes;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -331,12 +330,13 @@ public class SpawnReplacer {
                 Pyrenees pyrenees = EntityTypes.PYRENEES_ENTITY.get().create(event.getLevel());
                 Collie collie = EntityTypes.BORDER_COLLIE_ENTITY.get().create(event.getLevel());
                 MaineCoon maineCoon = EntityTypes.MAINE_COON_ENTITY.get().create(event.getLevel());
+                Bernese bernese = EntityTypes.BERNESE_ENTITY.get().create(event.getLevel());
 
                 if (event.getLevel().isClientSide) {
                     return;
                 }
 
-                int i = event.getLevel().getRandom().nextInt(8);
+                int i = event.getLevel().getRandom().nextInt(9);
 
                 if (event.getLevel().getBiome(event.getEntity().blockPosition()).is(Biomes.SWAMP)) {
                     if (commonCat != null) {
@@ -541,6 +541,31 @@ public class SpawnReplacer {
                         }
 
                         event.getLevel().addFreshEntity(maineCoon);
+                        cat.remove(Entity.RemovalReason.DISCARDED);
+
+                        event.setCanceled(true);
+                    }
+                }
+
+                if (bernese != null) {
+                    if (i == 8 && !event.getLevel().getBiome(event.getEntity().blockPosition()).is(Biomes.SWAMP)) {
+                        bernese.copyPosition(cat);
+
+                        bernese.setCustomName(cat.getCustomName());
+                        bernese.setAge(cat.getAge());
+                        bernese.setOwnerUUID(cat.getOwnerUUID());
+
+                        int randomVariant = event.getLevel().getRandom().nextInt(BerneseModel.Variant.values().length);
+                        bernese.setVariant(randomVariant);
+
+                        int randomGender = event.getLevel().getRandom().nextInt(ODog.Gender.values().length);
+                        bernese.setGender(randomGender);
+
+                        if (event.getLevel().isClientSide) {
+                            cat.remove(Entity.RemovalReason.DISCARDED);
+                        }
+
+                        event.getLevel().addFreshEntity(bernese);
                         cat.remove(Entity.RemovalReason.DISCARDED);
 
                         event.setCanceled(true);

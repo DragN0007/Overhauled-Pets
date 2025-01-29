@@ -20,7 +20,7 @@ plugins {
 
 apply plugin: 'org.spongepowered.mixin'
 
-version = '1.20.1-1.1'
+version = '1.20.1-1.2'
 group = mod_group_id
 
 base {
@@ -95,7 +95,7 @@ dependencies {
     implementation fg.deobf("curse.maven:dragns-livestock-overhaul-1131669:6068466")
 
 //    implementation fg.deobf("curse.maven:jade-324717:5876199")
-    implementation fg.deobf("curse.maven:xaeros-minimap-263420:6012833")
+//    implementation fg.deobf("curse.maven:xaeros-minimap-263420:6012833")
 }
 
 tasks.named('processResources', ProcessResources).configure {

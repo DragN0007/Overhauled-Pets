@@ -14,6 +14,7 @@ public class POMenuTypes {
     public static final DeferredRegister<MenuType<?>> MENU_TYPES = DeferredRegister.create(ForgeRegistries.MENU_TYPES, PetsOverhaul.MODID);
 
     public static final RegistryObject<MenuType<HuskyMenu>> HUSKY_MENU = registerMenuType("husky_menu", HuskyMenu::new);
+    public static final RegistryObject<MenuType<BerneseMenu>> BERNESE_MENU = registerMenuType("bernese_menu", BerneseMenu::new);
 
     public static <T extends AbstractContainerMenu>RegistryObject<MenuType<T>> registerMenuType(String name, IContainerFactory<T> factory) {
         return MENU_TYPES.register(name, () -> IForgeMenuType.create(factory));

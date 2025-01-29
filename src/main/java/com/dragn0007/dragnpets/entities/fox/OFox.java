@@ -1,13 +1,10 @@
 package com.dragn0007.dragnpets.entities.fox;
 
 import com.dragn0007.dragnlivestock.entities.EntityTypes;
-import com.dragn0007.dragnlivestock.entities.chicken.OChicken;
 import com.dragn0007.dragnlivestock.items.LOItems;
 import com.dragn0007.dragnlivestock.util.LivestockOverhaulCommonConfig;
 import com.dragn0007.dragnpets.PetsOverhaul;
 import com.dragn0007.dragnpets.entities.ai.FoxFollowOwnerGoal;
-import com.dragn0007.dragnpets.entities.dog.Labrador;
-import com.dragn0007.dragnpets.entities.dog.Pyrenees;
 import com.dragn0007.dragnpets.util.POTags;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;

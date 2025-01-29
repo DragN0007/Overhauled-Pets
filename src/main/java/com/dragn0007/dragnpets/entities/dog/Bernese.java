@@ -1,20 +1,28 @@
 package com.dragn0007.dragnpets.entities.dog;
 
+import com.dragn0007.dragnlivestock.entities.Chestable;
+import com.dragn0007.dragnlivestock.util.LOTags;
 import com.dragn0007.dragnlivestock.util.LivestockOverhaulCommonConfig;
 import com.dragn0007.dragnpets.entities.EntityTypes;
 import com.dragn0007.dragnpets.entities.ai.*;
+import com.dragn0007.dragnpets.gui.BerneseMenu;
+import com.dragn0007.dragnpets.util.POTags;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.TimeUtil;
 import net.minecraft.util.valueproviders.UniformInt;
-import net.minecraft.world.DifficultyInstance;
+import net.minecraft.world.*;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -28,11 +36,15 @@ import net.minecraft.world.entity.monster.Ghast;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.pathfinder.BlockPathTypes;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.items.wrapper.InvWrapper;
+import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.core.animatable.GeoAnimatable;
@@ -44,23 +56,23 @@ import software.bernie.geckolib.core.animation.RawAnimation;
 import software.bernie.geckolib.core.object.PlayState;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
+import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
-public class Collie extends ODog implements NeutralMob, GeoEntity {
+public class Bernese extends ODog implements NeutralMob, GeoEntity, Chestable, ContainerListener {
 
-   private static final EntityDataAccessor<Integer> DATA_COLLAR_COLOR = SynchedEntityData.defineId(Collie.class, EntityDataSerializers.INT);
-   private static final EntityDataAccessor<Integer> DATA_REMAINING_ANGER_TIME = SynchedEntityData.defineId(Collie.class, EntityDataSerializers.INT);
+   private static final EntityDataAccessor<Integer> DATA_COLLAR_COLOR = SynchedEntityData.defineId(Bernese.class, EntityDataSerializers.INT);
+   private static final EntityDataAccessor<Integer> DATA_REMAINING_ANGER_TIME = SynchedEntityData.defineId(Bernese.class, EntityDataSerializers.INT);
 
    private static final UniformInt PERSISTENT_ANGER_TIME = TimeUtil.rangeOfSeconds(20, 39);
    @Nullable
    private UUID persistentAngerTarget;
 
-   public Collie(EntityType<? extends Collie> entityType, Level level) {
+   public Bernese(EntityType<? extends Bernese> entityType, Level level) {
       super(entityType, level);
       this.setTame(false);
-      this.setPathfindingMalus(BlockPathTypes.POWDER_SNOW, -1.0F);
-      this.setPathfindingMalus(BlockPathTypes.DANGER_POWDER_SNOW, -1.0F);
+      this.updateInventory();
    }
 
    protected void registerGoals() {
@@ -68,9 +80,9 @@ public class Collie extends ODog implements NeutralMob, GeoEntity {
       this.goalSelector.addGoal(1, new WolfPanicGoal(1.4D));
       this.goalSelector.addGoal(2, new SitWhenOrderedToGoal(this));
       this.goalSelector.addGoal(4, new LeapAtTargetGoal(this, 0.4F));
-      this.goalSelector.addGoal(5, new MeleeAttackGoal(this, 1.8D, true));
+      this.goalSelector.addGoal(5, new MeleeAttackGoal(this, 1.5D, true));
       this.goalSelector.addGoal(7, new BreedGoal(this, 1.0D));
-      this.goalSelector.addGoal(10, new WaterAvoidingRandomStrollGoal(this, 1.0D));
+      this.goalSelector.addGoal(8, new WaterAvoidingRandomStrollGoal(this, 1.0D));
       this.goalSelector.addGoal(10, new LookAtPlayerGoal(this, Player.class, 8.0F));
       this.goalSelector.addGoal(10, new RandomLookAroundGoal(this));
       this.targetSelector.addGoal(1, new OwnerHurtByTargetGoal(this));
@@ -78,20 +90,71 @@ public class Collie extends ODog implements NeutralMob, GeoEntity {
       this.targetSelector.addGoal(3, (new HurtByTargetGoal(this)).setAlertOthers());
       this.targetSelector.addGoal(4, new NearestAttackableTargetGoal<>(this, Player.class, 10, true, false, this::isAngryAt));
       this.targetSelector.addGoal(8, new ResetUniversalAngerTargetGoal<>(this, true));
-      this.goalSelector.addGoal(10, new DogFollowPackLeaderGoal(this));
+      this.goalSelector.addGoal(7, new DogFollowPackLeaderGoal(this));
 
       this.goalSelector.addGoal(6, new DogFollowOwnerGoal(this, 1.0D, 10.0F, 2.0F, false));
 
-      this.goalSelector.addGoal(7, new FollowSheepGoal(this, 1.5D, 4.0F, 7.0F));
-      this.goalSelector.addGoal(7, new FollowGoatGoal(this, 1.5D, 4.0F, 7.0F));
-      this.goalSelector.addGoal(8, new FollowCowGoal(this, 1.5D, 4.0F, 7.0F));
+      this.goalSelector.addGoal(7, new FollowSheepGoal(this, 1.0D, 6.0F, 7.0F));
+      this.goalSelector.addGoal(7, new FollowGoatGoal(this, 1.0D, 6.0F, 7.0F));
+      this.goalSelector.addGoal(8, new FollowCowGoal(this, 1.0D, 6.0F, 7.0F));
+      this.goalSelector.addGoal(8, new FollowPigGoal(this, 1.0D, 6.0F, 7.0F));
+      this.goalSelector.addGoal(9, new FollowRabbitGoal(this, 1.0D, 6.0F, 7.0F));
+      this.goalSelector.addGoal(9, new FollowChickenGoal(this, 1.0D, 6.0F, 7.0F));
+
+      this.goalSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, LivingEntity.class, 2, true, false,
+              entity -> entity.getType().is(LOTags.Entity_Types.WOLVES) && (entity instanceof TamableAnimal && !((TamableAnimal) entity).isTame()))  {
+         @Override
+         public boolean canUse() {
+            if (this.mob instanceof Bernese) {
+               Bernese customMob = (Bernese) this.mob;
+               return customMob.wasToldToWander() && super.canUse();
+            }
+            return super.canUse();
+         }
+      });
+
+      this.goalSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, LivingEntity.class, 2, true, false,
+              entity -> entity.getType().is(POTags.Entity_Types.O_WOLVES) && (entity instanceof TamableAnimal && !((TamableAnimal) entity).isTame()))  {
+         @Override
+         public boolean canUse() {
+            if (this.mob instanceof Bernese) {
+               Bernese customMob = (Bernese) this.mob;
+               return customMob.wasToldToWander() && super.canUse();
+            }
+            return super.canUse();
+         }
+      });
+
+      this.goalSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, LivingEntity.class, 2, true, false,
+              entity -> entity.getType().is(POTags.Entity_Types.FOXES) && (entity instanceof TamableAnimal && !((TamableAnimal) entity).isTame()))  {
+         @Override
+         public boolean canUse() {
+            if (this.mob instanceof Bernese) {
+               Bernese customMob = (Bernese) this.mob;
+               return customMob.wasToldToWander() && super.canUse();
+            }
+            return super.canUse();
+         }
+      });
+
+      this.goalSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, LivingEntity.class, 2, true, false,
+              entity -> entity.getType().is(POTags.Entity_Types.O_FOXES) && (entity instanceof TamableAnimal && !((TamableAnimal) entity).isTame()))  {
+         @Override
+         public boolean canUse() {
+            if (this.mob instanceof Bernese) {
+               Bernese customMob = (Bernese) this.mob;
+               return customMob.wasToldToWander() && super.canUse();
+            }
+            return super.canUse();
+         }
+      });
    }
 
    public static AttributeSupplier.Builder createAttributes() {
       return Mob.createMobAttributes()
-              .add(Attributes.MOVEMENT_SPEED, 0.30F)
-              .add(Attributes.MAX_HEALTH, 10.0D)
-              .add(Attributes.ATTACK_DAMAGE, 2.5D);
+              .add(Attributes.MOVEMENT_SPEED, 0.26F)
+              .add(Attributes.MAX_HEALTH, 16.0D)
+              .add(Attributes.ATTACK_DAMAGE, 4.0D);
    }
 
    private final AnimatableInstanceCache geoCache = GeckoLibUtil.createInstanceCache(this);
@@ -105,10 +168,10 @@ public class Collie extends ODog implements NeutralMob, GeoEntity {
       if (tAnimationState.isMoving()) {
          if (currentSpeed > speedThreshold) {
             controller.setAnimation(RawAnimation.begin().then("run", Animation.LoopType.LOOP));
-            controller.setAnimationSpeed(1.4);
+            controller.setAnimationSpeed(1.3);
          } else {
             controller.setAnimation(RawAnimation.begin().then("walk", Animation.LoopType.LOOP));
-            controller.setAnimationSpeed(1.3);
+            controller.setAnimationSpeed(1.2);
          }
       } else {
          if (isInSittingPose()) {
@@ -133,8 +196,57 @@ public class Collie extends ODog implements NeutralMob, GeoEntity {
    }
 
    @Override
+   public void tick() {
+      super.tick();
+
+      regenHealthCounter++;
+
+      if (this.getHealth() < this.getMaxHealth() && regenHealthCounter >= 150 && this.isTame() && this.isAlive()) {
+         this.setHealth(this.getHealth() + 4);
+         regenHealthCounter = 0;
+         this.level().addParticle(ParticleTypes.HEART, this.getRandomX(0.6D), this.getRandomY(), this.getRandomZ(0.6D), 0.7D, 0.7D, 0.7D);
+      }
+
+   }
+
+   @Override
    public float getStepHeight() {
       return 1F;
+   }
+
+   public InteractionResult mobInteract(Player player, InteractionHand hand) {
+      ItemStack itemstack = player.getItemInHand(hand);
+
+      if (!this.isChested() && itemstack.is(net.minecraft.world.level.block.Blocks.CHEST.asItem()) && this.isOwnedBy(player) && !this.isBaby()) {
+         this.playChestEquipsSound();
+         if (!player.getAbilities().instabuild) {
+            itemstack.shrink(1);
+         }
+         this.setChested(true);
+
+         return InteractionResult.sidedSuccess(this.level().isClientSide);
+      }
+
+      if (this.isOwnedBy(player) && !itemstack.is(Items.SHEARS) && this.isChested() && !this.isBaby()) {
+         if (this.isTame() && player.isSecondaryUseActive() && this.isOrderedToSit()) {
+            this.openInventory(player);
+            return InteractionResult.sidedSuccess(this.level().isClientSide);
+         }
+      }
+
+      if (itemstack.is(Items.SHEARS) && player.isShiftKeyDown() && this.isOwnedBy(player) && !this.isBaby()) {
+         if (this.isChested()) {
+            this.dropEquipment();
+            this.inventory.removeAllItems();
+
+            this.setChested(false);
+            this.playChestEquipsSound();
+
+            return InteractionResult.sidedSuccess(this.level().isClientSide);
+         }
+      }
+
+      return super.mobInteract(player, hand);
    }
 
    protected void playStepSound(BlockPos p_30415_, BlockState p_30416_) {
@@ -160,7 +272,7 @@ public class Collie extends ODog implements NeutralMob, GeoEntity {
    }
 
    protected float getSoundVolume() {
-      return 0.4F;
+      return 0.6F;
    }
 
    public void aiStep() {
@@ -201,8 +313,8 @@ public class Collie extends ODog implements NeutralMob, GeoEntity {
    public void setTame(boolean p_30443_) {
       super.setTame(p_30443_);
       if (p_30443_) {
-         this.getAttribute(Attributes.MAX_HEALTH).setBaseValue(10.0D);
-         this.setHealth(10.0F);
+         this.getAttribute(Attributes.MAX_HEALTH).setBaseValue(18.0D);
+         this.setHealth(20.0F);
       } else {
          this.getAttribute(Attributes.MAX_HEALTH).setBaseValue(7.0D);
       }
@@ -242,10 +354,11 @@ public class Collie extends ODog implements NeutralMob, GeoEntity {
 
    // Generates the base texture
    public ResourceLocation getTextureResource() {
-      return CollieModel.Variant.variantFromOrdinal(getVariant()).resourceLocation;
+      return BerneseModel.Variant.variantFromOrdinal(getVariant()).resourceLocation;
    }
 
-   public static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(Collie.class, EntityDataSerializers.INT);
+   public static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(Bernese.class, EntityDataSerializers.INT);
+   private static final EntityDataAccessor<Boolean> CHESTED = SynchedEntityData.defineId(Bernese.class, EntityDataSerializers.BOOLEAN);
 
    public int getVariant() {
       return this.entityData.get(VARIANT);
@@ -261,6 +374,7 @@ public class Collie extends ODog implements NeutralMob, GeoEntity {
       this.entityData.define(DATA_REMAINING_ANGER_TIME, 0);
       this.entityData.define(VARIANT, 0);
       this.entityData.define(GENDER, 0);
+      this.entityData.define(CHESTED, false);
    }
 
    public void addAdditionalSaveData(CompoundTag tag) {
@@ -270,6 +384,24 @@ public class Collie extends ODog implements NeutralMob, GeoEntity {
       tag.putInt("Gender", this.getGender());
       tag.putBoolean("Wandering", this.getToldToWander());
       tag.putBoolean("Panicking", this.getPanicking());
+
+      tag.putBoolean("Chested", this.isChested());
+
+      if(this.isChested()) {
+         ListTag listTag = new ListTag();
+
+         for(int i = 0; i < this.inventory.getContainerSize(); i++) {
+            ItemStack itemStack = this.inventory.getItem(i);
+            if(!itemStack.isEmpty()) {
+               CompoundTag compoundTag = new CompoundTag();
+               compoundTag.putByte("Slot", (byte) i);
+               itemStack.save(compoundTag);
+               listTag.add(compoundTag);
+            }
+         }
+         tag.put("Items", listTag);
+      }
+
       this.addPersistentAngerSaveData(tag);
    }
 
@@ -295,6 +427,23 @@ public class Collie extends ODog implements NeutralMob, GeoEntity {
          this.setPanicking(tag.getBoolean("Panicking"));
       }
 
+      if(tag.contains("Chested")) {
+         this.setChested(tag.getBoolean("Chested"));
+      }
+
+      this.updateInventory();
+      if(this.isChested()) {
+         ListTag listTag = tag.getList("Items", 10);
+
+         for(int i = 0; i < listTag.size(); i++) {
+            CompoundTag compoundTag = listTag.getCompound(i);
+            int j = compoundTag.getByte("Slot") & 255;
+            if(j < this.inventory.getContainerSize()) {
+               this.inventory.setItem(j, ItemStack.of(compoundTag));
+            }
+         }
+      }
+
       this.readPersistentAngerSaveData(this.level(), tag);
    }
 
@@ -305,10 +454,98 @@ public class Collie extends ODog implements NeutralMob, GeoEntity {
          data = new AgeableMobGroupData(0.2F);
       }
       Random random = new Random();
-      setVariant(random.nextInt(CollieModel.Variant.values().length));
-      setGender(random.nextInt(Collie.Gender.values().length));
+      setVariant(random.nextInt(BerneseModel.Variant.values().length));
+      setGender(random.nextInt(Bernese.Gender.values().length));
 
       return super.finalizeSpawn(serverLevelAccessor, instance, spawnType, data, tag);
+   }
+
+   protected SimpleContainer inventory;
+   public LazyOptional<?> itemHandler = null;
+
+   @Override
+   public boolean isChestable() {
+      return this.isAlive() && !this.isBaby();
+   }
+
+   @Override
+   public void equipChest(@javax.annotation.Nullable SoundSource soundSource) {
+      if(soundSource != null) {
+         this.level().playSound(null, this, SoundEvents.MULE_CHEST, soundSource, 0.5f, 1f);
+      }
+   }
+
+   private void updateInventory() {
+      SimpleContainer tempInventory = this.inventory;
+      this.inventory = new SimpleContainer(this.getInventorySize());
+
+      if(tempInventory != null) {
+         tempInventory.removeListener(this);
+         int maxSize = Math.min(tempInventory.getContainerSize(), this.inventory.getContainerSize());
+
+         for(int i = 0; i < maxSize; i++) {
+            ItemStack itemStack = tempInventory.getItem(i);
+            if(!itemStack.isEmpty()) {
+               this.inventory.setItem(i, itemStack.copy());
+            }
+         }
+      }
+      this.inventory.addListener(this);
+      this.itemHandler = LazyOptional.of(() -> new InvWrapper(this.inventory));
+   }
+
+   @Override
+   public boolean isChested() {
+      return this.entityData.get(CHESTED);
+   }
+
+   private void setChested(boolean chested) {
+      this.entityData.set(CHESTED, chested);
+   }
+
+   @Override
+   public void dropEquipment() {
+      if(!this.level().isClientSide) {
+         super.dropEquipment();
+         if(this.isChested()) {
+            this.spawnAtLocation(Items.CHEST);
+         }
+         Containers.dropContents(this.level(), this, this.inventory);
+      }
+   }
+
+   @Override
+   public void invalidateCaps() {
+      super.invalidateCaps();
+      if(this.itemHandler != null) {
+         LazyOptional<?> oldHandler = this.itemHandler;
+         this.itemHandler = null;
+         oldHandler.invalidate();
+      }
+   }
+
+   private int getInventorySize() {
+      return 21;
+   }
+
+   public void playChestEquipsSound() {
+      this.playSound(SoundEvents.LLAMA_CHEST, 1.0F, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.0F);
+   }
+
+   public void openInventory(Player player) {
+      if(player instanceof ServerPlayer serverPlayer && this.isTame()) {
+         NetworkHooks.openScreen(serverPlayer, new SimpleMenuProvider((containerId, inventory, p) -> {
+            return new BerneseMenu(containerId, inventory, this.inventory, this);
+         }, this.getDisplayName()), (data) -> {
+            data.writeInt(this.getInventorySize());
+            data.writeInt(this.getId());
+         });
+      }
+   }
+
+   @Override
+   public void containerChanged(Container p_18983_) {
+      return;
    }
 
    public enum Gender {
@@ -324,7 +561,7 @@ public class Collie extends ODog implements NeutralMob, GeoEntity {
       return this.getGender() == 1;
    }
 
-   public static final EntityDataAccessor<Integer> GENDER = SynchedEntityData.defineId(Collie.class, EntityDataSerializers.INT);
+   public static final EntityDataAccessor<Integer> GENDER = SynchedEntityData.defineId(Bernese.class, EntityDataSerializers.INT);
 
    public int getGender() {
       return this.entityData.get(GENDER);
@@ -341,13 +578,13 @@ public class Collie extends ODog implements NeutralMob, GeoEntity {
    public boolean canMate(Animal animal) {
       if (animal == this) {
          return false;
-      } else if (!(animal instanceof Collie)) {
+      } else if (!(animal instanceof Bernese)) {
          return false;
       } else {
          if (!LivestockOverhaulCommonConfig.GENDERS_AFFECT_BREEDING.get()) {
-            return this.canParent() && ((Collie) animal).canParent();
+            return this.canParent() && ((Bernese) animal).canParent();
          } else {
-            Collie partner = (Collie) animal;
+            Bernese partner = (Bernese) animal;
             if (this.canParent() && partner.canParent() && this.getGender() != partner.getGender()) {
                return true;
             }
@@ -365,10 +602,10 @@ public class Collie extends ODog implements NeutralMob, GeoEntity {
 
    @Override
    public AgeableMob getBreedOffspring(ServerLevel serverLevel, AgeableMob ageableMob) {
-      Collie oWolf1 = (Collie) ageableMob;
-      if (ageableMob instanceof Collie) {
-         Collie oWolf = (Collie) ageableMob;
-         oWolf1 = EntityTypes.BORDER_COLLIE_ENTITY.get().create(serverLevel);
+      Bernese oWolf1 = (Bernese) ageableMob;
+      if (ageableMob instanceof Bernese) {
+         Bernese oWolf = (Bernese) ageableMob;
+         oWolf1 = EntityTypes.BERNESE_ENTITY.get().create(serverLevel);
 
          int i = this.random.nextInt(9);
          int variant;
@@ -377,11 +614,11 @@ public class Collie extends ODog implements NeutralMob, GeoEntity {
          } else if (i < 8) {
             variant = oWolf.getVariant();
          } else {
-            variant = this.random.nextInt(CollieModel.Variant.values().length);
+            variant = this.random.nextInt(BerneseModel.Variant.values().length);
          }
 
          int gender;
-         gender = this.random.nextInt(Collie.Gender.values().length);
+         gender = this.random.nextInt(Bernese.Gender.values().length);
 
          oWolf1.setVariant(variant);
          oWolf1.setGender(gender);
@@ -392,8 +629,8 @@ public class Collie extends ODog implements NeutralMob, GeoEntity {
 
    public boolean wantsToAttack(LivingEntity entity, LivingEntity p_30390_) {
       if (!(entity instanceof Creeper) && !(entity instanceof Ghast)) {
-         if (entity instanceof Collie) {
-            Collie wolf = (Collie)entity;
+         if (entity instanceof Bernese) {
+            Bernese wolf = (Bernese)entity;
             return !wolf.isTame() || wolf.getOwner() != p_30390_;
          } else if (entity instanceof Player && p_30390_ instanceof Player && !((Player)p_30390_).canHarmPlayer((Player)entity)) {
             return false;
