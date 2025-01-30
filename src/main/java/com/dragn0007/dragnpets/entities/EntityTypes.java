@@ -45,7 +45,7 @@ public class EntityTypes {
 
     public static final RegistryObject<EntityType<OAxolotl>> O_AXOLOTL_ENTITY = ENTITY_TYPES.register("o_axolotl",
             () -> EntityType.Builder.of(OAxolotl::new,
-                            MobCategory.CREATURE)
+                            MobCategory.AXOLOTLS)
                     .sized(0.4f,0.4f)
                     .build(new ResourceLocation(LivestockOverhaul.MODID,"o_axolotl").toString()));
 
