@@ -29,6 +29,8 @@ public class POItemModelProvider extends ItemModelProvider {
         simpleItem(POItems.COOKED_TROPICAL_FISH_FILLET);
 
         simpleItem(POItems.TROPICAL_FISH_ROE);
+
+        simpleItem(POItems.DOG_SLED);
     }
 
     private ItemModelBuilder simpleItem(RegistryObject<Item> item) {

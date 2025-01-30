@@ -72,6 +72,12 @@ public class Husky extends ODog implements NeutralMob, GeoEntity, Chestable, Con
       this.updateInventory();
    }
 
+   public boolean hitchedToSled = false;
+
+   public boolean isHitchedToSled() {
+      return hitchedToSled;
+   }
+
    protected void registerGoals() {
       this.goalSelector.addGoal(1, new FloatGoal(this));
       this.goalSelector.addGoal(1, new WolfPanicGoal(1.4D));
@@ -296,6 +302,10 @@ public class Husky extends ODog implements NeutralMob, GeoEntity, Chestable, Con
       this.entityData.set(VARIANT, variant);
    }
 
+   public void setHitched(boolean hitched) {
+      this.hitchedToSled = hitched;
+   }
+
    protected void defineSynchedData() {
       super.defineSynchedData();
       this.entityData.define(DATA_COLLAR_COLOR, DyeColor.RED.getId());
@@ -314,6 +324,7 @@ public class Husky extends ODog implements NeutralMob, GeoEntity, Chestable, Con
       tag.putBoolean("Panicking", this.getPanicking());
 
       tag.putBoolean("Chested", this.isChested());
+      tag.putBoolean("Hitched", this.isHitchedToSled());
 
       if(this.isChested()) {
          ListTag listTag = new ListTag();
@@ -357,6 +368,10 @@ public class Husky extends ODog implements NeutralMob, GeoEntity, Chestable, Con
 
       if(tag.contains("Chested")) {
          this.setChested(tag.getBoolean("Chested"));
+      }
+
+      if(tag.contains("Hitched")) {
+         this.setHitched(tag.getBoolean("Hitched"));
       }
 
       this.updateInventory();
@@ -453,11 +468,6 @@ public class Husky extends ODog implements NeutralMob, GeoEntity, Chestable, Con
    }
 
    private int getInventorySize() {
-//     if (this.isChested()) {
-//        return 12;
-//     } else {
-//        return 0;
-//     }
       return 12;
    }
 

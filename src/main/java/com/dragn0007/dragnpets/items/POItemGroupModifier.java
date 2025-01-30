@@ -48,6 +48,8 @@ public class POItemGroupModifier {
                         output.accept(POItems.O_AXOLOTL_BUCKET.get());
                         output.accept(POItems.O_TROPICAL_FISH_BUCKET.get());
 
+                        output.accept(POItems.DOG_SLED.get());
+
                     }).build());
 
     public static void register(IEventBus eventBus) {

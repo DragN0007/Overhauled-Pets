@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "item": "minecraft:iron_ingot"
+    },
+    "B": {
+      "item": "minecraft:spruce_planks"
+    },
+    "C": {
+      "item": "minecraft:chest"
+    },
+    "D": {
+      "item": "minecraft:barrel"
+    }
+  },
+  "pattern": [
+    "CD ",
+    "BBB",
+    "AAA"
+  ],
+  "result": {
+    "item": "dragnpets:dog_sled"
+  },
+  "show_notification": true
+}

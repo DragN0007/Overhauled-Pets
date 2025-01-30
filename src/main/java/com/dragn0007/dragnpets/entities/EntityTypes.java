@@ -6,6 +6,7 @@ import com.dragn0007.dragnpets.entities.cat.MaineCoon;
 import com.dragn0007.dragnpets.entities.cat.OCat;
 import com.dragn0007.dragnpets.entities.dog.*;
 import com.dragn0007.dragnpets.entities.fox.OFox;
+import com.dragn0007.dragnpets.entities.misc.sled.DogSled;
 import com.dragn0007.dragnpets.entities.ocelot.OOcelot;
 import com.dragn0007.dragnpets.entities.parrot.Cockatiel;
 import com.dragn0007.dragnpets.entities.parrot.Macaw;
@@ -120,6 +121,14 @@ public class EntityTypes {
                             MobCategory.CREATURE)
                     .sized(0.6f,0.6f)
                     .build(new ResourceLocation(LivestockOverhaul.MODID,"maine_coon").toString()));
+
+
+
+    public static final RegistryObject<EntityType<DogSled>> DOG_SLED_ENTITY = ENTITY_TYPES.register("dog_sled",
+            () -> EntityType.Builder.of(DogSled::new,
+                            MobCategory.MISC)
+                    .sized(1.2f,0.3f)
+                    .build(new ResourceLocation(LivestockOverhaul.MODID,"dog_sled").toString()));
 
 }
 

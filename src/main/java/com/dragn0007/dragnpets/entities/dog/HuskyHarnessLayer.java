@@ -24,7 +24,7 @@ public class HuskyHarnessLayer extends GeoRenderLayer<Husky> {
 
         ResourceLocation resourceLocation = null;
 
-        if (animatable.isChested()) {
+        if (animatable.isChested() || animatable.isHitchedToSled()) {
             resourceLocation = new ResourceLocation(PetsOverhaul.MODID, "textures/entity/dog/husky/harness.png");
         } else {
             return;

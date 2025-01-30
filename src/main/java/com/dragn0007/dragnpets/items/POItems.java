@@ -2,6 +2,7 @@ package com.dragn0007.dragnpets.items;
 
 import com.dragn0007.dragnpets.PetsOverhaul;
 import com.dragn0007.dragnpets.entities.EntityTypes;
+import com.dragn0007.dragnpets.items.custom.DogSledItem;
 import com.dragn0007.dragnpets.items.custom.TropicalFishRoeItem;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.food.FoodProperties;
@@ -78,6 +79,8 @@ public class POItems {
             () -> new MobBucketItem(EntityTypes.O_AXOLOTL_ENTITY, () -> Fluids.WATER, () -> SoundEvents.BUCKET_FILL_AXOLOTL, new Item.Properties().stacksTo(1)));
     public static final RegistryObject<Item> O_TROPICAL_FISH_BUCKET = ITEMS.register("o_tropical_fish_bucket",
             () -> new MobBucketItem(EntityTypes.O_TROPICAL_FISH_ENTITY, () -> Fluids.WATER, () -> SoundEvents.BUCKET_FILL_FISH, new Item.Properties().stacksTo(1)));
+
+    public static final RegistryObject<Item> DOG_SLED = ITEMS.register("dog_sled", DogSledItem::new);
 
 
     //Mod Item Tab Icon (UNOBTAINABLE)

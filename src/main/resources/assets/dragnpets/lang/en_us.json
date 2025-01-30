@@ -68,5 +68,8 @@
   "item.dragnpets.tropical_fish_roe": "Tropical Fish Roe",
 
   "item.dragnpets.o_axolotl_bucket": "O-Axolotl Bucket",
-  "item.dragnpets.o_tropical_fish_bucket": "O-Tropical Fish Bucket"
+  "item.dragnpets.o_tropical_fish_bucket": "O-Tropical Fish Bucket",
+
+  "item.dragnpets.dog_sled": "Dog Sled",
+  "entity.dragnpets.dog_sled": "Dog Sled"
 }

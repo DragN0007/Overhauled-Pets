@@ -19,6 +19,18 @@ public class PORecipeMaker extends RecipeProvider implements IConditionBuilder {
     @Override
     protected void buildRecipes(Consumer<FinishedRecipe> pFinishedRecipeConsumer) {
 
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, POItems.DOG_SLED.get())
+                .define('A', Items.IRON_INGOT)
+                .define('B', Items.SPRUCE_PLANKS)
+                .define('C', Items.CHEST)
+                .define('D', Items.BARREL)
+                .pattern("CD ")
+                .pattern("BBB")
+                .pattern("AAA")
+                .unlockedBy("has_iron", inventoryTrigger(ItemPredicate.Builder.item()
+                        .of(Items.IRON_INGOT).build()))
+                .save(pFinishedRecipeConsumer);
+
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, POItems.TROPICAL_FISH_FILLET.get(), 2)
                 .requires(Items.TROPICAL_FISH)
                 .unlockedBy("has_fish", inventoryTrigger(ItemPredicate.Builder.item()

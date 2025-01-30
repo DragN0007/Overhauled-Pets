@@ -22,6 +22,12 @@ public class HuskyRender extends GeoEntityRenderer<Husky> {
             model.getBone("collar").ifPresent(b -> b.setHidden(true));
         }
 
+        if (entity.isHitchedToSled() && !entity.isChested()) {
+            model.getBone("chests").ifPresent(b -> b.setHidden(true));
+        } else if (entity.isChested()) {
+            model.getBone("chests").ifPresent(b -> b.setHidden(false));
+        }
+
         if(entity.isBaby()) {
             poseStack.scale(0.5F, 0.5F, 0.5F);
         } else {
