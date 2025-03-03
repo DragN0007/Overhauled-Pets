@@ -50,7 +50,7 @@ public class Macaw extends OParrot implements GeoEntity, FlyingAnimal {
       this.entityData.set(VARIANT, variant);
    }
 
-   protected void defineSynchedData() {
+   public void defineSynchedData() {
       super.defineSynchedData();
       this.entityData.define(VARIANT, 0);
       this.entityData.define(GENDER, 0);

@@ -1,6 +1,6 @@
 package com.dragn0007.dragnpets.gui;
 
-import com.dragn0007.dragnpets.entities.dog.Husky;
+import com.dragn0007.dragnpets.entities.dog.husky.Husky;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;

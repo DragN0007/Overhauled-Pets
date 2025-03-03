@@ -2,9 +2,17 @@ package com.dragn0007.dragnpets.entities;
 
 import com.dragn0007.dragnlivestock.LivestockOverhaul;
 import com.dragn0007.dragnpets.entities.axolotl.OAxolotl;
-import com.dragn0007.dragnpets.entities.cat.MaineCoon;
 import com.dragn0007.dragnpets.entities.cat.OCat;
-import com.dragn0007.dragnpets.entities.dog.*;
+import com.dragn0007.dragnpets.entities.cat.kornish_rex.KornishRex;
+import com.dragn0007.dragnpets.entities.cat.maine_coon.MaineCoon;
+import com.dragn0007.dragnpets.entities.dog.australian_shepherd.AustralianShepherd;
+import com.dragn0007.dragnpets.entities.dog.bernese.Bernese;
+import com.dragn0007.dragnpets.entities.dog.bloodhound.Bloodhound;
+import com.dragn0007.dragnpets.entities.dog.border_collie.Collie;
+import com.dragn0007.dragnpets.entities.dog.doberman.Doberman;
+import com.dragn0007.dragnpets.entities.dog.husky.Husky;
+import com.dragn0007.dragnpets.entities.dog.labrador.Labrador;
+import com.dragn0007.dragnpets.entities.dog.pyrenees.Pyrenees;
 import com.dragn0007.dragnpets.entities.fox.OFox;
 import com.dragn0007.dragnpets.entities.misc.sled.DogSled;
 import com.dragn0007.dragnpets.entities.ocelot.OOcelot;
@@ -122,6 +130,23 @@ public class EntityTypes {
                     .sized(0.6f,0.6f)
                     .build(new ResourceLocation(LivestockOverhaul.MODID,"maine_coon").toString()));
 
+    public static final RegistryObject<EntityType<AustralianShepherd>> AUSTRALIAN_SHEPHERD_ENTITY = ENTITY_TYPES.register("australian_shepherd",
+            () -> EntityType.Builder.of(AustralianShepherd::new,
+                            MobCategory.CREATURE)
+                    .sized(0.8f,0.8f)
+                    .build(new ResourceLocation(LivestockOverhaul.MODID,"australian_shepherd").toString()));
+
+    public static final RegistryObject<EntityType<Bloodhound>> BLOODHOUND_ENTITY = ENTITY_TYPES.register("bloodhound",
+            () -> EntityType.Builder.of(Bloodhound::new,
+                            MobCategory.CREATURE)
+                    .sized(0.8f,0.8f)
+                    .build(new ResourceLocation(LivestockOverhaul.MODID,"bloodhound").toString()));
+
+    public static final RegistryObject<EntityType<KornishRex>> KORNISH_REX_ENTITY = ENTITY_TYPES.register("kornish_rex",
+            () -> EntityType.Builder.of(KornishRex::new,
+                            MobCategory.CREATURE)
+                    .sized(0.6f,0.6f)
+                    .build(new ResourceLocation(LivestockOverhaul.MODID,"kornish_rex").toString()));
 
 
     public static final RegistryObject<EntityType<DogSled>> DOG_SLED_ENTITY = ENTITY_TYPES.register("dog_sled",

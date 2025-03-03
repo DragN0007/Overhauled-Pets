@@ -36,8 +36,8 @@ public class OOcelotCollarLayer extends GeoRenderLayer<OOcelot> {
             new ResourceLocation(PetsOverhaul.MODID, "textures/entity/collar/black.png")
     };
 
-    private static final ResourceLocation FEMALE_INDICATOR = new ResourceLocation(PetsOverhaul.MODID, "textures/entity/collar/female_indicator.png");
-    private static final ResourceLocation MALE_INDICATOR = new ResourceLocation(PetsOverhaul.MODID, "textures/entity/collar/male_indicator.png");
+    public static final ResourceLocation FEMALE_INDICATOR = new ResourceLocation(PetsOverhaul.MODID, "textures/entity/collar/female_indicator.png");
+    public static final ResourceLocation MALE_INDICATOR = new ResourceLocation(PetsOverhaul.MODID, "textures/entity/collar/male_indicator.png");
 
 
     public OOcelotCollarLayer(GeoRenderer<OOcelot> entityRendererIn) {

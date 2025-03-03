@@ -1,11 +1,8 @@
 package com.dragn0007.dragnpets.entities.misc.sled;
 
 import com.dragn0007.dragnpets.PetsOverhaul;
-import com.dragn0007.dragnpets.entities.dog.Husky;
-import com.dragn0007.dragnpets.entities.dog.HuskyCollarLayer;
-import com.dragn0007.dragnpets.entities.dog.ODog;
+import com.dragn0007.dragnpets.entities.dog.husky.Husky;
 import com.dragn0007.dragnpets.items.POItems;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -23,12 +20,10 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.Vec3;
@@ -45,18 +40,18 @@ public class DogSled extends Entity implements ContainerListener {
     public static final EntityDataAccessor<Float> HEALTH = SynchedEntityData.defineId(DogSled.class, EntityDataSerializers.FLOAT);
     public SimpleContainer inventory;
     public LazyOptional<?> itemHandler;
-    private int lerpSteps;
-    private float targetRotation = 0;
-    private float currentRotation = 0;
+    public int lerpSteps;
+    public float targetRotation = 0;
+    public float currentRotation = 0;
     public int forwardMotion = 1;
 
     public int driveTick = 0;
     public float lastDrivePartialTick = 0;
     public Vec3 lastClientPos = Vec3.ZERO;
-    private double targetX;
-    private double targetY;
-    private double targetZ;
-    private float targetYRot;
+    public double targetX;
+    public double targetY;
+    public double targetZ;
+    public float targetYRot;
 
     public static final float FRICTION = 0.7f;
     public static final float GRAVITY = 0.08f;
@@ -117,7 +112,7 @@ public class DogSled extends Entity implements ContainerListener {
     }
 
     @Override
-    protected boolean canAddPassenger(Entity entity) {
+    public boolean canAddPassenger(Entity entity) {
         if (this.DOGS_HITCHED >= 4) {
             return this.getPassengers().size() < 2;
         } else {
@@ -141,40 +136,7 @@ public class DogSled extends Entity implements ContainerListener {
     @Override
     public void tick() {
         super.tick();
-        this.lastClientPos = this.position();
 
-        if(this.isControlledByLocalInstance()) {
-            this.lerpSteps = 0;
-
-            Vec3 velocity = this.getDeltaMovement();
-            double dx = velocity.x * FRICTION;
-            if(Math.abs(dx) < 0.001) dx = 0;
-
-            double dz = velocity.z * FRICTION;
-            if(Math.abs(dz) < 0.001) dz = 0;
-
-            double dy = velocity.y + (this.onGround() ? 0 : -GRAVITY);
-
-            this.setDeltaMovement(dx, dy, dz);
-
-            if(this.lastClientPos.x != this.position().x || this.lastClientPos.y != this.position().y || this.lastClientPos.z != this.position().z) {
-                this.syncPacketPositionCodec(this.position().x, this.position().y, this.position().z);
-            }
-        } else {
-            this.setDeltaMovement(0, 0, 0);
-        }
-
-        if (this.lerpSteps > 0) {
-            double x = this.getX() + (this.targetX - this.getX()) / this.lerpSteps;
-            double y = this.getY() + (this.targetY - this.getY()) / this.lerpSteps;
-            double z = this.getZ() + (this.targetZ - this.getZ()) / this.lerpSteps;
-
-            float yRot = this.getYRot() + (this.targetYRot - this.getYRot()) / this.lerpSteps;
-
-            this.setPos(x, y, z);
-            this.setYRot(yRot);
-            this.lerpSteps--;
-        }
     }
 
     @Override
@@ -246,12 +208,12 @@ public class DogSled extends Entity implements ContainerListener {
     }
 
     @Override
-    protected void defineSynchedData () {
+    public void defineSynchedData () {
         this.entityData.define(HEALTH, MAX_HEALTH);
     }
 
     @Override
-    protected void readAdditionalSaveData(CompoundTag compoundTag) {
+    public void readAdditionalSaveData(CompoundTag compoundTag) {
         this.entityData.set(HEALTH, compoundTag.getFloat("Health"));
 
         this.createInventory();
@@ -266,7 +228,7 @@ public class DogSled extends Entity implements ContainerListener {
     }
 
     @Override
-    protected void addAdditionalSaveData(CompoundTag compoundTag) {
+    public void addAdditionalSaveData(CompoundTag compoundTag) {
         compoundTag.putFloat("Health", this.entityData.get(HEALTH));
 
         ListTag listTag = new ListTag();

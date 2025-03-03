@@ -19,7 +19,7 @@ import org.jetbrains.annotations.NotNull;
 public class DogSledRender extends EntityRenderer<DogSled> {
     public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(new ResourceLocation(PetsOverhaul.MODID, "dog_sled"), "main");
 
-    private final DogSledModel model;
+    public final DogSledModel model;
 
     public DogSledRender(EntityRendererProvider.Context context) {
         super(context);

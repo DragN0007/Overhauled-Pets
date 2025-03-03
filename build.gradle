@@ -92,10 +92,11 @@ repositories {
 dependencies {
     minecraft "net.minecraftforge:forge:1.20.1-47.2.0"
     implementation fg.deobf('software.bernie.geckolib:geckolib-forge-1.20.1:4.4.4')
-    implementation fg.deobf("curse.maven:dragns-livestock-overhaul-1131669:6068466")
+    implementation fg.deobf("curse.maven:dragns-livestock-overhaul-1131669:6220361")
 
 //    implementation fg.deobf("curse.maven:jade-324717:5876199")
 //    implementation fg.deobf("curse.maven:xaeros-minimap-263420:6012833")
+    implementation fg.deobf("curse.maven:astikor-carts-redux-916493:5574685")
 }
 
 tasks.named('processResources', ProcessResources).configure {

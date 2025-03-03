@@ -6,8 +6,31 @@ import com.dragn0007.dragnpets.entities.EntityTypes;
 import com.dragn0007.dragnpets.entities.axolotl.OAxolotl;
 import com.dragn0007.dragnpets.entities.axolotl.OAxolotlMarkingLayer;
 import com.dragn0007.dragnpets.entities.axolotl.OAxolotlModel;
-import com.dragn0007.dragnpets.entities.cat.*;
-import com.dragn0007.dragnpets.entities.dog.*;
+import com.dragn0007.dragnpets.entities.cat.OCat;
+import com.dragn0007.dragnpets.entities.cat.OCatEyeLayer;
+import com.dragn0007.dragnpets.entities.cat.OCatMarkingLayer;
+import com.dragn0007.dragnpets.entities.cat.OCatModel;
+import com.dragn0007.dragnpets.entities.cat.kornish_rex.KornishRex;
+import com.dragn0007.dragnpets.entities.cat.kornish_rex.KornishRexModel;
+import com.dragn0007.dragnpets.entities.cat.maine_coon.MaineCoon;
+import com.dragn0007.dragnpets.entities.cat.maine_coon.MaineCoonModel;
+import com.dragn0007.dragnpets.entities.dog.ODog;
+import com.dragn0007.dragnpets.entities.dog.australian_shepherd.AustralianShepherd;
+import com.dragn0007.dragnpets.entities.dog.australian_shepherd.AustralianShepherdModel;
+import com.dragn0007.dragnpets.entities.dog.bernese.Bernese;
+import com.dragn0007.dragnpets.entities.dog.bernese.BerneseModel;
+import com.dragn0007.dragnpets.entities.dog.bloodhound.Bloodhound;
+import com.dragn0007.dragnpets.entities.dog.bloodhound.BloodhoundModel;
+import com.dragn0007.dragnpets.entities.dog.border_collie.Collie;
+import com.dragn0007.dragnpets.entities.dog.border_collie.CollieModel;
+import com.dragn0007.dragnpets.entities.dog.doberman.Doberman;
+import com.dragn0007.dragnpets.entities.dog.doberman.DobermanModel;
+import com.dragn0007.dragnpets.entities.dog.husky.Husky;
+import com.dragn0007.dragnpets.entities.dog.husky.HuskyModel;
+import com.dragn0007.dragnpets.entities.dog.labrador.Labrador;
+import com.dragn0007.dragnpets.entities.dog.labrador.LabradorModel;
+import com.dragn0007.dragnpets.entities.dog.pyrenees.Pyrenees;
+import com.dragn0007.dragnpets.entities.dog.pyrenees.PyreneesModel;
 import com.dragn0007.dragnpets.entities.fox.OFox;
 import com.dragn0007.dragnpets.entities.fox.OFoxMarkingLayer;
 import com.dragn0007.dragnpets.entities.ocelot.OOcelot;
@@ -331,12 +354,15 @@ public class SpawnReplacer {
                 Collie collie = EntityTypes.BORDER_COLLIE_ENTITY.get().create(event.getLevel());
                 MaineCoon maineCoon = EntityTypes.MAINE_COON_ENTITY.get().create(event.getLevel());
                 Bernese bernese = EntityTypes.BERNESE_ENTITY.get().create(event.getLevel());
+                AustralianShepherd aShepherd = EntityTypes.AUSTRALIAN_SHEPHERD_ENTITY.get().create(event.getLevel());
+                Bloodhound bloodhound = EntityTypes.BLOODHOUND_ENTITY.get().create(event.getLevel());
+                KornishRex kornishRex = EntityTypes.KORNISH_REX_ENTITY.get().create(event.getLevel());
 
                 if (event.getLevel().isClientSide) {
                     return;
                 }
 
-                int i = event.getLevel().getRandom().nextInt(9);
+                int i = event.getLevel().getRandom().nextInt(12);
 
                 if (event.getLevel().getBiome(event.getEntity().blockPosition()).is(Biomes.SWAMP)) {
                     if (commonCat != null) {
@@ -571,6 +597,82 @@ public class SpawnReplacer {
                         event.setCanceled(true);
                     }
                 }
+
+                if (aShepherd != null) {
+                    if (i == 9 && !event.getLevel().getBiome(event.getEntity().blockPosition()).is(Biomes.SWAMP)) {
+                        aShepherd.copyPosition(cat);
+
+                        aShepherd.setCustomName(cat.getCustomName());
+                        aShepherd.setAge(cat.getAge());
+                        aShepherd.setOwnerUUID(cat.getOwnerUUID());
+
+                        int randomVariant = event.getLevel().getRandom().nextInt(AustralianShepherdModel.Variant.values().length);
+                        aShepherd.setVariant(randomVariant);
+
+                        int randomGender = event.getLevel().getRandom().nextInt(ODog.Gender.values().length);
+                        aShepherd.setGender(randomGender);
+
+                        if (event.getLevel().isClientSide) {
+                            cat.remove(Entity.RemovalReason.DISCARDED);
+                        }
+
+                        event.getLevel().addFreshEntity(aShepherd);
+                        cat.remove(Entity.RemovalReason.DISCARDED);
+
+                        event.setCanceled(true);
+                    }
+                }
+
+                if (bloodhound != null) {
+                    if (i == 10 && !event.getLevel().getBiome(event.getEntity().blockPosition()).is(Biomes.SWAMP)) {
+                        bloodhound.copyPosition(cat);
+
+                        bloodhound.setCustomName(cat.getCustomName());
+                        bloodhound.setAge(cat.getAge());
+                        bloodhound.setOwnerUUID(cat.getOwnerUUID());
+
+                        int randomVariant = event.getLevel().getRandom().nextInt(BloodhoundModel.Variant.values().length);
+                        bloodhound.setVariant(randomVariant);
+
+                        int randomGender = event.getLevel().getRandom().nextInt(ODog.Gender.values().length);
+                        bloodhound.setGender(randomGender);
+
+                        if (event.getLevel().isClientSide) {
+                            cat.remove(Entity.RemovalReason.DISCARDED);
+                        }
+
+                        event.getLevel().addFreshEntity(bloodhound);
+                        cat.remove(Entity.RemovalReason.DISCARDED);
+
+                        event.setCanceled(true);
+                    }
+                }
+
+                if (kornishRex != null) {
+                    if (i == 11 && !event.getLevel().getBiome(event.getEntity().blockPosition()).is(Biomes.SWAMP)) {
+                        kornishRex.copyPosition(cat);
+
+                        kornishRex.setCustomName(cat.getCustomName());
+                        kornishRex.setAge(cat.getAge());
+                        kornishRex.setOwnerUUID(cat.getOwnerUUID());
+
+                        int randomVariant = event.getLevel().getRandom().nextInt(KornishRexModel.Variant.values().length);
+                        kornishRex.setVariant(randomVariant);
+
+                        int randomGender = event.getLevel().getRandom().nextInt(ODog.Gender.values().length);
+                        kornishRex.setGender(randomGender);
+
+                        if (event.getLevel().isClientSide) {
+                            cat.remove(Entity.RemovalReason.DISCARDED);
+                        }
+
+                        event.getLevel().addFreshEntity(kornishRex);
+                        cat.remove(Entity.RemovalReason.DISCARDED);
+
+                        event.setCanceled(true);
+                    }
+                }
+
             }
         }
 

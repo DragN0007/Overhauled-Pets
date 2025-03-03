@@ -72,8 +72,8 @@ import java.util.function.Predicate;
 
 public class OParrot extends TamableAnimal implements GeoEntity, FlyingAnimal {
 
-   private static final ResourceLocation LOOT_TABLE = new ResourceLocation(PetsOverhaul.MODID, "entities/o_parrot");
-   private static final ResourceLocation VANILLA_LOOT_TABLE = new ResourceLocation("minecraft", "entities/parrot");
+   public static final ResourceLocation LOOT_TABLE = new ResourceLocation(PetsOverhaul.MODID, "entities/o_parrot");
+   public static final ResourceLocation VANILLA_LOOT_TABLE = new ResourceLocation("minecraft", "entities/parrot");
    @Override
    public @NotNull ResourceLocation getDefaultLootTable() {
       if (LivestockOverhaulCommonConfig.USE_VANILLA_LOOT.get()) {
@@ -82,13 +82,13 @@ public class OParrot extends TamableAnimal implements GeoEntity, FlyingAnimal {
       return LOOT_TABLE;
    }
 
-   private static final Predicate<Mob> NOT_PARROT_PREDICATE = new Predicate<Mob>() {
+   public static final Predicate<Mob> NOT_PARROT_PREDICATE = new Predicate<Mob>() {
       public boolean test(@Nullable Mob p_29453_) {
          return p_29453_ != null && OParrot.MOB_SOUND_MAP.containsKey(p_29453_.getType());
       }
    };
-   private static final Item POISONOUS_FOOD = Items.COOKIE;
-   private static final Ingredient FOOD_ITEMS = Ingredient.of(POTags.Items.PARROT_FOOD);
+   public static final Item POISONOUS_FOOD = Items.COOKIE;
+   public static final Ingredient FOOD_ITEMS = Ingredient.of(POTags.Items.PARROT_FOOD);
    @Override
    public boolean isFood(ItemStack itemStack) {
       return FOOD_ITEMS.test(itemStack);
@@ -170,7 +170,7 @@ public class OParrot extends TamableAnimal implements GeoEntity, FlyingAnimal {
       this.setPathfindingMalus(BlockPathTypes.COCOA, -1.0F);
    }
 
-   protected void registerGoals() {
+   public void registerGoals() {
       this.goalSelector.addGoal(0, new PanicGoal(this, 1.25D));
       this.goalSelector.addGoal(0, new FloatGoal(this));
       this.goalSelector.addGoal(1, new LookAtPlayerGoal(this, Player.class, 8.0F));
@@ -188,7 +188,7 @@ public class OParrot extends TamableAnimal implements GeoEntity, FlyingAnimal {
               .add(Attributes.MOVEMENT_SPEED, (double)0.2F);
    }
 
-   protected PathNavigation createNavigation(Level p_29417_) {
+   public PathNavigation createNavigation(Level p_29417_) {
       FlyingPathNavigation flyingpathnavigation = new FlyingPathNavigation(this, p_29417_);
       flyingpathnavigation.setCanOpenDoors(false);
       flyingpathnavigation.setCanFloat(true);
@@ -197,9 +197,9 @@ public class OParrot extends TamableAnimal implements GeoEntity, FlyingAnimal {
       return flyingpathnavigation;
    }
 
-   private final AnimatableInstanceCache geoCache = GeckoLibUtil.createInstanceCache(this);
+   public final AnimatableInstanceCache geoCache = GeckoLibUtil.createInstanceCache(this);
 
-   private <T extends GeoAnimatable> PlayState predicate(software.bernie.geckolib.core.animation.AnimationState<T> tAnimationState) {
+   public <T extends GeoAnimatable> PlayState predicate(software.bernie.geckolib.core.animation.AnimationState<T> tAnimationState) {
 
       AnimationController<T> controller = tAnimationState.getController();
 
@@ -329,7 +329,7 @@ public class OParrot extends TamableAnimal implements GeoEntity, FlyingAnimal {
       }
    }
 
-   private boolean toldToWander = false;
+   public boolean toldToWander = false;
 
    public boolean wasToldToWander() {
       return this.toldToWander;
@@ -343,7 +343,7 @@ public class OParrot extends TamableAnimal implements GeoEntity, FlyingAnimal {
       this.toldToWander = toldToWander;
    }
 
-   protected void checkFallDamage(double p_29370_, boolean p_29371_, BlockState p_29372_, BlockPos p_29373_) { }
+   public void checkFallDamage(double p_29370_, boolean p_29371_, BlockState p_29372_, BlockPos p_29373_) { }
 
    @Nullable
    public SoundEvent getAmbientSound() {
@@ -359,19 +359,19 @@ public class OParrot extends TamableAnimal implements GeoEntity, FlyingAnimal {
       }
    }
 
-   private static SoundEvent getImitatedSound(EntityType<?> p_29409_) {
+   public static SoundEvent getImitatedSound(EntityType<?> p_29409_) {
       return MOB_SOUND_MAP.getOrDefault(p_29409_, SoundEvents.PARROT_AMBIENT);
    }
 
-   protected SoundEvent getHurtSound(DamageSource p_29437_) {
+   public SoundEvent getHurtSound(DamageSource p_29437_) {
       return SoundEvents.PARROT_HURT;
    }
 
-   protected SoundEvent getDeathSound() {
+   public SoundEvent getDeathSound() {
       return SoundEvents.PARROT_DEATH;
    }
 
-   protected void playStepSound(BlockPos p_29419_, BlockState p_29420_) {
+   public void playStepSound(BlockPos p_29419_, BlockState p_29420_) {
       this.playSound(SoundEvents.PARROT_STEP, 0.15F, 1.0F);
    }
 
@@ -391,7 +391,7 @@ public class OParrot extends TamableAnimal implements GeoEntity, FlyingAnimal {
       return true;
    }
 
-   protected void doPush(Entity p_29367_) {
+   public void doPush(Entity p_29367_) {
       if (!(p_29367_ instanceof Player)) {
          super.doPush(p_29367_);
       }
@@ -424,7 +424,7 @@ public class OParrot extends TamableAnimal implements GeoEntity, FlyingAnimal {
       this.entityData.set(VARIANT, variant);
    }
 
-   protected void defineSynchedData() {
+   public void defineSynchedData() {
       super.defineSynchedData();
       this.entityData.define(VARIANT, 0);
       this.entityData.define(GENDER, 0);
@@ -512,7 +512,7 @@ public class OParrot extends TamableAnimal implements GeoEntity, FlyingAnimal {
       }
 
       @Nullable
-      protected Vec3 getPosition() {
+      public Vec3 getPosition() {
          Vec3 vec3 = null;
          if (this.mob.isInWater()) {
             vec3 = LandRandomPos.getPos(this.mob, 15, 15);
@@ -526,7 +526,7 @@ public class OParrot extends TamableAnimal implements GeoEntity, FlyingAnimal {
       }
 
       @Nullable
-      private Vec3 getTreePos() {
+      public Vec3 getTreePos() {
          BlockPos blockpos = this.mob.blockPosition();
          BlockPos.MutableBlockPos blockpos$mutableblockpos = new BlockPos.MutableBlockPos();
          BlockPos.MutableBlockPos blockpos$mutableblockpos1 = new BlockPos.MutableBlockPos();

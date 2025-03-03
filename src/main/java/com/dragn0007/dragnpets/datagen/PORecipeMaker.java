@@ -17,7 +17,7 @@ public class PORecipeMaker extends RecipeProvider implements IConditionBuilder {
     }
 
     @Override
-    protected void buildRecipes(Consumer<FinishedRecipe> pFinishedRecipeConsumer) {
+    public void buildRecipes(Consumer<FinishedRecipe> pFinishedRecipeConsumer) {
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, POItems.DOG_SLED.get())
                 .define('A', Items.IRON_INGOT)

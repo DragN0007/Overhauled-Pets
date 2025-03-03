@@ -15,16 +15,16 @@ import java.util.List;
 import java.util.function.Predicate;
 
 public class FollowSheepGoal extends Goal {
-   private final Mob mob;
-   private final Predicate<Mob> followPredicate;
+   public final Mob mob;
+   public final Predicate<Mob> followPredicate;
    @Nullable
-   private OSheep oSheep;
-   private final double speedModifier;
-   private final PathNavigation navigation;
-   private int timeToRecalcPath;
-   private final float stopDistance;
-   private float oldWaterCost;
-   private final float areaSize;
+   public OSheep oSheep;
+   public final double speedModifier;
+   public final PathNavigation navigation;
+   public int timeToRecalcPath;
+   public final float stopDistance;
+   public float oldWaterCost;
+   public final float areaSize;
 
    public FollowSheepGoal(Mob dog, double speedMod, float stopDist, float areaSize) {
       this.mob = dog;

@@ -7,16 +7,15 @@ import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
-import net.minecraft.world.entity.Entity;
 
 public class DogSledModel<T extends DogSled> extends EntityModel<T> {
-	private final ModelPart sled;
-	private final ModelPart chest1;
-	private final ModelPart chest1top;
-	private final ModelPart chest2;
-	private final ModelPart attachment1;
-	private final ModelPart attachment2;
-	private final ModelPart attachment3;
+	public final ModelPart sled;
+	public final ModelPart chest1;
+	public final ModelPart chest1top;
+	public final ModelPart chest2;
+	public final ModelPart attachment1;
+	public final ModelPart attachment2;
+	public final ModelPart attachment3;
 
 	public DogSledModel(ModelPart root) {
 		this.sled = root.getChild("sled");

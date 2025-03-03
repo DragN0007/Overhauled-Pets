@@ -1,0 +1,25 @@
+{
+  "replace": false,
+  "values": [
+    "#forge:o_wolves",
+    "#forge:wolves",
+    "#forge:o_foxes",
+    "#forge:fox",
+    "dragnpets:ocelot",
+
+    {
+      "id": "permafrost:dinofelis",
+      "required": false
+    },
+
+    {
+      "id": "permafrost:direwolf",
+      "required": false
+    },
+
+    {
+      "id": "permafrost:titanis",
+      "required": false
+    }
+  ]
+}

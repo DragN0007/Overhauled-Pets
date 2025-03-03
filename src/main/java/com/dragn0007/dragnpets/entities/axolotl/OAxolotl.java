@@ -63,7 +63,7 @@ public class OAxolotl extends Animal implements GeoEntity, Bucketable {
 	}
 
 	static class AxolotlMoveControl extends SmoothSwimmingMoveControl {
-		private final OAxolotl oAxolotl;
+		public final OAxolotl oAxolotl;
 
 		public AxolotlMoveControl(OAxolotl oAxolotl) {
 			super(oAxolotl, 85, 10, 0.1F, 0.5F, false);
@@ -82,8 +82,8 @@ public class OAxolotl extends Animal implements GeoEntity, Bucketable {
 
 	}
 
-	private static final ResourceLocation LOOT_TABLE = new ResourceLocation(LivestockOverhaul.MODID, "entities/o_axolotl");
-	private static final ResourceLocation VANILLA_LOOT_TABLE = new ResourceLocation("minecraft", "entities/axolotl");
+	public static final ResourceLocation LOOT_TABLE = new ResourceLocation(LivestockOverhaul.MODID, "entities/o_axolotl");
+	public static final ResourceLocation VANILLA_LOOT_TABLE = new ResourceLocation("minecraft", "entities/axolotl");
 	@Override
 	public @NotNull ResourceLocation getDefaultLootTable() {
 		if (LivestockOverhaulCommonConfig.USE_VANILLA_LOOT.get()) {
@@ -157,9 +157,9 @@ public class OAxolotl extends Animal implements GeoEntity, Bucketable {
 		return !this.fromBucket() && !this.hasCustomName();
 	}
 
-	private final AnimatableInstanceCache geoCache = GeckoLibUtil.createInstanceCache(this);
+	public final AnimatableInstanceCache geoCache = GeckoLibUtil.createInstanceCache(this);
 
-	private <T extends GeoAnimatable> PlayState predicate(software.bernie.geckolib.core.animation.AnimationState<T> tAnimationState) {
+	public <T extends GeoAnimatable> PlayState predicate(software.bernie.geckolib.core.animation.AnimationState<T> tAnimationState) {
 		double currentSpeed = this.getDeltaMovement().lengthSqr();
 		double speedThreshold = 0.01;
 
@@ -191,25 +191,25 @@ public class OAxolotl extends Animal implements GeoEntity, Bucketable {
 		return this.geoCache;
 	}
 
-	protected SoundEvent getHurtSound(DamageSource p_149161_) {
+	public SoundEvent getHurtSound(DamageSource p_149161_) {
 		return SoundEvents.AXOLOTL_HURT;
 	}
 
 	@Nullable
-	protected SoundEvent getDeathSound() {
+	public SoundEvent getDeathSound() {
 		return SoundEvents.AXOLOTL_DEATH;
 	}
 
 	@Nullable
-	protected SoundEvent getAmbientSound() {
+	public SoundEvent getAmbientSound() {
 		return this.isInWater() ? SoundEvents.AXOLOTL_IDLE_WATER : SoundEvents.AXOLOTL_IDLE_AIR;
 	}
 
-	protected SoundEvent getSwimSplashSound() {
+	public SoundEvent getSwimSplashSound() {
 		return SoundEvents.AXOLOTL_SPLASH;
 	}
 
-	protected SoundEvent getSwimSound() {
+	public SoundEvent getSwimSound() {
 		return SoundEvents.AXOLOTL_SWIM;
 	}
 
@@ -235,8 +235,8 @@ public class OAxolotl extends Animal implements GeoEntity, Bucketable {
 
 	public static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(OAxolotl.class, EntityDataSerializers.INT);
 	public static final EntityDataAccessor<Integer> OVERLAY = SynchedEntityData.defineId(OAxolotl.class, EntityDataSerializers.INT);
-	private static final EntityDataAccessor<Boolean> FROM_BUCKET = SynchedEntityData.defineId(OAxolotl.class, EntityDataSerializers.BOOLEAN);
-	private static final EntityDataAccessor<Integer> GILL_LENGTH = SynchedEntityData.defineId(OAxolotl.class, EntityDataSerializers.INT);
+	public static final EntityDataAccessor<Boolean> FROM_BUCKET = SynchedEntityData.defineId(OAxolotl.class, EntityDataSerializers.BOOLEAN);
+	public static final EntityDataAccessor<Integer> GILL_LENGTH = SynchedEntityData.defineId(OAxolotl.class, EntityDataSerializers.INT);
 
 	public enum Gills {
 		SHORT,

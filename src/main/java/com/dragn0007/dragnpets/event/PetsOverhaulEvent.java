@@ -4,11 +4,28 @@ import com.dragn0007.dragnpets.PetsOverhaul;
 import com.dragn0007.dragnpets.entities.EntityTypes;
 import com.dragn0007.dragnpets.entities.axolotl.OAxolotl;
 import com.dragn0007.dragnpets.entities.axolotl.OAxolotlRender;
-import com.dragn0007.dragnpets.entities.cat.MaineCoon;
-import com.dragn0007.dragnpets.entities.cat.MaineCoonRender;
 import com.dragn0007.dragnpets.entities.cat.OCat;
 import com.dragn0007.dragnpets.entities.cat.OCatRender;
-import com.dragn0007.dragnpets.entities.dog.*;
+import com.dragn0007.dragnpets.entities.cat.kornish_rex.KornishRex;
+import com.dragn0007.dragnpets.entities.cat.kornish_rex.KornishRexRender;
+import com.dragn0007.dragnpets.entities.cat.maine_coon.MaineCoon;
+import com.dragn0007.dragnpets.entities.cat.maine_coon.MaineCoonRender;
+import com.dragn0007.dragnpets.entities.dog.australian_shepherd.AustralianShepherd;
+import com.dragn0007.dragnpets.entities.dog.australian_shepherd.AustralianShepherdRender;
+import com.dragn0007.dragnpets.entities.dog.bernese.Bernese;
+import com.dragn0007.dragnpets.entities.dog.bernese.BerneseRender;
+import com.dragn0007.dragnpets.entities.dog.bloodhound.Bloodhound;
+import com.dragn0007.dragnpets.entities.dog.bloodhound.BloodhoundRender;
+import com.dragn0007.dragnpets.entities.dog.border_collie.Collie;
+import com.dragn0007.dragnpets.entities.dog.border_collie.CollieRender;
+import com.dragn0007.dragnpets.entities.dog.doberman.Doberman;
+import com.dragn0007.dragnpets.entities.dog.doberman.DobermanRender;
+import com.dragn0007.dragnpets.entities.dog.husky.Husky;
+import com.dragn0007.dragnpets.entities.dog.husky.HuskyRender;
+import com.dragn0007.dragnpets.entities.dog.labrador.Labrador;
+import com.dragn0007.dragnpets.entities.dog.labrador.LabradorRender;
+import com.dragn0007.dragnpets.entities.dog.pyrenees.Pyrenees;
+import com.dragn0007.dragnpets.entities.dog.pyrenees.PyreneesRender;
 import com.dragn0007.dragnpets.entities.fox.OFox;
 import com.dragn0007.dragnpets.entities.fox.OFoxRender;
 import com.dragn0007.dragnpets.entities.misc.sled.DogSledModel;
@@ -53,6 +70,9 @@ public class PetsOverhaulEvent {
         event.put(EntityTypes.BORDER_COLLIE_ENTITY.get(), Collie.createAttributes().build());
         event.put(EntityTypes.MAINE_COON_ENTITY.get(), MaineCoon.createAttributes().build());
         event.put(EntityTypes.BERNESE_ENTITY.get(), Bernese.createAttributes().build());
+        event.put(EntityTypes.AUSTRALIAN_SHEPHERD_ENTITY.get(), AustralianShepherd.createAttributes().build());
+        event.put(EntityTypes.BLOODHOUND_ENTITY.get(), Bloodhound.createAttributes().build());
+        event.put(EntityTypes.KORNISH_REX_ENTITY.get(), KornishRex.createAttributes().build());
     }
 
     @SubscribeEvent
@@ -73,6 +93,9 @@ public class PetsOverhaulEvent {
         EntityRenderers.register(EntityTypes.BORDER_COLLIE_ENTITY.get(), CollieRender::new);
         EntityRenderers.register(EntityTypes.MAINE_COON_ENTITY.get(), MaineCoonRender::new);
         EntityRenderers.register(EntityTypes.BERNESE_ENTITY.get(), BerneseRender::new);
+        EntityRenderers.register(EntityTypes.AUSTRALIAN_SHEPHERD_ENTITY.get(), AustralianShepherdRender::new);
+        EntityRenderers.register(EntityTypes.BLOODHOUND_ENTITY.get(), BloodhoundRender::new);
+        EntityRenderers.register(EntityTypes.KORNISH_REX_ENTITY.get(), KornishRexRender::new);
 
         MenuScreens.register(POMenuTypes.HUSKY_MENU.get(), HuskyScreen::new);
         MenuScreens.register(POMenuTypes.BERNESE_MENU.get(), BerneseScreen::new);

@@ -24,12 +24,15 @@ public class POItemGroupModifier {
                         output.accept(POItems.O_TROPICAL_FISH_SPAWN_EGG.get());
                         output.accept(POItems.O_CAT_SPAWN_EGG.get());
                         output.accept(POItems.MAINE_COON_SPAWN_EGG.get());
+                        output.accept(POItems.KORNISH_REX_SPAWN_EGG.get());
                         output.accept(POItems.BORDER_COLLIE_SPAWN_EGG.get());
                         output.accept(POItems.PYRENEES_SPAWN_EGG.get());
                         output.accept(POItems.HUSKY_SPAWN_EGG.get());
                         output.accept(POItems.LABRADOR_SPAWN_EGG.get());
                         output.accept(POItems.DOBERMAN_SPAWN_EGG.get());
                         output.accept(POItems.BERNESE_SPAWN_EGG.get());
+                        output.accept(POItems.ASHEPHERD_SPAWN_EGG.get());
+                        output.accept(POItems.BLOODHOUND_SPAWN_EGG.get());
                         output.accept(POItems.MACAW_SPAWN_EGG.get());
                         output.accept(POItems.COCKATIEL_SPAWN_EGG.get());
                         output.accept(POItems.RINGNECK_SPAWN_EGG.get());
@@ -48,7 +51,8 @@ public class POItemGroupModifier {
                         output.accept(POItems.O_AXOLOTL_BUCKET.get());
                         output.accept(POItems.O_TROPICAL_FISH_BUCKET.get());
 
-                        output.accept(POItems.DOG_SLED.get());
+                        //TODO;
+//                        output.accept(POItems.DOG_SLED.get());
 
                     }).build());
 

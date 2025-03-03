@@ -1,8 +1,8 @@
 {
   "replace": false,
   "values": [
-    "dragnpets:cooked_dog",
+    "dragnpets:cooked_wolf",
     "dragnpets:cooked_cat",
-    "dragnpets:cooked_parrot"
+    "dragnpets:cooked_parrot_thigh"
   ]
 }

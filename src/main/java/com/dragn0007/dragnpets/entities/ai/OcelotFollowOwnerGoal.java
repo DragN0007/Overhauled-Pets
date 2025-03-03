@@ -17,16 +17,16 @@ import net.minecraft.world.level.pathfinder.WalkNodeEvaluator;
 import java.util.EnumSet;
 
 public class OcelotFollowOwnerGoal extends Goal {
-   private final OOcelot tamable;
-   private LivingEntity owner;
-   private final LevelReader level;
-   private final double speedModifier;
-   private final PathNavigation navigation;
-   private int timeToRecalcPath;
-   private final float stopDistance;
-   private final float startDistance;
-   private float oldWaterCost;
-   private final boolean canFly;
+   public final OOcelot tamable;
+   public LivingEntity owner;
+   public final LevelReader level;
+   public final double speedModifier;
+   public final PathNavigation navigation;
+   public int timeToRecalcPath;
+   public final float stopDistance;
+   public final float startDistance;
+   public float oldWaterCost;
+   public final boolean canFly;
 
    public OcelotFollowOwnerGoal(OOcelot p_25294_, double v, float p_25296_, float p_25297_, boolean p_25298_) {
       this.tamable = p_25294_;
@@ -72,7 +72,7 @@ public class OcelotFollowOwnerGoal extends Goal {
       }
    }
 
-   private boolean unableToMove() {
+   public boolean unableToMove() {
       return this.tamable.isOrderedToSit() || this.tamable.isPassenger() || this.tamable.isLeashed();
    }
 
@@ -101,7 +101,7 @@ public class OcelotFollowOwnerGoal extends Goal {
       }
    }
 
-   private void teleportToOwner() {
+   public void teleportToOwner() {
       BlockPos blockpos = this.owner.blockPosition();
 
       for(int i = 0; i < 10; ++i) {
@@ -116,7 +116,7 @@ public class OcelotFollowOwnerGoal extends Goal {
 
    }
 
-   private boolean maybeTeleportTo(int p_25304_, int p_25305_, int p_25306_) {
+   public boolean maybeTeleportTo(int p_25304_, int p_25305_, int p_25306_) {
       if (Math.abs((double)p_25304_ - this.owner.getX()) < 2.0D && Math.abs((double)p_25306_ - this.owner.getZ()) < 2.0D) {
          return false;
       } else if (!this.canTeleportTo(new BlockPos(p_25304_, p_25305_, p_25306_))) {
@@ -128,7 +128,7 @@ public class OcelotFollowOwnerGoal extends Goal {
       }
    }
 
-   private boolean canTeleportTo(BlockPos p_25308_) {
+   public boolean canTeleportTo(BlockPos p_25308_) {
       BlockPathTypes blockpathtypes = WalkNodeEvaluator.getBlockPathTypeStatic(this.level, p_25308_.mutable());
       if (blockpathtypes != BlockPathTypes.WALKABLE) {
          return false;
@@ -143,7 +143,7 @@ public class OcelotFollowOwnerGoal extends Goal {
       }
    }
 
-   private int randomIntInclusive(int p_25301_, int p_25302_) {
+   public int randomIntInclusive(int p_25301_, int p_25302_) {
       return this.tamable.getRandom().nextInt(p_25302_ - p_25301_ + 1) + p_25301_;
    }
 }

@@ -1,0 +1,218 @@
+package com.dragn0007.dragnpets.entities.cat.kornish_rex;
+
+import com.dragn0007.dragnlivestock.util.LivestockOverhaulCommonConfig;
+import com.dragn0007.dragnpets.entities.EntityTypes;
+import com.dragn0007.dragnpets.entities.cat.OCat;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.DifficultyInstance;
+import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.animal.Animal;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.ServerLevelAccessor;
+import software.bernie.geckolib.animatable.GeoEntity;
+
+import javax.annotation.Nullable;
+import java.util.Random;
+
+public class KornishRex extends OCat implements GeoEntity {
+
+   public KornishRex(EntityType<? extends KornishRex> entityType, Level level) {
+      super(entityType, level);
+      this.setTame(false);
+   }
+
+   public static final EntityDataAccessor<Integer> DATA_COLLAR_COLOR = SynchedEntityData.defineId(KornishRex.class, EntityDataSerializers.INT);
+
+   public static AttributeSupplier.Builder createAttributes() {
+      return Mob.createMobAttributes()
+              .add(Attributes.MAX_HEALTH, 7.0D).
+              add(Attributes.MOVEMENT_SPEED, (double)0.3F)
+              .add(Attributes.ATTACK_DAMAGE, 3.0D);
+   }
+
+   public void setTame(boolean p_30443_) {
+      super.setTame(p_30443_);
+      if (p_30443_) {
+         this.getAttribute(Attributes.MAX_HEALTH).setBaseValue(10.0D);
+         this.setHealth(10.0F);
+      } else {
+         this.getAttribute(Attributes.MAX_HEALTH).setBaseValue(8.0D);
+      }
+
+      this.getAttribute(Attributes.ATTACK_DAMAGE).setBaseValue(2.0D);
+   }
+
+
+   // Generates the base texture
+   public ResourceLocation getTextureResource() {
+      return KornishRexModel.Variant.variantFromOrdinal(getVariant()).resourceLocation;
+   }
+   public ResourceLocation getEyesResource() {
+      return KornishRexEyeLayer.Eyes.overlayFromOrdinal(getEyes()).resourceLocation;
+   }
+
+   public static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(KornishRex.class, EntityDataSerializers.INT);
+   public static final EntityDataAccessor<Integer> EYES = SynchedEntityData.defineId(KornishRex.class, EntityDataSerializers.INT);
+
+   public int getVariant() {
+      return this.entityData.get(VARIANT);
+   }
+   public int getEyes() {
+      return this.entityData.get(EYES);
+   }
+
+   public void setVariant(int variant) {
+      this.entityData.set(VARIANT, variant);
+   }
+   public void setEyes(int eyes) {
+      this.entityData.set(EYES, eyes);
+   }
+
+   public void defineSynchedData() {
+      super.defineSynchedData();
+      this.entityData.define(VARIANT, 0);
+      this.entityData.define(EYES, 0);
+      this.entityData.define(GENDER, 0);
+   }
+
+   public enum Gender {
+      FEMALE,
+      MALE
+   }
+
+   public boolean isFemale() {
+      return this.getGender() == 0;
+   }
+
+   public boolean isMale() {
+      return this.getGender() == 1;
+   }
+
+   public static final EntityDataAccessor<Integer> GENDER = SynchedEntityData.defineId(KornishRex.class, EntityDataSerializers.INT);
+
+   public int getGender() {
+      return this.entityData.get(GENDER);
+   }
+
+   public void setGender(int gender) {
+      this.entityData.set(GENDER, gender);
+   }
+
+   public void addAdditionalSaveData(CompoundTag tag) {
+      super.addAdditionalSaveData(tag);
+      tag.putByte("CollarColor", (byte)this.getCollarColor().getId());
+      tag.putInt("Variant", getVariant());
+      tag.putInt("Eyes", getEyes());
+      tag.putInt("Gender", this.getGender());
+      tag.putBoolean("Wandering", this.getToldToWander());
+   }
+
+   public void readAdditionalSaveData(CompoundTag tag) {
+      super.readAdditionalSaveData(tag);
+      if (tag.contains("CollarColor", 99)) {
+         this.setCollarColor(DyeColor.byId(tag.getInt("CollarColor")));
+      }
+
+      if (tag.contains("Variant")) {
+         setVariant(tag.getInt("Variant"));
+      }
+
+      if (tag.contains("Eyes")) {
+         setEyes(tag.getInt("Eyes"));
+      }
+
+      if (tag.contains("Gender")) {
+         this.setGender(tag.getInt("Gender"));
+      }
+
+      if (tag.contains("Wandering")) {
+         this.setToldToWander(tag.getBoolean("Wandering"));
+      }
+   }
+
+   @Override
+   @Nullable
+   public SpawnGroupData finalizeSpawn(ServerLevelAccessor serverLevelAccessor, DifficultyInstance instance, MobSpawnType spawnType, @Nullable SpawnGroupData data, @Nullable CompoundTag tag) {
+      if (data == null) {
+         data = new AgeableMobGroupData(0.2F);
+      }
+      Random random = new Random();
+      setVariant(random.nextInt(KornishRexModel.Variant.values().length));
+      setEyes(random.nextInt(KornishRexEyeLayer.Eyes.values().length));
+      setGender(random.nextInt(OCat.Gender.values().length));
+
+      return super.finalizeSpawn(serverLevelAccessor, instance, spawnType, data, tag);
+   }
+
+   public boolean canMate(Animal animal) {
+      if (animal == this) {
+         return false;
+      } else if (!(animal instanceof KornishRex)) {
+         return false;
+      } else {
+         if (!LivestockOverhaulCommonConfig.GENDERS_AFFECT_BREEDING.get()) {
+            return this.canParent() && ((KornishRex) animal).canParent();
+         } else {
+            KornishRex partner = (KornishRex) animal;
+            if (this.canParent() && partner.canParent() && this.getGender() != partner.getGender()) {
+               return true;
+            }
+
+            boolean partnerIsFemale = partner.isFemale();
+            boolean partnerIsMale = partner.isMale();
+            if (LivestockOverhaulCommonConfig.GENDERS_AFFECT_BREEDING.get() && this.canParent() && partner.canParent()
+                    && ((isFemale() && partnerIsMale) || (isMale() && partnerIsFemale))) {
+               return isFemale();
+            }
+         }
+      }
+      return false;
+   }
+
+   @Override
+   public AgeableMob getBreedOffspring(ServerLevel serverLevel, AgeableMob ageableMob) {
+      KornishRex oCat = (KornishRex) ageableMob;
+      if (ageableMob instanceof KornishRex) {
+         KornishRex oCat1 = (KornishRex) ageableMob;
+         oCat = EntityTypes.KORNISH_REX_ENTITY.get().create(serverLevel);
+
+         int i = this.random.nextInt(9);
+         int variant;
+         if (i < 4) {
+            variant = this.getVariant();
+         } else if (i < 8) {
+            variant = oCat1.getVariant();
+         } else {
+            variant = this.random.nextInt(KornishRexModel.Variant.values().length);
+         }
+
+         int k = this.random.nextInt(9);
+         int eyes;
+         if (k < 4) {
+            eyes = this.getVariant();
+         } else if (k < 8) {
+            eyes = oCat1.getVariant();
+         } else {
+            eyes = this.random.nextInt(KornishRexEyeLayer.Eyes.values().length);
+         }
+
+         int gender;
+         gender = this.random.nextInt(Gender.values().length);
+
+         oCat.setVariant(variant);
+         oCat.setVariant(eyes);
+         oCat.setGender(gender);
+      }
+
+      return oCat;
+   }
+
+}

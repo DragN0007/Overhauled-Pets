@@ -16,7 +16,7 @@ public class POItemModelProvider extends ItemModelProvider {
     }
 
     @Override
-    protected void registerModels() {
+    public void registerModels() {
         simpleItem(POItems.PETS_OVERHAUL);
 
         simpleItem(POItems.WOLF);
@@ -33,7 +33,7 @@ public class POItemModelProvider extends ItemModelProvider {
         simpleItem(POItems.DOG_SLED);
     }
 
-    private ItemModelBuilder simpleItem(RegistryObject<Item> item) {
+    public ItemModelBuilder simpleItem(RegistryObject<Item> item) {
         return withExistingParent(item.getId().getPath(),
                 new ResourceLocation("item/generated")).texture("layer0",
                 new ResourceLocation(PetsOverhaul.MODID,"item/" + item.getId().getPath()));

@@ -37,6 +37,10 @@ public class POTags {
         public static final TagKey<EntityType<?>> HERDING_DOGS = forgeTag("herding_dogs");
         public static final TagKey<EntityType<?>> DOGS = forgeTag("dogs");
         public static final TagKey<EntityType<?>> HUNTING_DOGS = forgeTag("hunting_dogs");
+        public static final TagKey<EntityType<?>> GUARDIAN_DOGS_ATTACK = forgeTag("guardian_dogs_attack");
+        public static final TagKey<EntityType<?>> GAME = forgeTag("game");
+        public static final TagKey<EntityType<?>> FOXES_HUNT = forgeTag("foxes_hunt");
+        public static final TagKey<EntityType<?>> CATS_HUNT = forgeTag("cats_hunt");
 
         public static TagKey<EntityType<?>> forgeTag(String name) {
             return TagKey.create(Registries.ENTITY_TYPE, new ResourceLocation("forge", name));

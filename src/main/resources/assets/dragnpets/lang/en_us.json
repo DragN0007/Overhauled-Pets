@@ -53,6 +53,15 @@
   "item.dragnpets.maine_coon_spawn_egg": "Maine Coon Spawn Egg",
   "entity.dragnpets.maine_coon": "Maine Coon",
 
+  "item.dragnpets.ashepherd_spawn_egg": "Australian Shepherd Spawn Egg",
+  "entity.dragnpets.australian_shepherd": "Australian Shepherd",
+
+  "item.dragnpets.bloodhound_spawn_egg": "Bloodhound Spawn Egg",
+  "entity.dragnpets.bloodhound": "Bloodhound",
+
+  "item.dragnpets.kornish_rex_spawn_egg": "Kornish Rex Spawn Egg",
+  "entity.dragnpets.kornish_rex": "Kornish Rex",
+
   "item.dragnpets.wolf": "Dog",
   "item.dragnpets.cooked_wolf": "Cooked Dog",
 

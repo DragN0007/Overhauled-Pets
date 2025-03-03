@@ -62,11 +62,11 @@ import java.util.function.Predicate;
 
 public class OFox extends TamableAnimal implements GeoEntity {
 
-   private Goal turtleEggTargetGoal;
-   private Goal fishTargetGoal;
+   public Goal turtleEggTargetGoal;
+   public Goal fishTargetGoal;
 
-   private static final ResourceLocation LOOT_TABLE = new ResourceLocation(PetsOverhaul.MODID, "entities/o_fox");
-   private static final ResourceLocation VANILLA_LOOT_TABLE = new ResourceLocation("minecraft", "entities/fox");
+   public static final ResourceLocation LOOT_TABLE = new ResourceLocation(PetsOverhaul.MODID, "entities/o_fox");
+   public static final ResourceLocation VANILLA_LOOT_TABLE = new ResourceLocation("minecraft", "entities/fox");
    @Override
    public @NotNull ResourceLocation getDefaultLootTable() {
       if (LivestockOverhaulCommonConfig.USE_VANILLA_LOOT.get()) {
@@ -89,7 +89,7 @@ public class OFox extends TamableAnimal implements GeoEntity {
       this.setTame(false);
    }
 
-   protected void registerGoals() {
+   public void registerGoals() {
       this.goalSelector.addGoal(1, new FloatGoal(this));
       this.goalSelector.addGoal(3, new AvoidEntityGoal(this, Player.class, 24.0F, 1.5D, 1.5D));
       this.goalSelector.addGoal(2, new SitWhenOrderedToGoal(this));
@@ -112,6 +112,10 @@ public class OFox extends TamableAnimal implements GeoEntity {
          boolean isWolf = livingEntity instanceof Wolf;
          return isOWolf || isWolf;
       }));
+
+      this.goalSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, LivingEntity.class, 2, true, false,
+              entity -> entity.getType().is(POTags.Entity_Types.FOXES_HUNT) && ((entity instanceof TamableAnimal && !((TamableAnimal) entity).isTame()) || (!this.isTame()) || (this.isTame() && this.wasToldToWander() && entity instanceof TamableAnimal && !((TamableAnimal) entity).isTame())))  {
+      });
    }
 
    public static AttributeSupplier.Builder createAttributes() {
@@ -122,9 +126,9 @@ public class OFox extends TamableAnimal implements GeoEntity {
               .add(Attributes.ATTACK_DAMAGE, 2.0D);
    }
 
-   private final AnimatableInstanceCache geoCache = GeckoLibUtil.createInstanceCache(this);
+   public final AnimatableInstanceCache geoCache = GeckoLibUtil.createInstanceCache(this);
 
-   private <T extends GeoAnimatable> PlayState predicate(software.bernie.geckolib.core.animation.AnimationState<T> tAnimationState) {
+   public <T extends GeoAnimatable> PlayState predicate(software.bernie.geckolib.core.animation.AnimationState<T> tAnimationState) {
       double currentSpeed = this.getDeltaMovement().lengthSqr();
       double speedThreshold = 0.02;
 
@@ -164,7 +168,7 @@ public class OFox extends TamableAnimal implements GeoEntity {
       return SoundEvents.FOX_EAT;
    }
 
-   protected boolean isImmobile() {
+   public boolean isImmobile() {
       return this.isDeadOrDying();
    }
 
@@ -173,24 +177,24 @@ public class OFox extends TamableAnimal implements GeoEntity {
       return 1.6F;
    }
 
-   protected float getSoundVolume() {
+   public float getSoundVolume() {
       return 0.4F;
    }
 
    @Nullable
-   protected SoundEvent getAmbientSound() {
+   public SoundEvent getAmbientSound() {
       return SoundEvents.FOX_AMBIENT;
    }
 
-   protected SoundEvent getHurtSound(DamageSource p_29035_) {
+   public SoundEvent getHurtSound(DamageSource p_29035_) {
       return SoundEvents.FOX_HURT;
    }
 
-   protected SoundEvent getDeathSound() {
+   public SoundEvent getDeathSound() {
       return SoundEvents.FOX_DEATH;
    }
 
-   private float getAttackDamage() {
+   public float getAttackDamage() {
       return (float)this.getAttributeValue(Attributes.ATTACK_DAMAGE);
    }
 
@@ -306,7 +310,7 @@ public class OFox extends TamableAnimal implements GeoEntity {
       }
    }
 
-   private boolean toldToWander = false;
+   public boolean toldToWander = false;
 
    public boolean wasToldToWander() {
       return this.toldToWander;
@@ -320,7 +324,7 @@ public class OFox extends TamableAnimal implements GeoEntity {
       this.toldToWander = toldToWander;
    }
 
-   private static final Ingredient FOOD_ITEMS = Ingredient.of(POTags.Items.FOX_FOOD);
+   public static final Ingredient FOOD_ITEMS = Ingredient.of(POTags.Items.FOX_FOOD);
 
    @Override
    public boolean isFood(ItemStack itemStack) {
@@ -365,7 +369,7 @@ public class OFox extends TamableAnimal implements GeoEntity {
       this.entityData.set(DOMESTIC_VARIANT, variant);
    }
 
-   protected void defineSynchedData() {
+   public void defineSynchedData() {
       super.defineSynchedData();
       this.entityData.define(VARIANT, 0);
       this.entityData.define(OVERLAY_VARIANT, 0);
@@ -519,8 +523,8 @@ public class OFox extends TamableAnimal implements GeoEntity {
    }
 
    public class FoxEatBerriesGoal extends MoveToBlockGoal {
-      private static final int WAIT_TICKS = 40;
-      protected int ticksWaited;
+      public static final int WAIT_TICKS = 40;
+      public int ticksWaited;
 
       public FoxEatBerriesGoal(double p_28675_, int p_28676_, int p_28677_) {
          super(OFox.this, p_28675_, p_28676_, p_28677_);
@@ -534,7 +538,7 @@ public class OFox extends TamableAnimal implements GeoEntity {
          return this.tryTicks % 100 == 0;
       }
 
-      protected boolean isValidTarget(LevelReader p_28680_, BlockPos p_28681_) {
+      public boolean isValidTarget(LevelReader p_28680_, BlockPos p_28681_) {
          BlockState blockstate = p_28680_.getBlockState(p_28681_);
          return blockstate.is(Blocks.SWEET_BERRY_BUSH) && blockstate.getValue(SweetBerryBushBlock.AGE) >= 2 || CaveVines.hasGlowBerries(blockstate);
       }
@@ -553,7 +557,7 @@ public class OFox extends TamableAnimal implements GeoEntity {
          super.tick();
       }
 
-      protected void onReachedTarget() {
+      public void onReachedTarget() {
          if (net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(OFox.this.level(), OFox.this)) {
             BlockState blockstate = OFox.this.level().getBlockState(this.blockPos);
             if (blockstate.is(Blocks.SWEET_BERRY_BUSH)) {
@@ -565,11 +569,11 @@ public class OFox extends TamableAnimal implements GeoEntity {
          }
       }
 
-      private void pickGlowBerry(BlockState p_148927_) {
+      public void pickGlowBerry(BlockState p_148927_) {
          CaveVines.use(OFox.this, p_148927_, OFox.this.level(), this.blockPos);
       }
 
-      private void pickSweetBerries(BlockState p_148929_) {
+      public void pickSweetBerries(BlockState p_148929_) {
          int i = p_148929_.getValue(SweetBerryBushBlock.AGE);
          p_148929_.setValue(SweetBerryBushBlock.AGE, Integer.valueOf(1));
          int j = 1 + OFox.this.level().random.nextInt(2) + (i == 3 ? 1 : 0);

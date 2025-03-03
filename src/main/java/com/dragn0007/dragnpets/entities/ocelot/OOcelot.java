@@ -63,12 +63,12 @@ public class OOcelot extends TamableAnimal implements GeoEntity {
    }
 
    @javax.annotation.Nullable
-   private OOcelot.OcelotAvoidEntityGoal<Player> ocelotAvoidPlayersGoal;
+   public OOcelot.OcelotAvoidEntityGoal<Player> ocelotAvoidPlayersGoal;
    @Nullable
-   private OOcelot.OcelotTemptGoal temptGoal;
+   public OOcelot.OcelotTemptGoal temptGoal;
 
-   private static final ResourceLocation LOOT_TABLE = new ResourceLocation(PetsOverhaul.MODID, "entities/o_ocelot");
-   private static final ResourceLocation VANILLA_LOOT_TABLE = new ResourceLocation("minecraft", "entities/ocelot");
+   public static final ResourceLocation LOOT_TABLE = new ResourceLocation(PetsOverhaul.MODID, "entities/o_ocelot");
+   public static final ResourceLocation VANILLA_LOOT_TABLE = new ResourceLocation("minecraft", "entities/ocelot");
    @Override
    public @NotNull ResourceLocation getDefaultLootTable() {
       if (LivestockOverhaulCommonConfig.USE_VANILLA_LOOT.get()) {
@@ -77,7 +77,7 @@ public class OOcelot extends TamableAnimal implements GeoEntity {
       return LOOT_TABLE;
    }
 
-   protected void reassessTrustingGoals() {
+   public void reassessTrustingGoals() {
       if (this.ocelotAvoidPlayersGoal == null) {
          this.ocelotAvoidPlayersGoal = new OOcelot.OcelotAvoidEntityGoal<>(this, Player.class, 16.0F, 0.8D, 1.33D);
       }
@@ -87,8 +87,8 @@ public class OOcelot extends TamableAnimal implements GeoEntity {
 
    }
 
-   private static final EntityDataAccessor<Integer> DATA_COLLAR_COLOR = SynchedEntityData.defineId(OOcelot.class, EntityDataSerializers.INT);
-   private static final EntityDataAccessor<Integer> DATA_REMAINING_ANGER_TIME = SynchedEntityData.defineId(OOcelot.class, EntityDataSerializers.INT);
+   public static final EntityDataAccessor<Integer> DATA_COLLAR_COLOR = SynchedEntityData.defineId(OOcelot.class, EntityDataSerializers.INT);
+   public static final EntityDataAccessor<Integer> DATA_REMAINING_ANGER_TIME = SynchedEntityData.defineId(OOcelot.class, EntityDataSerializers.INT);
    public static final Predicate<LivingEntity> PREY_SELECTOR = (entity) -> {
       EntityType<?> entitytype = entity.getType();
       return entitytype == EntityTypes.O_RABBIT_ENTITY.get() ||
@@ -100,7 +100,7 @@ public class OOcelot extends TamableAnimal implements GeoEntity {
               ;
    };
 
-   protected void registerGoals() {
+   public void registerGoals() {
       this.goalSelector.addGoal(1, new FloatGoal(this));
       this.temptGoal = new OOcelot.OcelotTemptGoal(this, 0.6D, FOOD_ITEMS, true);
       this.goalSelector.addGoal(3, this.temptGoal);
@@ -123,9 +123,9 @@ public class OOcelot extends TamableAnimal implements GeoEntity {
               .add(Attributes.ATTACK_DAMAGE, 3.0D);
    }
 
-   private final AnimatableInstanceCache geoCache = GeckoLibUtil.createInstanceCache(this);
+   public final AnimatableInstanceCache geoCache = GeckoLibUtil.createInstanceCache(this);
 
-   private <T extends GeoAnimatable> PlayState predicate(software.bernie.geckolib.core.animation.AnimationState<T> tAnimationState) {
+   public <T extends GeoAnimatable> PlayState predicate(software.bernie.geckolib.core.animation.AnimationState<T> tAnimationState) {
       double currentSpeed = this.getDeltaMovement().lengthSqr();
       double speedThreshold = 0.015;
 
@@ -202,7 +202,7 @@ public class OOcelot extends TamableAnimal implements GeoEntity {
       return 2F;
    }
 
-   protected float getSoundVolume() {
+   public float getSoundVolume() {
       return 0.4F;
    }
 
@@ -215,7 +215,7 @@ public class OOcelot extends TamableAnimal implements GeoEntity {
    }
 
    @javax.annotation.Nullable
-   protected SoundEvent getAmbientSound() {
+   public SoundEvent getAmbientSound() {
       return SoundEvents.OCELOT_AMBIENT;
    }
 
@@ -223,15 +223,15 @@ public class OOcelot extends TamableAnimal implements GeoEntity {
       return 900;
    }
 
-   protected SoundEvent getHurtSound(DamageSource p_29035_) {
+   public SoundEvent getHurtSound(DamageSource p_29035_) {
       return SoundEvents.OCELOT_HURT;
    }
 
-   protected SoundEvent getDeathSound() {
+   public SoundEvent getDeathSound() {
       return SoundEvents.OCELOT_DEATH;
    }
 
-   private float getAttackDamage() {
+   public float getAttackDamage() {
       return (float)this.getAttributeValue(Attributes.ATTACK_DAMAGE);
    }
 
@@ -343,7 +343,7 @@ public class OOcelot extends TamableAnimal implements GeoEntity {
       }
    }
 
-   private boolean toldToWander = false;
+   public boolean toldToWander = false;
 
    public boolean wasToldToWander() {
       return this.toldToWander;
@@ -357,7 +357,7 @@ public class OOcelot extends TamableAnimal implements GeoEntity {
       this.toldToWander = toldToWander;
    }
 
-   private static final Ingredient FOOD_ITEMS = Ingredient.of(POTags.Items.CAT_FOOD);
+   public static final Ingredient FOOD_ITEMS = Ingredient.of(POTags.Items.CAT_FOOD);
 
    @Override
    public boolean isFood(ItemStack itemStack) {
@@ -388,7 +388,7 @@ public class OOcelot extends TamableAnimal implements GeoEntity {
       this.entityData.set(VARIANT, variant);
    }
 
-   protected void defineSynchedData() {
+   public void defineSynchedData() {
       super.defineSynchedData();
       this.entityData.define(DATA_COLLAR_COLOR, DyeColor.RED.getId());
       this.entityData.define(DATA_REMAINING_ANGER_TIME, 0);
@@ -552,7 +552,7 @@ public class OOcelot extends TamableAnimal implements GeoEntity {
 
    }
 
-   private void spawnTrustingParticles(boolean p_29048_) {
+   public void spawnTrustingParticles(boolean p_29048_) {
       ParticleOptions particleoptions = ParticleTypes.HEART;
       if (!p_29048_) {
          particleoptions = ParticleTypes.SMOKE;
@@ -572,7 +572,7 @@ public class OOcelot extends TamableAnimal implements GeoEntity {
    }
 
    static class OcelotAvoidEntityGoal<T extends LivingEntity> extends AvoidEntityGoal<T> {
-      private final OOcelot ocelot;
+      public final OOcelot ocelot;
 
       public OcelotAvoidEntityGoal(OOcelot p_29051_, Class<T> p_29052_, float p_29053_, double p_29054_, double p_29055_) {
          super(p_29051_, p_29052_, p_29053_, p_29054_, p_29055_, EntitySelector.NO_CREATIVE_OR_SPECTATOR::test);
@@ -589,14 +589,14 @@ public class OOcelot extends TamableAnimal implements GeoEntity {
    }
 
    static class OcelotTemptGoal extends TemptGoal {
-      private final OOcelot ocelot;
+      public final OOcelot ocelot;
 
       public OcelotTemptGoal(OOcelot p_29060_, double p_29061_, Ingredient p_29062_, boolean p_29063_) {
          super(p_29060_, p_29061_, p_29062_, p_29063_);
          this.ocelot = p_29060_;
       }
 
-      protected boolean canScare() {
+      public boolean canScare() {
          return super.canScare();
       }
    }

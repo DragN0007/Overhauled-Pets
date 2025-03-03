@@ -61,8 +61,8 @@ import java.util.stream.Stream;
 
 public class ODog extends TamableAnimal implements NeutralMob, GeoEntity {
 
-   private static final ResourceLocation LOOT_TABLE = new ResourceLocation(PetsOverhaul.MODID, "entities/o_wolf");
-   private static final ResourceLocation VANILLA_LOOT_TABLE = new ResourceLocation("minecraft", "entities/wolf");
+   public static final ResourceLocation LOOT_TABLE = new ResourceLocation(PetsOverhaul.MODID, "entities/o_wolf");
+   public static final ResourceLocation VANILLA_LOOT_TABLE = new ResourceLocation("minecraft", "entities/wolf");
    @Override
    public @NotNull ResourceLocation getDefaultLootTable() {
       if (LivestockOverhaulCommonConfig.USE_VANILLA_LOOT.get()) {
@@ -71,8 +71,8 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity {
       return LOOT_TABLE;
    }
 
-   private static final EntityDataAccessor<Integer> DATA_COLLAR_COLOR = SynchedEntityData.defineId(ODog.class, EntityDataSerializers.INT);
-   private static final EntityDataAccessor<Integer> DATA_REMAINING_ANGER_TIME = SynchedEntityData.defineId(ODog.class, EntityDataSerializers.INT);
+   public static final EntityDataAccessor<Integer> DATA_COLLAR_COLOR = SynchedEntityData.defineId(ODog.class, EntityDataSerializers.INT);
+   public static final EntityDataAccessor<Integer> DATA_REMAINING_ANGER_TIME = SynchedEntityData.defineId(ODog.class, EntityDataSerializers.INT);
 //   public static final Predicate<LivingEntity> PREY_SELECTOR = (entity) -> {
 //      EntityType<?> entitytype = entity.getType();
 //      return entitytype == EntityTypes.O_SHEEP_ENTITY.get() ||
@@ -85,9 +85,9 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity {
 //              entitytype == EntityType.FOX;
 //   };
 
-   private static final UniformInt PERSISTENT_ANGER_TIME = TimeUtil.rangeOfSeconds(20, 39);
+   public static final UniformInt PERSISTENT_ANGER_TIME = TimeUtil.rangeOfSeconds(20, 39);
    @Nullable
-   private UUID persistentAngerTarget;
+   public UUID persistentAngerTarget;
 
    public ODog(EntityType<? extends ODog> entityType, Level level) {
       super(entityType, level);
@@ -96,7 +96,7 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity {
       this.setPathfindingMalus(BlockPathTypes.DANGER_POWDER_SNOW, -1.0F);
    }
 
-   protected void registerGoals() {
+   public void registerGoals() {
       this.goalSelector.addGoal(1, new FloatGoal(this));
       this.goalSelector.addGoal(1, new ODog.WolfPanicGoal(1.4D));
       this.goalSelector.addGoal(2, new SitWhenOrderedToGoal(this));
@@ -122,9 +122,9 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity {
               .add(Attributes.ATTACK_DAMAGE, 2.0D);
    }
 
-   private final AnimatableInstanceCache geoCache = GeckoLibUtil.createInstanceCache(this);
+   public final AnimatableInstanceCache geoCache = GeckoLibUtil.createInstanceCache(this);
 
-   private <T extends GeoAnimatable> PlayState predicate(software.bernie.geckolib.core.animation.AnimationState<T> tAnimationState) {
+   public <T extends GeoAnimatable> PlayState predicate(software.bernie.geckolib.core.animation.AnimationState<T> tAnimationState) {
       double currentSpeed = this.getDeltaMovement().lengthSqr();
       double speedThreshold = 0.015;
 
@@ -245,11 +245,11 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity {
       return 1F;
    }
 
-   protected void playStepSound(BlockPos p_30415_, BlockState p_30416_) {
+   public void playStepSound(BlockPos p_30415_, BlockState p_30416_) {
       this.playSound(SoundEvents.WOLF_STEP, 0.15F, 1.0F);
    }
 
-   protected SoundEvent getAmbientSound() {
+   public SoundEvent getAmbientSound() {
       if (this.isAngry()) {
          return SoundEvents.WOLF_GROWL;
       } else if (this.random.nextInt(3) == 0) {
@@ -259,15 +259,15 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity {
       }
    }
 
-   protected SoundEvent getHurtSound(DamageSource p_30424_) {
+   public SoundEvent getHurtSound(DamageSource p_30424_) {
       return SoundEvents.WOLF_HURT;
    }
 
-   protected SoundEvent getDeathSound() {
+   public SoundEvent getDeathSound() {
       return SoundEvents.WOLF_DEATH;
    }
 
-   protected float getSoundVolume() {
+   public float getSoundVolume() {
       return 0.4F;
    }
 
@@ -438,7 +438,7 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity {
       }
    }
 
-   private boolean toldToWander = false;
+   public boolean toldToWander = false;
 
    public boolean wasToldToWander() {
       return this.toldToWander;
@@ -452,7 +452,7 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity {
       this.toldToWander = toldToWander;
    }
 
-   private static final Ingredient FOOD_ITEMS = Ingredient.of(POTags.Items.DOG_FOOD);
+   public static final Ingredient FOOD_ITEMS = Ingredient.of(POTags.Items.DOG_FOOD);
 
    @Override
    public boolean isFood(ItemStack itemStack) {
@@ -488,7 +488,7 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity {
       this.entityData.set(DATA_COLLAR_COLOR, p_30398_.getId());
    }
 
-   protected void defineSynchedData() {
+   public void defineSynchedData() {
       super.defineSynchedData();
       this.entityData.define(DATA_COLLAR_COLOR, DyeColor.RED.getId());
       this.entityData.define(DATA_REMAINING_ANGER_TIME, 0);
@@ -595,7 +595,7 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity {
       return new Vec3(0.0D, (double)(0.6F * this.getEyeHeight()), (double)(this.getBbWidth() * 0.4F));
    }
 
-   private boolean isPanicking = false;
+   public boolean isPanicking = false;
 
    public boolean isPanicking() {
       return this.getHealth() < this.getMaxHealth() / 3 && this.isAlive();
@@ -609,12 +609,12 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity {
       this.isPanicking = panicking;
    }
 
-   class WolfPanicGoal extends PanicGoal {
+   public class WolfPanicGoal extends PanicGoal {
       public WolfPanicGoal(double v) {
          super(ODog.this, v);
       }
 
-      protected boolean shouldPanic() {
+      public boolean shouldPanic() {
          return this.mob.isFreezing() || this.mob.isOnFire() || this.mob.getHealth() < this.mob.getMaxHealth() / 3 && this.mob.isAlive();
       }
    }
