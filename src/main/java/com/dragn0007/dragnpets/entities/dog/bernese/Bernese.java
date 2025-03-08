@@ -240,7 +240,7 @@ public class Bernese extends ODog implements NeutralMob, GeoEntity, Chestable, C
 
    }
 
-   public boolean hurt(DamageSource damageSource, float p_30387_) {
+   public boolean hurt(DamageSource damageSource, float amount) {
       if (this.isInvulnerableTo(damageSource)) {
          return false;
       } else {
@@ -250,10 +250,10 @@ public class Bernese extends ODog implements NeutralMob, GeoEntity, Chestable, C
          }
 
          if (entity != null && !(entity instanceof Player) && !(entity instanceof AbstractArrow)) {
-            p_30387_ = (p_30387_ + 1.0F) / 2.0F;
+            amount = (amount + 1.0F) / 2.0F;
          }
 
-         return super.hurt(damageSource, p_30387_);
+         return super.hurt(damageSource, amount);
       }
    }
 

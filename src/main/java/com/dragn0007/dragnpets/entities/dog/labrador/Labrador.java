@@ -6,18 +6,22 @@ import com.dragn0007.dragnpets.entities.EntityTypes;
 import com.dragn0007.dragnpets.entities.ai.DogFollowOwnerGoal;
 import com.dragn0007.dragnpets.entities.ai.DogFollowPackLeaderGoal;
 import com.dragn0007.dragnpets.entities.dog.ODog;
+import com.dragn0007.dragnpets.gui.LabradorMenu;
+import com.dragn0007.dragnpets.util.POTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.TimeUtil;
 import net.minecraft.util.valueproviders.UniformInt;
-import net.minecraft.world.DifficultyInstance;
+import net.minecraft.world.*;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -25,17 +29,25 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.ai.goal.target.*;
 import net.minecraft.world.entity.animal.Animal;
+import net.minecraft.world.entity.animal.Fox;
 import net.minecraft.world.entity.animal.horse.AbstractHorse;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.monster.Ghast;
+import net.minecraft.world.entity.npc.InventoryCarrier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.pathfinder.BlockPathTypes;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.items.wrapper.InvWrapper;
+import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.core.animatable.GeoAnimatable;
@@ -47,10 +59,13 @@ import software.bernie.geckolib.core.animation.RawAnimation;
 import software.bernie.geckolib.core.object.PlayState;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
+import java.util.EnumSet;
+import java.util.List;
 import java.util.Random;
 import java.util.UUID;
+import java.util.function.Predicate;
 
-public class Labrador extends ODog implements NeutralMob, GeoEntity {
+public class Labrador extends ODog implements InventoryCarrier, NeutralMob, GeoEntity, ContainerListener {
 
    public static final EntityDataAccessor<Integer> DATA_COLLAR_COLOR = SynchedEntityData.defineId(Labrador.class, EntityDataSerializers.INT);
    public static final EntityDataAccessor<Integer> DATA_REMAINING_ANGER_TIME = SynchedEntityData.defineId(Labrador.class, EntityDataSerializers.INT);
@@ -62,6 +77,8 @@ public class Labrador extends ODog implements NeutralMob, GeoEntity {
    public Labrador(EntityType<? extends Labrador> entityType, Level level) {
       super(entityType, level);
       this.setTame(false);
+      this.updateInventory();
+      this.setCanPickUpLoot(true);
       this.setPathfindingMalus(BlockPathTypes.POWDER_SNOW, -1.0F);
       this.setPathfindingMalus(BlockPathTypes.DANGER_POWDER_SNOW, -1.0F);
    }
@@ -83,22 +100,12 @@ public class Labrador extends ODog implements NeutralMob, GeoEntity {
       this.targetSelector.addGoal(8, new ResetUniversalAngerTargetGoal<>(this, true));
       this.goalSelector.addGoal(7, new DogFollowPackLeaderGoal(this));
 
+      this.goalSelector.addGoal(7, new LabradorSearchForItemsGoal());
+
       this.goalSelector.addGoal(6, new DogFollowOwnerGoal(this, 1.0D, 10.0F, 2.0F, false));
 
-//      this.targetSelector.addGoal(7, new NearestAttackableTargetGoal<>(this, OChicken.class, false) {
-//         @Override
-//         public boolean canUse() {
-//            if (this.mob instanceof Labrador) {
-//               Labrador customMob = (Labrador) this.mob;
-//               return customMob.wasToldToWander() && super.canUse();
-//            }
-//            return super.canUse();
-//         }
-//      });
-
       this.goalSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, OChicken.class, 2, true, false,
-              entity -> entity instanceof OChicken && (this.isTame() && this.wasToldToWander())));
-
+              entity -> entity instanceof OChicken && (this.isTame() && this.wasToldToHunt())));
    }
 
    public static AttributeSupplier.Builder createAttributes() {
@@ -151,6 +158,18 @@ public class Labrador extends ODog implements NeutralMob, GeoEntity {
       return 1F;
    }
 
+   public InteractionResult mobInteract(Player player, InteractionHand hand) {
+      ItemStack itemstack = player.getItemInHand(hand);
+
+      if (this.isOwnedBy(player) && this.isTame() && !this.isBaby()) {
+         if (this.isTame() && player.isSecondaryUseActive() && this.isOrderedToSit()) {
+            this.openInventory(player);
+            return InteractionResult.sidedSuccess(this.level().isClientSide);
+         }
+      }
+      return super.mobInteract(player, hand);
+   }
+
    public void playStepSound(BlockPos p_30415_, BlockState p_30416_) {
       this.playSound(SoundEvents.WOLF_STEP, 0.15F, 1.0F);
    }
@@ -186,7 +205,7 @@ public class Labrador extends ODog implements NeutralMob, GeoEntity {
 
    }
 
-   public boolean hurt(DamageSource damageSource, float p_30387_) {
+   public boolean hurt(DamageSource damageSource, float amount) {
       if (this.isInvulnerableTo(damageSource)) {
          return false;
       } else {
@@ -196,10 +215,10 @@ public class Labrador extends ODog implements NeutralMob, GeoEntity {
          }
 
          if (entity != null && !(entity instanceof Player) && !(entity instanceof AbstractArrow)) {
-            p_30387_ = (p_30387_ + 1.0F) / 2.0F;
+            amount = (amount + 1.0F) / 2.0F;
          }
 
-         return super.hurt(damageSource, p_30387_);
+         return super.hurt(damageSource, amount);
       }
    }
 
@@ -253,6 +272,9 @@ public class Labrador extends ODog implements NeutralMob, GeoEntity {
       this.entityData.set(DATA_COLLAR_COLOR, p_30398_.getId());
    }
 
+   protected void pickUpItem(ItemEntity p_35467_) {
+      InventoryCarrier.pickUpItem(this, this, p_35467_);
+   }
 
    // Generates the base texture
    public ResourceLocation getTextureResource() {
@@ -285,6 +307,21 @@ public class Labrador extends ODog implements NeutralMob, GeoEntity {
       tag.putBoolean("Wandering", this.getToldToWander());
       tag.putBoolean("Panicking", this.getPanicking());
       this.addPersistentAngerSaveData(tag);
+
+      if(this.isTame()) {
+         ListTag listTag = new ListTag();
+
+         for(int i = 0; i < this.inventory.getContainerSize(); i++) {
+            ItemStack itemStack = this.inventory.getItem(i);
+            if(!itemStack.isEmpty()) {
+               CompoundTag compoundTag = new CompoundTag();
+               compoundTag.putByte("Slot", (byte) i);
+               itemStack.save(compoundTag);
+               listTag.add(compoundTag);
+            }
+         }
+         tag.put("Items", listTag);
+      }
    }
 
    public void readAdditionalSaveData(CompoundTag tag) {
@@ -309,7 +346,23 @@ public class Labrador extends ODog implements NeutralMob, GeoEntity {
          this.setPanicking(tag.getBoolean("Panicking"));
       }
 
+      this.updateInventory();
+
+      if(this.isTame()) {
+         ListTag listTag = tag.getList("Items", 10);
+
+         for(int i = 0; i < listTag.size(); i++) {
+            CompoundTag compoundTag = listTag.getCompound(i);
+            int j = compoundTag.getByte("Slot") & 255;
+            if(j < this.inventory.getContainerSize()) {
+               this.inventory.setItem(j, ItemStack.of(compoundTag));
+            }
+         }
+      }
+
       this.readPersistentAngerSaveData(this.level(), tag);
+
+      this.setCanPickUpLoot(true);
    }
 
    @Override
@@ -428,4 +481,162 @@ public class Labrador extends ODog implements NeutralMob, GeoEntity {
    public Vec3 getLeashOffset() {
       return new Vec3(0.0D, (double)(0.6F * this.getEyeHeight()), (double)(this.getBbWidth() * 0.4F));
    }
+
+   public SimpleContainer inventory;
+
+   public LazyOptional<?> itemHandler = null;
+
+   public void updateInventory() {
+      SimpleContainer tempInventory = this.inventory;
+      this.inventory = new SimpleContainer(this.getInventorySize());
+
+      if(tempInventory != null) {
+         tempInventory.removeListener(this);
+         int maxSize = Math.min(tempInventory.getContainerSize(), this.inventory.getContainerSize());
+
+         for(int i = 0; i < maxSize; i++) {
+            ItemStack itemStack = tempInventory.getItem(i);
+            if(!itemStack.isEmpty()) {
+               this.inventory.setItem(i, itemStack.copy());
+            }
+         }
+      }
+      this.inventory.addListener(this);
+      this.itemHandler = LazyOptional.of(() -> new InvWrapper(this.inventory));
+   }
+
+   @Override
+   public void dropEquipment() {
+      if(!this.level().isClientSide) {
+         super.dropEquipment();
+         Containers.dropContents(this.level(), this, this.inventory);
+      }
+   }
+
+   @Override
+   public void invalidateCaps() {
+      super.invalidateCaps();
+      if(this.itemHandler != null) {
+         LazyOptional<?> oldHandler = this.itemHandler;
+         this.itemHandler = null;
+         oldHandler.invalidate();
+      }
+   }
+
+   public int getInventorySize() {
+      return 5;
+   }
+
+   public SimpleContainer getInventory() {
+      return this.inventory;
+   }
+
+   public void openInventory(Player player) {
+      if(player instanceof ServerPlayer serverPlayer && this.isTame()) {
+         NetworkHooks.openScreen(serverPlayer, new SimpleMenuProvider((containerId, inventory, p) -> {
+            return new LabradorMenu(containerId, inventory, this.inventory, this);
+         }, this.getDisplayName()), (data) -> {
+            data.writeInt(this.getInventorySize());
+            data.writeInt(this.getId());
+         });
+      }
+   }
+
+   @Override
+   public void containerChanged(Container p_18983_) {
+      return;
+   }
+
+   public boolean isInventoryFull() {
+      for (int i = 0; i < inventory.getContainerSize(); i++) {
+         if (inventory.getItem(i).isEmpty()) {
+            return false;
+         }
+      }
+      return true;
+   }
+
+   static final Predicate<ItemEntity> ANIMAL_LOOT = (itemEntity) -> {
+      return !itemEntity.hasPickUpDelay() && itemEntity.isAlive() && itemEntity.getItem().is(POTags.Items.ANIMAL_LOOT);
+   };
+
+   //modified fox pickup goal
+   public class LabradorSearchForItemsGoal extends Goal {
+
+      public LabradorSearchForItemsGoal() {
+         this.setFlags(EnumSet.of(Goal.Flag.MOVE));
+      }
+
+      public boolean canUse() {
+         if (isOrderedToSit()) {
+            return false;
+         } else if (isInventoryFull()) {
+            return false;
+         } else if (Labrador.this.getTarget() == null && Labrador.this.getLastHurtByMob() == null) {
+            if (Labrador.this.getRandom().nextInt(reducedTickDelay(10)) != 0) {
+               return false;
+            } else {
+               List<ItemEntity> list = Labrador.this.level().getEntitiesOfClass(ItemEntity.class, Labrador.this.getBoundingBox().inflate(8.0D, 8.0D, 8.0D), Labrador.ANIMAL_LOOT);
+               return !list.isEmpty();
+            }
+         } else {
+            return false;
+         }
+      }
+
+      @Override
+      public void tick() {
+         List<ItemEntity> itemEntities = level().getEntitiesOfClass(ItemEntity.class, getBoundingBox().inflate(8.0D, 8.0D, 8.0D), Labrador.ANIMAL_LOOT);
+
+         if (!itemEntities.isEmpty() && !isInventoryFull()) {
+            ItemEntity itemEntity = itemEntities.get(0);
+            getNavigation().moveTo(itemEntity, 1.2D);
+
+            if (distanceToSqr(itemEntity) < 2.0D && itemEntity.getItem().is(POTags.Items.ANIMAL_LOOT)) {
+               pickUpItem(itemEntity);
+            }
+         }
+      }
+
+      @Override
+      public void start() {
+         List<ItemEntity> itemEntities = level().getEntitiesOfClass(ItemEntity.class, getBoundingBox().inflate(8.0D, 8.0D, 8.0D), Labrador.ANIMAL_LOOT);
+         if (!itemEntities.isEmpty()) {
+            getNavigation().moveTo(itemEntities.get(0), 1.2D);
+         }
+      }
+
+      private void pickUpItem(ItemEntity itemEntity) {
+         if (!isInventoryFull() && itemEntity.getItem().is(POTags.Items.ANIMAL_LOOT) && this.canUse()) {
+               ItemStack itemStack = itemEntity.getItem();
+
+               for (int i = 0; i < getInventory().getContainerSize(); i++) {
+                  ItemStack inventoryStack = getInventory().getItem(i);
+
+                  if (!inventoryStack.isEmpty() && inventoryStack.is(itemStack.getItem()) && inventoryStack.getCount() < inventoryStack.getMaxStackSize() && itemStack.is(POTags.Items.ANIMAL_LOOT)) {
+                     int j = inventoryStack.getMaxStackSize() - inventoryStack.getCount();
+                     int k = Math.min(j, itemStack.getCount());
+                     inventoryStack.grow(k);
+                     itemStack.shrink(k);
+
+                     if (itemStack.isEmpty()) {
+                        itemEntity.discard();
+                        break;
+                     }
+                  }
+               }
+
+               if (!itemStack.isEmpty() && itemStack.is(POTags.Items.ANIMAL_LOOT) && this.canUse()) {
+                  for (int i = 0; i < getInventory().getContainerSize(); i++) {
+                     if (getInventory().getItem(i).isEmpty()) {
+                        getInventory().setItem(i, itemStack);
+                        itemEntity.discard();
+                        break;
+                     }
+                  }
+               }
+            }
+         }
+      }
+
 }

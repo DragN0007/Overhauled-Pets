@@ -39,6 +39,7 @@ import com.dragn0007.dragnpets.entities.wolf.OWolf;
 import com.dragn0007.dragnpets.entities.wolf.OWolfRender;
 import com.dragn0007.dragnpets.gui.BerneseScreen;
 import com.dragn0007.dragnpets.gui.HuskyScreen;
+import com.dragn0007.dragnpets.gui.LabradorScreen;
 import com.dragn0007.dragnpets.gui.POMenuTypes;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.entity.EntityRenderers;
@@ -99,6 +100,7 @@ public class PetsOverhaulEvent {
 
         MenuScreens.register(POMenuTypes.HUSKY_MENU.get(), HuskyScreen::new);
         MenuScreens.register(POMenuTypes.BERNESE_MENU.get(), BerneseScreen::new);
+        MenuScreens.register(POMenuTypes.LABRADOR_MENU.get(), LabradorScreen::new);
     }
 
     @SubscribeEvent

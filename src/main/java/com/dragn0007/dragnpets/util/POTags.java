@@ -19,9 +19,10 @@ public class POTags {
         public static final TagKey<Item> AXOLOTL_FOOD = forgeTag("axolotl_food");
         public static final TagKey<Item> PARROT_FOOD = forgeTag("parrot_food");
 
-
         public static final TagKey<Item> CAT_GIFT = forgeTag("cat_gift");
         public static final TagKey<Item> TRAINING_TREAT = forgeTag("training_treat");
+
+        public static final TagKey<Item> ANIMAL_LOOT = forgeTag("animal_loot"); //picked up by retrieving dogs and some hunting dogs
 
         public static TagKey<Item> forgeTag (String name) {
             return ItemTags.create(new ResourceLocation("forge", name));

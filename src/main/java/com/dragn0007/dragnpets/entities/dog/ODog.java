@@ -3,6 +3,7 @@ package com.dragn0007.dragnpets.entities.dog;
 import com.dragn0007.dragnlivestock.items.LOItems;
 import com.dragn0007.dragnlivestock.util.LivestockOverhaulCommonConfig;
 import com.dragn0007.dragnpets.PetsOverhaul;
+import com.dragn0007.dragnpets.entities.EntityTypes;
 import com.dragn0007.dragnpets.entities.ai.DogFollowOwnerGoal;
 import com.dragn0007.dragnpets.util.POTags;
 import net.minecraft.ChatFormatting;
@@ -280,23 +281,6 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity {
 
    }
 
-   public boolean hurt(DamageSource damageSource, float p_30387_) {
-      if (this.isInvulnerableTo(damageSource)) {
-         return false;
-      } else {
-         Entity entity = damageSource.getEntity();
-         if (!this.level().isClientSide) {
-            this.setOrderedToSit(false);
-         }
-
-         if (entity != null && !(entity instanceof Player) && !(entity instanceof AbstractArrow)) {
-            p_30387_ = (p_30387_ + 1.0F) / 2.0F;
-         }
-
-         return super.hurt(damageSource, p_30387_);
-      }
-   }
-
    public boolean doHurtTarget(Entity p_30372_) {
       boolean flag = p_30372_.hurt(this.damageSources().mobAttack(this), (float)((int)this.getAttributeValue(Attributes.ATTACK_DAMAGE)));
       if (flag) {
@@ -316,6 +300,60 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity {
       }
 
       this.getAttribute(Attributes.ATTACK_DAMAGE).setBaseValue(4.0D);
+   }
+
+   public boolean isHuntingDog(Entity entity) {
+      return entity.getType() == EntityTypes.BLOODHOUND_ENTITY.get() || entity.getType() == EntityTypes.LABRADOR_ENTITY.get();
+   }
+
+   public boolean hurt(DamageSource damageSource, float amount) {
+      if (damageSource.getEntity() instanceof Player player) {
+
+         if (!this.level().isClientSide && this.isTame() && !this.isOrderedToSit() && !this.isInSittingPose() && !this.wasToldToHunt()) {
+            if (this.isOwnedBy(player) && player.isShiftKeyDown() && isHuntingDog(this)) {
+               this.setToldToHunt(true);
+               player.displayClientMessage(Component.translatable("tooltip.dragnpets.hunting.tooltip").withStyle(ChatFormatting.GOLD), true);
+            }
+            return false;
+         }
+
+         if (!this.level().isClientSide && this.isTame() && !this.isOrderedToSit() && !this.isInSittingPose() && this.wasToldToHunt()) {
+            if (this.isOwnedBy(player) && player.isShiftKeyDown() && isHuntingDog(this)) {
+               this.setToldToHunt(false);
+               player.displayClientMessage(Component.translatable("tooltip.dragnpets.not_hunting.tooltip").withStyle(ChatFormatting.GOLD), true);
+            }
+            return false;
+         }
+
+         if (this.isInvulnerableTo(damageSource)) {
+            return false;
+         } else {
+            Entity entity = damageSource.getEntity();
+            if (!this.level().isClientSide) {
+               this.setOrderedToSit(false);
+            }
+
+            if (entity != null && !(entity instanceof Player) && !(entity instanceof AbstractArrow)) {
+               amount = (amount + 1.0F) / 2.0F;
+            }
+
+            return super.hurt(damageSource, amount);
+         }
+      }
+
+      if (this.isInvulnerableTo(damageSource)) {
+         return false;
+      } else {
+         Entity entity = damageSource.getEntity();
+         if (!this.level().isClientSide) {
+            this.setOrderedToSit(false);
+         }
+
+         if (entity != null && !(entity instanceof Player) && !(entity instanceof AbstractArrow)) {
+            amount = (amount + 1.0F) / 2.0F;
+         }
+         return super.hurt(damageSource, amount);
+      }
    }
 
    public InteractionResult mobInteract(Player player, InteractionHand hand) {
@@ -364,13 +402,13 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity {
          return InteractionResult.SUCCESS;
       }
 
-      if (player.isShiftKeyDown() && !this.isFood(itemstack) && !this.isOrderedToSit() && !this.wasToldToWander() && this.isOwnedBy(player)) {
+      if (player.isShiftKeyDown() && !this.isFood(itemstack) && !this.isOrderedToSit() && !this.isInSittingPose() && !this.wasToldToWander() && this.isOwnedBy(player)) {
          this.setToldToWander(true);
          player.displayClientMessage(Component.translatable("tooltip.dragnpets.wandering.tooltip").withStyle(ChatFormatting.GOLD), true);
          return InteractionResult.SUCCESS;
       }
 
-      if (player.isShiftKeyDown() && !this.isFood(itemstack) && !this.isOrderedToSit() && this.wasToldToWander() && this.isOwnedBy(player)) {
+      if (player.isShiftKeyDown() && !this.isFood(itemstack) && !this.isOrderedToSit() && !this.isInSittingPose() && this.wasToldToWander() && this.isOwnedBy(player)) {
          this.setToldToWander(false);
          player.displayClientMessage(Component.translatable("tooltip.dragnpets.following.tooltip").withStyle(ChatFormatting.GOLD), true);
          return InteractionResult.SUCCESS;
@@ -438,6 +476,12 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity {
       }
    }
 
+   public boolean hasInventory(Entity entity) {
+      return entity.getType() == EntityTypes.HUSKY_ENTITY.get() ||
+             entity.getType() == EntityTypes.BERNESE_ENTITY.get() ||
+             entity.getType() == EntityTypes.LABRADOR_ENTITY.get();
+   }
+
    public boolean toldToWander = false;
 
    public boolean wasToldToWander() {
@@ -448,8 +492,22 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity {
       return this.toldToWander;
    }
 
-   public void setToldToWander(boolean toldToWander) {
-      this.toldToWander = toldToWander;
+   public void setToldToWander(boolean toldToHunt) {
+      this.toldToHunt = toldToHunt;
+   }
+
+   public boolean toldToHunt = false;
+
+   public boolean wasToldToHunt() {
+      return this.toldToHunt;
+   }
+
+   public boolean getToldToHunt() {
+      return this.toldToHunt;
+   }
+
+   public void setToldToHunt(boolean toldToHunt) {
+      this.toldToHunt = toldToHunt;
    }
 
    public static final Ingredient FOOD_ITEMS = Ingredient.of(POTags.Items.DOG_FOOD);
@@ -500,6 +558,7 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity {
       tag.putByte("CollarColor", (byte)this.getCollarColor().getId());
       tag.putInt("Gender", this.getGender());
       tag.putBoolean("Wandering", this.getToldToWander());
+      tag.putBoolean("Hunting", this.getToldToHunt());
       tag.putBoolean("Panicking", this.getPanicking());
       this.addPersistentAngerSaveData(tag);
    }
@@ -516,6 +575,10 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity {
 
       if (tag.contains("Wandering")) {
          this.setToldToWander(tag.getBoolean("Wandering"));
+      }
+
+      if (tag.contains("Hunting")) {
+         this.setToldToHunt(tag.getBoolean("Hunting"));
       }
 
       if (tag.contains("Panicking")) {

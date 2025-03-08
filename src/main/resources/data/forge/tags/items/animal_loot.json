@@ -1,0 +1,21 @@
+{
+  "replace": false,
+  "values": [
+    "#forge:raw_meats",
+    "#forge:egg",
+    "minecraft:bone",
+    "minecraft:bone_meal",
+    "minecraft:feather",
+    "minecraft:leather",
+
+    {
+      "id": "#tfc:foods/raw_meats",
+      "required": false
+    },
+
+    {
+      "id": "#tfc:raw_hides",
+      "required": false
+    }
+  ]
+}
