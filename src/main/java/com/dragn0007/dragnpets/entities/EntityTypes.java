@@ -9,6 +9,7 @@ import com.dragn0007.dragnpets.entities.dog.australian_shepherd.AustralianShephe
 import com.dragn0007.dragnpets.entities.dog.bernese.Bernese;
 import com.dragn0007.dragnpets.entities.dog.bloodhound.Bloodhound;
 import com.dragn0007.dragnpets.entities.dog.border_collie.Collie;
+import com.dragn0007.dragnpets.entities.dog.cocker_spaniel.CockerSpaniel;
 import com.dragn0007.dragnpets.entities.dog.doberman.Doberman;
 import com.dragn0007.dragnpets.entities.dog.husky.Husky;
 import com.dragn0007.dragnpets.entities.dog.labrador.Labrador;
@@ -147,6 +148,12 @@ public class EntityTypes {
                             MobCategory.CREATURE)
                     .sized(0.6f,0.6f)
                     .build(new ResourceLocation(LivestockOverhaul.MODID,"kornish_rex").toString()));
+
+    public static final RegistryObject<EntityType<CockerSpaniel>> COCKER_SPANIEL_ENTITY = ENTITY_TYPES.register("cocker_spaniel",
+            () -> EntityType.Builder.of(CockerSpaniel::new,
+                            MobCategory.CREATURE)
+                    .sized(0.6f,0.6f)
+                    .build(new ResourceLocation(LivestockOverhaul.MODID,"cocker_spaniel").toString()));
 
 
     public static final RegistryObject<EntityType<DogSled>> DOG_SLED_ENTITY = ENTITY_TYPES.register("dog_sled",

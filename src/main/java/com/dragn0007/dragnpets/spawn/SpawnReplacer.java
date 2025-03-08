@@ -23,6 +23,9 @@ import com.dragn0007.dragnpets.entities.dog.bloodhound.Bloodhound;
 import com.dragn0007.dragnpets.entities.dog.bloodhound.BloodhoundModel;
 import com.dragn0007.dragnpets.entities.dog.border_collie.Collie;
 import com.dragn0007.dragnpets.entities.dog.border_collie.CollieModel;
+import com.dragn0007.dragnpets.entities.dog.cocker_spaniel.CockerSpaniel;
+import com.dragn0007.dragnpets.entities.dog.cocker_spaniel.CockerSpanielMarkingLayer;
+import com.dragn0007.dragnpets.entities.dog.cocker_spaniel.CockerSpanielModel;
 import com.dragn0007.dragnpets.entities.dog.doberman.Doberman;
 import com.dragn0007.dragnpets.entities.dog.doberman.DobermanModel;
 import com.dragn0007.dragnpets.entities.dog.husky.Husky;
@@ -357,12 +360,13 @@ public class SpawnReplacer {
                 AustralianShepherd aShepherd = EntityTypes.AUSTRALIAN_SHEPHERD_ENTITY.get().create(event.getLevel());
                 Bloodhound bloodhound = EntityTypes.BLOODHOUND_ENTITY.get().create(event.getLevel());
                 KornishRex kornishRex = EntityTypes.KORNISH_REX_ENTITY.get().create(event.getLevel());
+                CockerSpaniel cockerSpaniel = EntityTypes.COCKER_SPANIEL_ENTITY.get().create(event.getLevel());
 
                 if (event.getLevel().isClientSide) {
                     return;
                 }
 
-                int i = event.getLevel().getRandom().nextInt(12);
+                int i = event.getLevel().getRandom().nextInt(22);
 
                 if (event.getLevel().getBiome(event.getEntity().blockPosition()).is(Biomes.SWAMP)) {
                     if (commonCat != null) {
@@ -393,7 +397,7 @@ public class SpawnReplacer {
                 }
 
                 if (commonCat != null) {
-                    if (i <= 1 && !event.getLevel().getBiome(event.getEntity().blockPosition()).is(Biomes.SWAMP)) {
+                    if (i <= 10 && !event.getLevel().getBiome(event.getEntity().blockPosition()).is(Biomes.SWAMP)) {
                         commonCat.copyPosition(cat);
 
                         commonCat.setCustomName(cat.getCustomName());
@@ -424,7 +428,7 @@ public class SpawnReplacer {
                 }
 
                 if (doberman != null) {
-                    if (i == 2 && !event.getLevel().getBiome(event.getEntity().blockPosition()).is(Biomes.SWAMP)) {
+                    if (i == 11 && !event.getLevel().getBiome(event.getEntity().blockPosition()).is(Biomes.SWAMP)) {
                         doberman.copyPosition(cat);
 
                         doberman.setCustomName(cat.getCustomName());
@@ -449,7 +453,7 @@ public class SpawnReplacer {
                 }
 
                 if (labrador != null) {
-                    if (i == 3 && !event.getLevel().getBiome(event.getEntity().blockPosition()).is(Biomes.SWAMP)) {
+                    if (i == 12 && !event.getLevel().getBiome(event.getEntity().blockPosition()).is(Biomes.SWAMP)) {
                         labrador.copyPosition(cat);
 
                         labrador.setCustomName(cat.getCustomName());
@@ -474,7 +478,7 @@ public class SpawnReplacer {
                 }
 
                 if (husky != null) {
-                    if (i == 4 && !event.getLevel().getBiome(event.getEntity().blockPosition()).is(Biomes.SWAMP)) {
+                    if (i == 13 && !event.getLevel().getBiome(event.getEntity().blockPosition()).is(Biomes.SWAMP)) {
                         husky.copyPosition(cat);
 
                         husky.setCustomName(cat.getCustomName());
@@ -499,7 +503,7 @@ public class SpawnReplacer {
                 }
 
                 if (pyrenees != null) {
-                    if (i == 5 && !event.getLevel().getBiome(event.getEntity().blockPosition()).is(Biomes.SWAMP)) {
+                    if (i == 14 && !event.getLevel().getBiome(event.getEntity().blockPosition()).is(Biomes.SWAMP)) {
                         pyrenees.copyPosition(cat);
 
                         pyrenees.setCustomName(cat.getCustomName());
@@ -524,7 +528,7 @@ public class SpawnReplacer {
                 }
 
                 if (collie != null) {
-                    if (i == 6 && !event.getLevel().getBiome(event.getEntity().blockPosition()).is(Biomes.SWAMP)) {
+                    if (i == 15 && !event.getLevel().getBiome(event.getEntity().blockPosition()).is(Biomes.SWAMP)) {
                         collie.copyPosition(cat);
 
                         collie.setCustomName(cat.getCustomName());
@@ -549,7 +553,7 @@ public class SpawnReplacer {
                 }
 
                 if (maineCoon != null) {
-                    if (i == 7 && !event.getLevel().getBiome(event.getEntity().blockPosition()).is(Biomes.SWAMP)) {
+                    if (i == 16 && !event.getLevel().getBiome(event.getEntity().blockPosition()).is(Biomes.SWAMP)) {
                         maineCoon.copyPosition(cat);
 
                         maineCoon.setCustomName(cat.getCustomName());
@@ -574,7 +578,7 @@ public class SpawnReplacer {
                 }
 
                 if (bernese != null) {
-                    if (i == 8 && !event.getLevel().getBiome(event.getEntity().blockPosition()).is(Biomes.SWAMP)) {
+                    if (i == 17 && !event.getLevel().getBiome(event.getEntity().blockPosition()).is(Biomes.SWAMP)) {
                         bernese.copyPosition(cat);
 
                         bernese.setCustomName(cat.getCustomName());
@@ -599,7 +603,7 @@ public class SpawnReplacer {
                 }
 
                 if (aShepherd != null) {
-                    if (i == 9 && !event.getLevel().getBiome(event.getEntity().blockPosition()).is(Biomes.SWAMP)) {
+                    if (i == 18 && !event.getLevel().getBiome(event.getEntity().blockPosition()).is(Biomes.SWAMP)) {
                         aShepherd.copyPosition(cat);
 
                         aShepherd.setCustomName(cat.getCustomName());
@@ -624,7 +628,7 @@ public class SpawnReplacer {
                 }
 
                 if (bloodhound != null) {
-                    if (i == 10 && !event.getLevel().getBiome(event.getEntity().blockPosition()).is(Biomes.SWAMP)) {
+                    if (i == 19 && !event.getLevel().getBiome(event.getEntity().blockPosition()).is(Biomes.SWAMP)) {
                         bloodhound.copyPosition(cat);
 
                         bloodhound.setCustomName(cat.getCustomName());
@@ -649,7 +653,7 @@ public class SpawnReplacer {
                 }
 
                 if (kornishRex != null) {
-                    if (i == 11 && !event.getLevel().getBiome(event.getEntity().blockPosition()).is(Biomes.SWAMP)) {
+                    if (i == 20 && !event.getLevel().getBiome(event.getEntity().blockPosition()).is(Biomes.SWAMP)) {
                         kornishRex.copyPosition(cat);
 
                         kornishRex.setCustomName(cat.getCustomName());
@@ -667,6 +671,34 @@ public class SpawnReplacer {
                         }
 
                         event.getLevel().addFreshEntity(kornishRex);
+                        cat.remove(Entity.RemovalReason.DISCARDED);
+
+                        event.setCanceled(true);
+                    }
+                }
+
+                if (cockerSpaniel != null) {
+                    if (i == 20 && !event.getLevel().getBiome(event.getEntity().blockPosition()).is(Biomes.SWAMP)) {
+                        cockerSpaniel.copyPosition(cat);
+
+                        cockerSpaniel.setCustomName(cat.getCustomName());
+                        cockerSpaniel.setAge(cat.getAge());
+                        cockerSpaniel.setOwnerUUID(cat.getOwnerUUID());
+
+                        int randomVariant = event.getLevel().getRandom().nextInt(CockerSpanielModel.Variant.values().length);
+                        cockerSpaniel.setVariant(randomVariant);
+
+                        int randomMarking = event.getLevel().getRandom().nextInt(CockerSpanielMarkingLayer.Overlay.values().length);
+                        cockerSpaniel.setOverlayVariant(randomMarking);
+
+                        int randomGender = event.getLevel().getRandom().nextInt(ODog.Gender.values().length);
+                        cockerSpaniel.setGender(randomGender);
+
+                        if (event.getLevel().isClientSide) {
+                            cat.remove(Entity.RemovalReason.DISCARDED);
+                        }
+
+                        event.getLevel().addFreshEntity(cockerSpaniel);
                         cat.remove(Entity.RemovalReason.DISCARDED);
 
                         event.setCanceled(true);

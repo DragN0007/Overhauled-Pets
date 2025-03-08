@@ -74,17 +74,6 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity {
 
    public static final EntityDataAccessor<Integer> DATA_COLLAR_COLOR = SynchedEntityData.defineId(ODog.class, EntityDataSerializers.INT);
    public static final EntityDataAccessor<Integer> DATA_REMAINING_ANGER_TIME = SynchedEntityData.defineId(ODog.class, EntityDataSerializers.INT);
-//   public static final Predicate<LivingEntity> PREY_SELECTOR = (entity) -> {
-//      EntityType<?> entitytype = entity.getType();
-//      return entitytype == EntityTypes.O_SHEEP_ENTITY.get() ||
-//              entitytype == EntityTypes.O_RABBIT_ENTITY.get() ||
-//              entitytype == EntityTypes.O_GOAT_ENTITY.get() ||
-//              entitytype == EntityTypes.O_HORSE_ENTITY.get() ||
-//              entitytype == EntityTypes.O_COW_ENTITY.get() ||
-//              entitytype == EntityTypes.O_CHICKEN_ENTITY.get() ||
-//              entitytype == EntityTypes.O_PIG_ENTITY.get() ||
-//              entitytype == EntityType.FOX;
-//   };
 
    public static final UniformInt PERSISTENT_ANGER_TIME = TimeUtil.rangeOfSeconds(20, 39);
    @Nullable
@@ -303,7 +292,7 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity {
    }
 
    public boolean isHuntingDog(Entity entity) {
-      return entity.getType() == EntityTypes.BLOODHOUND_ENTITY.get() || entity.getType() == EntityTypes.LABRADOR_ENTITY.get();
+      return entity.getType() == EntityTypes.BLOODHOUND_ENTITY.get() || entity.getType() == EntityTypes.LABRADOR_ENTITY.get() || entity.getType() == EntityTypes.COCKER_SPANIEL_ENTITY.get();
    }
 
    public boolean hurt(DamageSource damageSource, float amount) {
@@ -402,13 +391,13 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity {
          return InteractionResult.SUCCESS;
       }
 
-      if (player.isShiftKeyDown() && !this.isFood(itemstack) && !this.isOrderedToSit() && !this.isInSittingPose() && !this.wasToldToWander() && this.isOwnedBy(player)) {
+      if (player.isShiftKeyDown() && !this.isFood(itemstack) && !this.isInSittingPose() && !this.wasToldToWander() && this.isOwnedBy(player)) {
          this.setToldToWander(true);
          player.displayClientMessage(Component.translatable("tooltip.dragnpets.wandering.tooltip").withStyle(ChatFormatting.GOLD), true);
          return InteractionResult.SUCCESS;
       }
 
-      if (player.isShiftKeyDown() && !this.isFood(itemstack) && !this.isOrderedToSit() && !this.isInSittingPose() && this.wasToldToWander() && this.isOwnedBy(player)) {
+      if (player.isShiftKeyDown() && !this.isFood(itemstack) && !this.isInSittingPose() && this.wasToldToWander() && this.isOwnedBy(player)) {
          this.setToldToWander(false);
          player.displayClientMessage(Component.translatable("tooltip.dragnpets.following.tooltip").withStyle(ChatFormatting.GOLD), true);
          return InteractionResult.SUCCESS;
@@ -476,12 +465,6 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity {
       }
    }
 
-   public boolean hasInventory(Entity entity) {
-      return entity.getType() == EntityTypes.HUSKY_ENTITY.get() ||
-             entity.getType() == EntityTypes.BERNESE_ENTITY.get() ||
-             entity.getType() == EntityTypes.LABRADOR_ENTITY.get();
-   }
-
    public boolean toldToWander = false;
 
    public boolean wasToldToWander() {
@@ -492,8 +475,8 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity {
       return this.toldToWander;
    }
 
-   public void setToldToWander(boolean toldToHunt) {
-      this.toldToHunt = toldToHunt;
+   public void setToldToWander(boolean toldToWander) {
+      this.toldToWander = toldToWander;
    }
 
    public boolean toldToHunt = false;

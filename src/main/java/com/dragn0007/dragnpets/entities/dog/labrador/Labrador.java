@@ -205,23 +205,6 @@ public class Labrador extends ODog implements InventoryCarrier, NeutralMob, GeoE
 
    }
 
-   public boolean hurt(DamageSource damageSource, float amount) {
-      if (this.isInvulnerableTo(damageSource)) {
-         return false;
-      } else {
-         Entity entity = damageSource.getEntity();
-         if (!this.level().isClientSide) {
-            this.setOrderedToSit(false);
-         }
-
-         if (entity != null && !(entity instanceof Player) && !(entity instanceof AbstractArrow)) {
-            amount = (amount + 1.0F) / 2.0F;
-         }
-
-         return super.hurt(damageSource, amount);
-      }
-   }
-
    public boolean doHurtTarget(Entity p_30372_) {
       boolean flag = p_30372_.hurt(this.damageSources().mobAttack(this), (float)((int)this.getAttributeValue(Attributes.ATTACK_DAMAGE)));
       if (flag) {
