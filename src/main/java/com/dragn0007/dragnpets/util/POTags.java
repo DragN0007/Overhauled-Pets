@@ -30,9 +30,7 @@ public class POTags {
     }
 
     public static class Entity_Types {
-        public static final TagKey<EntityType<?>> O_WOLVES = forgeTag("o_wolves");
         public static final TagKey<EntityType<?>> WOLVES = forgeTag("wolves");
-        public static final TagKey<EntityType<?>> O_FOXES = forgeTag("o_foxes");
         public static final TagKey<EntityType<?>> FOXES = forgeTag("foxes");
         public static final TagKey<EntityType<?>> CATS = forgeTag("cats");
         public static final TagKey<EntityType<?>> HERDING_DOGS = forgeTag("herding_dogs");

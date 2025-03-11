@@ -2,6 +2,7 @@ package com.dragn0007.dragnpets.entities.fox;
 
 import com.dragn0007.dragnlivestock.entities.EntityTypes;
 import com.dragn0007.dragnlivestock.items.LOItems;
+import com.dragn0007.dragnlivestock.util.LOTags;
 import com.dragn0007.dragnlivestock.util.LivestockOverhaulCommonConfig;
 import com.dragn0007.dragnpets.PetsOverhaul;
 import com.dragn0007.dragnpets.entities.ai.FoxFollowOwnerGoal;
@@ -107,11 +108,15 @@ public class OFox extends TamableAnimal implements GeoEntity {
       this.goalSelector.addGoal(0, new ClimbOnTopOfPowderSnowGoal(this, this.level()));
       this.goalSelector.addGoal(10, new OFox.FoxEatBerriesGoal((double)1.2F, 12, 1));
 
-      this.goalSelector.addGoal(1, new AvoidEntityGoal<>(this, LivingEntity.class, 15.0F, 1.8F, 1.8F, livingEntity -> {
-         boolean isOWolf = livingEntity.getType().is(POTags.Entity_Types.O_WOLVES);
-         boolean isWolf = livingEntity instanceof Wolf;
-         return isOWolf || isWolf;
-      }));
+      this.goalSelector.addGoal(1, new AvoidEntityGoal<>(this, LivingEntity.class, 15.0F, 1.8F, 1.8F, entity ->
+              (entity.getType().is(LOTags.Entity_Types.WOLVES) && !this.isTame()) ||
+                      (entity.getType().is(LOTags.Entity_Types.WOLVES) && (entity instanceof TamableAnimal && !((TamableAnimal) entity).isTame())) && this.isTame()
+      ));
+
+      this.goalSelector.addGoal(1, new AvoidEntityGoal<>(this, LivingEntity.class, 15.0F, 1.8F, 1.8F, entity ->
+              (entity.getType().is(LOTags.Entity_Types.HUNTING_DOGS) && !this.isTame()) ||
+                      (entity.getType().is(LOTags.Entity_Types.HUNTING_DOGS) && (entity instanceof TamableAnimal && !((TamableAnimal) entity).isTame())) && this.isTame()
+      ));
 
       this.goalSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, LivingEntity.class, 2, true, false,
               entity -> entity.getType().is(POTags.Entity_Types.FOXES_HUNT) && ((entity instanceof TamableAnimal && !((TamableAnimal) entity).isTame()) || (!this.isTame()) || (this.isTame() && this.wasToldToWander() && entity instanceof TamableAnimal && !((TamableAnimal) entity).isTame())))  {

@@ -4,7 +4,7 @@ license="All Rights Reserved, DragN0007"
 #issueTrackerURL="https://discord.gg/2WznNTtVac"
 [[mods]]
 modId="dragnpets"
-version="${1.3}"
+version="${1.4}"
 displayName="DragN's Livestock Overhaul: Pets Addon!"
 logoFile="pets_overhaul_logo.png"
 authors="DragN0007"

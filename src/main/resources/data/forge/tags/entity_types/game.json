@@ -7,6 +7,11 @@
     "dragnlivestock:o_chicken",
     "dragnlivestock:o_rabbit",
     "dragnlivestock:o_pig",
-    "dragnlivestock:o_goat"
+    "dragnlivestock:o_goat",
+
+    {
+      "id": "permafrost:cervalces_latifrons",
+      "required": false
+    }
   ]
 }

@@ -1,9 +1,7 @@
 {
   "replace": false,
   "values": [
-    "#forge:o_wolves",
     "#forge:wolves",
-    "#forge:o_foxes",
     "#forge:fox",
     "dragnpets:o_ocelot",
 

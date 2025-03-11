@@ -86,7 +86,7 @@ public class Bloodhound extends ODog implements NeutralMob, GeoEntity {
       this.goalSelector.addGoal(6, new DogFollowOwnerGoal(this, 1.0D, 10.0F, 2.0F, false));
 
       this.goalSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, LivingEntity.class, 2, true, false,
-              entity -> entity.getType().is(POTags.Entity_Types.GAME) && (this.isTame() && this.wasToldToHunt()))  {
+              entity -> entity.getType().is(POTags.Entity_Types.GAME) && (this.isTame() && this.wasToldToHunt()) && (entity instanceof TamableAnimal && !((TamableAnimal) entity).isTame()))  {
       });
    }
 
