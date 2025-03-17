@@ -28,6 +28,8 @@ import com.dragn0007.dragnpets.entities.dog.labrador.Labrador;
 import com.dragn0007.dragnpets.entities.dog.labrador.LabradorRender;
 import com.dragn0007.dragnpets.entities.dog.pyrenees.Pyrenees;
 import com.dragn0007.dragnpets.entities.dog.pyrenees.PyreneesRender;
+import com.dragn0007.dragnpets.entities.dog.whippet.Whippet;
+import com.dragn0007.dragnpets.entities.dog.whippet.WhippetRender;
 import com.dragn0007.dragnpets.entities.fox.OFox;
 import com.dragn0007.dragnpets.entities.fox.OFoxRender;
 import com.dragn0007.dragnpets.entities.misc.sled.DogSledModel;
@@ -77,6 +79,7 @@ public class PetsOverhaulEvent {
         event.put(EntityTypes.BLOODHOUND_ENTITY.get(), Bloodhound.createAttributes().build());
         event.put(EntityTypes.KORNISH_REX_ENTITY.get(), KornishRex.createAttributes().build());
         event.put(EntityTypes.COCKER_SPANIEL_ENTITY.get(), CockerSpaniel.createAttributes().build());
+        event.put(EntityTypes.WHIPPET_ENTITY.get(), Whippet.createAttributes().build());
     }
 
     @SubscribeEvent
@@ -101,6 +104,7 @@ public class PetsOverhaulEvent {
         EntityRenderers.register(EntityTypes.BLOODHOUND_ENTITY.get(), BloodhoundRender::new);
         EntityRenderers.register(EntityTypes.KORNISH_REX_ENTITY.get(), KornishRexRender::new);
         EntityRenderers.register(EntityTypes.COCKER_SPANIEL_ENTITY.get(), CockerSpanielRender::new);
+        EntityRenderers.register(EntityTypes.WHIPPET_ENTITY.get(), WhippetRender::new);
 
         MenuScreens.register(POMenuTypes.HUSKY_MENU.get(), HuskyScreen::new);
         MenuScreens.register(POMenuTypes.BERNESE_MENU.get(), BerneseScreen::new);

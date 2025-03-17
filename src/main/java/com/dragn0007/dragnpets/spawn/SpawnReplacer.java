@@ -34,6 +34,9 @@ import com.dragn0007.dragnpets.entities.dog.labrador.Labrador;
 import com.dragn0007.dragnpets.entities.dog.labrador.LabradorModel;
 import com.dragn0007.dragnpets.entities.dog.pyrenees.Pyrenees;
 import com.dragn0007.dragnpets.entities.dog.pyrenees.PyreneesModel;
+import com.dragn0007.dragnpets.entities.dog.whippet.Whippet;
+import com.dragn0007.dragnpets.entities.dog.whippet.WhippetMarkingLayer;
+import com.dragn0007.dragnpets.entities.dog.whippet.WhippetModel;
 import com.dragn0007.dragnpets.entities.fox.OFox;
 import com.dragn0007.dragnpets.entities.fox.OFoxMarkingLayer;
 import com.dragn0007.dragnpets.entities.ocelot.OOcelot;
@@ -361,12 +364,13 @@ public class SpawnReplacer {
                 Bloodhound bloodhound = EntityTypes.BLOODHOUND_ENTITY.get().create(event.getLevel());
                 KornishRex kornishRex = EntityTypes.KORNISH_REX_ENTITY.get().create(event.getLevel());
                 CockerSpaniel cockerSpaniel = EntityTypes.COCKER_SPANIEL_ENTITY.get().create(event.getLevel());
+                Whippet whippet = EntityTypes.WHIPPET_ENTITY.get().create(event.getLevel());
 
                 if (event.getLevel().isClientSide) {
                     return;
                 }
 
-                int i = event.getLevel().getRandom().nextInt(22);
+                int i = event.getLevel().getRandom().nextInt(23);
 
                 if (event.getLevel().getBiome(event.getEntity().blockPosition()).is(Biomes.SWAMP)) {
                     if (commonCat != null) {
@@ -678,7 +682,7 @@ public class SpawnReplacer {
                 }
 
                 if (cockerSpaniel != null) {
-                    if (i == 20 && !event.getLevel().getBiome(event.getEntity().blockPosition()).is(Biomes.SWAMP)) {
+                    if (i == 21 && !event.getLevel().getBiome(event.getEntity().blockPosition()).is(Biomes.SWAMP)) {
                         cockerSpaniel.copyPosition(cat);
 
                         cockerSpaniel.setCustomName(cat.getCustomName());
@@ -699,6 +703,34 @@ public class SpawnReplacer {
                         }
 
                         event.getLevel().addFreshEntity(cockerSpaniel);
+                        cat.remove(Entity.RemovalReason.DISCARDED);
+
+                        event.setCanceled(true);
+                    }
+                }
+
+                if (whippet != null) {
+                    if (i == 22 && !event.getLevel().getBiome(event.getEntity().blockPosition()).is(Biomes.SWAMP)) {
+                        whippet.copyPosition(cat);
+
+                        whippet.setCustomName(cat.getCustomName());
+                        whippet.setAge(cat.getAge());
+                        whippet.setOwnerUUID(cat.getOwnerUUID());
+
+                        int randomVariant = event.getLevel().getRandom().nextInt(WhippetModel.Variant.values().length);
+                        whippet.setVariant(randomVariant);
+
+                        int randomMarking = event.getLevel().getRandom().nextInt(WhippetMarkingLayer.Overlay.values().length);
+                        whippet.setOverlayVariant(randomMarking);
+
+                        int randomGender = event.getLevel().getRandom().nextInt(ODog.Gender.values().length);
+                        whippet.setGender(randomGender);
+
+                        if (event.getLevel().isClientSide) {
+                            cat.remove(Entity.RemovalReason.DISCARDED);
+                        }
+
+                        event.getLevel().addFreshEntity(whippet);
                         cat.remove(Entity.RemovalReason.DISCARDED);
 
                         event.setCanceled(true);

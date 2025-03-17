@@ -14,6 +14,7 @@ import com.dragn0007.dragnpets.entities.dog.doberman.Doberman;
 import com.dragn0007.dragnpets.entities.dog.husky.Husky;
 import com.dragn0007.dragnpets.entities.dog.labrador.Labrador;
 import com.dragn0007.dragnpets.entities.dog.pyrenees.Pyrenees;
+import com.dragn0007.dragnpets.entities.dog.whippet.Whippet;
 import com.dragn0007.dragnpets.entities.fox.OFox;
 import com.dragn0007.dragnpets.entities.misc.sled.DogSled;
 import com.dragn0007.dragnpets.entities.ocelot.OOcelot;
@@ -154,6 +155,12 @@ public class EntityTypes {
                             MobCategory.CREATURE)
                     .sized(0.6f,0.6f)
                     .build(new ResourceLocation(LivestockOverhaul.MODID,"cocker_spaniel").toString()));
+
+    public static final RegistryObject<EntityType<Whippet>> WHIPPET_ENTITY = ENTITY_TYPES.register("whippet",
+            () -> EntityType.Builder.of(Whippet::new,
+                            MobCategory.CREATURE)
+                    .sized(0.7f,0.7f)
+                    .build(new ResourceLocation(LivestockOverhaul.MODID,"whippet").toString()));
 
 
     public static final RegistryObject<EntityType<DogSled>> DOG_SLED_ENTITY = ENTITY_TYPES.register("dog_sled",

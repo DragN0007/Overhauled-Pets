@@ -292,7 +292,10 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity {
    }
 
    public boolean isHuntingDog(Entity entity) {
-      return entity.getType() == EntityTypes.BLOODHOUND_ENTITY.get() || entity.getType() == EntityTypes.LABRADOR_ENTITY.get() || entity.getType() == EntityTypes.COCKER_SPANIEL_ENTITY.get();
+      return entity.getType() == EntityTypes.BLOODHOUND_ENTITY.get()
+              || entity.getType() == EntityTypes.LABRADOR_ENTITY.get()
+              || entity.getType() == EntityTypes.COCKER_SPANIEL_ENTITY.get()
+              || entity.getType() == EntityTypes.WHIPPET_ENTITY.get();
    }
 
    public boolean hurt(DamageSource damageSource, float amount) {

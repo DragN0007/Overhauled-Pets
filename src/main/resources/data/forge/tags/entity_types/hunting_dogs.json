@@ -2,6 +2,8 @@
   "replace": false,
   "values": [
     "dragnpets:labrador",
-    "dragnpets:bloodhound"
+    "dragnpets:bloodhound",
+    "dragnpets:cocker_spaniel",
+    "dragnpets:whippet"
   ]
 }
