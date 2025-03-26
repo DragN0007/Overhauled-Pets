@@ -1,29 +1,12 @@
 {
   "replace": false,
   "values": [
-    "minecraft:chicken",
-    "dragnlivestock:chicken_thigh",
-    "minecraft:rabbit",
-    "dragnlivestock:rabbit_thigh",
-    "dragnlivestock:frog",
-    "minecraft:salmon",
-    "minecraft:cod",
+    "dragnlivestock:roe",
+    "dragnlivestock:cod_roe",
+    "dragnpets:tropical_fish_roe",
 
-    "dragnlivestock:salmon_fillet",
-    "dragnlivestock:cod_fillet",
-    "dragnpets:tropical_fish_fillet",
-    "minecraft:tropical_fish",
-
-    "minecraft:cooked_chicken",
-    "dragnlivestock:cooked_chicken_thigh",
-    "minecraft:cooked_rabbit",
-    "dragnlivestock:cooked_rabbit_thigh",
-    "dragnlivestock:cooked_frog",
-    "minecraft:cooked_salmon",
-    "minecraft:cooked_cod",
-
-    "dragnpets:parrot_thigh",
-
-    "dragnpets:cooked_parrot_thigh"
+    "#forge:raw_fishes",
+    "#forge:cooked_fishes",
+    "#forge:raw_meats"
   ]
 }

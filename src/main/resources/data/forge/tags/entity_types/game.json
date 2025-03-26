@@ -1,12 +1,13 @@
 {
   "replace": false,
   "values": [
-    "#forge:o_foxes",
-    "#forge:fox",
-    "dragnlivestock:caribou",
     "dragnlivestock:o_chicken",
-    "dragnlivestock:o_rabbit",
     "dragnlivestock:o_pig",
+
+    "#forge:fox",
+    "dragnlivestock:o_rabbit",
+
+    "dragnlivestock:caribou",
     "dragnlivestock:o_goat",
 
     {

@@ -63,6 +63,8 @@ public class POItems {
             () -> new ForgeSpawnEggItem(EntityTypes.COCKER_SPANIEL_ENTITY, 0xbc6738, 0x77371c, new Item.Properties().stacksTo(64)));
     public static final RegistryObject<Item> WHIPPET_SPAWN_EGG = ITEMS.register("whippet_spawn_egg",
             () -> new ForgeSpawnEggItem(EntityTypes.WHIPPET_ENTITY, 0x9496a1, 0x72737e, new Item.Properties().stacksTo(64)));
+    public static final RegistryObject<Item> ROTTWEILER_SPAWN_EGG = ITEMS.register("rottweiler_spawn_egg",
+            () -> new ForgeSpawnEggItem(EntityTypes.ROTTWEILER_ENTITY, 0x232323, 0x8c4716, new Item.Properties().stacksTo(64)));
 
     //Food
     public static final RegistryObject<Item> WOLF = ITEMS.register("wolf",

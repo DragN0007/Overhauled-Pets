@@ -1,25 +1,29 @@
-package com.dragn0007.dragnpets.entities.dog.bloodhound;
+package com.dragn0007.dragnpets.entities.dog.rottweiler;
 
-import com.dragn0007.dragnlivestock.entities.rabbit.ORabbit;
-import com.dragn0007.dragnlivestock.entities.util.AbstractOMount;
 import com.dragn0007.dragnlivestock.util.LivestockOverhaulCommonConfig;
 import com.dragn0007.dragnpets.entities.EntityTypes;
 import com.dragn0007.dragnpets.entities.ai.DogFollowOwnerGoal;
 import com.dragn0007.dragnpets.entities.ai.DogFollowPackLeaderGoal;
 import com.dragn0007.dragnpets.entities.dog.ODog;
+import com.dragn0007.dragnpets.gui.LabradorMenu;
 import com.dragn0007.dragnpets.util.POTags;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.TimeUtil;
 import net.minecraft.util.valueproviders.UniformInt;
-import net.minecraft.world.DifficultyInstance;
+import net.minecraft.world.*;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -28,16 +32,24 @@ import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.ai.goal.target.*;
 import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.animal.horse.AbstractHorse;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.monster.Ghast;
+import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.entity.monster.Slime;
+import net.minecraft.world.entity.npc.InventoryCarrier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.pathfinder.BlockPathTypes;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.items.wrapper.InvWrapper;
+import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.core.animatable.GeoAnimatable;
@@ -49,21 +61,26 @@ import software.bernie.geckolib.core.animation.RawAnimation;
 import software.bernie.geckolib.core.object.PlayState;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
+import java.util.EnumSet;
+import java.util.List;
 import java.util.Random;
 import java.util.UUID;
+import java.util.function.Predicate;
 
-public class Bloodhound extends ODog implements NeutralMob, GeoEntity {
+public class Rottweiler extends ODog implements InventoryCarrier, NeutralMob, GeoEntity, ContainerListener {
 
-   public static final EntityDataAccessor<Integer> DATA_COLLAR_COLOR = SynchedEntityData.defineId(Bloodhound.class, EntityDataSerializers.INT);
-   public static final EntityDataAccessor<Integer> DATA_REMAINING_ANGER_TIME = SynchedEntityData.defineId(Bloodhound.class, EntityDataSerializers.INT);
+   public static final EntityDataAccessor<Integer> DATA_COLLAR_COLOR = SynchedEntityData.defineId(Rottweiler.class, EntityDataSerializers.INT);
+   public static final EntityDataAccessor<Integer> DATA_REMAINING_ANGER_TIME = SynchedEntityData.defineId(Rottweiler.class, EntityDataSerializers.INT);
 
    public static final UniformInt PERSISTENT_ANGER_TIME = TimeUtil.rangeOfSeconds(20, 39);
    @Nullable
    public UUID persistentAngerTarget;
 
-   public Bloodhound(EntityType<? extends Bloodhound> entityType, Level level) {
+   public Rottweiler(EntityType<? extends Rottweiler> entityType, Level level) {
       super(entityType, level);
       this.setTame(false);
+      this.updateInventory();
+      this.setCanPickUpLoot(true);
       this.setPathfindingMalus(BlockPathTypes.POWDER_SNOW, -1.0F);
       this.setPathfindingMalus(BlockPathTypes.DANGER_POWDER_SNOW, -1.0F);
    }
@@ -85,22 +102,22 @@ public class Bloodhound extends ODog implements NeutralMob, GeoEntity {
       this.targetSelector.addGoal(8, new ResetUniversalAngerTargetGoal<>(this, true));
       this.goalSelector.addGoal(7, new DogFollowPackLeaderGoal(this));
 
+      this.goalSelector.addGoal(7, new RottweilerSearchForItemsGoal());
+
       this.goalSelector.addGoal(6, new DogFollowOwnerGoal(this, 1.0D, 10.0F, 2.0F, false));
 
-      this.goalSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, LivingEntity.class, 2, true, false,
-              entity ->
-                (entity.getType().is(POTags.Entity_Types.GAME) && this.isTame() && this.wasToldToHunt())
-              || (entity.getType().is(POTags.Entity_Types.GAME) && entity instanceof TamableAnimal && !((TamableAnimal) entity).isTame() && this.isTame() && this.wasToldToHunt())
-              || (entity.getType().is(POTags.Entity_Types.GAME) && entity instanceof AbstractOMount && !((AbstractOMount) entity).isTamed() && this.isTame() && this.wasToldToHunt())
-      ));
+      this.goalSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, Monster.class, 2, true, false,
+              entity -> entity instanceof Monster && this.isTame() && this.wasToldToGuard()));
 
+      this.goalSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, Slime.class, 2, true, false,
+              entity -> entity instanceof Slime && this.isTame() && this.wasToldToGuard()));
    }
 
    public static AttributeSupplier.Builder createAttributes() {
       return Mob.createMobAttributes()
-              .add(Attributes.MOVEMENT_SPEED, 0.25F)
+              .add(Attributes.MOVEMENT_SPEED, 0.26F)
               .add(Attributes.MAX_HEALTH, 16.0D)
-              .add(Attributes.ATTACK_DAMAGE, 3.5D);
+              .add(Attributes.ATTACK_DAMAGE, 4.5D);
    }
 
    public final AnimatableInstanceCache geoCache = GeckoLibUtil.createInstanceCache(this);
@@ -144,6 +161,88 @@ public class Bloodhound extends ODog implements NeutralMob, GeoEntity {
    @Override
    public float getStepHeight() {
       return 1F;
+   }
+
+   public InteractionResult mobInteract(Player player, InteractionHand hand) {
+      ItemStack itemstack = player.getItemInHand(hand);
+
+      if (this.isOwnedBy(player) && this.isTame() && !this.isBaby()) {
+         if (this.isTame() && player.isSecondaryUseActive() && this.isOrderedToSit()) {
+            this.openInventory(player);
+            return InteractionResult.sidedSuccess(this.level().isClientSide);
+         }
+      }
+      return super.mobInteract(player, hand);
+   }
+
+   @Override
+   public void tick() {
+      super.tick();
+      if (this.hasFollowers() && this.level().random.nextInt(200) == 1) {
+         List<? extends ODog> list = this.level().getEntitiesOfClass(this.getClass(), this.getBoundingBox().inflate(20.0D, 20.0D, 20.0D));
+         if (list.size() <= 1) {
+            this.packSize = 1;
+         }
+      }
+
+      regenHealthCounter++;
+
+      if (this.getHealth() < this.getMaxHealth() && regenHealthCounter >= 75 && this.isTame() && this.isAlive() && this.wasToldToGuard()) {
+         this.setHealth(this.getHealth() + 2);
+         regenHealthCounter = 0;
+         this.level().addParticle(ParticleTypes.HEART, this.getRandomX(0.6D), this.getRandomY(), this.getRandomZ(0.6D), 0.7D, 0.7D, 0.7D);
+      }
+
+   }
+
+   public boolean hurt(DamageSource damageSource, float amount) {
+      if (damageSource.getEntity() instanceof Player player) {
+
+         if (!this.level().isClientSide && this.isTame() && !this.isOrderedToSit() && !this.isInSittingPose() && !this.wasToldToGuard()) {
+            if (this.isOwnedBy(player) && player.isShiftKeyDown()) {
+               this.setToldToGuard(true);
+               player.displayClientMessage(Component.translatable("tooltip.dragnpets.guarding.tooltip").withStyle(ChatFormatting.GOLD), true);
+            }
+            return false;
+         }
+
+         if (!this.level().isClientSide && this.isTame() && !this.isOrderedToSit() && !this.isInSittingPose() && this.wasToldToGuard()) {
+            if (this.isOwnedBy(player) && player.isShiftKeyDown()) {
+               this.setToldToGuard(false);
+               player.displayClientMessage(Component.translatable("tooltip.dragnpets.not_guarding.tooltip").withStyle(ChatFormatting.GOLD), true);
+            }
+            return false;
+         }
+
+         if (this.isInvulnerableTo(damageSource)) {
+            return false;
+         } else {
+            Entity entity = damageSource.getEntity();
+            if (!this.level().isClientSide) {
+               this.setOrderedToSit(false);
+            }
+
+            if (entity != null && !(entity instanceof Player) && !(entity instanceof AbstractArrow)) {
+               amount = (amount + 1.0F) / 2.0F;
+            }
+
+            return super.hurt(damageSource, amount);
+         }
+      }
+
+      if (this.isInvulnerableTo(damageSource)) {
+         return false;
+      } else {
+         Entity entity = damageSource.getEntity();
+         if (!this.level().isClientSide) {
+            this.setOrderedToSit(false);
+         }
+
+         if (entity != null && !(entity instanceof Player) && !(entity instanceof AbstractArrow)) {
+            amount = (amount + 1.0F) / 2.0F;
+         }
+         return super.hurt(damageSource, amount);
+      }
    }
 
    public void playStepSound(BlockPos p_30415_, BlockState p_30416_) {
@@ -231,13 +330,16 @@ public class Bloodhound extends ODog implements NeutralMob, GeoEntity {
       this.entityData.set(DATA_COLLAR_COLOR, p_30398_.getId());
    }
 
+   protected void pickUpItem(ItemEntity p_35467_) {
+      InventoryCarrier.pickUpItem(this, this, p_35467_);
+   }
 
    // Generates the base texture
    public ResourceLocation getTextureResource() {
-      return BloodhoundModel.Variant.variantFromOrdinal(getVariant()).resourceLocation;
+      return RottweilerModel.Variant.variantFromOrdinal(getVariant()).resourceLocation;
    }
 
-   public static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(Bloodhound.class, EntityDataSerializers.INT);
+   public static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(Rottweiler.class, EntityDataSerializers.INT);
 
    public int getVariant() {
       return this.entityData.get(VARIANT);
@@ -263,6 +365,21 @@ public class Bloodhound extends ODog implements NeutralMob, GeoEntity {
       tag.putBoolean("Wandering", this.getToldToWander());
       tag.putBoolean("Panicking", this.getPanicking());
       this.addPersistentAngerSaveData(tag);
+
+      if(this.isTame()) {
+         ListTag listTag = new ListTag();
+
+         for(int i = 0; i < this.inventory.getContainerSize(); i++) {
+            ItemStack itemStack = this.inventory.getItem(i);
+            if(!itemStack.isEmpty()) {
+               CompoundTag compoundTag = new CompoundTag();
+               compoundTag.putByte("Slot", (byte) i);
+               itemStack.save(compoundTag);
+               listTag.add(compoundTag);
+            }
+         }
+         tag.put("Items", listTag);
+      }
    }
 
    public void readAdditionalSaveData(CompoundTag tag) {
@@ -287,7 +404,23 @@ public class Bloodhound extends ODog implements NeutralMob, GeoEntity {
          this.setPanicking(tag.getBoolean("Panicking"));
       }
 
+      this.updateInventory();
+
+      if(this.isTame()) {
+         ListTag listTag = tag.getList("Items", 10);
+
+         for(int i = 0; i < listTag.size(); i++) {
+            CompoundTag compoundTag = listTag.getCompound(i);
+            int j = compoundTag.getByte("Slot") & 255;
+            if(j < this.inventory.getContainerSize()) {
+               this.inventory.setItem(j, ItemStack.of(compoundTag));
+            }
+         }
+      }
+
       this.readPersistentAngerSaveData(this.level(), tag);
+
+      this.setCanPickUpLoot(true);
    }
 
    @Override
@@ -297,7 +430,7 @@ public class Bloodhound extends ODog implements NeutralMob, GeoEntity {
          data = new AgeableMobGroupData(0.2F);
       }
       Random random = new Random();
-      setVariant(random.nextInt(BloodhoundModel.Variant.values().length));
+      setVariant(random.nextInt(RottweilerModel.Variant.values().length));
       setGender(random.nextInt(Gender.values().length));
 
       return super.finalizeSpawn(serverLevelAccessor, instance, spawnType, data, tag);
@@ -316,7 +449,7 @@ public class Bloodhound extends ODog implements NeutralMob, GeoEntity {
       return this.getGender() == 1;
    }
 
-   public static final EntityDataAccessor<Integer> GENDER = SynchedEntityData.defineId(Bloodhound.class, EntityDataSerializers.INT);
+   public static final EntityDataAccessor<Integer> GENDER = SynchedEntityData.defineId(Rottweiler.class, EntityDataSerializers.INT);
 
    public int getGender() {
       return this.entityData.get(GENDER);
@@ -333,13 +466,13 @@ public class Bloodhound extends ODog implements NeutralMob, GeoEntity {
    public boolean canMate(Animal animal) {
       if (animal == this) {
          return false;
-      } else if (!(animal instanceof Bloodhound)) {
+      } else if (!(animal instanceof Rottweiler)) {
          return false;
       } else {
          if (!LivestockOverhaulCommonConfig.GENDERS_AFFECT_BREEDING.get()) {
-            return this.canParent() && ((Bloodhound) animal).canParent();
+            return this.canParent() && ((Rottweiler) animal).canParent();
          } else {
-            Bloodhound partner = (Bloodhound) animal;
+            Rottweiler partner = (Rottweiler) animal;
             if (this.canParent() && partner.canParent() && this.getGender() != partner.getGender()) {
                return true;
             }
@@ -357,10 +490,10 @@ public class Bloodhound extends ODog implements NeutralMob, GeoEntity {
 
    @Override
    public AgeableMob getBreedOffspring(ServerLevel serverLevel, AgeableMob ageableMob) {
-      Bloodhound oWolf1 = (Bloodhound) ageableMob;
-      if (ageableMob instanceof Bloodhound) {
-         Bloodhound oWolf = (Bloodhound) ageableMob;
-         oWolf1 = EntityTypes.BLOODHOUND_ENTITY.get().create(serverLevel);
+      Rottweiler oWolf1 = (Rottweiler) ageableMob;
+      if (ageableMob instanceof Rottweiler) {
+         Rottweiler oWolf = (Rottweiler) ageableMob;
+         oWolf1 = EntityTypes.ROTTWEILER_ENTITY.get().create(serverLevel);
 
          int i = this.random.nextInt(9);
          int variant;
@@ -369,7 +502,7 @@ public class Bloodhound extends ODog implements NeutralMob, GeoEntity {
          } else if (i < 8) {
             variant = oWolf.getVariant();
          } else {
-            variant = this.random.nextInt(BloodhoundModel.Variant.values().length);
+            variant = this.random.nextInt(RottweilerModel.Variant.values().length);
          }
 
          int gender;
@@ -384,8 +517,8 @@ public class Bloodhound extends ODog implements NeutralMob, GeoEntity {
 
    public boolean wantsToAttack(LivingEntity entity, LivingEntity p_30390_) {
       if (!(entity instanceof Creeper) && !(entity instanceof Ghast)) {
-         if (entity instanceof Bloodhound) {
-            Bloodhound wolf = (Bloodhound)entity;
+         if (entity instanceof Rottweiler) {
+            Rottweiler wolf = (Rottweiler)entity;
             return !wolf.isTame() || wolf.getOwner() != p_30390_;
          } else if (entity instanceof Player && p_30390_ instanceof Player && !((Player)p_30390_).canHarmPlayer((Player)entity)) {
             return false;
@@ -406,4 +539,161 @@ public class Bloodhound extends ODog implements NeutralMob, GeoEntity {
    public Vec3 getLeashOffset() {
       return new Vec3(0.0D, (double)(0.6F * this.getEyeHeight()), (double)(this.getBbWidth() * 0.4F));
    }
+
+   public SimpleContainer inventory;
+
+   public LazyOptional<?> itemHandler = null;
+
+   public void updateInventory() {
+      SimpleContainer tempInventory = this.inventory;
+      this.inventory = new SimpleContainer(this.getInventorySize());
+
+      if(tempInventory != null) {
+         tempInventory.removeListener(this);
+         int maxSize = Math.min(tempInventory.getContainerSize(), this.inventory.getContainerSize());
+
+         for(int i = 0; i < maxSize; i++) {
+            ItemStack itemStack = tempInventory.getItem(i);
+            if(!itemStack.isEmpty()) {
+               this.inventory.setItem(i, itemStack.copy());
+            }
+         }
+      }
+      this.inventory.addListener(this);
+      this.itemHandler = LazyOptional.of(() -> new InvWrapper(this.inventory));
+   }
+
+   @Override
+   public void dropEquipment() {
+      if(!this.level().isClientSide) {
+         super.dropEquipment();
+         Containers.dropContents(this.level(), this, this.inventory);
+      }
+   }
+
+   @Override
+   public void invalidateCaps() {
+      super.invalidateCaps();
+      if(this.itemHandler != null) {
+         LazyOptional<?> oldHandler = this.itemHandler;
+         this.itemHandler = null;
+         oldHandler.invalidate();
+      }
+   }
+
+   public int getInventorySize() {
+      return 5;
+   }
+
+   public SimpleContainer getInventory() {
+      return this.inventory;
+   }
+
+   public void openInventory(Player player) {
+      if(player instanceof ServerPlayer serverPlayer && this.isTame()) {
+         NetworkHooks.openScreen(serverPlayer, new SimpleMenuProvider((containerId, inventory, p) -> {
+            return new LabradorMenu(containerId, inventory, this.inventory, this);
+         }, this.getDisplayName()), (data) -> {
+            data.writeInt(this.getInventorySize());
+            data.writeInt(this.getId());
+         });
+      }
+   }
+
+   @Override
+   public void containerChanged(Container p_18983_) {
+      return;
+   }
+
+   public boolean isInventoryFull() {
+      for (int i = 0; i < inventory.getContainerSize(); i++) {
+         if (inventory.getItem(i).isEmpty()) {
+            return false;
+         }
+      }
+      return true;
+   }
+
+   static final Predicate<ItemEntity> MONSTER_LOOT = (itemEntity) -> {
+      return !itemEntity.hasPickUpDelay() && itemEntity.isAlive() && itemEntity.getItem().is(POTags.Items.MONSTER_LOOT);
+   };
+
+   public class RottweilerSearchForItemsGoal extends Goal {
+
+      public RottweilerSearchForItemsGoal() {
+         this.setFlags(EnumSet.of(Flag.MOVE));
+      }
+
+      public boolean canUse() {
+         if (isOrderedToSit()) {
+            return false;
+         } else if (isInventoryFull()) {
+            return false;
+         } else if (Rottweiler.this.getTarget() == null && Rottweiler.this.getLastHurtByMob() == null) {
+            if (Rottweiler.this.getRandom().nextInt(reducedTickDelay(10)) != 0) {
+               return false;
+            } else {
+               List<ItemEntity> list = Rottweiler.this.level().getEntitiesOfClass(ItemEntity.class, Rottweiler.this.getBoundingBox().inflate(8.0D, 8.0D, 8.0D), Rottweiler.MONSTER_LOOT);
+               return !list.isEmpty();
+            }
+         } else {
+            return false;
+         }
+      }
+
+      @Override
+      public void tick() {
+         List<ItemEntity> itemEntities = level().getEntitiesOfClass(ItemEntity.class, getBoundingBox().inflate(8.0D, 8.0D, 8.0D), Rottweiler.MONSTER_LOOT);
+
+         if (!itemEntities.isEmpty() && !isInventoryFull()) {
+            ItemEntity itemEntity = itemEntities.get(0);
+            getNavigation().moveTo(itemEntity, 1.2D);
+
+            if (distanceToSqr(itemEntity) < 2.0D && itemEntity.getItem().is(POTags.Items.MONSTER_LOOT)) {
+               pickUpItem(itemEntity);
+            }
+         }
+      }
+
+      @Override
+      public void start() {
+         List<ItemEntity> itemEntities = level().getEntitiesOfClass(ItemEntity.class, getBoundingBox().inflate(8.0D, 8.0D, 8.0D), Rottweiler.MONSTER_LOOT);
+         if (!itemEntities.isEmpty()) {
+            getNavigation().moveTo(itemEntities.get(0), 1.2D);
+         }
+      }
+
+      private void pickUpItem(ItemEntity itemEntity) {
+         if (!isInventoryFull() && itemEntity.getItem().is(POTags.Items.MONSTER_LOOT) && this.canUse()) {
+               ItemStack itemStack = itemEntity.getItem();
+
+               for (int i = 0; i < getInventory().getContainerSize(); i++) {
+                  ItemStack inventoryStack = getInventory().getItem(i);
+
+                  if (!inventoryStack.isEmpty() && inventoryStack.is(itemStack.getItem()) && inventoryStack.getCount() < inventoryStack.getMaxStackSize() && itemStack.is(POTags.Items.MONSTER_LOOT)) {
+                     int j = inventoryStack.getMaxStackSize() - inventoryStack.getCount();
+                     int k = Math.min(j, itemStack.getCount());
+                     inventoryStack.grow(k);
+                     itemStack.shrink(k);
+
+                     if (itemStack.isEmpty()) {
+                        itemEntity.discard();
+                        break;
+                     }
+                  }
+               }
+
+               if (!itemStack.isEmpty() && itemStack.is(POTags.Items.MONSTER_LOOT) && this.canUse()) {
+                  for (int i = 0; i < getInventory().getContainerSize(); i++) {
+                     if (getInventory().getItem(i).isEmpty()) {
+                        getInventory().setItem(i, itemStack);
+                        itemEntity.discard();
+                        break;
+                     }
+                  }
+               }
+            }
+         }
+      }
+
 }

@@ -35,6 +35,7 @@ public class POItemGroupModifier {
                         output.accept(POItems.BLOODHOUND_SPAWN_EGG.get());
                         output.accept(POItems.COCKER_SPANIEL_SPAWN_EGG.get());
                         output.accept(POItems.WHIPPET_SPAWN_EGG.get());
+                        output.accept(POItems.ROTTWEILER_SPAWN_EGG.get());
                         output.accept(POItems.MACAW_SPAWN_EGG.get());
                         output.accept(POItems.COCKATIEL_SPAWN_EGG.get());
                         output.accept(POItems.RINGNECK_SPAWN_EGG.get());

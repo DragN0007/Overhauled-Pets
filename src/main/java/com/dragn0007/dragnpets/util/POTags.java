@@ -23,6 +23,7 @@ public class POTags {
         public static final TagKey<Item> TRAINING_TREAT = forgeTag("training_treat");
 
         public static final TagKey<Item> ANIMAL_LOOT = forgeTag("animal_loot"); //picked up by retrieving dogs and some hunting dogs
+        public static final TagKey<Item> MONSTER_LOOT = forgeTag("monster_loot"); //picked up by some guard dogs
 
         public static TagKey<Item> forgeTag (String name) {
             return ItemTags.create(new ResourceLocation("forge", name));

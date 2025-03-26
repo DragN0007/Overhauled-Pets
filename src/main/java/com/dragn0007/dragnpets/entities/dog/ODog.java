@@ -150,7 +150,6 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity {
       return this.geoCache;
    }
 
-
    public ODog leader;
    public int packSize = 1;
 
@@ -469,31 +468,36 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity {
    }
 
    public boolean toldToWander = false;
-
    public boolean wasToldToWander() {
       return this.toldToWander;
    }
-
    public boolean getToldToWander() {
       return this.toldToWander;
    }
-
    public void setToldToWander(boolean toldToWander) {
       this.toldToWander = toldToWander;
    }
 
    public boolean toldToHunt = false;
-
    public boolean wasToldToHunt() {
       return this.toldToHunt;
    }
-
    public boolean getToldToHunt() {
       return this.toldToHunt;
    }
-
    public void setToldToHunt(boolean toldToHunt) {
       this.toldToHunt = toldToHunt;
+   }
+
+   public boolean toldToGuard = false;
+   public boolean wasToldToGuard() {
+      return this.toldToGuard;
+   }
+   public boolean getToldToGuard() {
+      return this.toldToGuard;
+   }
+   public void setToldToGuard(boolean toldToGuard) {
+      this.toldToGuard = toldToGuard;
    }
 
    public static final Ingredient FOOD_ITEMS = Ingredient.of(POTags.Items.DOG_FOOD);
@@ -545,6 +549,7 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity {
       tag.putInt("Gender", this.getGender());
       tag.putBoolean("Wandering", this.getToldToWander());
       tag.putBoolean("Hunting", this.getToldToHunt());
+      tag.putBoolean("Guarding", this.getToldToGuard());
       tag.putBoolean("Panicking", this.getPanicking());
       this.addPersistentAngerSaveData(tag);
    }
@@ -565,6 +570,10 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity {
 
       if (tag.contains("Hunting")) {
          this.setToldToHunt(tag.getBoolean("Hunting"));
+      }
+
+      if (tag.contains("Guarding")) {
+         this.setToldToGuard(tag.getBoolean("Guarding"));
       }
 
       if (tag.contains("Panicking")) {

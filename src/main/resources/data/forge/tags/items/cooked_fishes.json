@@ -1,7 +1,6 @@
 {
   "replace": false,
   "values": [
-    "minecraft:cooked_tropical_fish",
     "dragnpets:cooked_tropical_fish_fillet"
   ]
 }

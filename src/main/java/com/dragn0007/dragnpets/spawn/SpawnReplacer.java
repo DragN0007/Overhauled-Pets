@@ -34,6 +34,8 @@ import com.dragn0007.dragnpets.entities.dog.labrador.Labrador;
 import com.dragn0007.dragnpets.entities.dog.labrador.LabradorModel;
 import com.dragn0007.dragnpets.entities.dog.pyrenees.Pyrenees;
 import com.dragn0007.dragnpets.entities.dog.pyrenees.PyreneesModel;
+import com.dragn0007.dragnpets.entities.dog.rottweiler.Rottweiler;
+import com.dragn0007.dragnpets.entities.dog.rottweiler.RottweilerModel;
 import com.dragn0007.dragnpets.entities.dog.whippet.Whippet;
 import com.dragn0007.dragnpets.entities.dog.whippet.WhippetMarkingLayer;
 import com.dragn0007.dragnpets.entities.dog.whippet.WhippetModel;
@@ -365,12 +367,13 @@ public class SpawnReplacer {
                 KornishRex kornishRex = EntityTypes.KORNISH_REX_ENTITY.get().create(event.getLevel());
                 CockerSpaniel cockerSpaniel = EntityTypes.COCKER_SPANIEL_ENTITY.get().create(event.getLevel());
                 Whippet whippet = EntityTypes.WHIPPET_ENTITY.get().create(event.getLevel());
+                Rottweiler rottweiler = EntityTypes.ROTTWEILER_ENTITY.get().create(event.getLevel());
 
                 if (event.getLevel().isClientSide) {
                     return;
                 }
 
-                int i = event.getLevel().getRandom().nextInt(23);
+                int i = event.getLevel().getRandom().nextInt(24);
 
                 if (event.getLevel().getBiome(event.getEntity().blockPosition()).is(Biomes.SWAMP)) {
                     if (commonCat != null) {
@@ -731,6 +734,31 @@ public class SpawnReplacer {
                         }
 
                         event.getLevel().addFreshEntity(whippet);
+                        cat.remove(Entity.RemovalReason.DISCARDED);
+
+                        event.setCanceled(true);
+                    }
+                }
+
+                if (rottweiler != null) {
+                    if (i == 23 && !event.getLevel().getBiome(event.getEntity().blockPosition()).is(Biomes.SWAMP)) {
+                        rottweiler.copyPosition(cat);
+
+                        rottweiler.setCustomName(cat.getCustomName());
+                        rottweiler.setAge(cat.getAge());
+                        rottweiler.setOwnerUUID(cat.getOwnerUUID());
+
+                        int randomVariant = event.getLevel().getRandom().nextInt(RottweilerModel.Variant.values().length);
+                        rottweiler.setVariant(randomVariant);
+
+                        int randomGender = event.getLevel().getRandom().nextInt(ODog.Gender.values().length);
+                        rottweiler.setGender(randomGender);
+
+                        if (event.getLevel().isClientSide) {
+                            cat.remove(Entity.RemovalReason.DISCARDED);
+                        }
+
+                        event.getLevel().addFreshEntity(rottweiler);
                         cat.remove(Entity.RemovalReason.DISCARDED);
 
                         event.setCanceled(true);

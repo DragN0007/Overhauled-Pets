@@ -1,0 +1,17 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:bone",
+    "minecraft:arrow",
+    "minecraft:string",
+    "minecraft:spider_eye",
+    "minecraft:rotten_flesh",
+    "minecraft:gunpowder",
+    "minecraft:slime_ball",
+    "minecraft:blaze_rod",
+    "minecraft:ghast_tear",
+    "minecraft:creeper_head",
+    "minecraft:skeleton_skull",
+    "minecraft:zombie_head"
+  ]
+}

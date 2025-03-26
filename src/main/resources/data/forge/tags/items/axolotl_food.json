@@ -2,22 +2,13 @@
   "replace": false,
   "values": [
     "dragnlivestock:frog",
-    "dragnlivestock:salmon_fillet",
-    "dragnlivestock:cod_fillet",
-    "dragnpets:tropical_fish_fillet",
-    "minecraft:salmon",
-    "minecraft:cod",
-    "minecraft:tropical_fish",
-
     "dragnlivestock:cooked_frog",
-    "dragnlivestock:cooked_salmon_fillet",
-    "dragnlivestock:cooked_cod_fillet",
-    "dragnpets:cooked_tropical_fish_fillet",
-    "minecraft:cooked_salmon",
-    "minecraft:cooked_cod",
 
     "dragnlivestock:roe",
     "dragnlivestock:cod_roe",
-    "dragnpets:tropical_fish_roe"
+    "dragnpets:tropical_fish_roe",
+
+    "#forge:raw_fishes",
+    "#forge:cooked_fishes"
   ]
 }

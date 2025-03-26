@@ -5,6 +5,8 @@
   "tooltip.dragnpets.following.tooltip": "Your Companion is Following",
   "tooltip.dragnpets.hunting.tooltip": "Your Dog is Hunting",
   "tooltip.dragnpets.not_hunting.tooltip": "Your Dog is No Longer Hunting",
+  "tooltip.dragnpets.guarding.tooltip": "Your Dog is Guarding",
+  "tooltip.dragnpets.not_guarding.tooltip": "Your Dog is No Longer Guarding",
   "tooltip.dragnpets.wolf_event.tooltip": "A pack of wolves was spotted near your sheep!",
 
   "item.dragnpets.o_wolf_spawn_egg": "O-Wolf Spawn Egg",
@@ -69,6 +71,9 @@
 
   "item.dragnpets.whippet_spawn_egg": "Whippet Spawn Egg",
   "entity.dragnpets.whippet": "Whippet",
+
+  "item.dragnpets.rottweiler_spawn_egg": "Rottweiler Spawn Egg",
+  "entity.dragnpets.rottweiler": "Rottweiler",
 
   "item.dragnpets.wolf": "Dog",
   "item.dragnpets.cooked_wolf": "Cooked Dog",

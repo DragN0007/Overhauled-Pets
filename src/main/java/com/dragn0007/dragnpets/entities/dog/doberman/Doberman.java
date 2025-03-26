@@ -1,12 +1,16 @@
 package com.dragn0007.dragnpets.entities.dog.doberman;
 
+import com.dragn0007.dragnlivestock.entities.rabbit.ORabbit;
 import com.dragn0007.dragnlivestock.util.LivestockOverhaulCommonConfig;
 import com.dragn0007.dragnpets.entities.EntityTypes;
 import com.dragn0007.dragnpets.entities.ai.DogFollowOwnerGoal;
 import com.dragn0007.dragnpets.entities.ai.DogFollowPackLeaderGoal;
 import com.dragn0007.dragnpets.entities.dog.ODog;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -48,6 +52,7 @@ import software.bernie.geckolib.core.animation.RawAnimation;
 import software.bernie.geckolib.core.object.PlayState;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
+import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
@@ -86,8 +91,11 @@ public class Doberman extends ODog implements NeutralMob, GeoEntity {
 
       this.goalSelector.addGoal(6, new DogFollowOwnerGoal(this, 1.0D, 10.0F, 2.0F, false));
 
-      this.targetSelector.addGoal(7, new NearestAttackableTargetGoal<>(this, Monster.class, false));
-      this.targetSelector.addGoal(7, new NearestAttackableTargetGoal<>(this, Slime.class, false));
+      this.goalSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, Monster.class, 2, true, false,
+              entity -> entity instanceof Monster && this.isTame() && this.wasToldToGuard()));
+
+      this.goalSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, Slime.class, 2, true, false,
+              entity -> entity instanceof Slime && this.isTame() && this.wasToldToGuard()));
    }
 
    public static AttributeSupplier.Builder createAttributes() {
@@ -136,6 +144,76 @@ public class Doberman extends ODog implements NeutralMob, GeoEntity {
    }
 
    @Override
+   public void tick() {
+      super.tick();
+      if (this.hasFollowers() && this.level().random.nextInt(200) == 1) {
+         List<? extends ODog> list = this.level().getEntitiesOfClass(this.getClass(), this.getBoundingBox().inflate(20.0D, 20.0D, 20.0D));
+         if (list.size() <= 1) {
+            this.packSize = 1;
+         }
+      }
+
+      regenHealthCounter++;
+
+      if (this.getHealth() < this.getMaxHealth() && regenHealthCounter >= 75 && this.isTame() && this.isAlive() && this.wasToldToGuard()) {
+         this.setHealth(this.getHealth() + 2);
+         regenHealthCounter = 0;
+         this.level().addParticle(ParticleTypes.HEART, this.getRandomX(0.6D), this.getRandomY(), this.getRandomZ(0.6D), 0.7D, 0.7D, 0.7D);
+      }
+
+   }
+
+   public boolean hurt(DamageSource damageSource, float amount) {
+      if (damageSource.getEntity() instanceof Player player) {
+
+         if (!this.level().isClientSide && this.isTame() && !this.isOrderedToSit() && !this.isInSittingPose() && !this.wasToldToGuard()) {
+            if (this.isOwnedBy(player) && player.isShiftKeyDown()) {
+               this.setToldToGuard(true);
+               player.displayClientMessage(Component.translatable("tooltip.dragnpets.guarding.tooltip").withStyle(ChatFormatting.GOLD), true);
+            }
+            return false;
+         }
+
+         if (!this.level().isClientSide && this.isTame() && !this.isOrderedToSit() && !this.isInSittingPose() && this.wasToldToGuard()) {
+            if (this.isOwnedBy(player) && player.isShiftKeyDown()) {
+               this.setToldToGuard(false);
+               player.displayClientMessage(Component.translatable("tooltip.dragnpets.not_guarding.tooltip").withStyle(ChatFormatting.GOLD), true);
+            }
+            return false;
+         }
+
+         if (this.isInvulnerableTo(damageSource)) {
+            return false;
+         } else {
+            Entity entity = damageSource.getEntity();
+            if (!this.level().isClientSide) {
+               this.setOrderedToSit(false);
+            }
+
+            if (entity != null && !(entity instanceof Player) && !(entity instanceof AbstractArrow)) {
+               amount = (amount + 1.0F) / 2.0F;
+            }
+
+            return super.hurt(damageSource, amount);
+         }
+      }
+
+      if (this.isInvulnerableTo(damageSource)) {
+         return false;
+      } else {
+         Entity entity = damageSource.getEntity();
+         if (!this.level().isClientSide) {
+            this.setOrderedToSit(false);
+         }
+
+         if (entity != null && !(entity instanceof Player) && !(entity instanceof AbstractArrow)) {
+            amount = (amount + 1.0F) / 2.0F;
+         }
+         return super.hurt(damageSource, amount);
+      }
+   }
+
+   @Override
    public float getStepHeight() {
       return 1F;
    }
@@ -173,23 +251,6 @@ public class Doberman extends ODog implements NeutralMob, GeoEntity {
          this.updatePersistentAnger((ServerLevel)this.level(), true);
       }
 
-   }
-
-   public boolean hurt(DamageSource damageSource, float amount) {
-      if (this.isInvulnerableTo(damageSource)) {
-         return false;
-      } else {
-         Entity entity = damageSource.getEntity();
-         if (!this.level().isClientSide) {
-            this.setOrderedToSit(false);
-         }
-
-         if (entity != null && !(entity instanceof Player) && !(entity instanceof AbstractArrow)) {
-            amount = (amount + 1.0F) / 2.0F;
-         }
-
-         return super.hurt(damageSource, amount);
-      }
    }
 
    public boolean doHurtTarget(Entity p_30372_) {
