@@ -18,7 +18,10 @@ public class OAxolotlModel extends GeoModel<OAxolotl> {
         PINK(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/axolotl/axolotl_pink.png")),
         PURPLE(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/axolotl/axolotl_purple.png")),
         STONE(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/axolotl/axolotl_stone.png")),
-        MELANOID_ALBINO(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/axolotl/axolotl_melanoid_albino.png"));
+        MELANOID_ALBINO(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/axolotl/axolotl_melanoid_albino.png")),
+        BLUE_CREAM(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/axolotl/axolotl_blue_cream.png")),
+        BURGUNDY_CREAM(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/axolotl/axolotl_burgundy_cream.png")),
+        GALAXY_PURPLE(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/axolotl/axolotl_galaxy_purple.png"));
 
         public final ResourceLocation resourceLocation;
         Variant(ResourceLocation resourceLocation) {
