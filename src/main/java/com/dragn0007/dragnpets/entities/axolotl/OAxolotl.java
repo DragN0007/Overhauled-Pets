@@ -29,6 +29,7 @@ import net.minecraft.world.entity.animal.Bucketable;
 import net.minecraft.world.entity.animal.Wolf;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
@@ -112,6 +113,21 @@ public class OAxolotl extends Animal implements GeoEntity, Bucketable {
 
 	public MobType getMobType() {
 		return MobType.WATER;
+	}
+
+	protected void usePlayerItem(Player player, InteractionHand hand, ItemStack stack) {
+		if (stack.is(Items.TROPICAL_FISH_BUCKET)) {
+			player.setItemInHand(hand, new ItemStack(Items.WATER_BUCKET));
+		} else {
+			super.usePlayerItem(player, hand, stack);
+		}
+
+		if (stack.is(POItems.O_TROPICAL_FISH_BUCKET.get())) {
+			player.setItemInHand(hand, new ItemStack(Items.WATER_BUCKET));
+		} else {
+			super.usePlayerItem(player, hand, stack);
+		}
+
 	}
 
 	public static AttributeSupplier.Builder createAttributes() {
