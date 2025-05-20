@@ -1,6 +1,5 @@
 package com.dragn0007.dragnpets.entities.dog.whippet;
 
-import com.dragn0007.dragnlivestock.entities.chicken.OChicken;
 import com.dragn0007.dragnlivestock.entities.rabbit.ORabbit;
 import com.dragn0007.dragnlivestock.util.LivestockOverhaulCommonConfig;
 import com.dragn0007.dragnpets.entities.EntityTypes;

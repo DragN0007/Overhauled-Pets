@@ -24,6 +24,7 @@ import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -294,6 +295,14 @@ public class OCat extends TamableAnimal implements GeoEntity {
 
    public boolean doHurtTarget(Entity p_28990_) {
       return p_28990_.hurt(this.damageSources().mobAttack(this), this.getAttackDamage());
+   }
+
+   @Override
+   public boolean hurt(DamageSource damageSource, float v) {
+      if (damageSource.is(DamageTypes.FALL)) {
+         return false;
+      }
+      return super.hurt(damageSource, v);
    }
 
    public void setTame(boolean p_30443_) {

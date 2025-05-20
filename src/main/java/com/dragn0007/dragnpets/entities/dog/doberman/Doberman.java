@@ -1,6 +1,5 @@
 package com.dragn0007.dragnpets.entities.dog.doberman;
 
-import com.dragn0007.dragnlivestock.entities.rabbit.ORabbit;
 import com.dragn0007.dragnlivestock.util.LivestockOverhaulCommonConfig;
 import com.dragn0007.dragnpets.entities.EntityTypes;
 import com.dragn0007.dragnpets.entities.ai.DogFollowOwnerGoal;
