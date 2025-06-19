@@ -1,7 +1,7 @@
 package com.dragn0007.dragnpets.entities.dog.border_collie;
 
 import com.dragn0007.dragnlivestock.util.LivestockOverhaulCommonConfig;
-import com.dragn0007.dragnpets.entities.EntityTypes;
+import com.dragn0007.dragnpets.entities.POEntityTypes;
 import com.dragn0007.dragnpets.entities.ai.*;
 import com.dragn0007.dragnpets.entities.dog.ODog;
 import net.minecraft.core.BlockPos;
@@ -369,7 +369,7 @@ public class Collie extends ODog implements NeutralMob, GeoEntity {
       Collie oWolf1 = (Collie) ageableMob;
       if (ageableMob instanceof Collie) {
          Collie oWolf = (Collie) ageableMob;
-         oWolf1 = EntityTypes.BORDER_COLLIE_ENTITY.get().create(serverLevel);
+         oWolf1 = POEntityTypes.BORDER_COLLIE_ENTITY.get().create(serverLevel);
 
          int i = this.random.nextInt(9);
          int variant;

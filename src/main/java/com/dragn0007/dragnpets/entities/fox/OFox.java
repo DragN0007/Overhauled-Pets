@@ -5,6 +5,7 @@ import com.dragn0007.dragnlivestock.items.LOItems;
 import com.dragn0007.dragnlivestock.util.LOTags;
 import com.dragn0007.dragnlivestock.util.LivestockOverhaulCommonConfig;
 import com.dragn0007.dragnpets.PetsOverhaul;
+import com.dragn0007.dragnpets.entities.POEntityTypes;
 import com.dragn0007.dragnpets.entities.ai.FoxFollowOwnerGoal;
 import com.dragn0007.dragnpets.util.POTags;
 import net.minecraft.ChatFormatting;
@@ -80,7 +81,7 @@ public class OFox extends TamableAnimal implements GeoEntity {
       return entitytype == EntityTypes.O_RABBIT_ENTITY.get() ||
               entitytype == EntityTypes.O_CHICKEN_ENTITY.get() ||
               entitytype == EntityTypes.O_FROG_ENTITY.get() ||
-              entitytype == com.dragn0007.dragnpets.entities.EntityTypes.O_CAT_ENTITY.get()
+              entitytype == POEntityTypes.O_CAT_ENTITY.get()
               ;
    };
 
@@ -432,25 +433,19 @@ public class OFox extends TamableAnimal implements GeoEntity {
       FEMALE,
       MALE
    }
-
    public boolean isFemale() {
       return this.getGender() == 0;
    }
-
    public boolean isMale() {
       return this.getGender() == 1;
    }
-
    public static final EntityDataAccessor<Integer> GENDER = SynchedEntityData.defineId(OFox.class, EntityDataSerializers.INT);
-
    public int getGender() {
       return this.entityData.get(GENDER);
    }
-
    public void setGender(int gender) {
       this.entityData.set(GENDER, gender);
    }
-
    public boolean canParent() {
       return !this.isBaby() && this.getHealth() >= this.getMaxHealth() && this.isInLove();
    }
@@ -485,7 +480,7 @@ public class OFox extends TamableAnimal implements GeoEntity {
       OFox oFox = (OFox) ageableMob;
       if (ageableMob instanceof OFox) {
          OFox fox = (OFox) ageableMob;
-         oFox = com.dragn0007.dragnpets.entities.EntityTypes.O_FOX_ENTITY.get().create(serverLevel);
+         oFox = POEntityTypes.O_FOX_ENTITY.get().create(serverLevel);
 
          int j = this.random.nextInt(5);
          int variant;

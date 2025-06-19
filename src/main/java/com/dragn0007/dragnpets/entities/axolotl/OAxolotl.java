@@ -3,7 +3,7 @@ package com.dragn0007.dragnpets.entities.axolotl;
 import com.dragn0007.dragnlivestock.LivestockOverhaul;
 import com.dragn0007.dragnlivestock.util.LOTags;
 import com.dragn0007.dragnlivestock.util.LivestockOverhaulCommonConfig;
-import com.dragn0007.dragnpets.entities.EntityTypes;
+import com.dragn0007.dragnpets.entities.POEntityTypes;
 import com.dragn0007.dragnpets.items.POItems;
 import com.dragn0007.dragnpets.util.POTags;
 import net.minecraft.nbt.CompoundTag;
@@ -368,7 +368,7 @@ public class OAxolotl extends Animal implements GeoEntity, Bucketable {
 		OAxolotl oAxolotl = (OAxolotl) ageableMob;
 		if (ageableMob instanceof OAxolotl) {
 			OAxolotl oAxolotl1 = (OAxolotl) ageableMob;
-			oAxolotl = EntityTypes.O_AXOLOTL_ENTITY.get().create(serverLevel);
+			oAxolotl = POEntityTypes.O_AXOLOTL_ENTITY.get().create(serverLevel);
 
 			int i = this.random.nextInt(9);
 			int variant;

@@ -2,7 +2,7 @@ package com.dragn0007.dragnpets.entities.dog.bernese;
 
 import com.dragn0007.dragnlivestock.entities.Chestable;
 import com.dragn0007.dragnlivestock.util.LivestockOverhaulCommonConfig;
-import com.dragn0007.dragnpets.entities.EntityTypes;
+import com.dragn0007.dragnpets.entities.POEntityTypes;
 import com.dragn0007.dragnpets.entities.ai.*;
 import com.dragn0007.dragnpets.entities.dog.ODog;
 import com.dragn0007.dragnpets.gui.BerneseMenu;
@@ -561,7 +561,7 @@ public class Bernese extends ODog implements NeutralMob, GeoEntity, Chestable, C
       Bernese oWolf1 = (Bernese) ageableMob;
       if (ageableMob instanceof Bernese) {
          Bernese oWolf = (Bernese) ageableMob;
-         oWolf1 = EntityTypes.BERNESE_ENTITY.get().create(serverLevel);
+         oWolf1 = POEntityTypes.BERNESE_ENTITY.get().create(serverLevel);
 
          int i = this.random.nextInt(9);
          int variant;

@@ -1,6 +1,6 @@
 package com.dragn0007.dragnpets;
 
-import com.dragn0007.dragnpets.entities.EntityTypes;
+import com.dragn0007.dragnpets.entities.POEntityTypes;
 import com.dragn0007.dragnpets.gui.POMenuTypes;
 import com.dragn0007.dragnpets.items.POItemGroupModifier;
 import com.dragn0007.dragnpets.items.POItems;
@@ -30,7 +30,7 @@ public class PetsOverhaul
 
         POItems.register(eventBus);
         POItemGroupModifier.register(eventBus);
-        EntityTypes.ENTITY_TYPES.register(eventBus);
+        POEntityTypes.ENTITY_TYPES.register(eventBus);
         POMenuTypes.register(eventBus);
 
         GeckoLib.initialize();

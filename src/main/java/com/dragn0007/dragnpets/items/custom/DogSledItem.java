@@ -1,6 +1,6 @@
 package com.dragn0007.dragnpets.items.custom;
 
-import com.dragn0007.dragnpets.entities.EntityTypes;
+import com.dragn0007.dragnpets.entities.POEntityTypes;
 import com.dragn0007.dragnpets.entities.misc.sled.DogSled;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -49,7 +49,7 @@ public class DogSledItem extends Item {
             if(level.getBlockState(pos).getBlock() instanceof LiquidBlock) {
                 return InteractionResultHolder.pass(itemStack);
             } else if (level.mayInteract(player, pos) && player.mayUseItemAt(pos, blockHitResult.getDirection(), itemStack)) {
-                DogSled dogSled = EntityTypes.DOG_SLED_ENTITY.get().spawn((ServerLevel) level, itemStack, player, pos.above(), MobSpawnType.SPAWN_EGG, false, false);
+                DogSled dogSled = POEntityTypes.DOG_SLED_ENTITY.get().spawn((ServerLevel) level, itemStack, player, pos.above(), MobSpawnType.SPAWN_EGG, false, false);
                 if(dogSled == null) {
                     return InteractionResultHolder.pass(itemStack);
                 } else {

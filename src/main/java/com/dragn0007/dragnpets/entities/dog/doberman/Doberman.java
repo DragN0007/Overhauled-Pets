@@ -1,7 +1,7 @@
 package com.dragn0007.dragnpets.entities.dog.doberman;
 
 import com.dragn0007.dragnlivestock.util.LivestockOverhaulCommonConfig;
-import com.dragn0007.dragnpets.entities.EntityTypes;
+import com.dragn0007.dragnpets.entities.POEntityTypes;
 import com.dragn0007.dragnpets.entities.ai.DogFollowOwnerGoal;
 import com.dragn0007.dragnpets.entities.ai.DogFollowPackLeaderGoal;
 import com.dragn0007.dragnpets.entities.dog.ODog;
@@ -431,7 +431,7 @@ public class Doberman extends ODog implements NeutralMob, GeoEntity {
       Doberman oWolf1 = (Doberman) ageableMob;
       if (ageableMob instanceof Doberman) {
          Doberman oWolf = (Doberman) ageableMob;
-         oWolf1 = EntityTypes.DOBERMAN_ENTITY.get().create(serverLevel);
+         oWolf1 = POEntityTypes.DOBERMAN_ENTITY.get().create(serverLevel);
 
          int i = this.random.nextInt(9);
          int variant;

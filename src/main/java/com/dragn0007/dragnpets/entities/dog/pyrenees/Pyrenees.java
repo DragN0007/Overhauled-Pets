@@ -1,7 +1,7 @@
 package com.dragn0007.dragnpets.entities.dog.pyrenees;
 
 import com.dragn0007.dragnlivestock.util.LivestockOverhaulCommonConfig;
-import com.dragn0007.dragnpets.entities.EntityTypes;
+import com.dragn0007.dragnpets.entities.POEntityTypes;
 import com.dragn0007.dragnpets.entities.ai.*;
 import com.dragn0007.dragnpets.entities.dog.ODog;
 import com.dragn0007.dragnpets.util.POTags;
@@ -378,7 +378,7 @@ public class Pyrenees extends ODog implements NeutralMob, GeoEntity {
       Pyrenees oWolf1 = (Pyrenees) ageableMob;
       if (ageableMob instanceof Pyrenees) {
          Pyrenees oWolf = (Pyrenees) ageableMob;
-         oWolf1 = EntityTypes.PYRENEES_ENTITY.get().create(serverLevel);
+         oWolf1 = POEntityTypes.PYRENEES_ENTITY.get().create(serverLevel);
 
          int i = this.random.nextInt(9);
          int variant;

@@ -1,7 +1,7 @@
 package com.dragn0007.dragnpets.entities.dog.rottweiler;
 
 import com.dragn0007.dragnlivestock.util.LivestockOverhaulCommonConfig;
-import com.dragn0007.dragnpets.entities.EntityTypes;
+import com.dragn0007.dragnpets.entities.POEntityTypes;
 import com.dragn0007.dragnpets.entities.ai.DogFollowOwnerGoal;
 import com.dragn0007.dragnpets.entities.ai.DogFollowPackLeaderGoal;
 import com.dragn0007.dragnpets.entities.dog.ODog;
@@ -493,7 +493,7 @@ public class Rottweiler extends ODog implements InventoryCarrier, NeutralMob, Ge
       Rottweiler oWolf1 = (Rottweiler) ageableMob;
       if (ageableMob instanceof Rottweiler) {
          Rottweiler oWolf = (Rottweiler) ageableMob;
-         oWolf1 = EntityTypes.ROTTWEILER_ENTITY.get().create(serverLevel);
+         oWolf1 = POEntityTypes.ROTTWEILER_ENTITY.get().create(serverLevel);
 
          int i = this.random.nextInt(9);
          int variant;

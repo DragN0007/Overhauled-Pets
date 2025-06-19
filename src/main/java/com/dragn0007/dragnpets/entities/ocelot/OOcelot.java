@@ -4,6 +4,7 @@ import com.dragn0007.dragnlivestock.entities.EntityTypes;
 import com.dragn0007.dragnlivestock.items.LOItems;
 import com.dragn0007.dragnlivestock.util.LivestockOverhaulCommonConfig;
 import com.dragn0007.dragnpets.PetsOverhaul;
+import com.dragn0007.dragnpets.entities.POEntityTypes;
 import com.dragn0007.dragnpets.entities.ai.OcelotFollowOwnerGoal;
 import com.dragn0007.dragnpets.util.POTags;
 import net.minecraft.ChatFormatting;
@@ -94,9 +95,9 @@ public class OOcelot extends TamableAnimal implements GeoEntity {
       return entitytype == EntityTypes.O_RABBIT_ENTITY.get() ||
               entitytype == EntityTypes.O_CHICKEN_ENTITY.get() ||
               entitytype == EntityTypes.O_FROG_ENTITY.get() ||
-              entitytype == com.dragn0007.dragnpets.entities.EntityTypes.MACAW_ENTITY.get() ||
-              entitytype == com.dragn0007.dragnpets.entities.EntityTypes.COCKATIEL_ENTITY.get() ||
-              entitytype == com.dragn0007.dragnpets.entities.EntityTypes.RINGNECK_ENTITY.get()
+              entitytype == POEntityTypes.MACAW_ENTITY.get() ||
+              entitytype == POEntityTypes.COCKATIEL_ENTITY.get() ||
+              entitytype == POEntityTypes.RINGNECK_ENTITY.get()
               ;
    };
 
@@ -493,7 +494,7 @@ public class OOcelot extends TamableAnimal implements GeoEntity {
       OOcelot oOcelot = (OOcelot) ageableMob;
       if (ageableMob instanceof OOcelot) {
          OOcelot ocelot = (OOcelot) ageableMob;
-         oOcelot = com.dragn0007.dragnpets.entities.EntityTypes.O_OCELOT_ENTITY.get().create(serverLevel);
+         oOcelot = POEntityTypes.O_OCELOT_ENTITY.get().create(serverLevel);
 
          int i = this.random.nextInt(9);
          int variant;

@@ -1,6 +1,6 @@
 package com.dragn0007.dragnpets.items.custom;
 
-import com.dragn0007.dragnpets.entities.EntityTypes;
+import com.dragn0007.dragnpets.entities.POEntityTypes;
 import com.dragn0007.dragnpets.entities.tropical_fish.OTropicalFish;
 import com.dragn0007.dragnpets.entities.tropical_fish.OTropicalFishMarkingLayer;
 import com.dragn0007.dragnpets.entities.tropical_fish.OTropicalFishModel;
@@ -34,7 +34,7 @@ public class TropicalFishRoeItem extends Item {
          Player player = p_43223_.getPlayer();
          Vec3 targetPos = player.getEyePosition().add(player.getLookAngle().scale(3));
 
-         spawnFishFry(player, null, EntityTypes.O_TROPICAL_FISH_ENTITY.get(), (ServerLevel) level, targetPos, itemstack);
+         spawnFishFry(player, null, POEntityTypes.O_TROPICAL_FISH_ENTITY.get(), (ServerLevel) level, targetPos, itemstack);
 
          itemstack.shrink(1);
          return InteractionResult.CONSUME;
@@ -42,7 +42,7 @@ public class TropicalFishRoeItem extends Item {
    }
 
    public Optional<Mob> spawnFishFry(Player player, Mob mob1, EntityType<? extends Mob> p_43218_, ServerLevel level, Vec3 vec3, ItemStack itemStack) {
-      OTropicalFish oTropicalFish = EntityTypes.O_TROPICAL_FISH_ENTITY.get().create(level);
+      OTropicalFish oTropicalFish = POEntityTypes.O_TROPICAL_FISH_ENTITY.get().create(level);
       if (oTropicalFish == null) return Optional.empty();
       Random random = new Random();
 

@@ -2,7 +2,7 @@ package com.dragn0007.dragnpets.entities.dog.cocker_spaniel;
 
 import com.dragn0007.dragnlivestock.entities.chicken.OChicken;
 import com.dragn0007.dragnlivestock.util.LivestockOverhaulCommonConfig;
-import com.dragn0007.dragnpets.entities.EntityTypes;
+import com.dragn0007.dragnpets.entities.POEntityTypes;
 import com.dragn0007.dragnpets.entities.ai.DogFollowOwnerGoal;
 import com.dragn0007.dragnpets.entities.ai.DogFollowPackLeaderGoal;
 import com.dragn0007.dragnpets.entities.dog.ODog;
@@ -435,7 +435,7 @@ public class CockerSpaniel extends ODog implements InventoryCarrier, NeutralMob,
       CockerSpaniel oWolf1 = (CockerSpaniel) ageableMob;
       if (ageableMob instanceof CockerSpaniel) {
          CockerSpaniel oWolf = (CockerSpaniel) ageableMob;
-         oWolf1 = EntityTypes.COCKER_SPANIEL_ENTITY.get().create(serverLevel);
+         oWolf1 = POEntityTypes.COCKER_SPANIEL_ENTITY.get().create(serverLevel);
 
          int i = this.random.nextInt(9);
          int variant;

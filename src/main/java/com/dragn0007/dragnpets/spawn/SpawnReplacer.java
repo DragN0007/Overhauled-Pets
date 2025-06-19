@@ -2,7 +2,7 @@ package com.dragn0007.dragnpets.spawn;
 
 import com.dragn0007.dragnlivestock.util.LivestockOverhaulCommonConfig;
 import com.dragn0007.dragnpets.PetsOverhaul;
-import com.dragn0007.dragnpets.entities.EntityTypes;
+import com.dragn0007.dragnpets.entities.POEntityTypes;
 import com.dragn0007.dragnpets.entities.axolotl.OAxolotl;
 import com.dragn0007.dragnpets.entities.axolotl.OAxolotlMarkingLayer;
 import com.dragn0007.dragnpets.entities.axolotl.OAxolotlModel;
@@ -48,15 +48,20 @@ import com.dragn0007.dragnpets.entities.tropical_fish.OTropicalFish;
 import com.dragn0007.dragnpets.entities.tropical_fish.OTropicalFishMarkingLayer;
 import com.dragn0007.dragnpets.entities.tropical_fish.OTropicalFishModel;
 import com.dragn0007.dragnpets.entities.wolf.OWolf;
+import com.dragn0007.dragnpets.entities.wolf.OWolfMarkingLayer;
 import com.dragn0007.dragnpets.entities.wolf.OWolfModel;
 import com.dragn0007.dragnpets.util.PetsOverhaulCommonConfig;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.animal.*;
 import net.minecraft.world.entity.animal.axolotl.Axolotl;
 import net.minecraft.world.level.biome.Biomes;
+import net.minecraftforge.common.Tags;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+
+import java.util.Random;
 
 @Mod.EventBusSubscriber(modid = PetsOverhaul.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class SpawnReplacer {
@@ -68,38 +73,56 @@ public class SpawnReplacer {
     @SubscribeEvent
     public static void onSpawn(EntityJoinLevelEvent event) {
 
+        Random random = new Random();
+
         //Wolf
-        if (!LivestockOverhaulCommonConfig.FAILSAFE_REPLACER.get() && PetsOverhaulCommonConfig.REPLACE_WOLVES.get() && event.getEntity() instanceof Wolf) {
+        if (!LivestockOverhaulCommonConfig.FAILSAFE_REPLACER.get() && PetsOverhaulCommonConfig.REPLACE_WOLVES.get() && event.getEntity() instanceof Wolf vanillaWolf) {
 
             if (event.getEntity().getClass() == Wolf.class) {
-                Wolf vanillaWolf = (Wolf) event.getEntity();
-
-                if (event.getLevel().isClientSide) {
-                    return;
-                }
-
-                OWolf oWolf = EntityTypes.O_WOLF_ENTITY.get().create(event.getLevel());
-                if (oWolf != null) {
-                    oWolf.copyPosition(vanillaWolf);
-                    oWolf.setOwnerUUID(vanillaWolf.getOwnerUUID());
-
-                    oWolf.setCustomName(vanillaWolf.getCustomName());
-                    oWolf.setAge(vanillaWolf.getAge());
-
-                    int randomVariant = event.getLevel().getRandom().nextInt(OWolfModel.Variant.values().length);
-                    oWolf.setVariant(randomVariant);
-
-                    int randomGender = event.getLevel().getRandom().nextInt(OWolf.Gender.values().length);
-                    oWolf.setGender(randomGender);
+                if (event.getEntity().getClass() == Sheep.class && (((!(vanillaWolf.getSpawnType() == MobSpawnType.SPAWN_EGG)) && !LivestockOverhaulCommonConfig.REPLACE_SPAWN_EGG_ANIMALS.get()) || LivestockOverhaulCommonConfig.REPLACE_SPAWN_EGG_ANIMALS.get())) {
 
                     if (event.getLevel().isClientSide) {
-                        vanillaWolf.remove(Entity.RemovalReason.DISCARDED);
+                        return;
                     }
 
-                    event.getLevel().addFreshEntity(oWolf);
-                    vanillaWolf.remove(Entity.RemovalReason.DISCARDED);
+                    OWolf oWolf = POEntityTypes.O_WOLF_ENTITY.get().create(event.getLevel());
+                    if (oWolf != null) {
+                        oWolf.copyPosition(vanillaWolf);
+                        oWolf.setOwnerUUID(vanillaWolf.getOwnerUUID());
 
-                    event.setCanceled(true);
+                        oWolf.setCustomName(vanillaWolf.getCustomName());
+                        oWolf.setAge(vanillaWolf.getAge());
+
+                        oWolf.setGender(random.nextInt(OWolf.Gender.values().length));
+                        oWolf.setOverlayVariant(random.nextInt(OWolfMarkingLayer.Overlay.values().length));
+
+                        if (LivestockOverhaulCommonConfig.SPAWN_BY_BREED.get()) {
+                            if (event.getLevel().getBiome(event.getEntity().blockPosition()).is(Tags.Biomes.IS_HOT_OVERWORLD)) {
+                                int[] variants = {3, 5, 6};
+                                int randomIndex = new Random().nextInt(variants.length);
+                                oWolf.setVariant(variants[randomIndex]);
+                            } else if (event.getLevel().getBiome(event.getEntity().blockPosition()).is(Tags.Biomes.IS_COLD_OVERWORLD)) {
+                                int[] variants = {4, 7, 8};
+                                int randomIndex = new Random().nextInt(variants.length);
+                                oWolf.setVariant(variants[randomIndex]);
+                            } else if (random.nextDouble() > 0.30) {
+                                int[] variants = {0, 1, 2, 7};
+                                int randomIndex = new Random().nextInt(variants.length);
+                                oWolf.setVariant(variants[randomIndex]);
+                            }
+                        } else {
+                            oWolf.setVariant(random.nextInt(OWolfModel.Variant.values().length));
+                        }
+
+                        if (event.getLevel().isClientSide) {
+                            vanillaWolf.remove(Entity.RemovalReason.DISCARDED);
+                        }
+
+                        event.getLevel().addFreshEntity(oWolf);
+                        vanillaWolf.remove(Entity.RemovalReason.DISCARDED);
+
+                        event.setCanceled(true);
+                    }
                 }
             }
         }
@@ -114,7 +137,7 @@ public class SpawnReplacer {
                     return;
                 }
 
-                OOcelot oOcelot = EntityTypes.O_OCELOT_ENTITY.get().create(event.getLevel());
+                OOcelot oOcelot = POEntityTypes.O_OCELOT_ENTITY.get().create(event.getLevel());
                 if (oOcelot != null) {
                     oOcelot.copyPosition(vanillaOcelot);
 
@@ -145,7 +168,7 @@ public class SpawnReplacer {
             if (event.getEntity().getClass() == Fox.class) {
                 Fox vanillaFox = (Fox) event.getEntity();
 
-                OFox oFox = EntityTypes.O_FOX_ENTITY.get().create(event.getLevel());
+                OFox oFox = POEntityTypes.O_FOX_ENTITY.get().create(event.getLevel());
 
                 if (event.getLevel().isClientSide) {
                     return;
@@ -184,7 +207,7 @@ public class SpawnReplacer {
             if (event.getEntity().getClass() == Axolotl.class) {
                 Axolotl vanillaAxolotl = (Axolotl) event.getEntity();
 
-                OAxolotl oAxolotl = EntityTypes.O_AXOLOTL_ENTITY.get().create(event.getLevel());
+                OAxolotl oAxolotl = POEntityTypes.O_AXOLOTL_ENTITY.get().create(event.getLevel());
 
                 if (event.getLevel().isClientSide) {
                     return;
@@ -223,9 +246,9 @@ public class SpawnReplacer {
             if (event.getEntity().getClass() == Parrot.class) {
                 Parrot vanillaParrot = (Parrot) event.getEntity();
 
-                Macaw macaw = EntityTypes.MACAW_ENTITY.get().create(event.getLevel());
-                Cockatiel cockatiel = EntityTypes.COCKATIEL_ENTITY.get().create(event.getLevel());
-                Ringneck ringneck = EntityTypes.RINGNECK_ENTITY.get().create(event.getLevel());
+                Macaw macaw = POEntityTypes.MACAW_ENTITY.get().create(event.getLevel());
+                Cockatiel cockatiel = POEntityTypes.COCKATIEL_ENTITY.get().create(event.getLevel());
+                Ringneck ringneck = POEntityTypes.RINGNECK_ENTITY.get().create(event.getLevel());
 
                 if (event.getLevel().isClientSide) {
                     return;
@@ -316,7 +339,7 @@ public class SpawnReplacer {
             if (event.getEntity().getClass() == TropicalFish.class) {
                 TropicalFish vanillaTropicalFish = (TropicalFish) event.getEntity();
 
-                OTropicalFish oTropicalFish = EntityTypes.O_TROPICAL_FISH_ENTITY.get().create(event.getLevel());
+                OTropicalFish oTropicalFish = POEntityTypes.O_TROPICAL_FISH_ENTITY.get().create(event.getLevel());
 
                 if (event.getLevel().isClientSide) {
                     return;
@@ -354,20 +377,20 @@ public class SpawnReplacer {
             if (event.getEntity().getClass() == Cat.class) {
                 Cat cat = (Cat) event.getEntity();
 
-                OCat commonCat = EntityTypes.O_CAT_ENTITY.get().create(event.getLevel());
-                Doberman doberman = EntityTypes.DOBERMAN_ENTITY.get().create(event.getLevel());
-                Labrador labrador = EntityTypes.LABRADOR_ENTITY.get().create(event.getLevel());
-                Husky husky = EntityTypes.HUSKY_ENTITY.get().create(event.getLevel());
-                Pyrenees pyrenees = EntityTypes.PYRENEES_ENTITY.get().create(event.getLevel());
-                Collie collie = EntityTypes.BORDER_COLLIE_ENTITY.get().create(event.getLevel());
-                MaineCoon maineCoon = EntityTypes.MAINE_COON_ENTITY.get().create(event.getLevel());
-                Bernese bernese = EntityTypes.BERNESE_ENTITY.get().create(event.getLevel());
-                AustralianShepherd aShepherd = EntityTypes.AUSTRALIAN_SHEPHERD_ENTITY.get().create(event.getLevel());
-                Bloodhound bloodhound = EntityTypes.BLOODHOUND_ENTITY.get().create(event.getLevel());
-                KornishRex kornishRex = EntityTypes.KORNISH_REX_ENTITY.get().create(event.getLevel());
-                CockerSpaniel cockerSpaniel = EntityTypes.COCKER_SPANIEL_ENTITY.get().create(event.getLevel());
-                Whippet whippet = EntityTypes.WHIPPET_ENTITY.get().create(event.getLevel());
-                Rottweiler rottweiler = EntityTypes.ROTTWEILER_ENTITY.get().create(event.getLevel());
+                OCat commonCat = POEntityTypes.O_CAT_ENTITY.get().create(event.getLevel());
+                Doberman doberman = POEntityTypes.DOBERMAN_ENTITY.get().create(event.getLevel());
+                Labrador labrador = POEntityTypes.LABRADOR_ENTITY.get().create(event.getLevel());
+                Husky husky = POEntityTypes.HUSKY_ENTITY.get().create(event.getLevel());
+                Pyrenees pyrenees = POEntityTypes.PYRENEES_ENTITY.get().create(event.getLevel());
+                Collie collie = POEntityTypes.BORDER_COLLIE_ENTITY.get().create(event.getLevel());
+                MaineCoon maineCoon = POEntityTypes.MAINE_COON_ENTITY.get().create(event.getLevel());
+                Bernese bernese = POEntityTypes.BERNESE_ENTITY.get().create(event.getLevel());
+                AustralianShepherd aShepherd = POEntityTypes.AUSTRALIAN_SHEPHERD_ENTITY.get().create(event.getLevel());
+                Bloodhound bloodhound = POEntityTypes.BLOODHOUND_ENTITY.get().create(event.getLevel());
+                KornishRex kornishRex = POEntityTypes.KORNISH_REX_ENTITY.get().create(event.getLevel());
+                CockerSpaniel cockerSpaniel = POEntityTypes.COCKER_SPANIEL_ENTITY.get().create(event.getLevel());
+                Whippet whippet = POEntityTypes.WHIPPET_ENTITY.get().create(event.getLevel());
+                Rottweiler rottweiler = POEntityTypes.ROTTWEILER_ENTITY.get().create(event.getLevel());
 
                 if (event.getLevel().isClientSide) {
                     return;

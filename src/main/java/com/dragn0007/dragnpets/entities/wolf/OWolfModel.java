@@ -7,12 +7,15 @@ import software.bernie.geckolib.model.GeoModel;
 public class OWolfModel extends GeoModel<OWolf> {
 
     public enum Variant {
-        BLACK(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/wolf/wolf_black.png")),
-        BROWN(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/wolf/wolf_brown.png")),
-        GREY(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/wolf/wolf_grey.png")),
-        RED(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/wolf/wolf_red.png")),
-        TIMBER(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/wolf/wolf_timber.png")),
-        WHITE(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/wolf/wolf_white.png"));
+        BLACK(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/wolf/black.png")),
+        BROWN(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/wolf/brown.png")),
+        CHOCOLATE(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/wolf/chocolate.png")),
+        CREAM(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/wolf/cream.png")),
+        GREY(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/wolf/grey.png")),
+        MAHOGANY(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/wolf/mahogany.png")),
+        RED(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/wolf/red.png")),
+        TIMBER(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/wolf/timber.png")),
+        WHITE(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/wolf/white.png"));
 
         public final ResourceLocation resourceLocation;
         Variant(ResourceLocation resourceLocation) {
@@ -23,8 +26,8 @@ public class OWolfModel extends GeoModel<OWolf> {
         }
     }
 
-    public static final ResourceLocation MODEL = new ResourceLocation(PetsOverhaul.MODID, "geo/wolf_overhaul.geo.json");
-    public static final ResourceLocation ANIMATION = new ResourceLocation(PetsOverhaul.MODID, "animations/wolf_overhaul.animation.json");
+    public static final ResourceLocation MODEL = new ResourceLocation(PetsOverhaul.MODID, "geo/o_wolf.geo.json");
+    public static final ResourceLocation ANIMATION = new ResourceLocation(PetsOverhaul.MODID, "animations/o_wolf.animation.json");
 
     @Override
     public ResourceLocation getModelResource(OWolf object) {
@@ -33,7 +36,7 @@ public class OWolfModel extends GeoModel<OWolf> {
 
     @Override
     public ResourceLocation getTextureResource(OWolf object) {
-        return object.getTextureResource();
+        return object.getTextureLocation();
     }
 
     @Override

@@ -1,7 +1,7 @@
 package com.dragn0007.dragnpets.entities.parrot;
 
 import com.dragn0007.dragnlivestock.util.LivestockOverhaulCommonConfig;
-import com.dragn0007.dragnpets.entities.EntityTypes;
+import com.dragn0007.dragnpets.entities.POEntityTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -144,7 +144,7 @@ public class Macaw extends OParrot implements GeoEntity, FlyingAnimal {
       Macaw parrot1 = (Macaw) ageableMob;
       if (ageableMob instanceof Macaw) {
          Macaw parrot = (Macaw) ageableMob;
-         parrot1 = EntityTypes.MACAW_ENTITY.get().create(serverLevel);
+         parrot1 = POEntityTypes.MACAW_ENTITY.get().create(serverLevel);
 
          int i = this.random.nextInt(9);
          int variant;

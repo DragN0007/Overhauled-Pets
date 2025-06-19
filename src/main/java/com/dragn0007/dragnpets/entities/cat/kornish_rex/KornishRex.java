@@ -1,7 +1,7 @@
 package com.dragn0007.dragnpets.entities.cat.kornish_rex;
 
 import com.dragn0007.dragnlivestock.util.LivestockOverhaulCommonConfig;
-import com.dragn0007.dragnpets.entities.EntityTypes;
+import com.dragn0007.dragnpets.entities.POEntityTypes;
 import com.dragn0007.dragnpets.entities.cat.OCat;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -182,7 +182,7 @@ public class KornishRex extends OCat implements GeoEntity {
       KornishRex oCat = (KornishRex) ageableMob;
       if (ageableMob instanceof KornishRex) {
          KornishRex oCat1 = (KornishRex) ageableMob;
-         oCat = EntityTypes.KORNISH_REX_ENTITY.get().create(serverLevel);
+         oCat = POEntityTypes.KORNISH_REX_ENTITY.get().create(serverLevel);
 
          int i = this.random.nextInt(9);
          int variant;

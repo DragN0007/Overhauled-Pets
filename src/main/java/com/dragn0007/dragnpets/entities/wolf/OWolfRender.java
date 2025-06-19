@@ -9,6 +9,7 @@ public class OWolfRender extends GeoEntityRenderer<OWolf> {
 
     public OWolfRender(EntityRendererProvider.Context renderManager) {
         super(renderManager, new OWolfModel());
+        this.addRenderLayer(new OWolfMarkingLayer(this));
         this.addRenderLayer(new OWolfCollarLayer(this));
     }
 

@@ -1,7 +1,7 @@
 package com.dragn0007.dragnpets.entities.parrot;
 
 import com.dragn0007.dragnlivestock.util.LivestockOverhaulCommonConfig;
-import com.dragn0007.dragnpets.entities.EntityTypes;
+import com.dragn0007.dragnpets.entities.POEntityTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -144,7 +144,7 @@ public class Ringneck extends OParrot implements GeoEntity, FlyingAnimal {
       Ringneck parrot1 = (Ringneck) ageableMob;
       if (ageableMob instanceof Ringneck) {
          Ringneck parrot = (Ringneck) ageableMob;
-         parrot1 = EntityTypes.RINGNECK_ENTITY.get().create(serverLevel);
+         parrot1 = POEntityTypes.RINGNECK_ENTITY.get().create(serverLevel);
 
          int i = this.random.nextInt(9);
          int variant;

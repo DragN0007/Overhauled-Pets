@@ -2,7 +2,7 @@ package com.dragn0007.dragnpets.entities.dog.husky;
 
 import com.dragn0007.dragnlivestock.entities.Chestable;
 import com.dragn0007.dragnlivestock.util.LivestockOverhaulCommonConfig;
-import com.dragn0007.dragnpets.entities.EntityTypes;
+import com.dragn0007.dragnpets.entities.POEntityTypes;
 import com.dragn0007.dragnpets.entities.ai.DogFollowOwnerGoal;
 import com.dragn0007.dragnpets.entities.ai.DogFollowPackLeaderGoal;
 import com.dragn0007.dragnpets.entities.dog.ODog;
@@ -549,7 +549,7 @@ public class Husky extends ODog implements NeutralMob, GeoEntity, Chestable, Con
       Husky oWolf1 = (Husky) ageableMob;
       if (ageableMob instanceof Husky) {
          Husky oWolf = (Husky) ageableMob;
-         oWolf1 = EntityTypes.HUSKY_ENTITY.get().create(serverLevel);
+         oWolf1 = POEntityTypes.HUSKY_ENTITY.get().create(serverLevel);
 
          int i = this.random.nextInt(9);
          int variant;

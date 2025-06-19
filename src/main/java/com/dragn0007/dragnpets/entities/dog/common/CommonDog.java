@@ -1,8 +1,7 @@
 package com.dragn0007.dragnpets.entities.dog.common;
 
-import com.dragn0007.dragnlivestock.entities.chicken.OChicken;
 import com.dragn0007.dragnlivestock.util.LivestockOverhaulCommonConfig;
-import com.dragn0007.dragnpets.entities.EntityTypes;
+import com.dragn0007.dragnpets.entities.POEntityTypes;
 import com.dragn0007.dragnpets.entities.ai.DogFollowOwnerGoal;
 import com.dragn0007.dragnpets.entities.ai.DogFollowPackLeaderGoal;
 import com.dragn0007.dragnpets.entities.dog.ODog;
@@ -411,7 +410,7 @@ public class CommonDog extends ODog implements InventoryCarrier, NeutralMob, Geo
       CommonDog puppy = (CommonDog) ageableMob;
       if (ageableMob instanceof CommonDog) {
          CommonDog partner = (CommonDog) ageableMob;
-         puppy = EntityTypes.COMMON_DOG_ENTITY.get().create(serverLevel);
+         puppy = POEntityTypes.COMMON_DOG_ENTITY.get().create(serverLevel);
 
          int i = this.random.nextInt(9);
          int variant;

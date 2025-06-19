@@ -4,6 +4,7 @@ import com.dragn0007.dragnlivestock.entities.EntityTypes;
 import com.dragn0007.dragnlivestock.items.LOItems;
 import com.dragn0007.dragnlivestock.util.LivestockOverhaulCommonConfig;
 import com.dragn0007.dragnpets.PetsOverhaul;
+import com.dragn0007.dragnpets.entities.POEntityTypes;
 import com.dragn0007.dragnpets.entities.ai.CatFollowOwnerGoal;
 import com.dragn0007.dragnpets.items.POItems;
 import com.dragn0007.dragnpets.util.POTags;
@@ -94,9 +95,9 @@ public class OCat extends TamableAnimal implements GeoEntity {
       return entitytype == EntityTypes.O_RABBIT_ENTITY.get() ||
               entitytype == EntityTypes.O_CHICKEN_ENTITY.get() ||
               entitytype == EntityTypes.O_FROG_ENTITY.get() ||
-              entitytype == com.dragn0007.dragnpets.entities.EntityTypes.MACAW_ENTITY.get() ||
-              entitytype == com.dragn0007.dragnpets.entities.EntityTypes.COCKATIEL_ENTITY.get() ||
-              entitytype == com.dragn0007.dragnpets.entities.EntityTypes.RINGNECK_ENTITY.get()
+              entitytype == POEntityTypes.MACAW_ENTITY.get() ||
+              entitytype == POEntityTypes.COCKATIEL_ENTITY.get() ||
+              entitytype == POEntityTypes.RINGNECK_ENTITY.get()
               ;
    };
 
@@ -593,7 +594,7 @@ public class OCat extends TamableAnimal implements GeoEntity {
       OCat oCat = (OCat) ageableMob;
       if (ageableMob instanceof OCat) {
          OCat oCat1 = (OCat) ageableMob;
-         oCat = com.dragn0007.dragnpets.entities.EntityTypes.O_CAT_ENTITY.get().create(serverLevel);
+         oCat = POEntityTypes.O_CAT_ENTITY.get().create(serverLevel);
 
          int i = this.random.nextInt(9);
          int variant;

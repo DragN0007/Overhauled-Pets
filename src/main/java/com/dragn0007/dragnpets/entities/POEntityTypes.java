@@ -34,7 +34,7 @@ import net.minecraftforge.registries.RegistryObject;
 
 import static com.dragn0007.dragnpets.PetsOverhaul.MODID;
 
-public class EntityTypes {
+public class POEntityTypes {
 
     public static final DeferredRegister<EntityType<?>> ENTITY_TYPES = DeferredRegister.create(ForgeRegistries.ENTITY_TYPES, MODID);
 

@@ -1,7 +1,7 @@
 package com.dragn0007.dragnpets.entities.parrot;
 
 import com.dragn0007.dragnlivestock.util.LivestockOverhaulCommonConfig;
-import com.dragn0007.dragnpets.entities.EntityTypes;
+import com.dragn0007.dragnpets.entities.POEntityTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -144,7 +144,7 @@ public class Cockatiel extends OParrot implements GeoEntity, FlyingAnimal {
       Cockatiel parrot1 = (Cockatiel) ageableMob;
       if (ageableMob instanceof Cockatiel) {
          Cockatiel parrot = (Cockatiel) ageableMob;
-         parrot1 = EntityTypes.COCKATIEL_ENTITY.get().create(serverLevel);
+         parrot1 = POEntityTypes.COCKATIEL_ENTITY.get().create(serverLevel);
 
          int i = this.random.nextInt(9);
          int variant;

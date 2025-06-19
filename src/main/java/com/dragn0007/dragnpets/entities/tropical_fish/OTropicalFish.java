@@ -4,7 +4,7 @@ import com.dragn0007.dragnlivestock.LivestockOverhaul;
 import com.dragn0007.dragnlivestock.entities.util.AbstractSchoolingOFish;
 import com.dragn0007.dragnlivestock.util.LivestockOverhaulCommonConfig;
 import com.dragn0007.dragnpets.PetsOverhaul;
-import com.dragn0007.dragnpets.entities.EntityTypes;
+import com.dragn0007.dragnpets.entities.POEntityTypes;
 import com.dragn0007.dragnpets.items.POItems;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -52,7 +52,7 @@ public class OTropicalFish extends AbstractSchoolingOFish implements GeoEntity {
 	}
 
 	public OTropicalFish getBreedOffspring(ServerLevel serverLevel, AgeableMob ageableMob) {
-		return EntityTypes.O_TROPICAL_FISH_ENTITY.get().create(serverLevel);
+		return POEntityTypes.O_TROPICAL_FISH_ENTITY.get().create(serverLevel);
 	}
 
 	public static AttributeSupplier.Builder createAttributes() {

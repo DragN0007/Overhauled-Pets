@@ -1,6 +1,7 @@
 package com.dragn0007.dragnpets.entities.cat.maine_coon;
 
 import com.dragn0007.dragnlivestock.util.LivestockOverhaulCommonConfig;
+import com.dragn0007.dragnpets.entities.POEntityTypes;
 import com.dragn0007.dragnpets.entities.cat.OCat;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -181,7 +182,7 @@ public class MaineCoon extends OCat implements GeoEntity {
       MaineCoon oCat = (MaineCoon) ageableMob;
       if (ageableMob instanceof MaineCoon) {
          MaineCoon oCat1 = (MaineCoon) ageableMob;
-         oCat = com.dragn0007.dragnpets.entities.EntityTypes.MAINE_COON_ENTITY.get().create(serverLevel);
+         oCat = POEntityTypes.MAINE_COON_ENTITY.get().create(serverLevel);
 
          int i = this.random.nextInt(9);
          int variant;

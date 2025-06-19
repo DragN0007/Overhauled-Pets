@@ -2,7 +2,7 @@ package com.dragn0007.dragnpets.entities.dog.whippet;
 
 import com.dragn0007.dragnlivestock.entities.rabbit.ORabbit;
 import com.dragn0007.dragnlivestock.util.LivestockOverhaulCommonConfig;
-import com.dragn0007.dragnpets.entities.EntityTypes;
+import com.dragn0007.dragnpets.entities.POEntityTypes;
 import com.dragn0007.dragnpets.entities.ai.DogFollowOwnerGoal;
 import com.dragn0007.dragnpets.entities.ai.DogFollowPackLeaderGoal;
 import com.dragn0007.dragnpets.entities.dog.ODog;
@@ -435,7 +435,7 @@ public class Whippet extends ODog implements InventoryCarrier, NeutralMob, GeoEn
       Whippet oWolf1 = (Whippet) ageableMob;
       if (ageableMob instanceof Whippet) {
          Whippet oWolf = (Whippet) ageableMob;
-         oWolf1 = EntityTypes.WHIPPET_ENTITY.get().create(serverLevel);
+         oWolf1 = POEntityTypes.WHIPPET_ENTITY.get().create(serverLevel);
 
          int i = this.random.nextInt(9);
          int variant;

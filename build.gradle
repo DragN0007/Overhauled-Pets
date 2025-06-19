@@ -76,6 +76,8 @@ sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 repositories {
 
+    mavenLocal()
+
     maven {
         name = 'GeckoLib'
         url 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/'
@@ -92,10 +94,10 @@ repositories {
 dependencies {
     minecraft "net.minecraftforge:forge:1.20.1-47.2.0"
     implementation fg.deobf('software.bernie.geckolib:geckolib-forge-1.20.1:4.4.4')
-    implementation fg.deobf("curse.maven:dragns-livestock-overhaul-1131669:6318178")
-
-//    implementation fg.deobf("curse.maven:jade-324717:5876199")
-//    implementation fg.deobf("curse.maven:xaeros-minimap-263420:6012833")
+//    implementation fg.deobf("curse.maven:dragns-livestock-overhaul-1131669:6442113")
+    implementation fg.deobf('com.dragn0007.dragnlivestock:Livestock_Overhaul_1.20.1:1.20.1-2.8')
+    implementation fg.deobf("curse.maven:jade-324717:5876199")
+    implementation fg.deobf("curse.maven:xaeros-minimap-263420:6012833")
 }
 
 tasks.named('processResources', ProcessResources).configure {

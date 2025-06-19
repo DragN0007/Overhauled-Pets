@@ -2,7 +2,7 @@ package com.dragn0007.dragnpets.entities.dog.bloodhound;
 
 import com.dragn0007.dragnlivestock.entities.util.AbstractOMount;
 import com.dragn0007.dragnlivestock.util.LivestockOverhaulCommonConfig;
-import com.dragn0007.dragnpets.entities.EntityTypes;
+import com.dragn0007.dragnpets.entities.POEntityTypes;
 import com.dragn0007.dragnpets.entities.ai.DogFollowOwnerGoal;
 import com.dragn0007.dragnpets.entities.ai.DogFollowPackLeaderGoal;
 import com.dragn0007.dragnpets.entities.dog.ODog;
@@ -358,7 +358,7 @@ public class Bloodhound extends ODog implements NeutralMob, GeoEntity {
       Bloodhound oWolf1 = (Bloodhound) ageableMob;
       if (ageableMob instanceof Bloodhound) {
          Bloodhound oWolf = (Bloodhound) ageableMob;
-         oWolf1 = EntityTypes.BLOODHOUND_ENTITY.get().create(serverLevel);
+         oWolf1 = POEntityTypes.BLOODHOUND_ENTITY.get().create(serverLevel);
 
          int i = this.random.nextInt(9);
          int variant;

@@ -3,9 +3,10 @@ package com.dragn0007.dragnpets.entities.dog;
 import com.dragn0007.dragnlivestock.items.LOItems;
 import com.dragn0007.dragnlivestock.util.LivestockOverhaulCommonConfig;
 import com.dragn0007.dragnpets.PetsOverhaul;
-import com.dragn0007.dragnpets.entities.EntityTypes;
+import com.dragn0007.dragnpets.entities.POEntityTypes;
 import com.dragn0007.dragnpets.entities.ai.DogFollowOwnerGoal;
 import com.dragn0007.dragnpets.util.POTags;
+import com.dragn0007.dragnpets.util.PetsOverhaulCommonConfig;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
@@ -203,7 +204,7 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity {
    }
 
    public int getMaxHerdSize() {
-      return 3;
+      return PetsOverhaulCommonConfig.DOG_PACK_MAX.get();
    }
 
    public boolean hasFollowers() {
@@ -291,10 +292,10 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity {
    }
 
    public boolean isHuntingDog(Entity entity) {
-      return entity.getType() == EntityTypes.BLOODHOUND_ENTITY.get()
-              || entity.getType() == EntityTypes.LABRADOR_ENTITY.get()
-              || entity.getType() == EntityTypes.COCKER_SPANIEL_ENTITY.get()
-              || entity.getType() == EntityTypes.WHIPPET_ENTITY.get();
+      return entity.getType() == POEntityTypes.BLOODHOUND_ENTITY.get()
+              || entity.getType() == POEntityTypes.LABRADOR_ENTITY.get()
+              || entity.getType() == POEntityTypes.COCKER_SPANIEL_ENTITY.get()
+              || entity.getType() == POEntityTypes.WHIPPET_ENTITY.get();
    }
 
    public boolean hurt(DamageSource damageSource, float amount) {

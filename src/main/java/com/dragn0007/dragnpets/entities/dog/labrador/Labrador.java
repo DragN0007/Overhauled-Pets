@@ -2,7 +2,7 @@ package com.dragn0007.dragnpets.entities.dog.labrador;
 
 import com.dragn0007.dragnlivestock.entities.chicken.OChicken;
 import com.dragn0007.dragnlivestock.util.LivestockOverhaulCommonConfig;
-import com.dragn0007.dragnpets.entities.EntityTypes;
+import com.dragn0007.dragnpets.entities.POEntityTypes;
 import com.dragn0007.dragnpets.entities.ai.DogFollowOwnerGoal;
 import com.dragn0007.dragnpets.entities.ai.DogFollowPackLeaderGoal;
 import com.dragn0007.dragnpets.entities.dog.ODog;
@@ -415,7 +415,7 @@ public class Labrador extends ODog implements InventoryCarrier, NeutralMob, GeoE
       Labrador oWolf1 = (Labrador) ageableMob;
       if (ageableMob instanceof Labrador) {
          Labrador oWolf = (Labrador) ageableMob;
-         oWolf1 = EntityTypes.LABRADOR_ENTITY.get().create(serverLevel);
+         oWolf1 = POEntityTypes.LABRADOR_ENTITY.get().create(serverLevel);
 
          int i = this.random.nextInt(9);
          int variant;
