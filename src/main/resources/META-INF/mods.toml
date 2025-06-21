@@ -35,3 +35,5 @@ mandatory=true
 versionRange = "[2.8,)"
 ordering="NONE"
 side="BOTH"
+[[mixins]]
+config = "dragnpets.mixins.json"

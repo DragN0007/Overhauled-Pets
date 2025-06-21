@@ -1,0 +1,13 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.dragn0007.dragnpets.mixin",
+  "refmap": "dragnpets.mixin-refmap.json",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": [
+    "CreeperMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

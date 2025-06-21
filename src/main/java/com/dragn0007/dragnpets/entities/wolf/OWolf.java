@@ -1,11 +1,9 @@
 package com.dragn0007.dragnpets.entities.wolf;
 
-import com.dragn0007.dragnlivestock.LivestockOverhaul;
 import com.dragn0007.dragnlivestock.entities.EntityTypes;
+import com.dragn0007.dragnlivestock.entities.cow.OCow;
 import com.dragn0007.dragnlivestock.entities.cow.ox.Ox;
 import com.dragn0007.dragnlivestock.entities.donkey.ODonkey;
-import com.dragn0007.dragnlivestock.entities.goat.OGoat;
-import com.dragn0007.dragnlivestock.entities.goat.OGoatModel;
 import com.dragn0007.dragnlivestock.entities.llama.OLlama;
 import com.dragn0007.dragnlivestock.entities.mule.OMule;
 import com.dragn0007.dragnlivestock.items.LOItems;
@@ -141,6 +139,10 @@ public class OWolf extends TamableAnimal implements NeutralMob, GeoEntity {
       this.targetSelector.addGoal(8, new ResetUniversalAngerTargetGoal<>(this, true));
       this.goalSelector.addGoal(7, new CanineFollowPackLeaderGoal(this));
       this.goalSelector.addGoal(6, new WolfFollowOwnerGoal(this, 1.0D, 10.0F, 2.0F, false));
+
+
+      this.goalSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, Player.class, 2, true, false,
+              entity -> entity instanceof Player && (this.isFollower() || this.hasFollowers()) && PetsOverhaulCommonConfig.WOLF_PACKS_ATTACK_PLAYERS.get()));
    }
 
    public static AttributeSupplier.Builder createAttributes() {
@@ -170,6 +172,9 @@ public class OWolf extends TamableAnimal implements NeutralMob, GeoEntity {
          if (isInSittingPose()) {
             controller.setAnimation(RawAnimation.begin().then("sit", Animation.LoopType.LOOP));
             controller.setAnimationSpeed(1.0);
+         } else if (this.isWagging()) {
+            controller.setAnimation(RawAnimation.begin().then("wag", Animation.LoopType.LOOP));
+            controller.setAnimationSpeed(1.0);
          } else {
             controller.setAnimation(RawAnimation.begin().then("idle", Animation.LoopType.LOOP));
          }
@@ -188,11 +193,33 @@ public class OWolf extends TamableAnimal implements NeutralMob, GeoEntity {
       return this.geoCache;
    }
 
-   public int spawnWolfEventCounter = this.random.nextInt(48000) + 48000;
    public int regenHealthCounter = 0;
+   public int wagCounter = this.random.nextInt(1200) + 1200;
+   public int stayWaggingCounter = 0;
+
+   private boolean wag = false;
+   public boolean isWagging() {
+      return this.wag;
+   }
+   public void setWagging(boolean wagging) {
+      this.wag = wagging;
+   }
 
    public void tick() {
       super.tick();
+
+      wagCounter--;
+
+      if (--this.wagCounter <= 0) {
+         this.stayWaggingCounter++;
+         setWagging(true);
+         if (this.stayWaggingCounter >= 300) {
+            this.wagCounter = this.random.nextInt(1200) + 1200;
+            this.stayWaggingCounter = 0;
+            setWagging(false);
+         }
+      }
+
       if (this.hasFollowers() && this.level().random.nextInt(200) == 1) {
          List<? extends OWolf> list = this.level().getEntitiesOfClass(this.getClass(), this.getBoundingBox().inflate(20.0D, 20.0D, 20.0D));
          if (list.size() <= 1) {
@@ -207,17 +234,6 @@ public class OWolf extends TamableAnimal implements NeutralMob, GeoEntity {
          regenHealthCounter = 0;
          this.level().addParticle(ParticleTypes.HEART, this.getRandomX(0.6D), this.getRandomY(), this.getRandomZ(0.6D), 0.7D, 0.7D, 0.7D);
       }
-
-      spawnWolfEventCounter++;
-
-//      if (--this.spawnWolfEventCounter <= 0 && PetsOverhaulCommonConfig.WOLF_EVENT.get()) {
-//         OSheep oSheep = (OSheep);
-//         if (oSheep.isFollower() || oSheep.hasFollowers() || oSheep.hasCustomName()) {
-//            this.copyPosition(oSheep);
-//         }
-//
-//         this.sendSystemMessage(Component.translatable("tooltip.dragnpets.wolf_event.tooltip").withStyle(ChatFormatting.RED));
-//      }
 
    }
 
@@ -280,7 +296,7 @@ public class OWolf extends TamableAnimal implements NeutralMob, GeoEntity {
 
    @Override
    public float getStepHeight() {
-      return 2F;
+      return 1.6F;
    }
 
    public void playStepSound(BlockPos p_30415_, BlockState p_30416_) {
@@ -356,9 +372,19 @@ public class OWolf extends TamableAnimal implements NeutralMob, GeoEntity {
       this.getAttribute(Attributes.ATTACK_DAMAGE).setBaseValue(4.0D);
    }
 
+   protected float getStandingEyeHeight(Pose pose, EntityDimensions entityDimensions) {
+      return entityDimensions.height * 1.2F;
+   }
+
    public InteractionResult mobInteract(Player player, InteractionHand hand) {
       ItemStack itemstack = player.getItemInHand(hand);
       Item item = itemstack.getItem();
+
+      if (itemstack.is(Items.SHEARS) && this.isCollared()) {
+         this.setCollared(false);
+         this.playSound(SoundEvents.SHEEP_SHEAR, 0.5f, 1f);
+         return InteractionResult.sidedSuccess(this.level().isClientSide);
+      }
 
       if (itemstack.is(LOItems.GENDER_TEST_STRIP.get()) && this.isFemale()) {
          player.playSound(SoundEvents.BEEHIVE_EXIT, 1.0F, 1.0F);
@@ -430,6 +456,7 @@ public class OWolf extends TamableAnimal implements NeutralMob, GeoEntity {
             if (item instanceof DyeItem) {
                DyeItem dyeitem = (DyeItem)item;
                if (this.isOwnedBy(player)) {
+                  this.setCollared(true);
                   DyeColor dyecolor = dyeitem.getDyeColor();
                   if (dyecolor != this.getCollarColor()) {
                      this.setCollarColor(dyecolor);
@@ -539,6 +566,14 @@ public class OWolf extends TamableAnimal implements NeutralMob, GeoEntity {
       this.toldToWander = toldToWander;
    }
 
+   public static final EntityDataAccessor<Boolean> COLLARED = SynchedEntityData.defineId(OWolf.class, EntityDataSerializers.BOOLEAN);
+   public boolean isCollared() {
+      return this.entityData.get(COLLARED);
+   }
+   public void setCollared(boolean collared) {
+      this.entityData.set(COLLARED, collared);
+   }
+
    public void defineSynchedData() {
       super.defineSynchedData();
       this.entityData.define(VARIANT, 0);
@@ -546,17 +581,7 @@ public class OWolf extends TamableAnimal implements NeutralMob, GeoEntity {
       this.entityData.define(GENDER, 0);
       this.entityData.define(DATA_COLLAR_COLOR, DyeColor.RED.getId());
       this.entityData.define(DATA_REMAINING_ANGER_TIME, 0);
-   }
-
-   public void addAdditionalSaveData(CompoundTag tag) {
-      super.addAdditionalSaveData(tag);
-      tag.putInt("Variant", getVariant());
-      tag.putInt("Overlay", getOverlayVariant());
-      tag.putInt("Gender", this.getGender());
-      tag.putBoolean("Wandering", this.getToldToWander());
-      tag.putBoolean("Panicking", this.getPanicking());
-      tag.putByte("CollarColor", (byte)this.getCollarColor().getId());
-      this.addPersistentAngerSaveData(tag);
+      this.entityData.define(COLLARED, false);
    }
 
    public void readAdditionalSaveData(CompoundTag tag) {
@@ -585,7 +610,23 @@ public class OWolf extends TamableAnimal implements NeutralMob, GeoEntity {
          this.setCollarColor(DyeColor.byId(tag.getInt("CollarColor")));
       }
 
+      if(tag.contains("Collared")) {
+         this.setCollared(tag.getBoolean("Collared"));
+      }
+
       this.readPersistentAngerSaveData(this.level(), tag);
+   }
+
+   public void addAdditionalSaveData(CompoundTag tag) {
+      super.addAdditionalSaveData(tag);
+      tag.putInt("Variant", getVariant());
+      tag.putInt("Overlay", getOverlayVariant());
+      tag.putInt("Gender", this.getGender());
+      tag.putBoolean("Wandering", this.getToldToWander());
+      tag.putBoolean("Panicking", this.getPanicking());
+      tag.putByte("CollarColor", (byte)this.getCollarColor().getId());
+      tag.putBoolean("Collared", this.isCollared());
+      this.addPersistentAngerSaveData(tag);
    }
 
    @Override

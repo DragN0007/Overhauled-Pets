@@ -78,51 +78,50 @@ public class SpawnReplacer {
         //Wolf
         if (!LivestockOverhaulCommonConfig.FAILSAFE_REPLACER.get() && PetsOverhaulCommonConfig.REPLACE_WOLVES.get() && event.getEntity() instanceof Wolf vanillaWolf) {
 
-            if (event.getEntity().getClass() == Wolf.class) {
-                if (event.getEntity().getClass() == Sheep.class && (((!(vanillaWolf.getSpawnType() == MobSpawnType.SPAWN_EGG)) && !LivestockOverhaulCommonConfig.REPLACE_SPAWN_EGG_ANIMALS.get()) || LivestockOverhaulCommonConfig.REPLACE_SPAWN_EGG_ANIMALS.get())) {
+
+            if (event.getEntity().getClass() == Wolf.class && (((!(vanillaWolf.getSpawnType() == MobSpawnType.SPAWN_EGG)) && !LivestockOverhaulCommonConfig.REPLACE_SPAWN_EGG_ANIMALS.get()) || LivestockOverhaulCommonConfig.REPLACE_SPAWN_EGG_ANIMALS.get())) {
+
+                if (event.getLevel().isClientSide) {
+                    return;
+                }
+
+                OWolf oWolf = POEntityTypes.O_WOLF_ENTITY.get().create(event.getLevel());
+                if (oWolf != null) {
+                    oWolf.copyPosition(vanillaWolf);
+                    oWolf.setOwnerUUID(vanillaWolf.getOwnerUUID());
+
+                    oWolf.setCustomName(vanillaWolf.getCustomName());
+                    oWolf.setAge(vanillaWolf.getAge());
+
+                    oWolf.setGender(random.nextInt(OWolf.Gender.values().length));
+                    oWolf.setOverlayVariant(random.nextInt(OWolfMarkingLayer.Overlay.values().length));
+
+                    if (LivestockOverhaulCommonConfig.SPAWN_BY_BREED.get()) {
+                        if (event.getLevel().getBiome(event.getEntity().blockPosition()).is(Tags.Biomes.IS_HOT_OVERWORLD)) {
+                            int[] variants = {3, 5, 6};
+                            int randomIndex = new Random().nextInt(variants.length);
+                            oWolf.setVariant(variants[randomIndex]);
+                        } else if (event.getLevel().getBiome(event.getEntity().blockPosition()).is(Tags.Biomes.IS_COLD_OVERWORLD)) {
+                            int[] variants = {4, 7, 8};
+                            int randomIndex = new Random().nextInt(variants.length);
+                            oWolf.setVariant(variants[randomIndex]);
+                        } else if (random.nextDouble() > 0.30) {
+                            int[] variants = {0, 1, 2, 7};
+                            int randomIndex = new Random().nextInt(variants.length);
+                            oWolf.setVariant(variants[randomIndex]);
+                        }
+                    } else {
+                        oWolf.setVariant(random.nextInt(OWolfModel.Variant.values().length));
+                    }
 
                     if (event.getLevel().isClientSide) {
-                        return;
-                    }
-
-                    OWolf oWolf = POEntityTypes.O_WOLF_ENTITY.get().create(event.getLevel());
-                    if (oWolf != null) {
-                        oWolf.copyPosition(vanillaWolf);
-                        oWolf.setOwnerUUID(vanillaWolf.getOwnerUUID());
-
-                        oWolf.setCustomName(vanillaWolf.getCustomName());
-                        oWolf.setAge(vanillaWolf.getAge());
-
-                        oWolf.setGender(random.nextInt(OWolf.Gender.values().length));
-                        oWolf.setOverlayVariant(random.nextInt(OWolfMarkingLayer.Overlay.values().length));
-
-                        if (LivestockOverhaulCommonConfig.SPAWN_BY_BREED.get()) {
-                            if (event.getLevel().getBiome(event.getEntity().blockPosition()).is(Tags.Biomes.IS_HOT_OVERWORLD)) {
-                                int[] variants = {3, 5, 6};
-                                int randomIndex = new Random().nextInt(variants.length);
-                                oWolf.setVariant(variants[randomIndex]);
-                            } else if (event.getLevel().getBiome(event.getEntity().blockPosition()).is(Tags.Biomes.IS_COLD_OVERWORLD)) {
-                                int[] variants = {4, 7, 8};
-                                int randomIndex = new Random().nextInt(variants.length);
-                                oWolf.setVariant(variants[randomIndex]);
-                            } else if (random.nextDouble() > 0.30) {
-                                int[] variants = {0, 1, 2, 7};
-                                int randomIndex = new Random().nextInt(variants.length);
-                                oWolf.setVariant(variants[randomIndex]);
-                            }
-                        } else {
-                            oWolf.setVariant(random.nextInt(OWolfModel.Variant.values().length));
-                        }
-
-                        if (event.getLevel().isClientSide) {
-                            vanillaWolf.remove(Entity.RemovalReason.DISCARDED);
-                        }
-
-                        event.getLevel().addFreshEntity(oWolf);
                         vanillaWolf.remove(Entity.RemovalReason.DISCARDED);
-
-                        event.setCanceled(true);
                     }
+
+                    event.getLevel().addFreshEntity(oWolf);
+                    vanillaWolf.remove(Entity.RemovalReason.DISCARDED);
+
+                    event.setCanceled(true);
                 }
             }
         }

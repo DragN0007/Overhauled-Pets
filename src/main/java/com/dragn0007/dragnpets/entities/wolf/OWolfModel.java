@@ -1,10 +1,43 @@
 package com.dragn0007.dragnpets.entities.wolf;
 
+import com.dragn0007.dragnlivestock.LivestockOverhaul;
+import com.dragn0007.dragnlivestock.entities.rabbit.ORabbit;
 import com.dragn0007.dragnpets.PetsOverhaul;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
+import software.bernie.geckolib.constant.DataTickets;
+import software.bernie.geckolib.core.animatable.model.CoreGeoBone;
+import software.bernie.geckolib.core.animation.AnimationState;
+import software.bernie.geckolib.model.DefaultedEntityGeoModel;
 import software.bernie.geckolib.model.GeoModel;
+import software.bernie.geckolib.model.data.EntityModelData;
 
-public class OWolfModel extends GeoModel<OWolf> {
+public class OWolfModel extends DefaultedEntityGeoModel<OWolf> {
+
+    public OWolfModel() {
+        super(new ResourceLocation(LivestockOverhaul.MODID, "o_wolf"), true);
+    }
+
+    @Override
+    public void setCustomAnimations(OWolf animatable, long instanceId, AnimationState<OWolf> animationState) {
+
+        CoreGeoBone neck = getAnimationProcessor().getBone("neck");
+        CoreGeoBone head = getAnimationProcessor().getBone("head");
+
+        if (neck != null) {
+            EntityModelData entityData = animationState.getData(DataTickets.ENTITY_MODEL_DATA);
+            neck.setRotX(neck.getRotX() + (entityData.headPitch() * Mth.DEG_TO_RAD));
+            float maxYaw = Mth.clamp(entityData.netHeadYaw(), -25.0f, 25.0f);
+            neck.setRotY(neck.getRotY() + (maxYaw * Mth.DEG_TO_RAD));
+        }
+
+        if (head != null) {
+            EntityModelData entityData = animationState.getData(DataTickets.ENTITY_MODEL_DATA);
+            head.setRotX(head.getRotX() + (entityData.headPitch() * Mth.DEG_TO_RAD));
+            float maxYaw = Mth.clamp(entityData.netHeadYaw(), -25.0f, 25.0f);
+            head.setRotY(head.getRotY() + (maxYaw * Mth.DEG_TO_RAD));
+        }
+    }
 
     public enum Variant {
         BLACK(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/wolf/black.png")),

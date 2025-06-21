@@ -14,6 +14,7 @@ public class PetsOverhaulCommonConfig {
     public static final ForgeConfigSpec.BooleanValue REPLACE_CATS;
     public static final ForgeConfigSpec.BooleanValue REPLACE_TROPICAL_FISH;
     public static final ForgeConfigSpec.BooleanValue CATS_GIVE_GIFTS;
+    public static final ForgeConfigSpec.BooleanValue WOLF_PACKS_ATTACK_PLAYERS;
     public static final ForgeConfigSpec.ConfigValue<Integer> WOLF_PACK_MAX;
     public static final ForgeConfigSpec.ConfigValue<Integer> DOG_PACK_MAX;
 //    public static final ForgeConfigSpec.BooleanValue WOLF_EVENT;
@@ -48,6 +49,9 @@ public class PetsOverhaulCommonConfig {
 
         CATS_GIVE_GIFTS = BUILDER.comment("Should your O-Cats give you gifts once in a while?")
                 .define("Cats Give Gifts", true);
+
+        WOLF_PACKS_ATTACK_PLAYERS = BUILDER.comment("Should wild O-Wolf packs attack players?")
+                .define("Wolf Packs Attack Players", true);
 
         WOLF_PACK_MAX = BUILDER.comment("Maximum amount of O-Wolves that can pack together. Default is 6.")
                 .define("Wolf Pack Maximum", 6);
