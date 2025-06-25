@@ -2094,10 +2094,10 @@
 				"tail_bottom": {
 					"rotation": {
 						"0.0": {
-							"vector": ["math.sin(query.anim_time*840)*20-", 0, 0]
+							"vector": ["math.sin(query.anim_time*840)*20", 0, 0]
 						},
 						"0.4286": {
-							"vector": ["math.sin(query.anim_time*840)*20-", 0, 0]
+							"vector": ["math.sin(query.anim_time*840)*20", 0, 0]
 						}
 					}
 				},

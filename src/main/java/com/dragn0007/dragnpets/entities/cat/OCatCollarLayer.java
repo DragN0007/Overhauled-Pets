@@ -53,7 +53,7 @@ public class OCatCollarLayer extends GeoRenderLayer<OCat> {
             resourceLocation = TEXTURE_LOCATION[dyeColor.getId()];
         }
 
-        if (resourceLocation == null || !PetsOverhaulClientConfig.RENDER_COLLARS.get()) {
+        if (resourceLocation == null || !PetsOverhaulClientConfig.RENDER_COLLARS.get() || !animatable.isCollared()) {
             return;
         }
 

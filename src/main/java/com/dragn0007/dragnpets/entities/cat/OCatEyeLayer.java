@@ -19,7 +19,7 @@ public class OCatEyeLayer extends GeoRenderLayer<OCat> {
     @Override
     public void render(PoseStack poseStack, OCat animatable, BakedGeoModel bakedModel, RenderType renderType, MultiBufferSource bufferSource, VertexConsumer buffer, float partialTick, int packedLight, int packedOverlay) {
 
-        RenderType renderMarkingType = RenderType.entityCutout(animatable.getEyesResource());
+        RenderType renderMarkingType = RenderType.entityCutout(animatable.getEyeLocation());
         poseStack.pushPose();
         poseStack.scale(1.0f, 1.0f, 1.0f);
         poseStack.translate(0.0d, 0.0d, 0.0d);
@@ -34,11 +34,12 @@ public class OCatEyeLayer extends GeoRenderLayer<OCat> {
     }
 
     public enum Eyes {
-        BLUE(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/cat/common/overlay/eyes_blue.png")),
-        BROWN(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/cat/common/overlay/eyes_brown.png")),
-        GREEN(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/cat/common/overlay/eyes_green.png")),
-        ORANGE(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/cat/common/overlay/eyes_orange.png")),
-        YELLOW(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/cat/common/overlay/eyes_yellow.png"));
+        ORANGE(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/cat/common/eyes/orange.png")),
+        YELLOW(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/cat/common/eyes/yellow.png")),
+        BROWN(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/cat/common/eyes/brown.png")),
+        DARK_BROWN(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/cat/common/eyes/dark_brown.png")),
+        BLUE(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/cat/common/eyes/blue.png")),
+        GREEN(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/cat/common/eyes/green.png"));
 
         public final ResourceLocation resourceLocation;
         Eyes(ResourceLocation resourceLocation) {

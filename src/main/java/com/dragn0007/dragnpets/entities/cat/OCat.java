@@ -1,11 +1,17 @@
 package com.dragn0007.dragnpets.entities.cat;
 
 import com.dragn0007.dragnlivestock.entities.EntityTypes;
+import com.dragn0007.dragnlivestock.entities.horse.OHorse;
+import com.dragn0007.dragnlivestock.entities.horse.OHorseModel;
+import com.dragn0007.dragnlivestock.entities.marking_layer.EquineMarkingOverlay;
 import com.dragn0007.dragnlivestock.items.LOItems;
 import com.dragn0007.dragnlivestock.util.LivestockOverhaulCommonConfig;
 import com.dragn0007.dragnpets.PetsOverhaul;
 import com.dragn0007.dragnpets.entities.POEntityTypes;
 import com.dragn0007.dragnpets.entities.ai.CatFollowOwnerGoal;
+import com.dragn0007.dragnpets.entities.wolf.OWolf;
+import com.dragn0007.dragnpets.entities.wolf.OWolfMarkingLayer;
+import com.dragn0007.dragnpets.entities.wolf.OWolfModel;
 import com.dragn0007.dragnpets.items.POItems;
 import com.dragn0007.dragnpets.util.POTags;
 import com.dragn0007.dragnpets.util.PetsOverhaulCommonConfig;
@@ -108,7 +114,7 @@ public class OCat extends TamableAnimal implements GeoEntity {
       this.goalSelector.addGoal(8, new OcelotAttackGoal(this));
       this.goalSelector.addGoal(2, new SitWhenOrderedToGoal(this));
       this.goalSelector.addGoal(4, new LeapAtTargetGoal(this, 0.4F));
-      this.goalSelector.addGoal(5, new MeleeAttackGoal(this, 1.5D, true));
+      this.goalSelector.addGoal(5, new MeleeAttackGoal(this, 2.0D, true));
       this.goalSelector.addGoal(6, new CatFollowOwnerGoal(this, 1.0D, 10.0F, 2.0F, false));
       this.goalSelector.addGoal(7, new BreedGoal(this, 1.0D));
       this.goalSelector.addGoal(8, new WaterAvoidingRandomStrollGoal(this, 1.0D));
@@ -183,30 +189,28 @@ public class OCat extends TamableAnimal implements GeoEntity {
    public <T extends GeoAnimatable> PlayState predicate(software.bernie.geckolib.core.animation.AnimationState<T> tAnimationState) {
       double currentSpeed = this.getDeltaMovement().lengthSqr();
       double speedThreshold = 0.015;
-      double followSpeedThreshold = 0.25;
 
       AnimationController<T> controller = tAnimationState.getController();
 
       if (tAnimationState.isMoving()) {
-         if (currentSpeed > followSpeedThreshold) {
+         if (currentSpeed > speedThreshold) {
             controller.setAnimation(RawAnimation.begin().then("run", Animation.LoopType.LOOP));
-            controller.setAnimationSpeed(1.8);
-         } else if (currentSpeed > speedThreshold) {
-            controller.setAnimation(RawAnimation.begin().then("run", Animation.LoopType.LOOP));
-            controller.setAnimationSpeed(1.4);
+            controller.setAnimationSpeed(1.3);
          } else {
             controller.setAnimation(RawAnimation.begin().then("walk", Animation.LoopType.LOOP));
             controller.setAnimationSpeed(1.3);
          }
       } else {
          if (isInSittingPose()) {
-            controller.setAnimation(RawAnimation.begin().then("loaf", Animation.LoopType.LOOP));
+            controller.setAnimation(RawAnimation.begin().then("sit", Animation.LoopType.LOOP));
+            controller.setAnimationSpeed(1.0);
+         } else if (this.isWagging()) {
+            controller.setAnimation(RawAnimation.begin().then("flick_tail", Animation.LoopType.LOOP));
             controller.setAnimationSpeed(1.0);
          } else {
             controller.setAnimation(RawAnimation.begin().then("idle", Animation.LoopType.LOOP));
          }
       }
-
       return PlayState.CONTINUE;
    }
 
@@ -241,10 +245,31 @@ public class OCat extends TamableAnimal implements GeoEntity {
    }
 
    public int regenHealthCounter = 0;
+   public int wagCounter = this.random.nextInt(1200) + 1200;
+   public int stayWaggingCounter = 0;
 
-   @Override
+   private boolean wag = false;
+   public boolean isWagging() {
+      return this.wag;
+   }
+   public void setWagging(boolean wagging) {
+      this.wag = wagging;
+   }
+
    public void tick() {
       super.tick();
+
+      wagCounter--;
+
+      if (--this.wagCounter <= 0) {
+         this.stayWaggingCounter++;
+         setWagging(true);
+         if (this.stayWaggingCounter >= 300) {
+            this.wagCounter = this.random.nextInt(1200) + 1200;
+            this.stayWaggingCounter = 0;
+            setWagging(false);
+         }
+      }
 
       regenHealthCounter++;
 
@@ -276,10 +301,6 @@ public class OCat extends TamableAnimal implements GeoEntity {
 
    public int getAmbientSoundInterval() {
       return 120;
-   }
-
-   public void hiss() {
-      this.playSound(SoundEvents.CAT_HISS, this.getSoundVolume(), this.getVoicePitch());
    }
 
    public SoundEvent getHurtSound(DamageSource p_28160_) {
@@ -321,6 +342,12 @@ public class OCat extends TamableAnimal implements GeoEntity {
    public InteractionResult mobInteract(Player player, InteractionHand hand) {
       ItemStack itemstack = player.getItemInHand(hand);
       Item item = itemstack.getItem();
+
+      if (itemstack.is(Items.SHEARS) && this.isCollared()) {
+         this.setCollared(false);
+         this.playSound(SoundEvents.SHEEP_SHEAR, 0.5f, 1f);
+         return InteractionResult.sidedSuccess(this.level().isClientSide);
+      }
 
       if (itemstack.is(LOItems.GENDER_TEST_STRIP.get()) && this.isFemale()) {
          player.playSound(SoundEvents.BEEHIVE_EXIT, 1.0F, 1.0F);
@@ -364,6 +391,7 @@ public class OCat extends TamableAnimal implements GeoEntity {
             if (item instanceof DyeItem) {
                DyeItem dyeitem = (DyeItem)item;
                if (this.isOwnedBy(player)) {
+                  this.setCollared(true);
                   DyeColor dyecolor = dyeitem.getDyeColor();
                   if (dyecolor != this.getCollarColor()) {
                      this.setCollarColor(dyecolor);
@@ -441,72 +469,64 @@ public class OCat extends TamableAnimal implements GeoEntity {
 
 
    // Generates the base texture
-   public ResourceLocation getTextureResource() {
-      return OCatModel.Variant.variantFromOrdinal(getVariant()).resourceLocation;
-   }
-   public ResourceLocation getOverlayResource() {
-      return OCatMarkingLayer.Overlay.overlayFromOrdinal(getOverlay()).resourceLocation;
-   }
-   public ResourceLocation getEyesResource() {
-      return OCatEyeLayer.Eyes.overlayFromOrdinal(getEyes()).resourceLocation;
-   }
 
    public static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(OCat.class, EntityDataSerializers.INT);
-   public static final EntityDataAccessor<Integer> OVERLAY = SynchedEntityData.defineId(OCat.class, EntityDataSerializers.INT);
-   public static final EntityDataAccessor<Integer> EYES = SynchedEntityData.defineId(OCat.class, EntityDataSerializers.INT);
-
+   public ResourceLocation getTextureLocation() {
+      return OCatModel.Variant.variantFromOrdinal(getVariant()).resourceLocation;
+   }
    public int getVariant() {
       return this.entityData.get(VARIANT);
    }
-   public int getOverlay() {
-      return this.entityData.get(OVERLAY);
-   }
-   public int getEyes() {
-      return this.entityData.get(EYES);
-   }
-
    public void setVariant(int variant) {
       this.entityData.set(VARIANT, variant);
    }
-   public void setOverlay(int overlay) {
-      this.entityData.set(OVERLAY, overlay);
+
+   public static final EntityDataAccessor<Integer> OVERLAY = SynchedEntityData.defineId(OCat.class, EntityDataSerializers.INT);
+   public ResourceLocation getOverlayLocation() {return OCatMarkingLayer.Overlay.overlayFromOrdinal(getOverlayVariant()).resourceLocation;}
+   public int getOverlayVariant() {
+      return this.entityData.get(OVERLAY);
+   }
+   public void setOverlayVariant(int overlayVariant) {
+      this.entityData.set(OVERLAY, overlayVariant);
+   }
+
+   public static final EntityDataAccessor<Integer> EYES = SynchedEntityData.defineId(OCat.class, EntityDataSerializers.INT);
+   public ResourceLocation getEyeLocation() {return OCatEyeLayer.Eyes.overlayFromOrdinal(getEyes()).resourceLocation;}
+   public int getEyes() {
+      return this.entityData.get(EYES);
    }
    public void setEyes(int eyes) {
       this.entityData.set(EYES, eyes);
    }
 
+   public static final EntityDataAccessor<Boolean> COLLARED = SynchedEntityData.defineId(OCat.class, EntityDataSerializers.BOOLEAN);
+   public boolean isCollared() {
+      return this.entityData.get(COLLARED);
+   }
+   public void setCollared(boolean collared) {
+      this.entityData.set(COLLARED, collared);
+   }
+
    public void defineSynchedData() {
       super.defineSynchedData();
-      this.entityData.define(DATA_COLLAR_COLOR, DyeColor.RED.getId());
-      this.entityData.define(DATA_REMAINING_ANGER_TIME, 0);
       this.entityData.define(VARIANT, 0);
       this.entityData.define(OVERLAY, 0);
       this.entityData.define(EYES, 0);
       this.entityData.define(GENDER, 0);
-   }
-
-   public void addAdditionalSaveData(CompoundTag tag) {
-      super.addAdditionalSaveData(tag);
-      tag.putByte("CollarColor", (byte)this.getCollarColor().getId());
-      tag.putInt("Variant", getVariant());
-      tag.putInt("Overlay", getOverlay());
-      tag.putInt("Eyes", getEyes());
-      tag.putInt("Gender", this.getGender());
-      tag.putBoolean("Wandering", this.getToldToWander());
+      this.entityData.define(DATA_COLLAR_COLOR, DyeColor.RED.getId());
+      this.entityData.define(DATA_REMAINING_ANGER_TIME, 0);
+      this.entityData.define(COLLARED, false);
    }
 
    public void readAdditionalSaveData(CompoundTag tag) {
       super.readAdditionalSaveData(tag);
-      if (tag.contains("CollarColor", 99)) {
-         this.setCollarColor(DyeColor.byId(tag.getInt("CollarColor")));
-      }
 
       if (tag.contains("Variant")) {
          setVariant(tag.getInt("Variant"));
       }
 
       if (tag.contains("Overlay")) {
-         setOverlay(tag.getInt("Overlay"));
+         setOverlayVariant(tag.getInt("Overlay"));
       }
 
       if (tag.contains("Eyes")) {
@@ -520,6 +540,24 @@ public class OCat extends TamableAnimal implements GeoEntity {
       if (tag.contains("Wandering")) {
          this.setToldToWander(tag.getBoolean("Wandering"));
       }
+      if (tag.contains("CollarColor", 99)) {
+         this.setCollarColor(DyeColor.byId(tag.getInt("CollarColor")));
+      }
+
+      if(tag.contains("Collared")) {
+         this.setCollared(tag.getBoolean("Collared"));
+      }
+   }
+
+   public void addAdditionalSaveData(CompoundTag tag) {
+      super.addAdditionalSaveData(tag);
+      tag.putInt("Variant", getVariant());
+      tag.putInt("Overlay", getOverlayVariant());
+      tag.putInt("Eyes", getEyes());
+      tag.putInt("Gender", this.getGender());
+      tag.putBoolean("Wandering", this.getToldToWander());
+      tag.putByte("CollarColor", (byte)this.getCollarColor().getId());
+      tag.putBoolean("Collared", this.isCollared());
    }
 
    @Override
@@ -529,37 +567,64 @@ public class OCat extends TamableAnimal implements GeoEntity {
          data = new AgeableMobGroupData(0.2F);
       }
       Random random = new Random();
+
+      if (LivestockOverhaulCommonConfig.SPAWN_BY_BREED.get()) {
+         this.setEyeColor();
+      } else {
+         setEyes(random.nextInt(OCatEyeLayer.Eyes.values().length));
+      }
+
       setVariant(random.nextInt(OCatModel.Variant.values().length));
-      setOverlay(random.nextInt(OCatMarkingLayer.Overlay.values().length));
-      setEyes(random.nextInt(OCatEyeLayer.Eyes.values().length));
+      setOverlayVariant(random.nextInt(OCatMarkingLayer.Overlay.values().length));
       setGender(random.nextInt(OCat.Gender.values().length));
 
       return super.finalizeSpawn(serverLevelAccessor, instance, spawnType, data, tag);
+   }
+
+   public void setEyeColor() {
+
+         //white and cream cats have a better chance of gaining blue or green eyes
+         if (this.getVariant() == 4 || this.getVariant() == 14 || this.getOverlayVariant() == 85) {
+            if (random.nextDouble() < 0.10) {
+               this.setEyes(5); //green
+            } else if (random.nextDouble() < 0.30 && random.nextDouble() > 0.10) {
+               this.setEyes(4); //blue
+            } else if (random.nextDouble() > 0.30) {
+               this.setEyes(this.getRandom().nextInt(3)); //random (between orange and brown)
+            } else {
+               this.setEyes(0);
+            }
+         } else {
+            if (random.nextDouble() < 0.03) {
+               this.setEyes(5);
+            } else if (random.nextDouble() < 0.10 && random.nextDouble() > 0.03) {
+               this.setEyes(4);
+            } else if (random.nextDouble() > 0.10) {
+               this.setEyes(this.getRandom().nextInt(3));
+            } else {
+               this.setEyes(0);
+            }
+         }
+
    }
 
    public enum Gender {
       FEMALE,
       MALE
    }
-
    public boolean isFemale() {
       return this.getGender() == 0;
    }
-
    public boolean isMale() {
       return this.getGender() == 1;
    }
-
    public static final EntityDataAccessor<Integer> GENDER = SynchedEntityData.defineId(OCat.class, EntityDataSerializers.INT);
-
    public int getGender() {
       return this.entityData.get(GENDER);
    }
-
    public void setGender(int gender) {
       this.entityData.set(GENDER, gender);
    }
-
    public boolean canParent() {
       return !this.isBaby() && this.getHealth() >= this.getMaxHealth() && this.isInLove();
    }
@@ -575,13 +640,6 @@ public class OCat extends TamableAnimal implements GeoEntity {
          } else {
             OCat partner = (OCat) animal;
             if (this.canParent() && partner.canParent() && this.getGender() != partner.getGender()) {
-               return true;
-            }
-
-            boolean partnerIsFemale = partner.isFemale();
-            boolean partnerIsMale = partner.isMale();
-            if (LivestockOverhaulCommonConfig.GENDERS_AFFECT_BREEDING.get() && this.canParent() && partner.canParent()
-                    && ((isFemale() && partnerIsMale) || (isMale() && partnerIsFemale))) {
                return isFemale();
             }
          }
@@ -591,51 +649,48 @@ public class OCat extends TamableAnimal implements GeoEntity {
 
    @Override
    public AgeableMob getBreedOffspring(ServerLevel serverLevel, AgeableMob ageableMob) {
-      OCat oCat = (OCat) ageableMob;
-      if (ageableMob instanceof OCat) {
-         OCat oCat1 = (OCat) ageableMob;
-         oCat = POEntityTypes.O_CAT_ENTITY.get().create(serverLevel);
+      OCat kitten;
+      OCat partner = (OCat) ageableMob;
+      kitten = POEntityTypes.O_CAT_ENTITY.get().create(serverLevel);
 
-         int i = this.random.nextInt(9);
-         int variant;
-         if (i < 4) {
-            variant = this.getVariant();
-         } else if (i < 8) {
-            variant = oCat1.getVariant();
-         } else {
-            variant = this.random.nextInt(OCatModel.Variant.values().length);
-         }
-
-         int j = this.random.nextInt(9);
-         int overlay;
-         if (j < 4) {
-            overlay = this.getVariant();
-         } else if (j < 8) {
-            overlay = oCat1.getVariant();
-         } else {
-            overlay = this.random.nextInt(OCatMarkingLayer.Overlay.values().length);
-         }
-
-         int k = this.random.nextInt(9);
-         int eyes;
-         if (k < 4) {
-            eyes = this.getVariant();
-         } else if (k < 8) {
-            eyes = oCat1.getVariant();
-         } else {
-            eyes = this.random.nextInt(OCatEyeLayer.Eyes.values().length);
-         }
-
-         int gender;
-         gender = this.random.nextInt(OCat.Gender.values().length);
-
-         oCat.setVariant(variant);
-         oCat.setVariant(overlay);
-         oCat.setVariant(eyes);
-         oCat.setGender(gender);
+      int variantChance = this.random.nextInt(14);
+      int variant;
+      if (variantChance < 6) {
+         variant = this.getVariant();
+      } else if (variantChance < 12) {
+         variant = partner.getVariant();
+      } else {
+         variant = this.random.nextInt(OCatModel.Variant.values().length);
       }
+      kitten.setVariant(variant);
 
-      return oCat;
+      int overlayChance = this.random.nextInt(10);
+      int overlay;
+      if (overlayChance < 4) {
+         overlay = this.getOverlayVariant();
+      } else if (overlayChance < 8) {
+         overlay = partner.getOverlayVariant();
+      } else {
+         overlay = this.random.nextInt(OCatMarkingLayer.Overlay.values().length);
+      }
+      kitten.setOverlayVariant(overlay);
+
+      int eyeChance = this.random.nextInt(10);
+      int eyes;
+      if (eyeChance < 4) {
+         eyes = this.getEyes();
+      } else if (eyeChance < 8) {
+         eyes = partner.getEyes();
+      } else {
+         eyes = this.random.nextInt(OCatEyeLayer.Eyes.values().length);
+      }
+      kitten.setEyes(eyes);
+
+      int gender;
+      gender = this.random.nextInt(OCat.Gender.values().length);
+      kitten.setGender(gender);
+
+      return kitten;
    }
 
    public boolean canBeLeashed(Player p_30396_) {

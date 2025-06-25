@@ -11,9 +11,7 @@ import com.dragn0007.dragnpets.entities.cat.OCatEyeLayer;
 import com.dragn0007.dragnpets.entities.cat.OCatMarkingLayer;
 import com.dragn0007.dragnpets.entities.cat.OCatModel;
 import com.dragn0007.dragnpets.entities.cat.kornish_rex.KornishRex;
-import com.dragn0007.dragnpets.entities.cat.kornish_rex.KornishRexModel;
 import com.dragn0007.dragnpets.entities.cat.maine_coon.MaineCoon;
-import com.dragn0007.dragnpets.entities.cat.maine_coon.MaineCoonModel;
 import com.dragn0007.dragnpets.entities.dog.ODog;
 import com.dragn0007.dragnpets.entities.dog.australian_shepherd.AustralianShepherd;
 import com.dragn0007.dragnpets.entities.dog.australian_shepherd.AustralianShepherdModel;
@@ -395,7 +393,7 @@ public class SpawnReplacer {
                     return;
                 }
 
-                int i = event.getLevel().getRandom().nextInt(24);
+                int i = event.getLevel().getRandom().nextInt(34);
 
                 if (event.getLevel().getBiome(event.getEntity().blockPosition()).is(Biomes.SWAMP)) {
                     if (commonCat != null) {
@@ -405,14 +403,15 @@ public class SpawnReplacer {
                         commonCat.setAge(cat.getAge());
                         commonCat.setOwnerUUID(cat.getOwnerUUID());
 
-                        commonCat.setVariant(0);
-                        commonCat.setOverlay(0);
+                        if (LivestockOverhaulCommonConfig.SPAWN_BY_BREED.get()) {
+                            commonCat.setEyeColor();
+                        } else {
+                            commonCat.setEyes(random.nextInt(OCatEyeLayer.Eyes.values().length));
+                        }
 
-                        int randomEyes = event.getLevel().getRandom().nextInt(OCatEyeLayer.Eyes.values().length);
-                        commonCat.setEyes(randomEyes);
-
-                        int randomGender = event.getLevel().getRandom().nextInt(OCat.Gender.values().length);
-                        commonCat.setGender(randomGender);
+                        commonCat.setVariant(random.nextInt(OCatModel.Variant.values().length));
+                        commonCat.setOverlayVariant(random.nextInt(OCatMarkingLayer.Overlay.values().length));
+                        commonCat.setGender(random.nextInt(OCat.Gender.values().length));
 
                         if (event.getLevel().isClientSide) {
                             cat.remove(Entity.RemovalReason.DISCARDED);
@@ -426,7 +425,7 @@ public class SpawnReplacer {
                 }
 
                 if (commonCat != null) {
-                    if (i <= 10 && !event.getLevel().getBiome(event.getEntity().blockPosition()).is(Biomes.SWAMP)) {
+                    if (i <= 20 && !event.getLevel().getBiome(event.getEntity().blockPosition()).is(Biomes.SWAMP)) {
                         commonCat.copyPosition(cat);
 
                         commonCat.setCustomName(cat.getCustomName());
@@ -437,7 +436,7 @@ public class SpawnReplacer {
                         commonCat.setVariant(randomVariant);
 
                         int randomOverlay = event.getLevel().getRandom().nextInt(OCatMarkingLayer.Overlay.values().length);
-                        commonCat.setOverlay(randomOverlay);
+                        commonCat.setOverlayVariant(randomOverlay);
 
                         int randomEyes = event.getLevel().getRandom().nextInt(OCatEyeLayer.Eyes.values().length);
                         commonCat.setEyes(randomEyes);
@@ -457,7 +456,7 @@ public class SpawnReplacer {
                 }
 
                 if (doberman != null) {
-                    if (i == 11 && !event.getLevel().getBiome(event.getEntity().blockPosition()).is(Biomes.SWAMP)) {
+                    if (i == 21 && !event.getLevel().getBiome(event.getEntity().blockPosition()).is(Biomes.SWAMP)) {
                         doberman.copyPosition(cat);
 
                         doberman.setCustomName(cat.getCustomName());
@@ -482,7 +481,7 @@ public class SpawnReplacer {
                 }
 
                 if (labrador != null) {
-                    if (i == 12 && !event.getLevel().getBiome(event.getEntity().blockPosition()).is(Biomes.SWAMP)) {
+                    if (i == 22 && !event.getLevel().getBiome(event.getEntity().blockPosition()).is(Biomes.SWAMP)) {
                         labrador.copyPosition(cat);
 
                         labrador.setCustomName(cat.getCustomName());
@@ -507,7 +506,7 @@ public class SpawnReplacer {
                 }
 
                 if (husky != null) {
-                    if (i == 13 && !event.getLevel().getBiome(event.getEntity().blockPosition()).is(Biomes.SWAMP)) {
+                    if (i == 23 && !event.getLevel().getBiome(event.getEntity().blockPosition()).is(Biomes.SWAMP)) {
                         husky.copyPosition(cat);
 
                         husky.setCustomName(cat.getCustomName());
@@ -532,7 +531,7 @@ public class SpawnReplacer {
                 }
 
                 if (pyrenees != null) {
-                    if (i == 14 && !event.getLevel().getBiome(event.getEntity().blockPosition()).is(Biomes.SWAMP)) {
+                    if (i == 24 && !event.getLevel().getBiome(event.getEntity().blockPosition()).is(Biomes.SWAMP)) {
                         pyrenees.copyPosition(cat);
 
                         pyrenees.setCustomName(cat.getCustomName());
@@ -557,7 +556,7 @@ public class SpawnReplacer {
                 }
 
                 if (collie != null) {
-                    if (i == 15 && !event.getLevel().getBiome(event.getEntity().blockPosition()).is(Biomes.SWAMP)) {
+                    if (i == 25 && !event.getLevel().getBiome(event.getEntity().blockPosition()).is(Biomes.SWAMP)) {
                         collie.copyPosition(cat);
 
                         collie.setCustomName(cat.getCustomName());
@@ -581,33 +580,33 @@ public class SpawnReplacer {
                     }
                 }
 
-                if (maineCoon != null) {
-                    if (i == 16 && !event.getLevel().getBiome(event.getEntity().blockPosition()).is(Biomes.SWAMP)) {
-                        maineCoon.copyPosition(cat);
-
-                        maineCoon.setCustomName(cat.getCustomName());
-                        maineCoon.setAge(cat.getAge());
-                        maineCoon.setOwnerUUID(cat.getOwnerUUID());
-
-                        int randomVariant = event.getLevel().getRandom().nextInt(MaineCoonModel.Variant.values().length);
-                        maineCoon.setVariant(randomVariant);
-
-                        int randomGender = event.getLevel().getRandom().nextInt(OCat.Gender.values().length);
-                        maineCoon.setGender(randomGender);
-
-                        if (event.getLevel().isClientSide) {
-                            cat.remove(Entity.RemovalReason.DISCARDED);
-                        }
-
-                        event.getLevel().addFreshEntity(maineCoon);
-                        cat.remove(Entity.RemovalReason.DISCARDED);
-
-                        event.setCanceled(true);
-                    }
-                }
+//                if (maineCoon != null) {
+//                    if (i == 26 && !event.getLevel().getBiome(event.getEntity().blockPosition()).is(Biomes.SWAMP)) {
+//                        maineCoon.copyPosition(cat);
+//
+//                        maineCoon.setCustomName(cat.getCustomName());
+//                        maineCoon.setAge(cat.getAge());
+//                        maineCoon.setOwnerUUID(cat.getOwnerUUID());
+//
+//                        int randomVariant = event.getLevel().getRandom().nextInt(MaineCoonModel.Variant.values().length);
+//                        maineCoon.setVariant(randomVariant);
+//
+//                        int randomGender = event.getLevel().getRandom().nextInt(OCat.Gender.values().length);
+//                        maineCoon.setGender(randomGender);
+//
+//                        if (event.getLevel().isClientSide) {
+//                            cat.remove(Entity.RemovalReason.DISCARDED);
+//                        }
+//
+//                        event.getLevel().addFreshEntity(maineCoon);
+//                        cat.remove(Entity.RemovalReason.DISCARDED);
+//
+//                        event.setCanceled(true);
+//                    }
+//                }
 
                 if (bernese != null) {
-                    if (i == 17 && !event.getLevel().getBiome(event.getEntity().blockPosition()).is(Biomes.SWAMP)) {
+                    if (i == 27 && !event.getLevel().getBiome(event.getEntity().blockPosition()).is(Biomes.SWAMP)) {
                         bernese.copyPosition(cat);
 
                         bernese.setCustomName(cat.getCustomName());
@@ -632,7 +631,7 @@ public class SpawnReplacer {
                 }
 
                 if (aShepherd != null) {
-                    if (i == 18 && !event.getLevel().getBiome(event.getEntity().blockPosition()).is(Biomes.SWAMP)) {
+                    if (i == 28 && !event.getLevel().getBiome(event.getEntity().blockPosition()).is(Biomes.SWAMP)) {
                         aShepherd.copyPosition(cat);
 
                         aShepherd.setCustomName(cat.getCustomName());
@@ -657,7 +656,7 @@ public class SpawnReplacer {
                 }
 
                 if (bloodhound != null) {
-                    if (i == 19 && !event.getLevel().getBiome(event.getEntity().blockPosition()).is(Biomes.SWAMP)) {
+                    if (i == 29 && !event.getLevel().getBiome(event.getEntity().blockPosition()).is(Biomes.SWAMP)) {
                         bloodhound.copyPosition(cat);
 
                         bloodhound.setCustomName(cat.getCustomName());
@@ -681,33 +680,33 @@ public class SpawnReplacer {
                     }
                 }
 
-                if (kornishRex != null) {
-                    if (i == 20 && !event.getLevel().getBiome(event.getEntity().blockPosition()).is(Biomes.SWAMP)) {
-                        kornishRex.copyPosition(cat);
-
-                        kornishRex.setCustomName(cat.getCustomName());
-                        kornishRex.setAge(cat.getAge());
-                        kornishRex.setOwnerUUID(cat.getOwnerUUID());
-
-                        int randomVariant = event.getLevel().getRandom().nextInt(KornishRexModel.Variant.values().length);
-                        kornishRex.setVariant(randomVariant);
-
-                        int randomGender = event.getLevel().getRandom().nextInt(ODog.Gender.values().length);
-                        kornishRex.setGender(randomGender);
-
-                        if (event.getLevel().isClientSide) {
-                            cat.remove(Entity.RemovalReason.DISCARDED);
-                        }
-
-                        event.getLevel().addFreshEntity(kornishRex);
-                        cat.remove(Entity.RemovalReason.DISCARDED);
-
-                        event.setCanceled(true);
-                    }
-                }
+//                if (kornishRex != null) {
+//                    if (i == 30 && !event.getLevel().getBiome(event.getEntity().blockPosition()).is(Biomes.SWAMP)) {
+//                        kornishRex.copyPosition(cat);
+//
+//                        kornishRex.setCustomName(cat.getCustomName());
+//                        kornishRex.setAge(cat.getAge());
+//                        kornishRex.setOwnerUUID(cat.getOwnerUUID());
+//
+//                        int randomVariant = event.getLevel().getRandom().nextInt(KornishRexModel.Variant.values().length);
+//                        kornishRex.setVariant(randomVariant);
+//
+//                        int randomGender = event.getLevel().getRandom().nextInt(ODog.Gender.values().length);
+//                        kornishRex.setGender(randomGender);
+//
+//                        if (event.getLevel().isClientSide) {
+//                            cat.remove(Entity.RemovalReason.DISCARDED);
+//                        }
+//
+//                        event.getLevel().addFreshEntity(kornishRex);
+//                        cat.remove(Entity.RemovalReason.DISCARDED);
+//
+//                        event.setCanceled(true);
+//                    }
+//                }
 
                 if (cockerSpaniel != null) {
-                    if (i == 21 && !event.getLevel().getBiome(event.getEntity().blockPosition()).is(Biomes.SWAMP)) {
+                    if (i == 31 && !event.getLevel().getBiome(event.getEntity().blockPosition()).is(Biomes.SWAMP)) {
                         cockerSpaniel.copyPosition(cat);
 
                         cockerSpaniel.setCustomName(cat.getCustomName());
@@ -735,7 +734,7 @@ public class SpawnReplacer {
                 }
 
                 if (whippet != null) {
-                    if (i == 22 && !event.getLevel().getBiome(event.getEntity().blockPosition()).is(Biomes.SWAMP)) {
+                    if (i == 32 && !event.getLevel().getBiome(event.getEntity().blockPosition()).is(Biomes.SWAMP)) {
                         whippet.copyPosition(cat);
 
                         whippet.setCustomName(cat.getCustomName());
@@ -763,7 +762,7 @@ public class SpawnReplacer {
                 }
 
                 if (rottweiler != null) {
-                    if (i == 23 && !event.getLevel().getBiome(event.getEntity().blockPosition()).is(Biomes.SWAMP)) {
+                    if (i == 33 && !event.getLevel().getBiome(event.getEntity().blockPosition()).is(Biomes.SWAMP)) {
                         rottweiler.copyPosition(cat);
 
                         rottweiler.setCustomName(cat.getCustomName());
