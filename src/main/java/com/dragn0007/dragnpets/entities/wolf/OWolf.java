@@ -12,6 +12,7 @@ import com.dragn0007.dragnpets.PetsOverhaul;
 import com.dragn0007.dragnpets.entities.POEntityTypes;
 import com.dragn0007.dragnpets.entities.ai.CanineFollowPackLeaderGoal;
 import com.dragn0007.dragnpets.entities.ai.WolfFollowOwnerGoal;
+import com.dragn0007.dragnpets.entities.ocelot.OOcelotEyeLayer;
 import com.dragn0007.dragnpets.util.POTags;
 import com.dragn0007.dragnpets.util.PetsOverhaulCommonConfig;
 import net.minecraft.ChatFormatting;

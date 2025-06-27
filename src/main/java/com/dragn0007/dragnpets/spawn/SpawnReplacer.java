@@ -40,6 +40,8 @@ import com.dragn0007.dragnpets.entities.dog.whippet.WhippetModel;
 import com.dragn0007.dragnpets.entities.fox.OFox;
 import com.dragn0007.dragnpets.entities.fox.OFoxMarkingLayer;
 import com.dragn0007.dragnpets.entities.ocelot.OOcelot;
+import com.dragn0007.dragnpets.entities.ocelot.OOcelotEyeLayer;
+import com.dragn0007.dragnpets.entities.ocelot.OOcelotMarkingLayer;
 import com.dragn0007.dragnpets.entities.ocelot.OOcelotModel;
 import com.dragn0007.dragnpets.entities.parrot.*;
 import com.dragn0007.dragnpets.entities.tropical_fish.OTropicalFish;
@@ -141,11 +143,17 @@ public class SpawnReplacer {
                     oOcelot.setCustomName(vanillaOcelot.getCustomName());
                     oOcelot.setAge(vanillaOcelot.getAge());
 
-                    int randomVariant = event.getLevel().getRandom().nextInt(OOcelotModel.Variant.values().length);
-                    oOcelot.setVariant(randomVariant);
+                    if (LivestockOverhaulCommonConfig.SPAWN_BY_BREED.get()) {
+                        oOcelot.setColor();
+                        oOcelot.setMarking();
+                        oOcelot.setEyeColor();
+                    } else {
+                        oOcelot.setVariant(random.nextInt(OOcelotModel.Variant.values().length));
+                        oOcelot.setOverlayVariant(random.nextInt(OOcelotMarkingLayer.Overlay.values().length));
+                        oOcelot.setEyes(random.nextInt(OOcelotEyeLayer.Eyes.values().length));
+                    }
 
-                    int randomGender = event.getLevel().getRandom().nextInt(OOcelot.Gender.values().length);
-                    oOcelot.setGender(randomGender);
+                    oOcelot.setGender(random.nextInt(OOcelot.Gender.values().length));
 
                     if (event.getLevel().isClientSide) {
                         vanillaOcelot.remove(Entity.RemovalReason.DISCARDED);
@@ -432,17 +440,15 @@ public class SpawnReplacer {
                         commonCat.setAge(cat.getAge());
                         commonCat.setOwnerUUID(cat.getOwnerUUID());
 
-                        int randomVariant = event.getLevel().getRandom().nextInt(OCatModel.Variant.values().length);
-                        commonCat.setVariant(randomVariant);
+                        if (LivestockOverhaulCommonConfig.SPAWN_BY_BREED.get()) {
+                            commonCat.setEyeColor();
+                        } else {
+                            commonCat.setEyes(random.nextInt(OCatEyeLayer.Eyes.values().length));
+                        }
 
-                        int randomOverlay = event.getLevel().getRandom().nextInt(OCatMarkingLayer.Overlay.values().length);
-                        commonCat.setOverlayVariant(randomOverlay);
-
-                        int randomEyes = event.getLevel().getRandom().nextInt(OCatEyeLayer.Eyes.values().length);
-                        commonCat.setEyes(randomEyes);
-
-                        int randomGender = event.getLevel().getRandom().nextInt(OCat.Gender.values().length);
-                        commonCat.setGender(randomGender);
+                        commonCat.setVariant(random.nextInt(OCatModel.Variant.values().length));
+                        commonCat.setOverlayVariant(random.nextInt(OCatMarkingLayer.Overlay.values().length));
+                        commonCat.setGender(random.nextInt(OCat.Gender.values().length));
 
                         if (event.getLevel().isClientSide) {
                             cat.remove(Entity.RemovalReason.DISCARDED);

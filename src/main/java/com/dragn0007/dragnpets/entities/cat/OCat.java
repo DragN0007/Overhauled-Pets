@@ -247,7 +247,6 @@ public class OCat extends TamableAnimal implements GeoEntity {
    public int regenHealthCounter = 0;
    public int wagCounter = this.random.nextInt(1200) + 1200;
    public int stayWaggingCounter = 0;
-
    private boolean wag = false;
    public boolean isWagging() {
       return this.wag;

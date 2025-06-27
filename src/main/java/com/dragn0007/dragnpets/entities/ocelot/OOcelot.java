@@ -6,6 +6,10 @@ import com.dragn0007.dragnlivestock.util.LivestockOverhaulCommonConfig;
 import com.dragn0007.dragnpets.PetsOverhaul;
 import com.dragn0007.dragnpets.entities.POEntityTypes;
 import com.dragn0007.dragnpets.entities.ai.OcelotFollowOwnerGoal;
+import com.dragn0007.dragnpets.entities.cat.OCat;
+import com.dragn0007.dragnpets.entities.cat.OCatEyeLayer;
+import com.dragn0007.dragnpets.entities.cat.OCatMarkingLayer;
+import com.dragn0007.dragnpets.entities.cat.OCatModel;
 import com.dragn0007.dragnpets.util.POTags;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.particles.ParticleOptions;
@@ -128,27 +132,29 @@ public class OOcelot extends TamableAnimal implements GeoEntity {
 
    public <T extends GeoAnimatable> PlayState predicate(software.bernie.geckolib.core.animation.AnimationState<T> tAnimationState) {
       double currentSpeed = this.getDeltaMovement().lengthSqr();
-      double speedThreshold = 0.015;
+      double speedThreshold = 0.02;
 
       AnimationController<T> controller = tAnimationState.getController();
 
       if (tAnimationState.isMoving()) {
          if (currentSpeed > speedThreshold) {
             controller.setAnimation(RawAnimation.begin().then("run", Animation.LoopType.LOOP));
-            controller.setAnimationSpeed(1.3);
+            controller.setAnimationSpeed(1.4);
          } else {
             controller.setAnimation(RawAnimation.begin().then("walk", Animation.LoopType.LOOP));
-            controller.setAnimationSpeed(1.3);
+            controller.setAnimationSpeed(1.4);
          }
       } else {
          if (isInSittingPose()) {
-            controller.setAnimation(RawAnimation.begin().then("loaf", Animation.LoopType.LOOP));
+            controller.setAnimation(RawAnimation.begin().then("sit", Animation.LoopType.LOOP));
+            controller.setAnimationSpeed(1.0);
+         } else if (this.isWagging()) {
+            controller.setAnimation(RawAnimation.begin().then("flick_tail", Animation.LoopType.LOOP));
             controller.setAnimationSpeed(1.0);
          } else {
             controller.setAnimation(RawAnimation.begin().then("idle", Animation.LoopType.LOOP));
          }
       }
-
       return PlayState.CONTINUE;
    }
 
@@ -183,10 +189,30 @@ public class OOcelot extends TamableAnimal implements GeoEntity {
    }
 
    public int regenHealthCounter = 0;
+   public int wagCounter = this.random.nextInt(1200) + 1200;
+   public int stayWaggingCounter = 0;
+   private boolean wag = false;
+   public boolean isWagging() {
+      return this.wag;
+   }
+   public void setWagging(boolean wagging) {
+      this.wag = wagging;
+   }
 
-   @Override
    public void tick() {
       super.tick();
+
+      wagCounter--;
+
+      if (--this.wagCounter <= 0) {
+         this.stayWaggingCounter++;
+         setWagging(true);
+         if (this.stayWaggingCounter >= 300) {
+            this.wagCounter = this.random.nextInt(1200) + 1200;
+            this.stayWaggingCounter = 0;
+            setWagging(false);
+         }
+      }
 
       regenHealthCounter++;
 
@@ -375,44 +401,67 @@ public class OOcelot extends TamableAnimal implements GeoEntity {
 
 
    // Generates the base texture
-   public ResourceLocation getTextureResource() {
+   public static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(OOcelot.class, EntityDataSerializers.INT);
+   public ResourceLocation getTextureLocation() {
       return OOcelotModel.Variant.variantFromOrdinal(getVariant()).resourceLocation;
    }
-
-   public static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(OOcelot.class, EntityDataSerializers.INT);
-
    public int getVariant() {
       return this.entityData.get(VARIANT);
    }
-
    public void setVariant(int variant) {
       this.entityData.set(VARIANT, variant);
    }
 
-   public void defineSynchedData() {
-      super.defineSynchedData();
-      this.entityData.define(DATA_COLLAR_COLOR, DyeColor.RED.getId());
-      this.entityData.define(DATA_REMAINING_ANGER_TIME, 0);
-      this.entityData.define(VARIANT, 0);
-      this.entityData.define(GENDER, 0);
+   public static final EntityDataAccessor<Integer> OVERLAY = SynchedEntityData.defineId(OOcelot.class, EntityDataSerializers.INT);
+   public ResourceLocation getOverlayLocation() {return OOcelotMarkingLayer.Overlay.overlayFromOrdinal(getOverlayVariant()).resourceLocation;}
+   public int getOverlayVariant() {
+      return this.entityData.get(OVERLAY);
+   }
+   public void setOverlayVariant(int overlayVariant) {
+      this.entityData.set(OVERLAY, overlayVariant);
    }
 
-   public void addAdditionalSaveData(CompoundTag tag) {
-      super.addAdditionalSaveData(tag);
-      tag.putByte("CollarColor", (byte)this.getCollarColor().getId());
-      tag.putInt("Variant", getVariant());
-      tag.putInt("Gender", this.getGender());
-      tag.putBoolean("Wandering", this.getToldToWander());
+   public static final EntityDataAccessor<Integer> EYES = SynchedEntityData.defineId(OOcelot.class, EntityDataSerializers.INT);
+   public ResourceLocation getEyeLocation() {return OOcelotEyeLayer.Eyes.overlayFromOrdinal(getEyes()).resourceLocation;}
+   public int getEyes() {
+      return this.entityData.get(EYES);
+   }
+   public void setEyes(int eyes) {
+      this.entityData.set(EYES, eyes);
+   }
+
+   public static final EntityDataAccessor<Boolean> COLLARED = SynchedEntityData.defineId(OOcelot.class, EntityDataSerializers.BOOLEAN);
+   public boolean isCollared() {
+      return this.entityData.get(COLLARED);
+   }
+   public void setCollared(boolean collared) {
+      this.entityData.set(COLLARED, collared);
+   }
+
+   public void defineSynchedData() {
+      super.defineSynchedData();
+      this.entityData.define(VARIANT, 0);
+      this.entityData.define(OVERLAY, 0);
+      this.entityData.define(EYES, 0);
+      this.entityData.define(GENDER, 0);
+      this.entityData.define(DATA_COLLAR_COLOR, DyeColor.RED.getId());
+      this.entityData.define(DATA_REMAINING_ANGER_TIME, 0);
+      this.entityData.define(COLLARED, false);
    }
 
    public void readAdditionalSaveData(CompoundTag tag) {
       super.readAdditionalSaveData(tag);
-      if (tag.contains("CollarColor", 99)) {
-         this.setCollarColor(DyeColor.byId(tag.getInt("CollarColor")));
-      }
 
       if (tag.contains("Variant")) {
          setVariant(tag.getInt("Variant"));
+      }
+
+      if (tag.contains("Overlay")) {
+         setOverlayVariant(tag.getInt("Overlay"));
+      }
+
+      if (tag.contains("Eyes")) {
+         setEyes(tag.getInt("Eyes"));
       }
 
       if (tag.contains("Gender")) {
@@ -422,6 +471,24 @@ public class OOcelot extends TamableAnimal implements GeoEntity {
       if (tag.contains("Wandering")) {
          this.setToldToWander(tag.getBoolean("Wandering"));
       }
+      if (tag.contains("CollarColor", 99)) {
+         this.setCollarColor(DyeColor.byId(tag.getInt("CollarColor")));
+      }
+
+      if(tag.contains("Collared")) {
+         this.setCollared(tag.getBoolean("Collared"));
+      }
+   }
+
+   public void addAdditionalSaveData(CompoundTag tag) {
+      super.addAdditionalSaveData(tag);
+      tag.putInt("Variant", getVariant());
+      tag.putInt("Overlay", getOverlayVariant());
+      tag.putInt("Eyes", getEyes());
+      tag.putInt("Gender", this.getGender());
+      tag.putBoolean("Wandering", this.getToldToWander());
+      tag.putByte("CollarColor", (byte)this.getCollarColor().getId());
+      tag.putBoolean("Collared", this.isCollared());
    }
 
    @Override
@@ -431,31 +498,89 @@ public class OOcelot extends TamableAnimal implements GeoEntity {
          data = new AgeableMobGroupData(0.2F);
       }
       Random random = new Random();
-      setVariant(random.nextInt(OOcelotModel.Variant.values().length));
+
+      if (LivestockOverhaulCommonConfig.SPAWN_BY_BREED.get()) {
+         this.setColor();
+         this.setMarking();
+         this.setEyeColor();
+      } else {
+         setVariant(random.nextInt(OOcelotModel.Variant.values().length));
+         setOverlayVariant(random.nextInt(OOcelotMarkingLayer.Overlay.values().length));
+         setEyes(random.nextInt(OOcelotEyeLayer.Eyes.values().length));
+      }
+
       setGender(random.nextInt(OOcelot.Gender.values().length));
 
       return super.finalizeSpawn(serverLevelAccessor, instance, spawnType, data, tag);
+   }
+
+   public void setEyeColor() {
+
+      //white and cream cats have a better chance of gaining blue or green eyes
+      if (this.getVariant() == 1 || this.getVariant() == 4) {
+         if (random.nextDouble() < 0.10) {
+            this.setEyes(5); //green
+         } else if (random.nextDouble() < 0.30 && random.nextDouble() > 0.10) {
+            this.setEyes(4); //blue
+         } else if (random.nextDouble() > 0.30) {
+            this.setEyes(this.getRandom().nextInt(3)); //random (between orange and brown)
+         } else {
+            this.setEyes(0);
+         }
+      } else {
+         if (random.nextDouble() < 0.03) {
+            this.setEyes(5);
+         } else if (random.nextDouble() < 0.10 && random.nextDouble() > 0.03) {
+            this.setEyes(4);
+         } else if (random.nextDouble() > 0.10) {
+            this.setEyes(this.getRandom().nextInt(3));
+         } else {
+            this.setEyes(0);
+         }
+      }
+
+   }
+
+   public void setColor() {
+
+      if (random.nextDouble() < 0.10) {
+         int[] variants = {0, 2, 4};
+         int randomIndex = new Random().nextInt(variants.length);
+         this.setVariant(variants[randomIndex]);
+      } else if (random.nextDouble() < 0.30 && random.nextDouble() > 0.10) {
+         int[] variants = {1, 3};
+         int randomIndex = new Random().nextInt(variants.length);
+         this.setVariant(variants[randomIndex]);
+      } else if (random.nextDouble() > 0.30) {
+         this.setVariant(5);
+      }
+
+   }
+
+   public void setMarking() {
+
+      if (random.nextDouble() < 0.02) {
+         setOverlayVariant(random.nextInt(OOcelotMarkingLayer.Overlay.values().length));
+      } else if (random.nextDouble() > 0.05) {
+         this.setOverlayVariant(0);
+      }
+
    }
 
    public enum Gender {
       FEMALE,
       MALE
    }
-
    public boolean isFemale() {
       return this.getGender() == 0;
    }
-
    public boolean isMale() {
       return this.getGender() == 1;
    }
-
    public static final EntityDataAccessor<Integer> GENDER = SynchedEntityData.defineId(OOcelot.class, EntityDataSerializers.INT);
-
    public int getGender() {
       return this.entityData.get(GENDER);
    }
-
    public void setGender(int gender) {
       this.entityData.set(GENDER, gender);
    }
@@ -475,13 +600,6 @@ public class OOcelot extends TamableAnimal implements GeoEntity {
          } else {
             OOcelot partner = (OOcelot) animal;
             if (this.canParent() && partner.canParent() && this.getGender() != partner.getGender()) {
-               return true;
-            }
-
-            boolean partnerIsFemale = partner.isFemale();
-            boolean partnerIsMale = partner.isMale();
-            if (LivestockOverhaulCommonConfig.GENDERS_AFFECT_BREEDING.get() && this.canParent() && partner.canParent()
-                    && ((isFemale() && partnerIsMale) || (isMale() && partnerIsFemale))) {
                return isFemale();
             }
          }
@@ -491,29 +609,48 @@ public class OOcelot extends TamableAnimal implements GeoEntity {
 
    @Override
    public AgeableMob getBreedOffspring(ServerLevel serverLevel, AgeableMob ageableMob) {
-      OOcelot oOcelot = (OOcelot) ageableMob;
-      if (ageableMob instanceof OOcelot) {
-         OOcelot ocelot = (OOcelot) ageableMob;
-         oOcelot = POEntityTypes.O_OCELOT_ENTITY.get().create(serverLevel);
+      OOcelot kitten;
+      OOcelot partner = (OOcelot) ageableMob;
+      kitten = POEntityTypes.O_OCELOT_ENTITY.get().create(serverLevel);
 
-         int i = this.random.nextInt(9);
-         int variant;
-         if (i < 4) {
-            variant = this.getVariant();
-         } else if (i < 8) {
-            variant = ocelot.getVariant();
-         } else {
-            variant = this.random.nextInt(OOcelotModel.Variant.values().length);
-         }
-
-         int gender;
-         gender = this.random.nextInt(OOcelot.Gender.values().length);
-
-         oOcelot.setVariant(variant);
-         oOcelot.setGender(gender);
+      int variantChance = this.random.nextInt(14);
+      int variant;
+      if (variantChance < 6) {
+         variant = this.getVariant();
+      } else if (variantChance < 12) {
+         variant = partner.getVariant();
+      } else {
+         variant = this.random.nextInt(OOcelotModel.Variant.values().length);
       }
+      kitten.setVariant(variant);
 
-      return oOcelot;
+      int overlayChance = this.random.nextInt(10);
+      int overlay;
+      if (overlayChance < 4) {
+         overlay = this.getOverlayVariant();
+      } else if (overlayChance < 8) {
+         overlay = partner.getOverlayVariant();
+      } else {
+         overlay = this.random.nextInt(OOcelotMarkingLayer.Overlay.values().length);
+      }
+      kitten.setOverlayVariant(overlay);
+
+      int eyeChance = this.random.nextInt(10);
+      int eyes;
+      if (eyeChance < 4) {
+         eyes = this.getEyes();
+      } else if (eyeChance < 8) {
+         eyes = partner.getEyes();
+      } else {
+         eyes = this.random.nextInt(OOcelotEyeLayer.Eyes.values().length);
+      }
+      kitten.setEyes(eyes);
+
+      int gender;
+      gender = this.random.nextInt(OOcelot.Gender.values().length);
+      kitten.setGender(gender);
+
+      return kitten;
    }
 
 
