@@ -63,12 +63,18 @@ import java.util.stream.Stream;
 
 public class ODog extends TamableAnimal implements NeutralMob, GeoEntity {
 
+
+
    public static final ResourceLocation LOOT_TABLE = new ResourceLocation(PetsOverhaul.MODID, "entities/o_wolf");
    public static final ResourceLocation VANILLA_LOOT_TABLE = new ResourceLocation("minecraft", "entities/wolf");
+   private static final ResourceLocation TFC_LOOT_TABLE = new ResourceLocation("tfc", "entities/dog");
    @Override
    public @NotNull ResourceLocation getDefaultLootTable() {
       if (LivestockOverhaulCommonConfig.USE_VANILLA_LOOT.get()) {
          return VANILLA_LOOT_TABLE;
+      }
+      if (ModList.get().isLoaded("tfc")) {
+         return TFC_LOOT_TABLE;
       }
       return LOOT_TABLE;
    }

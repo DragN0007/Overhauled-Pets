@@ -1,0 +1,12 @@
+{
+  "replace": false,
+  "values": [
+    "dragnpets:o_wolf",
+    "dragnpets:o_ocelot",
+    "dragnpets:o_fox",
+    "dragnpets:o_cat",
+    "dragnpets:o_parrot",
+    "dragnpets:o_axolotl",
+    "dragnpets:o_tropical_fish"
+  ]
+}

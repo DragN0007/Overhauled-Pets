@@ -1,0 +1,9 @@
+{
+  "ingredient": {
+    "item": "dragnpets:cooked_tropical_fish_fillet"
+  },
+  "hunger": 3,
+  "saturation": 1,
+  "decay_modifier": 2.25,
+  "protein": 2
+}

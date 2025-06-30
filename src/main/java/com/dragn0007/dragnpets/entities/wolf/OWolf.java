@@ -1,7 +1,6 @@
 package com.dragn0007.dragnpets.entities.wolf;
 
 import com.dragn0007.dragnlivestock.entities.EntityTypes;
-import com.dragn0007.dragnlivestock.entities.cow.OCow;
 import com.dragn0007.dragnlivestock.entities.cow.ox.Ox;
 import com.dragn0007.dragnlivestock.entities.donkey.ODonkey;
 import com.dragn0007.dragnlivestock.entities.llama.OLlama;
@@ -12,7 +11,6 @@ import com.dragn0007.dragnpets.PetsOverhaul;
 import com.dragn0007.dragnpets.entities.POEntityTypes;
 import com.dragn0007.dragnpets.entities.ai.CanineFollowPackLeaderGoal;
 import com.dragn0007.dragnpets.entities.ai.WolfFollowOwnerGoal;
-import com.dragn0007.dragnpets.entities.ocelot.OOcelotEyeLayer;
 import com.dragn0007.dragnpets.util.POTags;
 import com.dragn0007.dragnpets.util.PetsOverhaulCommonConfig;
 import net.minecraft.ChatFormatting;
@@ -78,10 +76,14 @@ public class OWolf extends TamableAnimal implements NeutralMob, GeoEntity {
 
    public static final ResourceLocation LOOT_TABLE = new ResourceLocation(PetsOverhaul.MODID, "entities/o_wolf");
    public static final ResourceLocation VANILLA_LOOT_TABLE = new ResourceLocation("minecraft", "entities/wolf");
+   private static final ResourceLocation TFC_LOOT_TABLE = new ResourceLocation("tfc", "entities/wolf");
    @Override
    public @NotNull ResourceLocation getDefaultLootTable() {
       if (LivestockOverhaulCommonConfig.USE_VANILLA_LOOT.get()) {
          return VANILLA_LOOT_TABLE;
+      }
+      if (ModList.get().isLoaded("tfc")) {
+         return TFC_LOOT_TABLE;
       }
       return LOOT_TABLE;
    }

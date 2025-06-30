@@ -6,10 +6,6 @@ import com.dragn0007.dragnlivestock.util.LivestockOverhaulCommonConfig;
 import com.dragn0007.dragnpets.PetsOverhaul;
 import com.dragn0007.dragnpets.entities.POEntityTypes;
 import com.dragn0007.dragnpets.entities.ai.OcelotFollowOwnerGoal;
-import com.dragn0007.dragnpets.entities.cat.OCat;
-import com.dragn0007.dragnpets.entities.cat.OCatEyeLayer;
-import com.dragn0007.dragnpets.entities.cat.OCatMarkingLayer;
-import com.dragn0007.dragnpets.entities.cat.OCatModel;
 import com.dragn0007.dragnpets.util.POTags;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.particles.ParticleOptions;
@@ -44,6 +40,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.fml.ModList;
 import org.jetbrains.annotations.NotNull;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.core.animatable.GeoAnimatable;
@@ -74,10 +71,14 @@ public class OOcelot extends TamableAnimal implements GeoEntity {
 
    public static final ResourceLocation LOOT_TABLE = new ResourceLocation(PetsOverhaul.MODID, "entities/o_ocelot");
    public static final ResourceLocation VANILLA_LOOT_TABLE = new ResourceLocation("minecraft", "entities/ocelot");
+   private static final ResourceLocation TFC_LOOT_TABLE = new ResourceLocation("tfc", "entities/cat");
    @Override
    public @NotNull ResourceLocation getDefaultLootTable() {
       if (LivestockOverhaulCommonConfig.USE_VANILLA_LOOT.get()) {
          return VANILLA_LOOT_TABLE;
+      }
+      if (ModList.get().isLoaded("tfc")) {
+         return TFC_LOOT_TABLE;
       }
       return LOOT_TABLE;
    }

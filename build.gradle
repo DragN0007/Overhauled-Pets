@@ -97,7 +97,7 @@ repositories {
 }
 
 dependencies {
-    minecraft "net.minecraftforge:forge:1.20.1-47.2.0"
+    minecraft "net.minecraftforge:forge:1.20.1-47.3.0" // 47.2.0 is Recommended
     implementation fg.deobf('com.dragn0007.dragnlivestock:Livestock_Overhaul_1.20.1:1.20.1-2.8')
     implementation fg.deobf('software.bernie.geckolib:geckolib-forge-1.20.1:4.4.4')
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
@@ -109,6 +109,9 @@ dependencies {
     implementation fg.deobf("curse.maven:xaeros-minimap-263420:6012833")
     implementation fg.deobf("curse.maven:jei-238222:6075247")
     implementation fg.deobf("curse.maven:worldedit-225608:4586218")
+    implementation fg.deobf("curse.maven:architectury-api-419699:5137938")
+    implementation fg.deobf("curse.maven:patchouli-306770:4966125")
+    implementation fg.deobf("curse.maven:terrafirmacraft-302973:5943050")
 }
 
 mixin {

@@ -1,7 +1,6 @@
 package com.dragn0007.dragnpets.entities.wolf;
 
 import com.dragn0007.dragnlivestock.LivestockOverhaul;
-import com.dragn0007.dragnlivestock.entities.rabbit.ORabbit;
 import com.dragn0007.dragnpets.PetsOverhaul;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
@@ -9,7 +8,6 @@ import software.bernie.geckolib.constant.DataTickets;
 import software.bernie.geckolib.core.animatable.model.CoreGeoBone;
 import software.bernie.geckolib.core.animation.AnimationState;
 import software.bernie.geckolib.model.DefaultedEntityGeoModel;
-import software.bernie.geckolib.model.GeoModel;
 import software.bernie.geckolib.model.data.EntityModelData;
 
 public class OWolfModel extends DefaultedEntityGeoModel<OWolf> {
