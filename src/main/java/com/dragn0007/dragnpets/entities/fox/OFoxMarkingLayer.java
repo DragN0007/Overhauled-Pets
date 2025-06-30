@@ -19,7 +19,7 @@ public class OFoxMarkingLayer extends GeoRenderLayer<OFox> {
     @Override
     public void render(PoseStack poseStack, OFox animatable, BakedGeoModel bakedModel, RenderType renderType, MultiBufferSource bufferSource, VertexConsumer buffer, float partialTick, int packedLight, int packedOverlay) {
 
-        RenderType renderMarkingType = RenderType.entityCutout(animatable.getOverlayResource());
+        RenderType renderMarkingType = RenderType.entityCutout(animatable.getOverlayLocation());
         poseStack.pushPose();
         poseStack.scale(1.0f, 1.0f, 1.0f);
         poseStack.translate(0.0d, 0.0d, 0.0d);
@@ -35,12 +35,19 @@ public class OFoxMarkingLayer extends GeoRenderLayer<OFox> {
 
     public enum Overlay {
         NONE(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/fox/overlay/none.png")),
-        GOLD_CROSS(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/fox/overlay/ov_gold_cross.png")),
-        MARBLED(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/fox/overlay/ov_marbled.png")),
-        PIEBALD(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/fox/overlay/ov_piebald.png")),
-        SPOTTED(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/fox/overlay/ov_spotted.png")),
-        STANDARD_CROSS(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/fox/overlay/ov_standard_cross.png")),
-        WHITE_MARK(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/fox/overlay/ov_white_mark.png"));
+        BLACK_FULL(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/fox/overlay/black_full.png")),
+        BLACK_HALF(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/fox/overlay/black_half.png")),
+        BLACK_MINIMAL(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/fox/overlay/black_minimal.png")),
+        BLUE_FULL(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/fox/overlay/blue_full.png")),
+        BLUE_HALF(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/fox/overlay/blue_half.png")),
+        BLUE_MINIMAL(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/fox/overlay/blue_minimal.png")),
+        CREAM_FULL(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/fox/overlay/cream_full.png")),
+        CREAM_HALF(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/fox/overlay/cream_half.png")),
+        CREAM_MINIMAL(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/fox/overlay/cream_minimal.png")),
+        SILVER_FULL(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/fox/overlay/silver_full.png")),
+        SILVER_HALF(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/fox/overlay/silver_half.png")),
+        SILVER_MINIMAL(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/fox/overlay/silver_minimal.png")),
+        ;
 
         public final ResourceLocation resourceLocation;
         Overlay(ResourceLocation resourceLocation) {

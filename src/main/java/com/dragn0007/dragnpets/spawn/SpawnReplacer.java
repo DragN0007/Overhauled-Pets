@@ -1,5 +1,6 @@
 package com.dragn0007.dragnpets.spawn;
 
+import com.dragn0007.dragnlivestock.entities.sheep.SheepBreed;
 import com.dragn0007.dragnlivestock.util.LivestockOverhaulCommonConfig;
 import com.dragn0007.dragnpets.PetsOverhaul;
 import com.dragn0007.dragnpets.entities.POEntityTypes;
@@ -39,6 +40,7 @@ import com.dragn0007.dragnpets.entities.dog.whippet.WhippetMarkingLayer;
 import com.dragn0007.dragnpets.entities.dog.whippet.WhippetModel;
 import com.dragn0007.dragnpets.entities.fox.OFox;
 import com.dragn0007.dragnpets.entities.fox.OFoxMarkingLayer;
+import com.dragn0007.dragnpets.entities.fox.OFoxModel;
 import com.dragn0007.dragnpets.entities.ocelot.OOcelot;
 import com.dragn0007.dragnpets.entities.ocelot.OOcelotEyeLayer;
 import com.dragn0007.dragnpets.entities.ocelot.OOcelotMarkingLayer;
@@ -127,10 +129,9 @@ public class SpawnReplacer {
         }
 
         //Ocelot
-        if (!LivestockOverhaulCommonConfig.FAILSAFE_REPLACER.get() && PetsOverhaulCommonConfig.REPLACE_OCELOTS.get() && event.getEntity() instanceof Ocelot) {
+        if (!LivestockOverhaulCommonConfig.FAILSAFE_REPLACER.get() && PetsOverhaulCommonConfig.REPLACE_OCELOTS.get() && event.getEntity() instanceof Ocelot vanillaOcelot) {
 
-            if (event.getEntity().getClass() == Ocelot.class) {
-                Ocelot vanillaOcelot = (Ocelot) event.getEntity();
+            if (event.getEntity().getClass() == Ocelot.class && (((!(vanillaOcelot.getSpawnType() == MobSpawnType.SPAWN_EGG)) && !LivestockOverhaulCommonConfig.REPLACE_SPAWN_EGG_ANIMALS.get()) || LivestockOverhaulCommonConfig.REPLACE_SPAWN_EGG_ANIMALS.get())) {
 
                 if (event.getLevel().isClientSide) {
                     return;
@@ -168,10 +169,9 @@ public class SpawnReplacer {
         }
 
         //Fox
-        if (!LivestockOverhaulCommonConfig.FAILSAFE_REPLACER.get() && PetsOverhaulCommonConfig.REPLACE_FOXES.get() && event.getEntity() instanceof Fox) {
+        if (!LivestockOverhaulCommonConfig.FAILSAFE_REPLACER.get() && PetsOverhaulCommonConfig.REPLACE_FOXES.get() && event.getEntity() instanceof Fox vanillaFox) {
 
-            if (event.getEntity().getClass() == Fox.class) {
-                Fox vanillaFox = (Fox) event.getEntity();
+            if (event.getEntity().getClass() == Fox.class && (((!(vanillaFox.getSpawnType() == MobSpawnType.SPAWN_EGG)) && !LivestockOverhaulCommonConfig.REPLACE_SPAWN_EGG_ANIMALS.get()) || LivestockOverhaulCommonConfig.REPLACE_SPAWN_EGG_ANIMALS.get())) {
 
                 OFox oFox = POEntityTypes.O_FOX_ENTITY.get().create(event.getLevel());
 
@@ -185,14 +185,31 @@ public class SpawnReplacer {
                     oFox.setCustomName(vanillaFox.getCustomName());
                     oFox.setAge(vanillaFox.getAge());
 
-                    int randomVariant = event.getLevel().getRandom().nextInt(3);
-                    oFox.setVariant(randomVariant);
+                    if (LivestockOverhaulCommonConfig.SPAWN_BY_BREED.get()) {
+                        if (event.getLevel().getBiome(event.getEntity().blockPosition()).is(Tags.Biomes.IS_COLD_OVERWORLD)) {
+                            if (random.nextDouble() < 0.05) {
+                                int[] variants = {5, 7, 8, 12};
+                                int randomIndex = new Random().nextInt(variants.length);
+                                oFox.setVariant(variants[randomIndex]);
+                            } else {
+                                oFox.setVariant(12);
+                            }
+                        } else {
+                            if (random.nextDouble() < 0.05) {
+                                oFox.setVariant(12);
+                            } else {
+                                int[] variants = {5, 7, 8, 12};
+                                int randomIndex = new Random().nextInt(variants.length);
+                                oFox.setVariant(variants[randomIndex]);
+                            }
+                        }
+                        oFox.setMarking();
+                    } else {
+                        oFox.setVariant(random.nextInt(OFoxModel.Variant.values().length));
+                        oFox.setOverlayVariant(random.nextInt(OFoxMarkingLayer.Overlay.values().length));
+                    }
 
-                    int randomOverlay = event.getLevel().getRandom().nextInt(OFoxMarkingLayer.Overlay.values().length);
-                    oFox.setOverlayVariant(randomOverlay);
-
-                    int randomGender = event.getLevel().getRandom().nextInt(OFox.Gender.values().length);
-                    oFox.setGender(randomGender);
+                    oFox.setGender(random.nextInt(OFox.Gender.values().length));
 
                     if (event.getLevel().isClientSide) {
                         vanillaFox.remove(Entity.RemovalReason.DISCARDED);
@@ -207,10 +224,9 @@ public class SpawnReplacer {
         }
 
         //Axolotl
-        if (!LivestockOverhaulCommonConfig.FAILSAFE_REPLACER.get() && PetsOverhaulCommonConfig.REPLACE_AXOLOTLS.get() && event.getEntity() instanceof Axolotl) {
+        if (!LivestockOverhaulCommonConfig.FAILSAFE_REPLACER.get() && PetsOverhaulCommonConfig.REPLACE_AXOLOTLS.get() && event.getEntity() instanceof Axolotl vanillaAxolotl) {
 
-            if (event.getEntity().getClass() == Axolotl.class) {
-                Axolotl vanillaAxolotl = (Axolotl) event.getEntity();
+            if (event.getEntity().getClass() == Axolotl.class && (((!(vanillaAxolotl.getSpawnType() == MobSpawnType.SPAWN_EGG)) && !LivestockOverhaulCommonConfig.REPLACE_SPAWN_EGG_ANIMALS.get()) || LivestockOverhaulCommonConfig.REPLACE_SPAWN_EGG_ANIMALS.get())) {
 
                 OAxolotl oAxolotl = POEntityTypes.O_AXOLOTL_ENTITY.get().create(event.getLevel());
 
@@ -246,10 +262,9 @@ public class SpawnReplacer {
         }
 
         //Parrot
-        if (!LivestockOverhaulCommonConfig.FAILSAFE_REPLACER.get() && PetsOverhaulCommonConfig.REPLACE_PARROTS.get() && event.getEntity() instanceof Parrot) {
+        if (!LivestockOverhaulCommonConfig.FAILSAFE_REPLACER.get() && PetsOverhaulCommonConfig.REPLACE_PARROTS.get() && event.getEntity() instanceof Parrot vanillaParrot) {
 
-            if (event.getEntity().getClass() == Parrot.class) {
-                Parrot vanillaParrot = (Parrot) event.getEntity();
+            if (event.getEntity().getClass() == Parrot.class && (((!(vanillaParrot.getSpawnType() == MobSpawnType.SPAWN_EGG)) && !LivestockOverhaulCommonConfig.REPLACE_SPAWN_EGG_ANIMALS.get()) || LivestockOverhaulCommonConfig.REPLACE_SPAWN_EGG_ANIMALS.get())) {
 
                 Macaw macaw = POEntityTypes.MACAW_ENTITY.get().create(event.getLevel());
                 Cockatiel cockatiel = POEntityTypes.COCKATIEL_ENTITY.get().create(event.getLevel());
@@ -339,10 +354,9 @@ public class SpawnReplacer {
         }
 
         //Tropical Fish
-        if (!LivestockOverhaulCommonConfig.FAILSAFE_REPLACER.get() && PetsOverhaulCommonConfig.REPLACE_TROPICAL_FISH.get() && event.getEntity() instanceof TropicalFish) {
+        if (!LivestockOverhaulCommonConfig.FAILSAFE_REPLACER.get() && PetsOverhaulCommonConfig.REPLACE_TROPICAL_FISH.get() && event.getEntity() instanceof TropicalFish vanillaTropicalFish) {
 
-            if (event.getEntity().getClass() == TropicalFish.class) {
-                TropicalFish vanillaTropicalFish = (TropicalFish) event.getEntity();
+            if (event.getEntity().getClass() == TropicalFish.class && (((!(vanillaTropicalFish.getSpawnType() == MobSpawnType.SPAWN_EGG)) && !LivestockOverhaulCommonConfig.REPLACE_SPAWN_EGG_ANIMALS.get()) || LivestockOverhaulCommonConfig.REPLACE_SPAWN_EGG_ANIMALS.get())) {
 
                 OTropicalFish oTropicalFish = POEntityTypes.O_TROPICAL_FISH_ENTITY.get().create(event.getLevel());
 
@@ -377,10 +391,9 @@ public class SpawnReplacer {
         }
 
         //Cat (includes Dogs)
-        if (!LivestockOverhaulCommonConfig.FAILSAFE_REPLACER.get() && PetsOverhaulCommonConfig.REPLACE_CATS.get() && event.getEntity() instanceof Cat) {
+        if (!LivestockOverhaulCommonConfig.FAILSAFE_REPLACER.get() && PetsOverhaulCommonConfig.REPLACE_CATS.get() && event.getEntity() instanceof Cat cat) {
 
-            if (event.getEntity().getClass() == Cat.class) {
-                Cat cat = (Cat) event.getEntity();
+            if (event.getEntity().getClass() == Cat.class && (((!(cat.getSpawnType() == MobSpawnType.SPAWN_EGG)) && !LivestockOverhaulCommonConfig.REPLACE_SPAWN_EGG_ANIMALS.get()) || LivestockOverhaulCommonConfig.REPLACE_SPAWN_EGG_ANIMALS.get())) {
 
                 OCat commonCat = POEntityTypes.O_CAT_ENTITY.get().create(event.getLevel());
                 Doberman doberman = POEntityTypes.DOBERMAN_ENTITY.get().create(event.getLevel());

@@ -7,6 +7,12 @@ import com.dragn0007.dragnlivestock.util.LivestockOverhaulCommonConfig;
 import com.dragn0007.dragnpets.PetsOverhaul;
 import com.dragn0007.dragnpets.entities.POEntityTypes;
 import com.dragn0007.dragnpets.entities.ai.FoxFollowOwnerGoal;
+import com.dragn0007.dragnpets.entities.ocelot.OOcelotEyeLayer;
+import com.dragn0007.dragnpets.entities.ocelot.OOcelotMarkingLayer;
+import com.dragn0007.dragnpets.entities.ocelot.OOcelotModel;
+import com.dragn0007.dragnpets.entities.wolf.OWolf;
+import com.dragn0007.dragnpets.entities.wolf.OWolfMarkingLayer;
+import com.dragn0007.dragnpets.entities.wolf.OWolfModel;
 import com.dragn0007.dragnpets.util.POTags;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -315,22 +321,7 @@ public class OFox extends TamableAnimal implements GeoEntity {
       }
    }
 
-   public boolean toldToWander = false;
-
-   public boolean wasToldToWander() {
-      return this.toldToWander;
-   }
-
-   public boolean getToldToWander() {
-      return this.toldToWander;
-   }
-
-   public void setToldToWander(boolean toldToWander) {
-      this.toldToWander = toldToWander;
-   }
-
    public static final Ingredient FOOD_ITEMS = Ingredient.of(POTags.Items.FOX_FOOD);
-
    @Override
    public boolean isFood(ItemStack itemStack) {
       return FOOD_ITEMS.test(itemStack);
@@ -338,72 +329,71 @@ public class OFox extends TamableAnimal implements GeoEntity {
 
 
    // Generates the base texture
-   public ResourceLocation getTextureResource() {
+   public static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(OFox.class, EntityDataSerializers.INT);
+   public ResourceLocation getTextureLocation() {
       return OFoxModel.Variant.variantFromOrdinal(getVariant()).resourceLocation;
    }
-
-   public ResourceLocation getOverlayResource() {
-      return OFoxMarkingLayer.Overlay.overlayFromOrdinal(getOverlayVariant()).resourceLocation;
-   }
-
-   public static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(OFox.class, EntityDataSerializers.INT);
-   public static final EntityDataAccessor<Integer> OVERLAY_VARIANT = SynchedEntityData.defineId(OFox.class, EntityDataSerializers.INT);
-   public static final EntityDataAccessor<Integer> DOMESTIC_VARIANT = SynchedEntityData.defineId(OFox.class, EntityDataSerializers.INT);
-
    public int getVariant() {
       return this.entityData.get(VARIANT);
    }
-
    public void setVariant(int variant) {
       this.entityData.set(VARIANT, variant);
    }
 
+
+   public static final EntityDataAccessor<Integer> OVERLAY = SynchedEntityData.defineId(OFox.class, EntityDataSerializers.INT);
+   public ResourceLocation getOverlayLocation() {return OFoxMarkingLayer.Overlay.overlayFromOrdinal(getOverlayVariant()).resourceLocation;}
    public int getOverlayVariant() {
-      return this.entityData.get(OVERLAY_VARIANT);
+      return this.entityData.get(OVERLAY);
+   }
+   public void setOverlayVariant(int overlayVariant) {
+      this.entityData.set(OVERLAY, overlayVariant);
    }
 
-   public void setOverlayVariant(int variant) {
-      this.entityData.set(OVERLAY_VARIANT, variant);
+   public boolean toldToWander = false;
+   public boolean wasToldToWander() {
+      return this.toldToWander;
+   }
+   public boolean getToldToWander() {
+      return this.toldToWander;
+   }
+   public void setToldToWander(boolean toldToWander) {
+      this.toldToWander = toldToWander;
    }
 
-   public int getDomesticVariant() {
-      return this.entityData.get(DOMESTIC_VARIANT);
+   public static final EntityDataAccessor<Boolean> COLLARED = SynchedEntityData.defineId(OFox.class, EntityDataSerializers.BOOLEAN);
+   public boolean isCollared() {
+      return this.entityData.get(COLLARED);
+   }
+   public void setCollared(boolean collared) {
+      this.entityData.set(COLLARED, collared);
    }
 
-   public void setDomestictVariant(int variant) {
-      this.entityData.set(DOMESTIC_VARIANT, variant);
+   public static final EntityDataAccessor<Integer> DATA_COLLAR_COLOR = SynchedEntityData.defineId(OFox.class, EntityDataSerializers.INT);
+   public DyeColor getCollarColor() {
+      return DyeColor.byId(this.entityData.get(DATA_COLLAR_COLOR));
+   }
+   public void setCollarColor(DyeColor p_30398_) {
+      this.entityData.set(DATA_COLLAR_COLOR, p_30398_.getId());
    }
 
    public void defineSynchedData() {
       super.defineSynchedData();
       this.entityData.define(VARIANT, 0);
-      this.entityData.define(OVERLAY_VARIANT, 0);
-      this.entityData.define(DOMESTIC_VARIANT, 0);
+      this.entityData.define(OVERLAY, 0);
       this.entityData.define(GENDER, 0);
-   }
-
-   public void addAdditionalSaveData(CompoundTag tag) {
-      super.addAdditionalSaveData(tag);
-      tag.putInt("Variant", getVariant());
-      tag.putInt("Overlay", getOverlayVariant());
-      tag.putInt("DomesticVariant", getDomesticVariant());
-      tag.putInt("Gender", this.getGender());
-      tag.putBoolean("Wandering", this.getToldToWander());
+      this.entityData.define(DATA_COLLAR_COLOR, DyeColor.RED.getId());
+      this.entityData.define(COLLARED, false);
    }
 
    public void readAdditionalSaveData(CompoundTag tag) {
       super.readAdditionalSaveData(tag);
-
       if (tag.contains("Variant")) {
          setVariant(tag.getInt("Variant"));
       }
 
       if (tag.contains("Overlay")) {
          setOverlayVariant(tag.getInt("Overlay"));
-      }
-
-      if (tag.contains("DomesticVariant")) {
-         setDomestictVariant(tag.getInt("DomesticVariant"));
       }
 
       if (tag.contains("Gender")) {
@@ -413,20 +403,93 @@ public class OFox extends TamableAnimal implements GeoEntity {
       if (tag.contains("Wandering")) {
          this.setToldToWander(tag.getBoolean("Wandering"));
       }
+
+      if (tag.contains("CollarColor", 99)) {
+         this.setCollarColor(DyeColor.byId(tag.getInt("CollarColor")));
+      }
+
+      if(tag.contains("Collared")) {
+         this.setCollared(tag.getBoolean("Collared"));
+      }
+
+   }
+
+   public void addAdditionalSaveData(CompoundTag tag) {
+      super.addAdditionalSaveData(tag);
+      tag.putInt("Variant", getVariant());
+      tag.putInt("Overlay", getOverlayVariant());
+      tag.putInt("Gender", this.getGender());
+      tag.putBoolean("Wandering", this.getToldToWander());
+      tag.putByte("CollarColor", (byte)this.getCollarColor().getId());
+      tag.putBoolean("Collared", this.isCollared());
    }
 
    @Override
-   @Nullable
-   public SpawnGroupData finalizeSpawn(ServerLevelAccessor serverLevelAccessor, DifficultyInstance instance, MobSpawnType spawnType, @Nullable SpawnGroupData data, @Nullable CompoundTag tag) {
+   @javax.annotation.Nullable
+   public SpawnGroupData finalizeSpawn(ServerLevelAccessor serverLevelAccessor, DifficultyInstance instance, MobSpawnType spawnType, @javax.annotation.Nullable SpawnGroupData data, @javax.annotation.Nullable CompoundTag tag) {
       if (data == null) {
          data = new AgeableMobGroupData(0.2F);
       }
       Random random = new Random();
-      setVariant(random.nextInt(OFoxModel.Variant.values().length));
-      setOverlayVariant(random.nextInt(OFoxMarkingLayer.Overlay.values().length));
-      setGender(random.nextInt(Gender.values().length));
+      setGender(random.nextInt(OFox.Gender.values().length));
+
+      if (LivestockOverhaulCommonConfig.SPAWN_BY_BREED.get()) {
+         this.setColor();
+         this.setMarking();
+      } else {
+         setVariant(random.nextInt(OFoxModel.Variant.values().length));
+         setOverlayVariant(random.nextInt(OFoxMarkingLayer.Overlay.values().length));
+      }
 
       return super.finalizeSpawn(serverLevelAccessor, instance, spawnType, data, tag);
+   }
+
+   public void setColor() {
+
+      if (random.nextDouble() < 0.05) {
+         int[] variants = {0, 1, 2, 3, 4, 6, 9, 10, 11};
+         int randomIndex = new Random().nextInt(variants.length);
+         this.setVariant(variants[randomIndex]);
+      } else if (random.nextDouble() > 0.10) {
+         int[] variants = {5, 7, 8, 12};
+         int randomIndex = new Random().nextInt(variants.length);
+         this.setVariant(variants[randomIndex]);
+      }
+
+   }
+
+   public void setMarking() {
+
+      if (!(this.getVariant() == 5) || !(this.getVariant() == 7) || !(this.getVariant() == 8) || !(this.getVariant() == 12)) {
+         if (random.nextDouble() < 0.10) {
+            setOverlayVariant(random.nextInt(OFoxMarkingLayer.Overlay.values().length));
+         } else if (random.nextDouble() > 0.10) {
+            int[] variants = {1, 2, 3};
+            int randomIndex = new Random().nextInt(variants.length);
+            this.setOverlayVariant(variants[randomIndex]);
+         }
+      }
+
+      if (this.getVariant() == 5 || this.getVariant() == 7 || this.getVariant() == 8) {
+         if (random.nextDouble() < 0.02) {
+            setOverlayVariant(random.nextInt(OFoxMarkingLayer.Overlay.values().length));
+         } else if (random.nextDouble() > 0.02) {
+            int[] variants = {1, 2, 3};
+            int randomIndex = new Random().nextInt(variants.length);
+            this.setOverlayVariant(variants[randomIndex]);
+         }
+      }
+
+      if (this.getVariant() == 12) {
+         if (random.nextDouble() < 0.02) {
+            setOverlayVariant(random.nextInt(OFoxMarkingLayer.Overlay.values().length));
+         } else if (random.nextDouble() > 0.02) {
+            int[] variants = {10, 11, 12};
+            int randomIndex = new Random().nextInt(variants.length);
+            this.setOverlayVariant(variants[randomIndex]);
+         }
+      }
+
    }
 
    public enum Gender {
@@ -446,6 +509,7 @@ public class OFox extends TamableAnimal implements GeoEntity {
    public void setGender(int gender) {
       this.entityData.set(GENDER, gender);
    }
+
    public boolean canParent() {
       return !this.isBaby() && this.getHealth() >= this.getMaxHealth() && this.isInLove();
    }
@@ -477,41 +541,38 @@ public class OFox extends TamableAnimal implements GeoEntity {
 
    @Override
    public AgeableMob getBreedOffspring(ServerLevel serverLevel, AgeableMob ageableMob) {
-      OFox oFox = (OFox) ageableMob;
-      if (ageableMob instanceof OFox) {
-         OFox fox = (OFox) ageableMob;
-         oFox = POEntityTypes.O_FOX_ENTITY.get().create(serverLevel);
+      OFox pup;
+      OFox partner = (OFox) ageableMob;
+      pup = POEntityTypes.O_FOX_ENTITY.get().create(serverLevel);
 
-         int j = this.random.nextInt(5);
-         int variant;
-         if (j < 1) {
-            variant = this.getVariant();
-         } else if (j < 3) {
-            variant = oFox.getVariant();
-         } else {
-            variant = this.random.nextInt(OFoxModel.Variant.values().length);
-         }
-
-         int k = this.random.nextInt(5);
-         int overlay;
-         if (k < 2) {
-            overlay = this.getOverlayVariant();
-         } else if (j < 4) {
-            overlay = oFox.getOverlayVariant();
-         } else {
-            overlay = this.random.nextInt(OFoxMarkingLayer.Overlay.values().length);
-         }
-
-         int gender = this.random.nextInt(OFox.Gender.values().length);
-
-         oFox.setVariant(variant);
-         oFox.setGender(gender);
-         oFox.setOverlayVariant(overlay);
+      int variantChance = this.random.nextInt(14);
+      int variant;
+      if (variantChance < 6) {
+         variant = this.getVariant();
+      } else if (variantChance < 12) {
+         variant = partner.getVariant();
+      } else {
+         variant = this.random.nextInt(OFoxModel.Variant.values().length);
       }
+      pup.setVariant(variant);
 
-      return oFox;
+      int overlayChance = this.random.nextInt(10);
+      int overlay;
+      if (overlayChance < 4) {
+         overlay = this.getOverlayVariant();
+      } else if (overlayChance < 8) {
+         overlay = partner.getOverlayVariant();
+      } else {
+         overlay = this.random.nextInt(OFoxMarkingLayer.Overlay.values().length);
+      }
+      pup.setOverlayVariant(overlay);
+
+      int gender;
+      gender = this.random.nextInt(OFox.Gender.values().length);
+      pup.setGender(gender);
+
+      return pup;
    }
-
 
    public boolean canBeLeashed(Player p_30396_) {
       return super.canBeLeashed(p_30396_);
