@@ -14,6 +14,7 @@ public class PetsOverhaulCommonConfig {
     public static final ForgeConfigSpec.BooleanValue REPLACE_CATS;
     public static final ForgeConfigSpec.BooleanValue REPLACE_TROPICAL_FISH;
     public static final ForgeConfigSpec.BooleanValue CATS_GIVE_GIFTS;
+    public static final ForgeConfigSpec.BooleanValue ALLOW_CROPPED_DOG_SPAWNS;
     public static final ForgeConfigSpec.BooleanValue WOLF_PACKS_ATTACK_PLAYERS;
     public static final ForgeConfigSpec.ConfigValue<Integer> WOLF_PACK_MAX;
     public static final ForgeConfigSpec.ConfigValue<Integer> DOG_PACK_MAX;
@@ -49,6 +50,9 @@ public class PetsOverhaulCommonConfig {
 
         CATS_GIVE_GIFTS = BUILDER.comment("Should your O-Cats give you gifts once in a while?")
                 .define("Cats Give Gifts", true);
+
+        ALLOW_CROPPED_DOG_SPAWNS = BUILDER.comment("Should cropped O-Dogs be allowed to spawn? Whilst players can't crop them themselves, you can chose to allow natural ones to spawn.")
+                .define("Allow Naturally-Cropped Dogs", true);
 
         WOLF_PACKS_ATTACK_PLAYERS = BUILDER.comment("Should wild O-Wolf packs attack players?")
                 .define("Wolf Packs Attack Players", true);

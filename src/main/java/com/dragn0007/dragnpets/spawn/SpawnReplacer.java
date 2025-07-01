@@ -12,31 +12,20 @@ import com.dragn0007.dragnpets.entities.cat.OCatMarkingLayer;
 import com.dragn0007.dragnpets.entities.cat.OCatModel;
 import com.dragn0007.dragnpets.entities.cat.kornish_rex.KornishRex;
 import com.dragn0007.dragnpets.entities.cat.maine_coon.MaineCoon;
-import com.dragn0007.dragnpets.entities.dog.ODog;
 import com.dragn0007.dragnpets.entities.dog.australian_shepherd.AustralianShepherd;
-import com.dragn0007.dragnpets.entities.dog.australian_shepherd.AustralianShepherdModel;
 import com.dragn0007.dragnpets.entities.dog.bernese.Bernese;
-import com.dragn0007.dragnpets.entities.dog.bernese.BerneseModel;
 import com.dragn0007.dragnpets.entities.dog.bloodhound.Bloodhound;
-import com.dragn0007.dragnpets.entities.dog.bloodhound.BloodhoundModel;
 import com.dragn0007.dragnpets.entities.dog.border_collie.Collie;
-import com.dragn0007.dragnpets.entities.dog.border_collie.CollieModel;
 import com.dragn0007.dragnpets.entities.dog.cocker_spaniel.CockerSpaniel;
-import com.dragn0007.dragnpets.entities.dog.cocker_spaniel.CockerSpanielMarkingLayer;
-import com.dragn0007.dragnpets.entities.dog.cocker_spaniel.CockerSpanielModel;
+import com.dragn0007.dragnpets.entities.dog.common.CommonDog;
+import com.dragn0007.dragnpets.entities.dog.common.CommonDogMarkingLayer;
+import com.dragn0007.dragnpets.entities.dog.common.CommonDogModel;
 import com.dragn0007.dragnpets.entities.dog.doberman.Doberman;
-import com.dragn0007.dragnpets.entities.dog.doberman.DobermanModel;
 import com.dragn0007.dragnpets.entities.dog.husky.Husky;
-import com.dragn0007.dragnpets.entities.dog.husky.HuskyModel;
 import com.dragn0007.dragnpets.entities.dog.labrador.Labrador;
-import com.dragn0007.dragnpets.entities.dog.labrador.LabradorModel;
 import com.dragn0007.dragnpets.entities.dog.pyrenees.Pyrenees;
-import com.dragn0007.dragnpets.entities.dog.pyrenees.PyreneesModel;
 import com.dragn0007.dragnpets.entities.dog.rottweiler.Rottweiler;
-import com.dragn0007.dragnpets.entities.dog.rottweiler.RottweilerModel;
 import com.dragn0007.dragnpets.entities.dog.whippet.Whippet;
-import com.dragn0007.dragnpets.entities.dog.whippet.WhippetMarkingLayer;
-import com.dragn0007.dragnpets.entities.dog.whippet.WhippetModel;
 import com.dragn0007.dragnpets.entities.fox.OFox;
 import com.dragn0007.dragnpets.entities.fox.OFoxMarkingLayer;
 import com.dragn0007.dragnpets.entities.fox.OFoxModel;
@@ -387,6 +376,7 @@ public class SpawnReplacer {
 
         //Cat (includes Dogs)
         OCat commonCat = POEntityTypes.O_CAT_ENTITY.get().create(event.getLevel());
+        CommonDog commonDog = POEntityTypes.O_DOG_ENTITY.get().create(event.getLevel());
         Doberman doberman = POEntityTypes.DOBERMAN_ENTITY.get().create(event.getLevel());
         Labrador labrador = POEntityTypes.LABRADOR_ENTITY.get().create(event.getLevel());
         Husky husky = POEntityTypes.HUSKY_ENTITY.get().create(event.getLevel());
@@ -408,7 +398,7 @@ public class SpawnReplacer {
                     return;
                 }
 
-                int i = event.getLevel().getRandom().nextInt(34);
+                int i = event.getLevel().getRandom().nextInt(41);
 
                 if (event.getLevel().getBiome(event.getEntity().blockPosition()).is(Biomes.SWAMP)) {
                     if (commonCat != null) {
@@ -437,368 +427,70 @@ public class SpawnReplacer {
 
                         event.setCanceled(true);
                     }
-                }
 
-                if (commonCat != null) {
-                    if (i <= 20 && !event.getLevel().getBiome(event.getEntity().blockPosition()).is(Biomes.SWAMP)) {
-                        commonCat.copyPosition(cat);
+                } else {
+                    if (commonCat != null) {
+                        if (i <= 30) {
+                            commonCat.copyPosition(cat);
 
-                        commonCat.setCustomName(cat.getCustomName());
-                        commonCat.setAge(cat.getAge());
-                        commonCat.setOwnerUUID(cat.getOwnerUUID());
+                            commonCat.setCustomName(cat.getCustomName());
+                            commonCat.setAge(cat.getAge());
+                            commonCat.setOwnerUUID(cat.getOwnerUUID());
 
-                        if (LivestockOverhaulCommonConfig.SPAWN_BY_BREED.get()) {
-                            commonCat.setEyeColor();
-                        } else {
-                            commonCat.setEyes(random.nextInt(OCatEyeLayer.Eyes.values().length));
-                        }
+                            commonCat.setGender(random.nextInt(OCat.Gender.values().length));
 
-                        commonCat.setVariant(random.nextInt(OCatModel.Variant.values().length));
-                        commonCat.setOverlayVariant(random.nextInt(OCatMarkingLayer.Overlay.values().length));
-                        commonCat.setGender(random.nextInt(OCat.Gender.values().length));
+                            if (LivestockOverhaulCommonConfig.SPAWN_BY_BREED.get()) {
+                                commonCat.setEyeColor();
+                            } else {
+                                commonCat.setEyes(random.nextInt(OCatEyeLayer.Eyes.values().length));
+                            }
 
-                        if (event.getLevel().isClientSide) {
+                            commonCat.setVariant(random.nextInt(OCatModel.Variant.values().length));
+                            commonCat.setOverlayVariant(random.nextInt(OCatMarkingLayer.Overlay.values().length));
+
+                            if (event.getLevel().isClientSide) {
+                                cat.remove(Entity.RemovalReason.DISCARDED);
+                            }
+
+                            event.getLevel().addFreshEntity(commonCat);
                             cat.remove(Entity.RemovalReason.DISCARDED);
+
+                            event.setCanceled(true);
                         }
-
-                        event.getLevel().addFreshEntity(commonCat);
-                        cat.remove(Entity.RemovalReason.DISCARDED);
-
-                        event.setCanceled(true);
                     }
-                }
 
-                if (doberman != null) {
-                    if (i == 21 && !event.getLevel().getBiome(event.getEntity().blockPosition()).is(Biomes.SWAMP)) {
-                        doberman.copyPosition(cat);
+                    if (commonDog != null) {
+                        if (i < 30) {
+                            commonDog.copyPosition(cat);
 
-                        doberman.setCustomName(cat.getCustomName());
-                        doberman.setAge(cat.getAge());
-                        doberman.setOwnerUUID(cat.getOwnerUUID());
+                            commonDog.setCustomName(cat.getCustomName());
+                            commonDog.setAge(cat.getAge());
+                            commonDog.setOwnerUUID(cat.getOwnerUUID());
 
-                        int randomVariant = event.getLevel().getRandom().nextInt(DobermanModel.Variant.values().length);
-                        doberman.setVariant(randomVariant);
+                            commonDog.setGender(random.nextInt(CommonDog.Gender.values().length));
+                            commonDog.setVariant(random.nextInt(CommonDogModel.Variant.values().length));
+                            commonDog.setOverlayVariant(random.nextInt(CommonDogMarkingLayer.Overlay.values().length));
+                            commonDog.setFluffChance();
 
-                        int randomGender = event.getLevel().getRandom().nextInt(ODog.Gender.values().length);
-                        doberman.setGender(randomGender);
+                            if (PetsOverhaulCommonConfig.ALLOW_CROPPED_DOG_SPAWNS.get()) {
+                                commonDog.setCropChance();
+                            } else {
+                                commonDog.setCropped(0);
+                            }
 
-                        if (event.getLevel().isClientSide) {
+                            if (event.getLevel().isClientSide) {
+                                cat.remove(Entity.RemovalReason.DISCARDED);
+                            }
+
+                            event.getLevel().addFreshEntity(commonDog);
                             cat.remove(Entity.RemovalReason.DISCARDED);
+
+                            event.setCanceled(true);
                         }
-
-                        event.getLevel().addFreshEntity(doberman);
-                        cat.remove(Entity.RemovalReason.DISCARDED);
-
-                        event.setCanceled(true);
                     }
+
+
                 }
-
-                if (labrador != null) {
-                    if (i == 22 && !event.getLevel().getBiome(event.getEntity().blockPosition()).is(Biomes.SWAMP)) {
-                        labrador.copyPosition(cat);
-
-                        labrador.setCustomName(cat.getCustomName());
-                        labrador.setAge(cat.getAge());
-                        labrador.setOwnerUUID(cat.getOwnerUUID());
-
-                        int randomVariant = event.getLevel().getRandom().nextInt(LabradorModel.Variant.values().length);
-                        labrador.setVariant(randomVariant);
-
-                        int randomGender = event.getLevel().getRandom().nextInt(ODog.Gender.values().length);
-                        labrador.setGender(randomGender);
-
-                        if (event.getLevel().isClientSide) {
-                            cat.remove(Entity.RemovalReason.DISCARDED);
-                        }
-
-                        event.getLevel().addFreshEntity(labrador);
-                        cat.remove(Entity.RemovalReason.DISCARDED);
-
-                        event.setCanceled(true);
-                    }
-                }
-
-                if (husky != null) {
-                    if (i == 23 && !event.getLevel().getBiome(event.getEntity().blockPosition()).is(Biomes.SWAMP)) {
-                        husky.copyPosition(cat);
-
-                        husky.setCustomName(cat.getCustomName());
-                        husky.setAge(cat.getAge());
-                        husky.setOwnerUUID(cat.getOwnerUUID());
-
-                        int randomVariant = event.getLevel().getRandom().nextInt(HuskyModel.Variant.values().length);
-                        husky.setVariant(randomVariant);
-
-                        int randomGender = event.getLevel().getRandom().nextInt(ODog.Gender.values().length);
-                        husky.setGender(randomGender);
-
-                        if (event.getLevel().isClientSide) {
-                            cat.remove(Entity.RemovalReason.DISCARDED);
-                        }
-
-                        event.getLevel().addFreshEntity(husky);
-                        cat.remove(Entity.RemovalReason.DISCARDED);
-
-                        event.setCanceled(true);
-                    }
-                }
-
-                if (pyrenees != null) {
-                    if (i == 24 && !event.getLevel().getBiome(event.getEntity().blockPosition()).is(Biomes.SWAMP)) {
-                        pyrenees.copyPosition(cat);
-
-                        pyrenees.setCustomName(cat.getCustomName());
-                        pyrenees.setAge(cat.getAge());
-                        pyrenees.setOwnerUUID(cat.getOwnerUUID());
-
-                        int randomVariant = event.getLevel().getRandom().nextInt(PyreneesModel.Variant.values().length);
-                        pyrenees.setVariant(randomVariant);
-
-                        int randomGender = event.getLevel().getRandom().nextInt(ODog.Gender.values().length);
-                        pyrenees.setGender(randomGender);
-
-                        if (event.getLevel().isClientSide) {
-                            cat.remove(Entity.RemovalReason.DISCARDED);
-                        }
-
-                        event.getLevel().addFreshEntity(pyrenees);
-                        cat.remove(Entity.RemovalReason.DISCARDED);
-
-                        event.setCanceled(true);
-                    }
-                }
-
-                if (collie != null) {
-                    if (i == 25 && !event.getLevel().getBiome(event.getEntity().blockPosition()).is(Biomes.SWAMP)) {
-                        collie.copyPosition(cat);
-
-                        collie.setCustomName(cat.getCustomName());
-                        collie.setAge(cat.getAge());
-                        collie.setOwnerUUID(cat.getOwnerUUID());
-
-                        int randomVariant = event.getLevel().getRandom().nextInt(CollieModel.Variant.values().length);
-                        collie.setVariant(randomVariant);
-
-                        int randomGender = event.getLevel().getRandom().nextInt(ODog.Gender.values().length);
-                        collie.setGender(randomGender);
-
-                        if (event.getLevel().isClientSide) {
-                            cat.remove(Entity.RemovalReason.DISCARDED);
-                        }
-
-                        event.getLevel().addFreshEntity(collie);
-                        cat.remove(Entity.RemovalReason.DISCARDED);
-
-                        event.setCanceled(true);
-                    }
-                }
-
-//                if (maineCoon != null) {
-//                    if (i == 26 && !event.getLevel().getBiome(event.getEntity().blockPosition()).is(Biomes.SWAMP)) {
-//                        maineCoon.copyPosition(cat);
-//
-//                        maineCoon.setCustomName(cat.getCustomName());
-//                        maineCoon.setAge(cat.getAge());
-//                        maineCoon.setOwnerUUID(cat.getOwnerUUID());
-//
-//                        int randomVariant = event.getLevel().getRandom().nextInt(MaineCoonModel.Variant.values().length);
-//                        maineCoon.setVariant(randomVariant);
-//
-//                        int randomGender = event.getLevel().getRandom().nextInt(OCat.Gender.values().length);
-//                        maineCoon.setGender(randomGender);
-//
-//                        if (event.getLevel().isClientSide) {
-//                            cat.remove(Entity.RemovalReason.DISCARDED);
-//                        }
-//
-//                        event.getLevel().addFreshEntity(maineCoon);
-//                        cat.remove(Entity.RemovalReason.DISCARDED);
-//
-//                        event.setCanceled(true);
-//                    }
-//                }
-
-                if (bernese != null) {
-                    if (i == 27 && !event.getLevel().getBiome(event.getEntity().blockPosition()).is(Biomes.SWAMP)) {
-                        bernese.copyPosition(cat);
-
-                        bernese.setCustomName(cat.getCustomName());
-                        bernese.setAge(cat.getAge());
-                        bernese.setOwnerUUID(cat.getOwnerUUID());
-
-                        int randomVariant = event.getLevel().getRandom().nextInt(BerneseModel.Variant.values().length);
-                        bernese.setVariant(randomVariant);
-
-                        int randomGender = event.getLevel().getRandom().nextInt(ODog.Gender.values().length);
-                        bernese.setGender(randomGender);
-
-                        if (event.getLevel().isClientSide) {
-                            cat.remove(Entity.RemovalReason.DISCARDED);
-                        }
-
-                        event.getLevel().addFreshEntity(bernese);
-                        cat.remove(Entity.RemovalReason.DISCARDED);
-
-                        event.setCanceled(true);
-                    }
-                }
-
-                if (aShepherd != null) {
-                    if (i == 28 && !event.getLevel().getBiome(event.getEntity().blockPosition()).is(Biomes.SWAMP)) {
-                        aShepherd.copyPosition(cat);
-
-                        aShepherd.setCustomName(cat.getCustomName());
-                        aShepherd.setAge(cat.getAge());
-                        aShepherd.setOwnerUUID(cat.getOwnerUUID());
-
-                        int randomVariant = event.getLevel().getRandom().nextInt(AustralianShepherdModel.Variant.values().length);
-                        aShepherd.setVariant(randomVariant);
-
-                        int randomGender = event.getLevel().getRandom().nextInt(ODog.Gender.values().length);
-                        aShepherd.setGender(randomGender);
-
-                        if (event.getLevel().isClientSide) {
-                            cat.remove(Entity.RemovalReason.DISCARDED);
-                        }
-
-                        event.getLevel().addFreshEntity(aShepherd);
-                        cat.remove(Entity.RemovalReason.DISCARDED);
-
-                        event.setCanceled(true);
-                    }
-                }
-
-                if (bloodhound != null) {
-                    if (i == 29 && !event.getLevel().getBiome(event.getEntity().blockPosition()).is(Biomes.SWAMP)) {
-                        bloodhound.copyPosition(cat);
-
-                        bloodhound.setCustomName(cat.getCustomName());
-                        bloodhound.setAge(cat.getAge());
-                        bloodhound.setOwnerUUID(cat.getOwnerUUID());
-
-                        int randomVariant = event.getLevel().getRandom().nextInt(BloodhoundModel.Variant.values().length);
-                        bloodhound.setVariant(randomVariant);
-
-                        int randomGender = event.getLevel().getRandom().nextInt(ODog.Gender.values().length);
-                        bloodhound.setGender(randomGender);
-
-                        if (event.getLevel().isClientSide) {
-                            cat.remove(Entity.RemovalReason.DISCARDED);
-                        }
-
-                        event.getLevel().addFreshEntity(bloodhound);
-                        cat.remove(Entity.RemovalReason.DISCARDED);
-
-                        event.setCanceled(true);
-                    }
-                }
-
-//                if (kornishRex != null) {
-//                    if (i == 30 && !event.getLevel().getBiome(event.getEntity().blockPosition()).is(Biomes.SWAMP)) {
-//                        kornishRex.copyPosition(cat);
-//
-//                        kornishRex.setCustomName(cat.getCustomName());
-//                        kornishRex.setAge(cat.getAge());
-//                        kornishRex.setOwnerUUID(cat.getOwnerUUID());
-//
-//                        int randomVariant = event.getLevel().getRandom().nextInt(KornishRexModel.Variant.values().length);
-//                        kornishRex.setVariant(randomVariant);
-//
-//                        int randomGender = event.getLevel().getRandom().nextInt(ODog.Gender.values().length);
-//                        kornishRex.setGender(randomGender);
-//
-//                        if (event.getLevel().isClientSide) {
-//                            cat.remove(Entity.RemovalReason.DISCARDED);
-//                        }
-//
-//                        event.getLevel().addFreshEntity(kornishRex);
-//                        cat.remove(Entity.RemovalReason.DISCARDED);
-//
-//                        event.setCanceled(true);
-//                    }
-//                }
-
-                if (cockerSpaniel != null) {
-                    if (i == 31 && !event.getLevel().getBiome(event.getEntity().blockPosition()).is(Biomes.SWAMP)) {
-                        cockerSpaniel.copyPosition(cat);
-
-                        cockerSpaniel.setCustomName(cat.getCustomName());
-                        cockerSpaniel.setAge(cat.getAge());
-                        cockerSpaniel.setOwnerUUID(cat.getOwnerUUID());
-
-                        int randomVariant = event.getLevel().getRandom().nextInt(CockerSpanielModel.Variant.values().length);
-                        cockerSpaniel.setVariant(randomVariant);
-
-                        int randomMarking = event.getLevel().getRandom().nextInt(CockerSpanielMarkingLayer.Overlay.values().length);
-                        cockerSpaniel.setOverlayVariant(randomMarking);
-
-                        int randomGender = event.getLevel().getRandom().nextInt(ODog.Gender.values().length);
-                        cockerSpaniel.setGender(randomGender);
-
-                        if (event.getLevel().isClientSide) {
-                            cat.remove(Entity.RemovalReason.DISCARDED);
-                        }
-
-                        event.getLevel().addFreshEntity(cockerSpaniel);
-                        cat.remove(Entity.RemovalReason.DISCARDED);
-
-                        event.setCanceled(true);
-                    }
-                }
-
-                if (whippet != null) {
-                    if (i == 32 && !event.getLevel().getBiome(event.getEntity().blockPosition()).is(Biomes.SWAMP)) {
-                        whippet.copyPosition(cat);
-
-                        whippet.setCustomName(cat.getCustomName());
-                        whippet.setAge(cat.getAge());
-                        whippet.setOwnerUUID(cat.getOwnerUUID());
-
-                        int randomVariant = event.getLevel().getRandom().nextInt(WhippetModel.Variant.values().length);
-                        whippet.setVariant(randomVariant);
-
-                        int randomMarking = event.getLevel().getRandom().nextInt(WhippetMarkingLayer.Overlay.values().length);
-                        whippet.setOverlayVariant(randomMarking);
-
-                        int randomGender = event.getLevel().getRandom().nextInt(ODog.Gender.values().length);
-                        whippet.setGender(randomGender);
-
-                        if (event.getLevel().isClientSide) {
-                            cat.remove(Entity.RemovalReason.DISCARDED);
-                        }
-
-                        event.getLevel().addFreshEntity(whippet);
-                        cat.remove(Entity.RemovalReason.DISCARDED);
-
-                        event.setCanceled(true);
-                    }
-                }
-
-                if (rottweiler != null) {
-                    if (i == 33 && !event.getLevel().getBiome(event.getEntity().blockPosition()).is(Biomes.SWAMP)) {
-                        rottweiler.copyPosition(cat);
-
-                        rottweiler.setCustomName(cat.getCustomName());
-                        rottweiler.setAge(cat.getAge());
-                        rottweiler.setOwnerUUID(cat.getOwnerUUID());
-
-                        int randomVariant = event.getLevel().getRandom().nextInt(RottweilerModel.Variant.values().length);
-                        rottweiler.setVariant(randomVariant);
-
-                        int randomGender = event.getLevel().getRandom().nextInt(ODog.Gender.values().length);
-                        rottweiler.setGender(randomGender);
-
-                        if (event.getLevel().isClientSide) {
-                            cat.remove(Entity.RemovalReason.DISCARDED);
-                        }
-
-                        event.getLevel().addFreshEntity(rottweiler);
-                        cat.remove(Entity.RemovalReason.DISCARDED);
-
-                        event.setCanceled(true);
-                    }
-                }
-
             }
         }
 

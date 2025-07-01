@@ -110,6 +110,7 @@ public class OOcelot extends TamableAnimal implements GeoEntity {
       this.goalSelector.addGoal(1, new FloatGoal(this));
       this.temptGoal = new OOcelot.OcelotTemptGoal(this, 0.6D, FOOD_ITEMS, true);
       this.goalSelector.addGoal(3, this.temptGoal);
+      this.goalSelector.addGoal(1, new PanicGoal(this, 2.0F));
       this.goalSelector.addGoal(8, new OcelotAttackGoal(this));
       this.goalSelector.addGoal(2, new SitWhenOrderedToGoal(this));
       this.goalSelector.addGoal(4, new LeapAtTargetGoal(this, 0.4F));
@@ -167,6 +168,10 @@ public class OOcelot extends TamableAnimal implements GeoEntity {
    @Override
    public AnimatableInstanceCache getAnimatableInstanceCache() {
       return this.geoCache;
+   }
+
+   protected float getStandingEyeHeight(Pose pose, EntityDimensions entityDimensions) {
+      return entityDimensions.height * 0.9F;
    }
 
    public void customServerAiStep() {

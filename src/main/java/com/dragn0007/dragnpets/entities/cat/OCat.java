@@ -112,6 +112,7 @@ public class OCat extends TamableAnimal implements GeoEntity {
       this.temptGoal = new OCat.OcelotTemptGoal(this, 0.6D, FOOD_ITEMS, true);
       this.goalSelector.addGoal(3, this.temptGoal);
       this.goalSelector.addGoal(8, new OcelotAttackGoal(this));
+      this.goalSelector.addGoal(1, new PanicGoal(this, 2.0F));
       this.goalSelector.addGoal(2, new SitWhenOrderedToGoal(this));
       this.goalSelector.addGoal(4, new LeapAtTargetGoal(this, 0.4F));
       this.goalSelector.addGoal(5, new MeleeAttackGoal(this, 2.0D, true));
@@ -188,17 +189,17 @@ public class OCat extends TamableAnimal implements GeoEntity {
 
    public <T extends GeoAnimatable> PlayState predicate(software.bernie.geckolib.core.animation.AnimationState<T> tAnimationState) {
       double currentSpeed = this.getDeltaMovement().lengthSqr();
-      double speedThreshold = 0.015;
+      double speedThreshold = 0.02;
 
       AnimationController<T> controller = tAnimationState.getController();
 
       if (tAnimationState.isMoving()) {
          if (currentSpeed > speedThreshold) {
             controller.setAnimation(RawAnimation.begin().then("run", Animation.LoopType.LOOP));
-            controller.setAnimationSpeed(1.3);
+            controller.setAnimationSpeed(1.5);
          } else {
             controller.setAnimation(RawAnimation.begin().then("walk", Animation.LoopType.LOOP));
-            controller.setAnimationSpeed(1.3);
+            controller.setAnimationSpeed(1.5);
          }
       } else {
          if (isInSittingPose()) {
@@ -222,6 +223,10 @@ public class OCat extends TamableAnimal implements GeoEntity {
    @Override
    public AnimatableInstanceCache getAnimatableInstanceCache() {
       return this.geoCache;
+   }
+
+   protected float getStandingEyeHeight(Pose pose, EntityDimensions entityDimensions) {
+      return entityDimensions.height * 0.9F;
    }
 
    public void customServerAiStep() {

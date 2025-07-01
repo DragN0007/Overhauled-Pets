@@ -5,18 +5,14 @@ import com.dragn0007.dragnpets.entities.POEntityTypes;
 import com.dragn0007.dragnpets.entities.ai.DogFollowOwnerGoal;
 import com.dragn0007.dragnpets.entities.ai.DogFollowPackLeaderGoal;
 import com.dragn0007.dragnpets.entities.dog.ODog;
-import com.dragn0007.dragnpets.entities.dog.labrador.LabradorModel;
-import com.dragn0007.dragnpets.gui.LabradorMenu;
-import com.dragn0007.dragnpets.util.POTags;
+import com.dragn0007.dragnpets.util.PetsOverhaulCommonConfig;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.TimeUtil;
@@ -30,21 +26,15 @@ import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.ai.goal.target.*;
 import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.animal.horse.AbstractHorse;
-import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.monster.Ghast;
-import net.minecraft.world.entity.npc.InventoryCarrier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.pathfinder.BlockPathTypes;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.wrapper.InvWrapper;
-import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.core.animatable.GeoAnimatable;
@@ -56,13 +46,10 @@ import software.bernie.geckolib.core.animation.RawAnimation;
 import software.bernie.geckolib.core.object.PlayState;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
-import java.util.EnumSet;
-import java.util.List;
 import java.util.Random;
 import java.util.UUID;
-import java.util.function.Predicate;
 
-public class CommonDog extends ODog implements InventoryCarrier, NeutralMob, GeoEntity, ContainerListener {
+public class CommonDog extends ODog implements NeutralMob, GeoEntity {
 
    public static final EntityDataAccessor<Integer> DATA_COLLAR_COLOR = SynchedEntityData.defineId(CommonDog.class, EntityDataSerializers.INT);
    public static final EntityDataAccessor<Integer> DATA_REMAINING_ANGER_TIME = SynchedEntityData.defineId(CommonDog.class, EntityDataSerializers.INT);
@@ -74,8 +61,6 @@ public class CommonDog extends ODog implements InventoryCarrier, NeutralMob, Geo
    public CommonDog(EntityType<? extends CommonDog> entityType, Level level) {
       super(entityType, level);
       this.setTame(false);
-      this.updateInventory();
-      this.setCanPickUpLoot(true);
       this.setPathfindingMalus(BlockPathTypes.POWDER_SNOW, -1.0F);
       this.setPathfindingMalus(BlockPathTypes.DANGER_POWDER_SNOW, -1.0F);
    }
@@ -121,11 +106,14 @@ public class CommonDog extends ODog implements InventoryCarrier, NeutralMob, Geo
             controller.setAnimationSpeed(1.3);
          } else {
             controller.setAnimation(RawAnimation.begin().then("walk", Animation.LoopType.LOOP));
-            controller.setAnimationSpeed(1.2);
+            controller.setAnimationSpeed(1.3);
          }
       } else {
          if (isInSittingPose()) {
-            controller.setAnimation(RawAnimation.begin().then("sit2", Animation.LoopType.LOOP));
+            controller.setAnimation(RawAnimation.begin().then("sit", Animation.LoopType.LOOP));
+            controller.setAnimationSpeed(1.0);
+         } else if (this.isWagging()) {
+            controller.setAnimation(RawAnimation.begin().then("wag", Animation.LoopType.LOOP));
             controller.setAnimationSpeed(1.0);
          } else {
             controller.setAnimation(RawAnimation.begin().then("idle", Animation.LoopType.LOOP));
@@ -148,18 +136,6 @@ public class CommonDog extends ODog implements InventoryCarrier, NeutralMob, Geo
    @Override
    public float getStepHeight() {
       return 1F;
-   }
-
-   public InteractionResult mobInteract(Player player, InteractionHand hand) {
-      ItemStack itemstack = player.getItemInHand(hand);
-
-      if (this.isOwnedBy(player) && this.isTame() && !this.isBaby()) {
-         if (this.isTame() && player.isSecondaryUseActive() && this.isOrderedToSit()) {
-            this.openInventory(player);
-            return InteractionResult.sidedSuccess(this.level().isClientSide);
-         }
-      }
-      return super.mobInteract(player, hand);
    }
 
    public void playStepSound(BlockPos p_30415_, BlockState p_30416_) {
@@ -221,20 +197,16 @@ public class CommonDog extends ODog implements InventoryCarrier, NeutralMob, Geo
    public int getRemainingPersistentAngerTime() {
       return this.entityData.get(DATA_REMAINING_ANGER_TIME);
    }
-
    public void setRemainingPersistentAngerTime(int p_30404_) {
       this.entityData.set(DATA_REMAINING_ANGER_TIME, p_30404_);
    }
-
    public void startPersistentAngerTimer() {
       this.setRemainingPersistentAngerTime(PERSISTENT_ANGER_TIME.sample(this.random));
    }
-
    @Nullable
    public UUID getPersistentAngerTarget() {
       return this.persistentAngerTarget;
    }
-
    public void setPersistentAngerTarget(@Nullable UUID p_30400_) {
       this.persistentAngerTarget = p_30400_;
    }
@@ -242,75 +214,89 @@ public class CommonDog extends ODog implements InventoryCarrier, NeutralMob, Geo
    public DyeColor getCollarColor() {
       return DyeColor.byId(this.entityData.get(DATA_COLLAR_COLOR));
    }
-
    public void setCollarColor(DyeColor p_30398_) {
       this.entityData.set(DATA_COLLAR_COLOR, p_30398_.getId());
    }
 
-   protected void pickUpItem(ItemEntity p_35467_) {
-      InventoryCarrier.pickUpItem(this, this, p_35467_);
-   }
 
    // Generates the base texture
-   public ResourceLocation getTextureResource() {
-      return LabradorModel.Variant.variantFromOrdinal(getVariant()).resourceLocation;
-   }
-
    public static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(CommonDog.class, EntityDataSerializers.INT);
-
+   public ResourceLocation getTextureLocation() {
+      return CommonDogModel.Variant.variantFromOrdinal(getVariant()).resourceLocation;
+   }
    public int getVariant() {
       return this.entityData.get(VARIANT);
    }
-
    public void setVariant(int variant) {
       this.entityData.set(VARIANT, variant);
    }
 
-   public void defineSynchedData() {
-      super.defineSynchedData();
-      this.entityData.define(DATA_COLLAR_COLOR, DyeColor.RED.getId());
-      this.entityData.define(DATA_REMAINING_ANGER_TIME, 0);
-      this.entityData.define(VARIANT, 0);
-      this.entityData.define(GENDER, 0);
+
+   public static final EntityDataAccessor<Integer> OVERLAY = SynchedEntityData.defineId(CommonDog.class, EntityDataSerializers.INT);
+   public ResourceLocation getOverlayLocation() {return CommonDogMarkingLayer.Overlay.overlayFromOrdinal(getOverlayVariant()).resourceLocation;}
+   public int getOverlayVariant() {
+      return this.entityData.get(OVERLAY);
+   }
+   public void setOverlayVariant(int overlayVariant) {
+      this.entityData.set(OVERLAY, overlayVariant);
    }
 
-   public void addAdditionalSaveData(CompoundTag tag) {
-      super.addAdditionalSaveData(tag);
-      tag.putByte("CollarColor", (byte)this.getCollarColor().getId());
-      tag.putInt("Variant", getVariant());
-      tag.putInt("Gender", this.getGender());
-      tag.putBoolean("Wandering", this.getToldToWander());
-      tag.putBoolean("Panicking", this.getPanicking());
-      this.addPersistentAngerSaveData(tag);
+   public static final EntityDataAccessor<Boolean> COLLARED = SynchedEntityData.defineId(CommonDog.class, EntityDataSerializers.BOOLEAN);
+   public boolean isCollared() {
+      return this.entityData.get(COLLARED);
+   }
+   public void setCollared(boolean collared) {
+      this.entityData.set(COLLARED, collared);
+   }
 
-      if(this.isTame()) {
-         ListTag listTag = new ListTag();
+   public static final EntityDataAccessor<Integer> CROPPED = SynchedEntityData.defineId(CommonDog.class, EntityDataSerializers.INT);
+   public int getCropped() {
+      return this.entityData.get(CROPPED);
+   }
+   public void setCropped(int cropped) {
+      this.entityData.set(CROPPED, cropped);
+   }
 
-         for(int i = 0; i < this.inventory.getContainerSize(); i++) {
-            ItemStack itemStack = this.inventory.getItem(i);
-            if(!itemStack.isEmpty()) {
-               CompoundTag compoundTag = new CompoundTag();
-               compoundTag.putByte("Slot", (byte) i);
-               itemStack.save(compoundTag);
-               listTag.add(compoundTag);
-            }
-         }
-         tag.put("Items", listTag);
-      }
+   public static final EntityDataAccessor<Integer> FLUFFY = SynchedEntityData.defineId(CommonDog.class, EntityDataSerializers.INT);
+   public int getFluff() {
+      return this.entityData.get(FLUFFY);
+   }
+   public void setFluff(int fluff) {
+      this.entityData.set(FLUFFY, fluff);
+   }
+
+   public void defineSynchedData() {
+      super.defineSynchedData();
+      this.entityData.define(VARIANT, 0);
+      this.entityData.define(OVERLAY, 0);
+      this.entityData.define(GENDER, 0);
+      this.entityData.define(CROPPED, 0);
+      this.entityData.define(FLUFFY, 0);
+      this.entityData.define(DATA_COLLAR_COLOR, DyeColor.RED.getId());
+      this.entityData.define(DATA_REMAINING_ANGER_TIME, 0);
+      this.entityData.define(COLLARED, false);
    }
 
    public void readAdditionalSaveData(CompoundTag tag) {
       super.readAdditionalSaveData(tag);
-      if (tag.contains("CollarColor", 99)) {
-         this.setCollarColor(DyeColor.byId(tag.getInt("CollarColor")));
-      }
-
       if (tag.contains("Variant")) {
          setVariant(tag.getInt("Variant"));
       }
 
+      if (tag.contains("Overlay")) {
+         setOverlayVariant(tag.getInt("Overlay"));
+      }
+
       if (tag.contains("Gender")) {
          this.setGender(tag.getInt("Gender"));
+      }
+
+      if (tag.contains("Fluff")) {
+         this.setFluff(tag.getInt("Fluff"));
+      }
+
+      if (tag.contains("Cropped")) {
+         this.setCropped(tag.getInt("Cropped"));
       }
 
       if (tag.contains("Wandering")) {
@@ -321,23 +307,29 @@ public class CommonDog extends ODog implements InventoryCarrier, NeutralMob, Geo
          this.setPanicking(tag.getBoolean("Panicking"));
       }
 
-      this.updateInventory();
+      if (tag.contains("CollarColor", 99)) {
+         this.setCollarColor(DyeColor.byId(tag.getInt("CollarColor")));
+      }
 
-      if(this.isTame()) {
-         ListTag listTag = tag.getList("Items", 10);
-
-         for(int i = 0; i < listTag.size(); i++) {
-            CompoundTag compoundTag = listTag.getCompound(i);
-            int j = compoundTag.getByte("Slot") & 255;
-            if(j < this.inventory.getContainerSize()) {
-               this.inventory.setItem(j, ItemStack.of(compoundTag));
-            }
-         }
+      if(tag.contains("Collared")) {
+         this.setCollared(tag.getBoolean("Collared"));
       }
 
       this.readPersistentAngerSaveData(this.level(), tag);
+   }
 
-      this.setCanPickUpLoot(true);
+   public void addAdditionalSaveData(CompoundTag tag) {
+      super.addAdditionalSaveData(tag);
+      tag.putInt("Variant", getVariant());
+      tag.putInt("Overlay", getOverlayVariant());
+      tag.putInt("Gender", this.getGender());
+      tag.putInt("Cropped", this.getCropped());
+      tag.putInt("Fluff", this.getFluff());
+      tag.putBoolean("Wandering", this.getToldToWander());
+      tag.putBoolean("Panicking", this.getPanicking());
+      tag.putByte("CollarColor", (byte)this.getCollarColor().getId());
+      tag.putBoolean("Collared", this.isCollared());
+      this.addPersistentAngerSaveData(tag);
    }
 
    @Override
@@ -347,34 +339,54 @@ public class CommonDog extends ODog implements InventoryCarrier, NeutralMob, Geo
          data = new AgeableMobGroupData(0.2F);
       }
       Random random = new Random();
-      setVariant(random.nextInt(LabradorModel.Variant.values().length));
-      setGender(random.nextInt(CommonDog.Gender.values().length));
+      setVariant(random.nextInt(CommonDogModel.Variant.values().length));
+      setOverlayVariant(random.nextInt(CommonDogMarkingLayer.Overlay.values().length));
+      setGender(random.nextInt(ODog.Gender.values().length));
+      setFluffChance();
+
+      if (PetsOverhaulCommonConfig.ALLOW_CROPPED_DOG_SPAWNS.get()) {
+         setCropChance();
+      } else {
+         setCropped(0);
+      }
 
       return super.finalizeSpawn(serverLevelAccessor, instance, spawnType, data, tag);
+   }
+
+   public void setCropChance() {
+      if (random.nextDouble() <= 0.15) {
+         this.setCropped(1);
+      } else {
+         this.setCropped(0);
+      }
+   }
+
+   public void setFluffChance() {
+      if (random.nextDouble() <= 0.30) {
+         this.setFluff(1);
+      } else {
+         this.setFluff(0);
+      }
    }
 
    public enum Gender {
       FEMALE,
       MALE
    }
-
    public boolean isFemale() {
       return this.getGender() == 0;
    }
-
    public boolean isMale() {
       return this.getGender() == 1;
    }
-
    public static final EntityDataAccessor<Integer> GENDER = SynchedEntityData.defineId(CommonDog.class, EntityDataSerializers.INT);
-
    public int getGender() {
       return this.entityData.get(GENDER);
    }
-
    public void setGender(int gender) {
       this.entityData.set(GENDER, gender);
    }
+
 
    public boolean canParent() {
       return !this.isBaby() && this.getHealth() >= this.getMaxHealth() && this.isInLove();
@@ -391,13 +403,6 @@ public class CommonDog extends ODog implements InventoryCarrier, NeutralMob, Geo
          } else {
             CommonDog partner = (CommonDog) animal;
             if (this.canParent() && partner.canParent() && this.getGender() != partner.getGender()) {
-               return true;
-            }
-
-            boolean partnerIsFemale = partner.isFemale();
-            boolean partnerIsMale = partner.isMale();
-            if (LivestockOverhaulCommonConfig.GENDERS_AFFECT_BREEDING.get() && this.canParent() && partner.canParent()
-                    && ((isFemale() && partnerIsMale) || (isMale() && partnerIsFemale))) {
                return isFemale();
             }
          }
@@ -407,29 +412,52 @@ public class CommonDog extends ODog implements InventoryCarrier, NeutralMob, Geo
 
    @Override
    public AgeableMob getBreedOffspring(ServerLevel serverLevel, AgeableMob ageableMob) {
-      CommonDog puppy = (CommonDog) ageableMob;
-      if (ageableMob instanceof CommonDog) {
-         CommonDog partner = (CommonDog) ageableMob;
-         puppy = POEntityTypes.COMMON_DOG_ENTITY.get().create(serverLevel);
+      CommonDog pup;
+      CommonDog partner = (CommonDog) ageableMob;
+      pup = POEntityTypes.O_DOG_ENTITY.get().create(serverLevel);
 
-         int i = this.random.nextInt(9);
-         int variant;
-         if (i < 4) {
-            variant = this.getVariant();
-         } else if (i < 8) {
-            variant = partner.getVariant();
-         } else {
-            variant = this.random.nextInt(LabradorModel.Variant.values().length);
-         }
+      int variantChance = this.random.nextInt(14);
+      int variant;
+      if (variantChance < 6) {
+         variant = this.getVariant();
+      } else if (variantChance < 12) {
+         variant = partner.getVariant();
+      } else {
+         variant = this.random.nextInt(CommonDogModel.Variant.values().length);
+      }
+      pup.setVariant(variant);
 
-         int gender;
-         gender = this.random.nextInt(CommonDog.Gender.values().length);
+      int overlayChance = this.random.nextInt(10);
+      int overlay;
+      if (overlayChance < 4) {
+         overlay = this.getOverlayVariant();
+      } else if (overlayChance < 8) {
+         overlay = partner.getOverlayVariant();
+      } else {
+         overlay = this.random.nextInt(CommonDogMarkingLayer.Overlay.values().length);
+      }
+      pup.setOverlayVariant(overlay);
 
-         puppy.setVariant(variant);
-         puppy.setGender(gender);
+      int fluffyChance = this.random.nextInt(10);
+      int fluff;
+      if (fluffyChance < 5) {
+         fluff = this.getFluff();
+      } else {
+         fluff = partner.getFluff();
+      }
+      pup.setFluff(fluff);
+
+      int gender;
+      gender = this.random.nextInt(CommonDog.Gender.values().length);
+      pup.setGender(gender);
+
+      if (PetsOverhaulCommonConfig.ALLOW_CROPPED_DOG_SPAWNS.get()){
+         pup.setCropChance();
+      } else {
+         pup.setCropped(0);
       }
 
-      return puppy;
+      return pup;
    }
 
    public boolean wantsToAttack(LivingEntity entity, LivingEntity p_30390_) {
@@ -456,162 +484,5 @@ public class CommonDog extends ODog implements InventoryCarrier, NeutralMob, Geo
    public Vec3 getLeashOffset() {
       return new Vec3(0.0D, (double)(0.6F * this.getEyeHeight()), (double)(this.getBbWidth() * 0.4F));
    }
-
-   public SimpleContainer inventory;
-
-   public LazyOptional<?> itemHandler = null;
-
-   public void updateInventory() {
-      SimpleContainer tempInventory = this.inventory;
-      this.inventory = new SimpleContainer(this.getInventorySize());
-
-      if(tempInventory != null) {
-         tempInventory.removeListener(this);
-         int maxSize = Math.min(tempInventory.getContainerSize(), this.inventory.getContainerSize());
-
-         for(int i = 0; i < maxSize; i++) {
-            ItemStack itemStack = tempInventory.getItem(i);
-            if(!itemStack.isEmpty()) {
-               this.inventory.setItem(i, itemStack.copy());
-            }
-         }
-      }
-      this.inventory.addListener(this);
-      this.itemHandler = LazyOptional.of(() -> new InvWrapper(this.inventory));
-   }
-
-   @Override
-   public void dropEquipment() {
-      if(!this.level().isClientSide) {
-         super.dropEquipment();
-         Containers.dropContents(this.level(), this, this.inventory);
-      }
-   }
-
-   @Override
-   public void invalidateCaps() {
-      super.invalidateCaps();
-      if(this.itemHandler != null) {
-         LazyOptional<?> oldHandler = this.itemHandler;
-         this.itemHandler = null;
-         oldHandler.invalidate();
-      }
-   }
-
-   public int getInventorySize() {
-      return 5;
-   }
-
-   public SimpleContainer getInventory() {
-      return this.inventory;
-   }
-
-   public void openInventory(Player player) {
-      if(player instanceof ServerPlayer serverPlayer && this.isTame()) {
-         NetworkHooks.openScreen(serverPlayer, new SimpleMenuProvider((containerId, inventory, p) -> {
-            return new LabradorMenu(containerId, inventory, this.inventory, this);
-         }, this.getDisplayName()), (data) -> {
-            data.writeInt(this.getInventorySize());
-            data.writeInt(this.getId());
-         });
-      }
-   }
-
-   @Override
-   public void containerChanged(Container p_18983_) {
-      return;
-   }
-
-   public boolean isInventoryFull() {
-      for (int i = 0; i < inventory.getContainerSize(); i++) {
-         if (inventory.getItem(i).isEmpty()) {
-            return false;
-         }
-      }
-      return true;
-   }
-
-   static final Predicate<ItemEntity> ANIMAL_LOOT = (itemEntity) -> {
-      return !itemEntity.hasPickUpDelay() && itemEntity.isAlive() && itemEntity.getItem().is(POTags.Items.ANIMAL_LOOT);
-   };
-
-   //modified fox pickup goal
-   public class LabradorSearchForItemsGoal extends Goal {
-
-      public LabradorSearchForItemsGoal() {
-         this.setFlags(EnumSet.of(Flag.MOVE));
-      }
-
-      public boolean canUse() {
-         if (isOrderedToSit()) {
-            return false;
-         } else if (isInventoryFull()) {
-            return false;
-         } else if (CommonDog.this.getTarget() == null && CommonDog.this.getLastHurtByMob() == null) {
-            if (CommonDog.this.getRandom().nextInt(reducedTickDelay(10)) != 0) {
-               return false;
-            } else {
-               List<ItemEntity> list = CommonDog.this.level().getEntitiesOfClass(ItemEntity.class, CommonDog.this.getBoundingBox().inflate(8.0D, 8.0D, 8.0D), CommonDog.ANIMAL_LOOT);
-               return !list.isEmpty();
-            }
-         } else {
-            return false;
-         }
-      }
-
-      @Override
-      public void tick() {
-         List<ItemEntity> itemEntities = level().getEntitiesOfClass(ItemEntity.class, getBoundingBox().inflate(8.0D, 8.0D, 8.0D), CommonDog.ANIMAL_LOOT);
-
-         if (!itemEntities.isEmpty() && !isInventoryFull()) {
-            ItemEntity itemEntity = itemEntities.get(0);
-            getNavigation().moveTo(itemEntity, 1.2D);
-
-            if (distanceToSqr(itemEntity) < 2.0D && itemEntity.getItem().is(POTags.Items.ANIMAL_LOOT)) {
-               pickUpItem(itemEntity);
-            }
-         }
-      }
-
-      @Override
-      public void start() {
-         List<ItemEntity> itemEntities = level().getEntitiesOfClass(ItemEntity.class, getBoundingBox().inflate(8.0D, 8.0D, 8.0D), CommonDog.ANIMAL_LOOT);
-         if (!itemEntities.isEmpty()) {
-            getNavigation().moveTo(itemEntities.get(0), 1.2D);
-         }
-      }
-
-      private void pickUpItem(ItemEntity itemEntity) {
-         if (!isInventoryFull() && itemEntity.getItem().is(POTags.Items.ANIMAL_LOOT) && this.canUse()) {
-               ItemStack itemStack = itemEntity.getItem();
-
-               for (int i = 0; i < getInventory().getContainerSize(); i++) {
-                  ItemStack inventoryStack = getInventory().getItem(i);
-
-                  if (!inventoryStack.isEmpty() && inventoryStack.is(itemStack.getItem()) && inventoryStack.getCount() < inventoryStack.getMaxStackSize() && itemStack.is(POTags.Items.ANIMAL_LOOT)) {
-                     int j = inventoryStack.getMaxStackSize() - inventoryStack.getCount();
-                     int k = Math.min(j, itemStack.getCount());
-                     inventoryStack.grow(k);
-                     itemStack.shrink(k);
-
-                     if (itemStack.isEmpty()) {
-                        itemEntity.discard();
-                        break;
-                     }
-                  }
-               }
-
-               if (!itemStack.isEmpty() && itemStack.is(POTags.Items.ANIMAL_LOOT) && this.canUse()) {
-                  for (int i = 0; i < getInventory().getContainerSize(); i++) {
-                     if (getInventory().getItem(i).isEmpty()) {
-                        getInventory().setItem(i, itemStack);
-                        itemEntity.discard();
-                        break;
-                     }
-                  }
-               }
-            }
-         }
-      }
 
 }

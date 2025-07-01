@@ -30,7 +30,7 @@ public class DogFollowOwnerGoal extends Goal {
    public DogFollowOwnerGoal(ODog p_25294_, double v, float p_25296_, float p_25297_, boolean p_25298_) {
       this.tamable = p_25294_;
       this.level = p_25294_.level();
-      this.speedModifier = 1.3D;
+      this.speedModifier = 2.0D;
       this.navigation = p_25294_.getNavigation();
       this.startDistance = p_25296_;
       this.stopDistance = p_25297_;

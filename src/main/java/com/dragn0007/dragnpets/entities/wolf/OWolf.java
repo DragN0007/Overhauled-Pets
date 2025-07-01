@@ -528,6 +528,7 @@ public class OWolf extends TamableAnimal implements NeutralMob, GeoEntity {
    public void setPersistentAngerTarget(@Nullable UUID p_30400_) {
       this.persistentAngerTarget = p_30400_;
    }
+
    public DyeColor getCollarColor() {
       return DyeColor.byId(this.entityData.get(DATA_COLLAR_COLOR));
    }
@@ -748,15 +749,12 @@ public class OWolf extends TamableAnimal implements NeutralMob, GeoEntity {
    }
 
    public boolean isPanicking = false;
-
    public boolean isPanicking() {
       return this.getHealth() < this.getMaxHealth() / 3 && this.isAlive();
    }
-
    public boolean getPanicking() {
       return this.isPanicking;
    }
-
    public void setPanicking(boolean panicking) {
       this.isPanicking = panicking;
    }

@@ -86,6 +86,12 @@ public class POEntityTypes {
                     .sized(0.4f,0.4f)
                     .build(new ResourceLocation(LivestockOverhaul.MODID,"o_tropical_fish").toString()));
 
+    public static final RegistryObject<EntityType<CommonDog>> O_DOG_ENTITY = ENTITY_TYPES.register("o_dog",
+            () -> EntityType.Builder.of(CommonDog::new,
+                            MobCategory.CREATURE)
+                    .sized(0.7f,0.7f)
+                    .build(new ResourceLocation(LivestockOverhaul.MODID,"o_dog").toString()));
+
     public static final RegistryObject<EntityType<Doberman>> DOBERMAN_ENTITY = ENTITY_TYPES.register("doberman",
             () -> EntityType.Builder.of(Doberman::new,
                             MobCategory.CREATURE)
@@ -169,12 +175,6 @@ public class POEntityTypes {
                             MobCategory.CREATURE)
                     .sized(0.7f,0.7f)
                     .build(new ResourceLocation(LivestockOverhaul.MODID,"rottweiler").toString()));
-
-    public static final RegistryObject<EntityType<CommonDog>> COMMON_DOG_ENTITY = ENTITY_TYPES.register("common_dog",
-            () -> EntityType.Builder.of(CommonDog::new,
-                            MobCategory.CREATURE)
-                    .sized(0.7f,0.7f)
-                    .build(new ResourceLocation(LivestockOverhaul.MODID,"common_dog").toString()));
 
 
     public static final RegistryObject<EntityType<DogSled>> DOG_SLED_ENTITY = ENTITY_TYPES.register("dog_sled",

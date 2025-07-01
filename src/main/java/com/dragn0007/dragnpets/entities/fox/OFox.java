@@ -176,6 +176,10 @@ public class OFox extends TamableAnimal implements GeoEntity {
       return this.geoCache;
    }
 
+   protected float getStandingEyeHeight(Pose pose, EntityDimensions entityDimensions) {
+      return entityDimensions.height;
+   }
+
    public SoundEvent getEatingSound(ItemStack p_28540_) {
       return SoundEvents.FOX_EAT;
    }

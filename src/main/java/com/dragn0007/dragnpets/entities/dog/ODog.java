@@ -1,10 +1,23 @@
 package com.dragn0007.dragnpets.entities.dog;
 
+import com.dragn0007.dragnlivestock.entities.EntityTypes;
+import com.dragn0007.dragnlivestock.entities.donkey.ODonkey;
+import com.dragn0007.dragnlivestock.entities.horse.HorseBreed;
+import com.dragn0007.dragnlivestock.entities.horse.OHorse;
+import com.dragn0007.dragnlivestock.entities.horse.OHorseModel;
+import com.dragn0007.dragnlivestock.entities.marking_layer.EquineEyeColorOverlay;
+import com.dragn0007.dragnlivestock.entities.marking_layer.EquineMarkingOverlay;
+import com.dragn0007.dragnlivestock.entities.mule.OMule;
+import com.dragn0007.dragnlivestock.entities.mule.OMuleModel;
+import com.dragn0007.dragnlivestock.entities.util.AbstractOMount;
 import com.dragn0007.dragnlivestock.items.LOItems;
 import com.dragn0007.dragnlivestock.util.LivestockOverhaulCommonConfig;
 import com.dragn0007.dragnpets.PetsOverhaul;
 import com.dragn0007.dragnpets.entities.POEntityTypes;
 import com.dragn0007.dragnpets.entities.ai.DogFollowOwnerGoal;
+import com.dragn0007.dragnpets.entities.dog.common.CommonDog;
+import com.dragn0007.dragnpets.entities.dog.common.CommonDogMarkingLayer;
+import com.dragn0007.dragnpets.entities.dog.common.CommonDogModel;
 import com.dragn0007.dragnpets.util.POTags;
 import com.dragn0007.dragnpets.util.PetsOverhaulCommonConfig;
 import net.minecraft.ChatFormatting;
@@ -30,6 +43,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.ai.goal.target.*;
+import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.animal.horse.AbstractHorse;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.monster.Ghast;
@@ -122,28 +136,6 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity {
    public final AnimatableInstanceCache geoCache = GeckoLibUtil.createInstanceCache(this);
 
    public <T extends GeoAnimatable> PlayState predicate(software.bernie.geckolib.core.animation.AnimationState<T> tAnimationState) {
-      double currentSpeed = this.getDeltaMovement().lengthSqr();
-      double speedThreshold = 0.015;
-
-      AnimationController<T> controller = tAnimationState.getController();
-
-      if (tAnimationState.isMoving()) {
-         if (currentSpeed > speedThreshold) {
-            controller.setAnimation(RawAnimation.begin().then("run", Animation.LoopType.LOOP));
-            controller.setAnimationSpeed(1.3);
-         } else {
-            controller.setAnimation(RawAnimation.begin().then("walk", Animation.LoopType.LOOP));
-            controller.setAnimationSpeed(1.3);
-         }
-      } else {
-         if (isInSittingPose()) {
-            controller.setAnimation(RawAnimation.begin().then("sit2", Animation.LoopType.LOOP));
-            controller.setAnimationSpeed(1.0);
-         } else {
-            controller.setAnimation(RawAnimation.begin().then("idle", Animation.LoopType.LOOP));
-         }
-      }
-
       return PlayState.CONTINUE;
    }
 
@@ -188,10 +180,32 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity {
    }
 
    public int regenHealthCounter = 0;
+   public int wagCounter = this.random.nextInt(1200) + 1200;
+   public int stayWaggingCounter = 0;
 
-   @Override
+   private boolean wag = false;
+   public boolean isWagging() {
+      return this.wag;
+   }
+   public void setWagging(boolean wagging) {
+      this.wag = wagging;
+   }
+
    public void tick() {
       super.tick();
+
+      wagCounter--;
+
+      if (--this.wagCounter <= 0) {
+         this.stayWaggingCounter++;
+         setWagging(true);
+         if (this.stayWaggingCounter >= 300) {
+            this.wagCounter = this.random.nextInt(1200) + 1200;
+            this.stayWaggingCounter = 0;
+            setWagging(false);
+         }
+      }
+
       if (this.hasFollowers() && this.level().random.nextInt(200) == 1) {
          List<? extends ODog> list = this.level().getEntitiesOfClass(this.getClass(), this.getBoundingBox().inflate(20.0D, 20.0D, 20.0D));
          if (list.size() <= 1) {
@@ -358,6 +372,12 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity {
       ItemStack itemstack = player.getItemInHand(hand);
       Item item = itemstack.getItem();
 
+      if (itemstack.is(Items.SHEARS) && this.isCollared()) {
+         this.setCollared(false);
+         this.playSound(SoundEvents.SHEEP_SHEAR, 0.5f, 1f);
+         return InteractionResult.sidedSuccess(this.level().isClientSide);
+      }
+
       if (itemstack.is(LOItems.GENDER_TEST_STRIP.get()) && this.isFemale()) {
          player.playSound(SoundEvents.BEEHIVE_EXIT, 1.0F, 1.0F);
          ItemStack itemstack1 = ItemUtils.createFilledResult(itemstack, player, LOItems.FEMALE_GENDER_TEST_STRIP.get().getDefaultInstance());
@@ -507,8 +527,11 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity {
       this.toldToGuard = toldToGuard;
    }
 
-   public static final Ingredient FOOD_ITEMS = Ingredient.of(POTags.Items.DOG_FOOD);
+   protected float getStandingEyeHeight(Pose pose, EntityDimensions entityDimensions) {
+      return entityDimensions.height * 1.1F;
+   }
 
+   public static final Ingredient FOOD_ITEMS = Ingredient.of(POTags.Items.DOG_FOOD);
    @Override
    public boolean isFood(ItemStack itemStack) {
       return FOOD_ITEMS.test(itemStack);
@@ -517,20 +540,16 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity {
    public int getRemainingPersistentAngerTime() {
       return this.entityData.get(DATA_REMAINING_ANGER_TIME);
    }
-
    public void setRemainingPersistentAngerTime(int p_30404_) {
       this.entityData.set(DATA_REMAINING_ANGER_TIME, p_30404_);
    }
-
    public void startPersistentAngerTimer() {
       this.setRemainingPersistentAngerTime(PERSISTENT_ANGER_TIME.sample(this.random));
    }
-
    @Nullable
    public UUID getPersistentAngerTarget() {
       return this.persistentAngerTarget;
    }
-
    public void setPersistentAngerTarget(@Nullable UUID p_30400_) {
       this.persistentAngerTarget = p_30400_;
    }
@@ -538,56 +557,121 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity {
    public DyeColor getCollarColor() {
       return DyeColor.byId(this.entityData.get(DATA_COLLAR_COLOR));
    }
-
    public void setCollarColor(DyeColor p_30398_) {
       this.entityData.set(DATA_COLLAR_COLOR, p_30398_.getId());
    }
 
-   public void defineSynchedData() {
-      super.defineSynchedData();
-      this.entityData.define(DATA_COLLAR_COLOR, DyeColor.RED.getId());
-      this.entityData.define(DATA_REMAINING_ANGER_TIME, 0);
-      this.entityData.define(GENDER, 0);
+   public static final EntityDataAccessor<Boolean> COLLARED = SynchedEntityData.defineId(ODog.class, EntityDataSerializers.BOOLEAN);
+   public boolean isCollared() {
+      return this.entityData.get(COLLARED);
+   }
+   public void setCollared(boolean collared) {
+      this.entityData.set(COLLARED, collared);
    }
 
-   public void addAdditionalSaveData(CompoundTag tag) {
-      super.addAdditionalSaveData(tag);
-      tag.putByte("CollarColor", (byte)this.getCollarColor().getId());
-      tag.putInt("Gender", this.getGender());
-      tag.putBoolean("Wandering", this.getToldToWander());
-      tag.putBoolean("Hunting", this.getToldToHunt());
-      tag.putBoolean("Guarding", this.getToldToGuard());
-      tag.putBoolean("Panicking", this.getPanicking());
-      this.addPersistentAngerSaveData(tag);
+
+   public static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(ODog.class, EntityDataSerializers.INT);
+   public ResourceLocation getTextureLocation() {
+      return CommonDogModel.Variant.variantFromOrdinal(getVariant()).resourceLocation;
+   }
+   public int getVariant() {
+      return this.entityData.get(VARIANT);
+   }
+   public void setVariant(int variant) {
+      this.entityData.set(VARIANT, variant);
+   }
+
+
+   public static final EntityDataAccessor<Integer> OVERLAY = SynchedEntityData.defineId(ODog.class, EntityDataSerializers.INT);
+   public ResourceLocation getOverlayLocation() {return CommonDogMarkingLayer.Overlay.overlayFromOrdinal(getOverlayVariant()).resourceLocation;}
+   public int getOverlayVariant() {
+      return this.entityData.get(OVERLAY);
+   }
+   public void setOverlayVariant(int overlayVariant) {
+      this.entityData.set(OVERLAY, overlayVariant);
+   }
+
+   public static final EntityDataAccessor<Integer> CROPPED = SynchedEntityData.defineId(ODog.class, EntityDataSerializers.INT);
+   public int getCropped() {
+      return this.entityData.get(CROPPED);
+   }
+   public void setCropped(int cropped) {
+      this.entityData.set(CROPPED, cropped);
+   }
+
+   public static final EntityDataAccessor<Integer> FLUFFY = SynchedEntityData.defineId(ODog.class, EntityDataSerializers.INT);
+   public int getFluff() {
+      return this.entityData.get(FLUFFY);
+   }
+   public void setFluff(int fluff) {
+      this.entityData.set(FLUFFY, fluff);
+   }
+
+   public void defineSynchedData() {
+      super.defineSynchedData();
+      this.entityData.define(VARIANT, 0);
+      this.entityData.define(OVERLAY, 0);
+      this.entityData.define(GENDER, 0);
+      this.entityData.define(CROPPED, 0);
+      this.entityData.define(FLUFFY, 0);
+      this.entityData.define(DATA_COLLAR_COLOR, DyeColor.RED.getId());
+      this.entityData.define(DATA_REMAINING_ANGER_TIME, 0);
+      this.entityData.define(COLLARED, false);
    }
 
    public void readAdditionalSaveData(CompoundTag tag) {
       super.readAdditionalSaveData(tag);
-      if (tag.contains("CollarColor", 99)) {
-         this.setCollarColor(DyeColor.byId(tag.getInt("CollarColor")));
+      if (tag.contains("Variant")) {
+         setVariant(tag.getInt("Variant"));
+      }
+
+      if (tag.contains("Overlay")) {
+         setOverlayVariant(tag.getInt("Overlay"));
       }
 
       if (tag.contains("Gender")) {
          this.setGender(tag.getInt("Gender"));
       }
 
+      if (tag.contains("Fluff")) {
+         this.setFluff(tag.getInt("Fluff"));
+      }
+
+      if (tag.contains("Cropped")) {
+         this.setCropped(tag.getInt("Cropped"));
+      }
+
       if (tag.contains("Wandering")) {
          this.setToldToWander(tag.getBoolean("Wandering"));
-      }
-
-      if (tag.contains("Hunting")) {
-         this.setToldToHunt(tag.getBoolean("Hunting"));
-      }
-
-      if (tag.contains("Guarding")) {
-         this.setToldToGuard(tag.getBoolean("Guarding"));
       }
 
       if (tag.contains("Panicking")) {
          this.setPanicking(tag.getBoolean("Panicking"));
       }
 
+      if (tag.contains("CollarColor", 99)) {
+         this.setCollarColor(DyeColor.byId(tag.getInt("CollarColor")));
+      }
+
+      if(tag.contains("Collared")) {
+         this.setCollared(tag.getBoolean("Collared"));
+      }
+
       this.readPersistentAngerSaveData(this.level(), tag);
+   }
+
+   public void addAdditionalSaveData(CompoundTag tag) {
+      super.addAdditionalSaveData(tag);
+      tag.putInt("Variant", getVariant());
+      tag.putInt("Overlay", getOverlayVariant());
+      tag.putInt("Gender", this.getGender());
+      tag.putInt("Cropped", this.getCropped());
+      tag.putInt("Fluff", this.getFluff());
+      tag.putBoolean("Wandering", this.getToldToWander());
+      tag.putBoolean("Panicking", this.getPanicking());
+      tag.putByte("CollarColor", (byte)this.getCollarColor().getId());
+      tag.putBoolean("Collared", this.isCollared());
+      this.addPersistentAngerSaveData(tag);
    }
 
    @Override
@@ -602,37 +686,84 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity {
       return super.finalizeSpawn(serverLevelAccessor, instance, spawnType, data, tag);
    }
 
-   @Nullable
+   public boolean canParent() {
+      return !this.isBaby() && this.getHealth() >= this.getMaxHealth() && this.isInLove();
+   }
+
+   public boolean canMate(Animal animal) {
+      if (animal == this) {
+         return false;
+      } else if (!(animal instanceof ODog)) {
+         return false;
+      } else {
+         if (!LivestockOverhaulCommonConfig.GENDERS_AFFECT_BREEDING.get()) {
+            return this.canParent() && ((ODog) animal).canParent();
+         } else {
+            ODog partner = (ODog) animal;
+            if (this.canParent() && partner.canParent() && this.getGender() != partner.getGender()) {
+               return isFemale();
+            }
+         }
+      }
+      return false;
+   }
+
    @Override
-   public AgeableMob getBreedOffspring(ServerLevel p_146743_, AgeableMob p_146744_) {
-      return null;
+   public AgeableMob getBreedOffspring(ServerLevel serverLevel, AgeableMob ageableMob) {
+
+      CommonDog pup = null;
+      ODog partner = (ODog) ageableMob;
+
+      if (ageableMob instanceof ODog) {
+
+         pup = POEntityTypes.O_DOG_ENTITY.get().create(serverLevel);
+
+         int variantChance = this.random.nextInt(14);
+         int variant;
+         if (variantChance < 6) {
+            variant = this.getVariant();
+         } else if (variantChance < 12) {
+            variant = partner.getVariant();
+         } else {
+            variant = this.random.nextInt(CommonDogModel.Variant.values().length);
+         }
+         pup.setVariant(variant);
+
+         int overlayChance = this.random.nextInt(10);
+         int overlay;
+         if (overlayChance < 4) {
+            overlay = this.getOverlayVariant();
+         } else if (overlayChance < 8) {
+            overlay = partner.getOverlayVariant();
+         } else {
+            overlay = this.random.nextInt(CommonDogMarkingLayer.Overlay.values().length);
+         }
+         pup.setOverlayVariant(overlay);
+
+         int gender;
+         gender = this.random.nextInt(ODog.Gender.values().length);
+         pup.setGender(gender);
+      }
+
+      return pup;
    }
 
    public enum Gender {
       FEMALE,
       MALE
    }
-
    public boolean isFemale() {
       return this.getGender() == 0;
    }
-
    public boolean isMale() {
       return this.getGender() == 1;
    }
-
    public static final EntityDataAccessor<Integer> GENDER = SynchedEntityData.defineId(ODog.class, EntityDataSerializers.INT);
-
    public int getGender() {
       return this.entityData.get(GENDER);
    }
-
    public void setGender(int gender) {
       this.entityData.set(GENDER, gender);
-   }
-
-   public boolean canParent() {
-      return !this.isBaby() && this.getHealth() >= this.getMaxHealth() && this.isInLove();
    }
 
    public boolean wantsToAttack(LivingEntity entity, LivingEntity p_30390_) {
@@ -661,15 +792,12 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity {
    }
 
    public boolean isPanicking = false;
-
    public boolean isPanicking() {
       return this.getHealth() < this.getMaxHealth() / 3 && this.isAlive();
    }
-
    public boolean getPanicking() {
       return this.isPanicking;
    }
-
    public void setPanicking(boolean panicking) {
       this.isPanicking = panicking;
    }
