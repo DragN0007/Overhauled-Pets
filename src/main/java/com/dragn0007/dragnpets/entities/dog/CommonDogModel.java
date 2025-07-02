@@ -1,8 +1,7 @@
-package com.dragn0007.dragnpets.entities.dog.common;
+package com.dragn0007.dragnpets.entities.dog;
 
 import com.dragn0007.dragnlivestock.LivestockOverhaul;
 import com.dragn0007.dragnpets.PetsOverhaul;
-import com.dragn0007.dragnpets.entities.wolf.OWolf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import software.bernie.geckolib.constant.DataTickets;
@@ -63,7 +62,7 @@ public class CommonDogModel extends DefaultedEntityGeoModel<CommonDog> {
         }
     }
 
-    public static final ResourceLocation MODEL = new ResourceLocation(PetsOverhaul.MODID, "geo/o_dog.geo.json");
+    public static final ResourceLocation MODEL = new ResourceLocation(PetsOverhaul.MODID, "geo/dog/o_dog.geo.json");
     public static final ResourceLocation ANIMATION = new ResourceLocation(PetsOverhaul.MODID, "animations/dog.animation.json");
 
     @Override

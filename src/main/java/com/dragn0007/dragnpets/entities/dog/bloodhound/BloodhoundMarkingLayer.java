@@ -1,26 +1,24 @@
-package com.dragn0007.dragnpets.entities.cat;
+package com.dragn0007.dragnpets.entities.dog.bloodhound;
 
-import com.dragn0007.dragnpets.PetsOverhaul;
 import com.dragn0007.dragnpets.entities.dog.DogMarkingOverlay;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
 import software.bernie.geckolib.cache.object.BakedGeoModel;
 import software.bernie.geckolib.renderer.GeoRenderer;
 import software.bernie.geckolib.renderer.layer.GeoRenderLayer;
 
-public class OCatMarkingLayer extends GeoRenderLayer<OCat> {
-    public OCatMarkingLayer(GeoRenderer entityRendererIn) {
+public class BloodhoundMarkingLayer extends GeoRenderLayer<Bloodhound> {
+    public BloodhoundMarkingLayer(GeoRenderer entityRendererIn) {
         super(entityRendererIn);
     }
 
     @Override
-    public void render(PoseStack poseStack, OCat animatable, BakedGeoModel bakedModel, RenderType renderType, MultiBufferSource bufferSource, VertexConsumer buffer, float partialTick, int packedLight, int packedOverlay) {
+    public void render(PoseStack poseStack, Bloodhound animatable, BakedGeoModel bakedModel, RenderType renderType, MultiBufferSource bufferSource, VertexConsumer buffer, float partialTick, int packedLight, int packedOverlay) {
 
-        CatMarkingOverlay overlay = CatMarkingOverlay.overlayFromOrdinal(animatable.getOverlayVariant());
+        DogMarkingOverlay overlay = DogMarkingOverlay.overlayFromOrdinal(animatable.getOverlayVariant());
         RenderType renderMarkingType = RenderType.entityCutout(overlay.resourceLocation);
 
         poseStack.pushPose();

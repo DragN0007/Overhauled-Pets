@@ -34,12 +34,12 @@ public class OCatEyeLayer extends GeoRenderLayer<OCat> {
     }
 
     public enum Eyes {
-        ORANGE(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/cat/common/eyes/orange.png")),
-        YELLOW(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/cat/common/eyes/yellow.png")),
-        BROWN(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/cat/common/eyes/brown.png")),
-        DARK_BROWN(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/cat/common/eyes/dark_brown.png")),
-        BLUE(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/cat/common/eyes/blue.png")),
-        GREEN(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/cat/common/eyes/green.png"));
+        ORANGE(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/cat/eyes/orange.png")),
+        YELLOW(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/cat/eyes/yellow.png")),
+        BROWN(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/cat/eyes/brown.png")),
+        DARK_BROWN(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/cat/eyes/dark_brown.png")),
+        BLUE(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/cat/eyes/blue.png")),
+        GREEN(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/cat/eyes/green.png"));
 
         public final ResourceLocation resourceLocation;
         Eyes(ResourceLocation resourceLocation) {

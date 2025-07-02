@@ -1,23 +1,10 @@
 package com.dragn0007.dragnpets.entities.dog;
 
-import com.dragn0007.dragnlivestock.entities.EntityTypes;
-import com.dragn0007.dragnlivestock.entities.donkey.ODonkey;
-import com.dragn0007.dragnlivestock.entities.horse.HorseBreed;
-import com.dragn0007.dragnlivestock.entities.horse.OHorse;
-import com.dragn0007.dragnlivestock.entities.horse.OHorseModel;
-import com.dragn0007.dragnlivestock.entities.marking_layer.EquineEyeColorOverlay;
-import com.dragn0007.dragnlivestock.entities.marking_layer.EquineMarkingOverlay;
-import com.dragn0007.dragnlivestock.entities.mule.OMule;
-import com.dragn0007.dragnlivestock.entities.mule.OMuleModel;
-import com.dragn0007.dragnlivestock.entities.util.AbstractOMount;
 import com.dragn0007.dragnlivestock.items.LOItems;
 import com.dragn0007.dragnlivestock.util.LivestockOverhaulCommonConfig;
 import com.dragn0007.dragnpets.PetsOverhaul;
 import com.dragn0007.dragnpets.entities.POEntityTypes;
 import com.dragn0007.dragnpets.entities.ai.DogFollowOwnerGoal;
-import com.dragn0007.dragnpets.entities.dog.common.CommonDog;
-import com.dragn0007.dragnpets.entities.dog.common.CommonDogMarkingLayer;
-import com.dragn0007.dragnpets.entities.dog.common.CommonDogModel;
 import com.dragn0007.dragnpets.util.POTags;
 import com.dragn0007.dragnpets.util.PetsOverhaulCommonConfig;
 import net.minecraft.ChatFormatting;
@@ -64,9 +51,7 @@ import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.core.animatable.GeoAnimatable;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.core.animation.AnimatableManager;
-import software.bernie.geckolib.core.animation.Animation;
 import software.bernie.geckolib.core.animation.AnimationController;
-import software.bernie.geckolib.core.animation.RawAnimation;
 import software.bernie.geckolib.core.object.PlayState;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
@@ -583,7 +568,7 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity {
 
 
    public static final EntityDataAccessor<Integer> OVERLAY = SynchedEntityData.defineId(ODog.class, EntityDataSerializers.INT);
-   public ResourceLocation getOverlayLocation() {return CommonDogMarkingLayer.Overlay.overlayFromOrdinal(getOverlayVariant()).resourceLocation;}
+   public ResourceLocation getOverlayLocation() {return DogMarkingOverlay.overlayFromOrdinal(getOverlayVariant()).resourceLocation;}
    public int getOverlayVariant() {
       return this.entityData.get(OVERLAY);
    }
@@ -736,7 +721,7 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity {
          } else if (overlayChance < 8) {
             overlay = partner.getOverlayVariant();
          } else {
-            overlay = this.random.nextInt(CommonDogMarkingLayer.Overlay.values().length);
+            overlay = this.random.nextInt(DogMarkingOverlay.values().length);
          }
          pup.setOverlayVariant(overlay);
 

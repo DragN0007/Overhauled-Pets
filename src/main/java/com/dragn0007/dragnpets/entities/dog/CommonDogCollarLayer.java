@@ -1,7 +1,6 @@
-package com.dragn0007.dragnpets.entities.dog.common;
+package com.dragn0007.dragnpets.entities.dog;
 
 import com.dragn0007.dragnpets.PetsOverhaul;
-import com.dragn0007.dragnpets.entities.wolf.OWolf;
 import com.dragn0007.dragnpets.util.PetsOverhaulClientConfig;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;

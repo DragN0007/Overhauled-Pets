@@ -6,20 +6,7 @@ import software.bernie.geckolib.model.GeoModel;
 
 public class BloodhoundModel extends GeoModel<Bloodhound> {
 
-    public enum Variant {
-        BROWN(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/dog/bloodhound/bloodhound_brown.png")),
-        RED(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/dog/bloodhound/bloodhound_red.png"));
-
-        public final ResourceLocation resourceLocation;
-        Variant(ResourceLocation resourceLocation) {
-            this.resourceLocation = resourceLocation;
-        }
-
-        public static Variant variantFromOrdinal(int variant) { return Variant.values()[variant % Variant.values().length];
-        }
-    }
-
-    public static final ResourceLocation MODEL = new ResourceLocation(PetsOverhaul.MODID, "geo/bloodhound.geo.json");
+    public static final ResourceLocation MODEL = new ResourceLocation(PetsOverhaul.MODID, "geo/dog/bloodhound.geo.json");
     public static final ResourceLocation ANIMATION = new ResourceLocation(PetsOverhaul.MODID, "animations/dog.animation.json");
 
     @Override
@@ -29,7 +16,7 @@ public class BloodhoundModel extends GeoModel<Bloodhound> {
 
     @Override
     public ResourceLocation getTextureResource(Bloodhound object) {
-        return object.getTextureResource();
+        return object.getTextureLocation();
     }
 
     @Override

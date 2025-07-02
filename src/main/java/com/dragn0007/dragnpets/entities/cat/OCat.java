@@ -486,7 +486,7 @@ public class OCat extends TamableAnimal implements GeoEntity {
    }
 
    public static final EntityDataAccessor<Integer> OVERLAY = SynchedEntityData.defineId(OCat.class, EntityDataSerializers.INT);
-   public ResourceLocation getOverlayLocation() {return OCatMarkingLayer.Overlay.overlayFromOrdinal(getOverlayVariant()).resourceLocation;}
+   public ResourceLocation getOverlayLocation() {return CatMarkingOverlay.overlayFromOrdinal(getOverlayVariant()).resourceLocation;}
    public int getOverlayVariant() {
       return this.entityData.get(OVERLAY);
    }
@@ -579,7 +579,7 @@ public class OCat extends TamableAnimal implements GeoEntity {
       }
 
       setVariant(random.nextInt(OCatModel.Variant.values().length));
-      setOverlayVariant(random.nextInt(OCatMarkingLayer.Overlay.values().length));
+      setOverlayVariant(random.nextInt(CatMarkingOverlay.values().length));
       setGender(random.nextInt(OCat.Gender.values().length));
 
       return super.finalizeSpawn(serverLevelAccessor, instance, spawnType, data, tag);
@@ -675,7 +675,7 @@ public class OCat extends TamableAnimal implements GeoEntity {
       } else if (overlayChance < 8) {
          overlay = partner.getOverlayVariant();
       } else {
-         overlay = this.random.nextInt(OCatMarkingLayer.Overlay.values().length);
+         overlay = this.random.nextInt(CatMarkingOverlay.values().length);
       }
       kitten.setOverlayVariant(overlay);
 

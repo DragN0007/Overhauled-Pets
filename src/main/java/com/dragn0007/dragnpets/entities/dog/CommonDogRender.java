@@ -1,9 +1,5 @@
-package com.dragn0007.dragnpets.entities.dog.common;
+package com.dragn0007.dragnpets.entities.dog;
 
-import com.dragn0007.dragnpets.entities.wolf.OWolf;
-import com.dragn0007.dragnpets.entities.wolf.OWolfCollarLayer;
-import com.dragn0007.dragnpets.entities.wolf.OWolfMarkingLayer;
-import com.dragn0007.dragnpets.entities.wolf.OWolfModel;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;

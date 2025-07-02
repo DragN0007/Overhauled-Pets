@@ -1,10 +1,8 @@
-package com.dragn0007.dragnpets.entities.dog.common;
+package com.dragn0007.dragnpets.entities.dog;
 
-import com.dragn0007.dragnlivestock.util.LivestockOverhaulCommonConfig;
 import com.dragn0007.dragnpets.entities.POEntityTypes;
 import com.dragn0007.dragnpets.entities.ai.DogFollowOwnerGoal;
 import com.dragn0007.dragnpets.entities.ai.DogFollowPackLeaderGoal;
-import com.dragn0007.dragnpets.entities.dog.ODog;
 import com.dragn0007.dragnpets.util.PetsOverhaulCommonConfig;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -24,7 +22,6 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.ai.goal.target.*;
-import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.animal.horse.AbstractHorse;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.monster.Ghast;
@@ -233,7 +230,7 @@ public class CommonDog extends ODog implements NeutralMob, GeoEntity {
 
 
    public static final EntityDataAccessor<Integer> OVERLAY = SynchedEntityData.defineId(CommonDog.class, EntityDataSerializers.INT);
-   public ResourceLocation getOverlayLocation() {return CommonDogMarkingLayer.Overlay.overlayFromOrdinal(getOverlayVariant()).resourceLocation;}
+   public ResourceLocation getOverlayLocation() {return DogMarkingOverlay.overlayFromOrdinal(getOverlayVariant()).resourceLocation;}
    public int getOverlayVariant() {
       return this.entityData.get(OVERLAY);
    }
@@ -340,7 +337,7 @@ public class CommonDog extends ODog implements NeutralMob, GeoEntity {
       }
       Random random = new Random();
       setVariant(random.nextInt(CommonDogModel.Variant.values().length));
-      setOverlayVariant(random.nextInt(CommonDogMarkingLayer.Overlay.values().length));
+      setOverlayVariant(random.nextInt(DogMarkingOverlay.values().length));
       setGender(random.nextInt(ODog.Gender.values().length));
       setFluffChance();
 
@@ -392,24 +389,6 @@ public class CommonDog extends ODog implements NeutralMob, GeoEntity {
       return !this.isBaby() && this.getHealth() >= this.getMaxHealth() && this.isInLove();
    }
 
-   public boolean canMate(Animal animal) {
-      if (animal == this) {
-         return false;
-      } else if (!(animal instanceof CommonDog)) {
-         return false;
-      } else {
-         if (!LivestockOverhaulCommonConfig.GENDERS_AFFECT_BREEDING.get()) {
-            return this.canParent() && ((CommonDog) animal).canParent();
-         } else {
-            CommonDog partner = (CommonDog) animal;
-            if (this.canParent() && partner.canParent() && this.getGender() != partner.getGender()) {
-               return isFemale();
-            }
-         }
-      }
-      return false;
-   }
-
    @Override
    public AgeableMob getBreedOffspring(ServerLevel serverLevel, AgeableMob ageableMob) {
       CommonDog pup;
@@ -434,7 +413,7 @@ public class CommonDog extends ODog implements NeutralMob, GeoEntity {
       } else if (overlayChance < 8) {
          overlay = partner.getOverlayVariant();
       } else {
-         overlay = this.random.nextInt(CommonDogMarkingLayer.Overlay.values().length);
+         overlay = this.random.nextInt(DogMarkingOverlay.values().length);
       }
       pup.setOverlayVariant(overlay);
 
@@ -448,7 +427,7 @@ public class CommonDog extends ODog implements NeutralMob, GeoEntity {
       pup.setFluff(fluff);
 
       int gender;
-      gender = this.random.nextInt(CommonDog.Gender.values().length);
+      gender = this.random.nextInt(ODog.Gender.values().length);
       pup.setGender(gender);
 
       if (PetsOverhaulCommonConfig.ALLOW_CROPPED_DOG_SPAWNS.get()){

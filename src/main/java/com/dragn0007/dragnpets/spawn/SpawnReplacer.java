@@ -6,20 +6,18 @@ import com.dragn0007.dragnpets.entities.POEntityTypes;
 import com.dragn0007.dragnpets.entities.axolotl.OAxolotl;
 import com.dragn0007.dragnpets.entities.axolotl.OAxolotlMarkingLayer;
 import com.dragn0007.dragnpets.entities.axolotl.OAxolotlModel;
-import com.dragn0007.dragnpets.entities.cat.OCat;
-import com.dragn0007.dragnpets.entities.cat.OCatEyeLayer;
-import com.dragn0007.dragnpets.entities.cat.OCatMarkingLayer;
-import com.dragn0007.dragnpets.entities.cat.OCatModel;
+import com.dragn0007.dragnpets.entities.cat.*;
 import com.dragn0007.dragnpets.entities.cat.kornish_rex.KornishRex;
 import com.dragn0007.dragnpets.entities.cat.maine_coon.MaineCoon;
+import com.dragn0007.dragnpets.entities.dog.DogMarkingOverlay;
+import com.dragn0007.dragnpets.entities.dog.ODog;
 import com.dragn0007.dragnpets.entities.dog.australian_shepherd.AustralianShepherd;
 import com.dragn0007.dragnpets.entities.dog.bernese.Bernese;
 import com.dragn0007.dragnpets.entities.dog.bloodhound.Bloodhound;
 import com.dragn0007.dragnpets.entities.dog.border_collie.Collie;
 import com.dragn0007.dragnpets.entities.dog.cocker_spaniel.CockerSpaniel;
-import com.dragn0007.dragnpets.entities.dog.common.CommonDog;
-import com.dragn0007.dragnpets.entities.dog.common.CommonDogMarkingLayer;
-import com.dragn0007.dragnpets.entities.dog.common.CommonDogModel;
+import com.dragn0007.dragnpets.entities.dog.CommonDog;
+import com.dragn0007.dragnpets.entities.dog.CommonDogModel;
 import com.dragn0007.dragnpets.entities.dog.doberman.Doberman;
 import com.dragn0007.dragnpets.entities.dog.husky.Husky;
 import com.dragn0007.dragnpets.entities.dog.labrador.Labrador;
@@ -398,7 +396,7 @@ public class SpawnReplacer {
                     return;
                 }
 
-                int i = event.getLevel().getRandom().nextInt(41);
+                int i = event.getLevel().getRandom().nextInt(42);
 
                 if (event.getLevel().getBiome(event.getEntity().blockPosition()).is(Biomes.SWAMP)) {
                     if (commonCat != null) {
@@ -414,8 +412,8 @@ public class SpawnReplacer {
                             commonCat.setEyes(random.nextInt(OCatEyeLayer.Eyes.values().length));
                         }
 
-                        commonCat.setVariant(random.nextInt(OCatModel.Variant.values().length));
-                        commonCat.setOverlayVariant(random.nextInt(OCatMarkingLayer.Overlay.values().length));
+                        commonCat.setVariant(0);
+                        commonCat.setOverlayVariant(0);
                         commonCat.setGender(random.nextInt(OCat.Gender.values().length));
 
                         if (event.getLevel().isClientSide) {
@@ -446,7 +444,7 @@ public class SpawnReplacer {
                             }
 
                             commonCat.setVariant(random.nextInt(OCatModel.Variant.values().length));
-                            commonCat.setOverlayVariant(random.nextInt(OCatMarkingLayer.Overlay.values().length));
+                            commonCat.setOverlayVariant(random.nextInt(CatMarkingOverlay.values().length));
 
                             if (event.getLevel().isClientSide) {
                                 cat.remove(Entity.RemovalReason.DISCARDED);
@@ -460,16 +458,16 @@ public class SpawnReplacer {
                     }
 
                     if (commonDog != null) {
-                        if (i < 30) {
+                        if (i > 30 && i < 40) {
                             commonDog.copyPosition(cat);
 
                             commonDog.setCustomName(cat.getCustomName());
                             commonDog.setAge(cat.getAge());
                             commonDog.setOwnerUUID(cat.getOwnerUUID());
 
-                            commonDog.setGender(random.nextInt(CommonDog.Gender.values().length));
+                            commonDog.setGender(random.nextInt(ODog.Gender.values().length));
                             commonDog.setVariant(random.nextInt(CommonDogModel.Variant.values().length));
-                            commonDog.setOverlayVariant(random.nextInt(CommonDogMarkingLayer.Overlay.values().length));
+                            commonDog.setOverlayVariant(random.nextInt(DogMarkingOverlay.values().length));
                             commonDog.setFluffChance();
 
                             if (PetsOverhaulCommonConfig.ALLOW_CROPPED_DOG_SPAWNS.get()) {
@@ -488,6 +486,44 @@ public class SpawnReplacer {
                             event.setCanceled(true);
                         }
                     }
+
+                    if (bloodhound != null) {
+                        if (i == 41) {
+                            bloodhound.copyPosition(cat);
+
+                            bloodhound.setCustomName(cat.getCustomName());
+                            bloodhound.setAge(cat.getAge());
+                            bloodhound.setOwnerUUID(cat.getOwnerUUID());
+
+                            bloodhound.setGender(random.nextInt(ODog.Gender.values().length));
+
+                            if (LivestockOverhaulCommonConfig.SPAWN_BY_BREED.get()) {
+                                bloodhound.setColor();
+                                bloodhound.setMarking();
+                            } else {
+                                bloodhound.setVariant(random.nextInt(CommonDogModel.Variant.values().length));
+                                bloodhound.setOverlayVariant(random.nextInt(DogMarkingOverlay.values().length));
+                            }
+
+                            bloodhound.setFluffChance();
+
+                            if (PetsOverhaulCommonConfig.ALLOW_CROPPED_DOG_SPAWNS.get()) {
+                                bloodhound.setCropChance();
+                            } else {
+                                bloodhound.setCropped(0);
+                            }
+
+                            if (event.getLevel().isClientSide) {
+                                cat.remove(Entity.RemovalReason.DISCARDED);
+                            }
+
+                            event.getLevel().addFreshEntity(bloodhound);
+                            cat.remove(Entity.RemovalReason.DISCARDED);
+
+                            event.setCanceled(true);
+                        }
+                    }
+
 
 
                 }

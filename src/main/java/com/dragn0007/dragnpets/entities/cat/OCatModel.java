@@ -38,21 +38,21 @@ public class OCatModel extends DefaultedEntityGeoModel<OCat> {
     }
 
     public enum Variant {
-        BLACK(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/cat/common/black.png")),
-        BLUE(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/cat/common/blue.png")),
-        BROWN(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/cat/common/brown.png")),
-        CHOCOLATE(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/cat/common/chocolate.png")),
-        CREAM(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/cat/common/cream.png")),
-        GOLD_RED(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/cat/common/gold_red.png")),
-        LILAC(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/cat/common/lilac.png")),
-        MAHOGANY(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/cat/common/mahogany.png")),
-        ORANGE(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/cat/common/orange.png")),
-        RAGDOLL(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/cat/common/ragdoll.png")),
-        RED(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/cat/common/red.png")),
-        SEAL(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/cat/common/seal.png")),
-        SILVER(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/cat/common/silver.png")),
-        TAN(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/cat/common/tan.png")),
-        WHITE(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/cat/common/white.png"));
+        BLACK(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/cat/black.png")),
+        BLUE(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/cat/blue.png")),
+        BROWN(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/cat/brown.png")),
+        CHOCOLATE(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/cat/chocolate.png")),
+        CREAM(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/cat/cream.png")),
+        GOLD_RED(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/cat/gold_red.png")),
+        LILAC(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/cat/lilac.png")),
+        MAHOGANY(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/cat/mahogany.png")),
+        ORANGE(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/cat/orange.png")),
+        RAGDOLL(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/cat/ragdoll.png")),
+        RED(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/cat/red.png")),
+        SEAL(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/cat/seal.png")),
+        SILVER(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/cat/silver.png")),
+        TAN(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/cat/tan.png")),
+        WHITE(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/cat/white.png"));
 
         public final ResourceLocation resourceLocation;
         Variant(ResourceLocation resourceLocation) {
@@ -63,7 +63,7 @@ public class OCatModel extends DefaultedEntityGeoModel<OCat> {
         }
     }
 
-    public static final ResourceLocation MODEL = new ResourceLocation(PetsOverhaul.MODID, "geo/o_cat.geo.json");
+    public static final ResourceLocation MODEL = new ResourceLocation(PetsOverhaul.MODID, "geo/cat/o_cat.geo.json");
     public static final ResourceLocation ANIMATION = new ResourceLocation(PetsOverhaul.MODID, "animations/o_cat.animation.json");
 
     @Override

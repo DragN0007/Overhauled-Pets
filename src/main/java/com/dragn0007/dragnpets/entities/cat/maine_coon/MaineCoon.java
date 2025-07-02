@@ -6,10 +6,7 @@ import com.dragn0007.dragnlivestock.util.LivestockOverhaulCommonConfig;
 import com.dragn0007.dragnpets.PetsOverhaul;
 import com.dragn0007.dragnpets.entities.POEntityTypes;
 import com.dragn0007.dragnpets.entities.ai.CatFollowOwnerGoal;
-import com.dragn0007.dragnpets.entities.cat.OCat;
-import com.dragn0007.dragnpets.entities.cat.OCatEyeLayer;
-import com.dragn0007.dragnpets.entities.cat.OCatMarkingLayer;
-import com.dragn0007.dragnpets.entities.cat.OCatModel;
+import com.dragn0007.dragnpets.entities.cat.*;
 import com.dragn0007.dragnpets.items.POItems;
 import com.dragn0007.dragnpets.util.POTags;
 import com.dragn0007.dragnpets.util.PetsOverhaulCommonConfig;
@@ -479,7 +476,7 @@ public class MaineCoon extends OCat implements GeoEntity {
    }
 
    public static final EntityDataAccessor<Integer> OVERLAY = SynchedEntityData.defineId(MaineCoon.class, EntityDataSerializers.INT);
-   public ResourceLocation getOverlayLocation() {return OCatMarkingLayer.Overlay.overlayFromOrdinal(getOverlayVariant()).resourceLocation;}
+   public ResourceLocation getOverlayLocation() {return CatMarkingOverlay.overlayFromOrdinal(getOverlayVariant()).resourceLocation;}
    public int getOverlayVariant() {
       return this.entityData.get(OVERLAY);
    }
@@ -565,7 +562,7 @@ public class MaineCoon extends OCat implements GeoEntity {
       }
       Random random = new Random();
       setVariant(random.nextInt(OCatModel.Variant.values().length));
-      setOverlayVariant(random.nextInt(OCatMarkingLayer.Overlay.values().length));
+      setOverlayVariant(random.nextInt(CatMarkingOverlay.values().length));
       setEyes(random.nextInt(OCatEyeLayer.Eyes.values().length));
       setGender(random.nextInt(MaineCoon.Gender.values().length));
 
@@ -635,7 +632,7 @@ public class MaineCoon extends OCat implements GeoEntity {
       } else if (overlayChance < 8) {
          overlay = partner.getOverlayVariant();
       } else {
-         overlay = this.random.nextInt(OCatMarkingLayer.Overlay.values().length);
+         overlay = this.random.nextInt(CatMarkingOverlay.values().length);
       }
       kitten.setOverlayVariant(overlay);
 
