@@ -396,7 +396,7 @@ public class SpawnReplacer {
                     return;
                 }
 
-                int i = event.getLevel().getRandom().nextInt(42);
+                int i = event.getLevel().getRandom().nextInt(43);
 
                 if (event.getLevel().getBiome(event.getEntity().blockPosition()).is(Biomes.SWAMP)) {
                     if (commonCat != null) {
@@ -518,6 +518,43 @@ public class SpawnReplacer {
                             }
 
                             event.getLevel().addFreshEntity(bloodhound);
+                            cat.remove(Entity.RemovalReason.DISCARDED);
+
+                            event.setCanceled(true);
+                        }
+                    }
+
+                    if (doberman != null) {
+                        if (i == 42) {
+                            doberman.copyPosition(cat);
+
+                            doberman.setCustomName(cat.getCustomName());
+                            doberman.setAge(cat.getAge());
+                            doberman.setOwnerUUID(cat.getOwnerUUID());
+
+                            doberman.setGender(random.nextInt(ODog.Gender.values().length));
+
+                            if (LivestockOverhaulCommonConfig.SPAWN_BY_BREED.get()) {
+                                doberman.setColor();
+                                doberman.setMarking();
+                            } else {
+                                doberman.setVariant(random.nextInt(CommonDogModel.Variant.values().length));
+                                doberman.setOverlayVariant(random.nextInt(DogMarkingOverlay.values().length));
+                            }
+
+                            doberman.setFluffChance();
+
+                            if (PetsOverhaulCommonConfig.ALLOW_CROPPED_DOG_SPAWNS.get()) {
+                                doberman.setCropChance();
+                            } else {
+                                doberman.setCropped(0);
+                            }
+
+                            if (event.getLevel().isClientSide) {
+                                cat.remove(Entity.RemovalReason.DISCARDED);
+                            }
+
+                            event.getLevel().addFreshEntity(doberman);
                             cat.remove(Entity.RemovalReason.DISCARDED);
 
                             event.setCanceled(true);

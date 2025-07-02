@@ -433,6 +433,7 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity {
             if (item instanceof DyeItem) {
                DyeItem dyeitem = (DyeItem)item;
                if (this.isOwnedBy(player)) {
+                  this.setCollared(true);
                   DyeColor dyecolor = dyeitem.getDyeColor();
                   if (dyecolor != this.getCollarColor()) {
                      this.setCollarColor(dyecolor);
@@ -731,6 +732,18 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity {
       }
 
       return pup;
+   }
+
+   public void setCropChance() {
+   }
+
+   public void setFluffChance() {
+   }
+
+   public void setColor() {
+   }
+
+   public void setMarking() {
    }
 
    public enum Gender {

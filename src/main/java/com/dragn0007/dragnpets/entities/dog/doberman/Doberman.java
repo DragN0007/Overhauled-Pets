@@ -1,10 +1,18 @@
 package com.dragn0007.dragnpets.entities.dog.doberman;
 
+import com.dragn0007.dragnlivestock.entities.EntityTypes;
+import com.dragn0007.dragnlivestock.entities.horse.OHorse;
 import com.dragn0007.dragnlivestock.util.LivestockOverhaulCommonConfig;
 import com.dragn0007.dragnpets.entities.POEntityTypes;
 import com.dragn0007.dragnpets.entities.ai.DogFollowOwnerGoal;
 import com.dragn0007.dragnpets.entities.ai.DogFollowPackLeaderGoal;
+import com.dragn0007.dragnpets.entities.dog.CommonDog;
+import com.dragn0007.dragnpets.entities.dog.CommonDogModel;
+import com.dragn0007.dragnpets.entities.dog.DogMarkingOverlay;
 import com.dragn0007.dragnpets.entities.dog.ODog;
+import com.dragn0007.dragnpets.entities.dog.bloodhound.Bloodhound;
+import com.dragn0007.dragnpets.util.POTags;
+import com.dragn0007.dragnpets.util.PetsOverhaulCommonConfig;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
@@ -122,7 +130,10 @@ public class Doberman extends ODog implements NeutralMob, GeoEntity {
          }
       } else {
          if (isInSittingPose()) {
-            controller.setAnimation(RawAnimation.begin().then("sit2", Animation.LoopType.LOOP));
+            controller.setAnimation(RawAnimation.begin().then("sit", Animation.LoopType.LOOP));
+            controller.setAnimationSpeed(1.0);
+         } else if (this.isWagging()) {
+            controller.setAnimation(RawAnimation.begin().then("wag", Animation.LoopType.LOOP));
             controller.setAnimationSpeed(1.0);
          } else {
             controller.setAnimation(RawAnimation.begin().then("idle", Animation.LoopType.LOOP));
@@ -304,50 +315,83 @@ public class Doberman extends ODog implements NeutralMob, GeoEntity {
 
 
    // Generates the base texture
-   public ResourceLocation getTextureResource() {
-      return DobermanModel.Variant.variantFromOrdinal(getVariant()).resourceLocation;
-   }
-
    public static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(Doberman.class, EntityDataSerializers.INT);
-
+   public ResourceLocation getTextureLocation() {
+      return CommonDogModel.Variant.variantFromOrdinal(getVariant()).resourceLocation;
+   }
    public int getVariant() {
       return this.entityData.get(VARIANT);
    }
-
    public void setVariant(int variant) {
       this.entityData.set(VARIANT, variant);
    }
 
-   public void defineSynchedData() {
-      super.defineSynchedData();
-      this.entityData.define(DATA_COLLAR_COLOR, DyeColor.RED.getId());
-      this.entityData.define(DATA_REMAINING_ANGER_TIME, 0);
-      this.entityData.define(VARIANT, 0);
-      this.entityData.define(GENDER, 0);
+
+   public static final EntityDataAccessor<Integer> OVERLAY = SynchedEntityData.defineId(Doberman.class, EntityDataSerializers.INT);
+   public ResourceLocation getOverlayLocation() {return DogMarkingOverlay.overlayFromOrdinal(getOverlayVariant()).resourceLocation;}
+   public int getOverlayVariant() {
+      return this.entityData.get(OVERLAY);
+   }
+   public void setOverlayVariant(int overlayVariant) {
+      this.entityData.set(OVERLAY, overlayVariant);
    }
 
-   public void addAdditionalSaveData(CompoundTag tag) {
-      super.addAdditionalSaveData(tag);
-      tag.putByte("CollarColor", (byte)this.getCollarColor().getId());
-      tag.putInt("Variant", getVariant());
-      tag.putInt("Gender", this.getGender());
-      tag.putBoolean("Wandering", this.getToldToWander());
-      tag.putBoolean("Panicking", this.getPanicking());
-      this.addPersistentAngerSaveData(tag);
+   public static final EntityDataAccessor<Boolean> COLLARED = SynchedEntityData.defineId(Doberman.class, EntityDataSerializers.BOOLEAN);
+   public boolean isCollared() {
+      return this.entityData.get(COLLARED);
+   }
+   public void setCollared(boolean collared) {
+      this.entityData.set(COLLARED, collared);
+   }
+
+   public static final EntityDataAccessor<Integer> CROPPED = SynchedEntityData.defineId(Doberman.class, EntityDataSerializers.INT);
+   public int getCropped() {
+      return this.entityData.get(CROPPED);
+   }
+   public void setCropped(int cropped) {
+      this.entityData.set(CROPPED, cropped);
+   }
+
+   public static final EntityDataAccessor<Integer> FLUFFY = SynchedEntityData.defineId(Doberman.class, EntityDataSerializers.INT);
+   public int getFluff() {
+      return this.entityData.get(FLUFFY);
+   }
+   public void setFluff(int fluff) {
+      this.entityData.set(FLUFFY, fluff);
+   }
+
+   public void defineSynchedData() {
+      super.defineSynchedData();
+      this.entityData.define(VARIANT, 0);
+      this.entityData.define(OVERLAY, 0);
+      this.entityData.define(GENDER, 0);
+      this.entityData.define(CROPPED, 0);
+      this.entityData.define(FLUFFY, 0);
+      this.entityData.define(DATA_COLLAR_COLOR, DyeColor.RED.getId());
+      this.entityData.define(DATA_REMAINING_ANGER_TIME, 0);
+      this.entityData.define(COLLARED, false);
    }
 
    public void readAdditionalSaveData(CompoundTag tag) {
       super.readAdditionalSaveData(tag);
-      if (tag.contains("CollarColor", 99)) {
-         this.setCollarColor(DyeColor.byId(tag.getInt("CollarColor")));
-      }
-
       if (tag.contains("Variant")) {
          setVariant(tag.getInt("Variant"));
       }
 
+      if (tag.contains("Overlay")) {
+         setOverlayVariant(tag.getInt("Overlay"));
+      }
+
       if (tag.contains("Gender")) {
          this.setGender(tag.getInt("Gender"));
+      }
+
+      if (tag.contains("Fluff")) {
+         this.setFluff(tag.getInt("Fluff"));
+      }
+
+      if (tag.contains("Cropped")) {
+         this.setCropped(tag.getInt("Cropped"));
       }
 
       if (tag.contains("Wandering")) {
@@ -358,7 +402,29 @@ public class Doberman extends ODog implements NeutralMob, GeoEntity {
          this.setPanicking(tag.getBoolean("Panicking"));
       }
 
+      if (tag.contains("CollarColor", 99)) {
+         this.setCollarColor(DyeColor.byId(tag.getInt("CollarColor")));
+      }
+
+      if(tag.contains("Collared")) {
+         this.setCollared(tag.getBoolean("Collared"));
+      }
+
       this.readPersistentAngerSaveData(this.level(), tag);
+   }
+
+   public void addAdditionalSaveData(CompoundTag tag) {
+      super.addAdditionalSaveData(tag);
+      tag.putInt("Variant", getVariant());
+      tag.putInt("Overlay", getOverlayVariant());
+      tag.putInt("Gender", this.getGender());
+      tag.putInt("Cropped", this.getCropped());
+      tag.putInt("Fluff", this.getFluff());
+      tag.putBoolean("Wandering", this.getToldToWander());
+      tag.putBoolean("Panicking", this.getPanicking());
+      tag.putByte("CollarColor", (byte)this.getCollarColor().getId());
+      tag.putBoolean("Collared", this.isCollared());
+      this.addPersistentAngerSaveData(tag);
    }
 
    @Override
@@ -368,31 +434,78 @@ public class Doberman extends ODog implements NeutralMob, GeoEntity {
          data = new AgeableMobGroupData(0.2F);
       }
       Random random = new Random();
-      setVariant(random.nextInt(DobermanModel.Variant.values().length));
-      setGender(random.nextInt(Doberman.Gender.values().length));
+
+      if (LivestockOverhaulCommonConfig.SPAWN_BY_BREED.get()) {
+         this.setColor();
+         this.setMarking();
+      } else {
+         this.setVariant(random.nextInt(CommonDogModel.Variant.values().length));
+         this.setOverlayVariant(random.nextInt(DogMarkingOverlay.values().length));
+      }
+
+      setGender(random.nextInt(ODog.Gender.values().length));
+
+      this.setFluffChance();
+
+      if (PetsOverhaulCommonConfig.ALLOW_CROPPED_DOG_SPAWNS.get()) {
+         setCropChance();
+      } else {
+         setCropped(0);
+      }
 
       return super.finalizeSpawn(serverLevelAccessor, instance, spawnType, data, tag);
+   }
+
+   public void setCropChance() {
+      if (random.nextDouble() <= 0.70) {
+         this.setCropped(1);
+      } else {
+         this.setCropped(0);
+      }
+   }
+
+   public void setFluffChance() {
+      if (random.nextDouble() <= 0.02) {
+         this.setFluff(1);
+      } else {
+         this.setFluff(0);
+      }
+   }
+
+   public void setColor() {
+      if (random.nextDouble() < 0.07) {
+         setVariant(random.nextInt(CommonDogModel.Variant.values().length));
+      } else if (random.nextDouble() > 0.15) {
+         int[] variants = {0, 10};
+         int randomIndex = new Random().nextInt(variants.length);
+         this.setVariant(variants[randomIndex]);
+      }
+   }
+
+   public void setMarking() {
+      if (random.nextDouble() < 0.05) {
+         setOverlayVariant(random.nextInt(DogMarkingOverlay.values().length));
+      } else if (random.nextDouble() > 0.05 && random.nextDouble() < 0.20) {
+         this.setOverlayVariant(0);
+      } else if (random.nextDouble() > 0.20) {
+         this.setOverlayVariant(4);
+      }
    }
 
    public enum Gender {
       FEMALE,
       MALE
    }
-
    public boolean isFemale() {
       return this.getGender() == 0;
    }
-
    public boolean isMale() {
       return this.getGender() == 1;
    }
-
    public static final EntityDataAccessor<Integer> GENDER = SynchedEntityData.defineId(Doberman.class, EntityDataSerializers.INT);
-
    public int getGender() {
       return this.entityData.get(GENDER);
    }
-
    public void setGender(int gender) {
       this.entityData.set(GENDER, gender);
    }
@@ -401,56 +514,58 @@ public class Doberman extends ODog implements NeutralMob, GeoEntity {
       return !this.isBaby() && this.getHealth() >= this.getMaxHealth() && this.isInLove();
    }
 
-   public boolean canMate(Animal animal) {
-      if (animal == this) {
-         return false;
-      } else if (!(animal instanceof Doberman)) {
-         return false;
-      } else {
-         if (!LivestockOverhaulCommonConfig.GENDERS_AFFECT_BREEDING.get()) {
-            return this.canParent() && ((Doberman) animal).canParent();
-         } else {
-            Doberman partner = (Doberman) animal;
-            if (this.canParent() && partner.canParent() && this.getGender() != partner.getGender()) {
-               return true;
-            }
-
-            boolean partnerIsFemale = partner.isFemale();
-            boolean partnerIsMale = partner.isMale();
-            if (LivestockOverhaulCommonConfig.GENDERS_AFFECT_BREEDING.get() && this.canParent() && partner.canParent()
-                    && ((isFemale() && partnerIsMale) || (isMale() && partnerIsFemale))) {
-               return isFemale();
-            }
-         }
-      }
-      return false;
-   }
-
    @Override
    public AgeableMob getBreedOffspring(ServerLevel serverLevel, AgeableMob ageableMob) {
-      Doberman oWolf1 = (Doberman) ageableMob;
-      if (ageableMob instanceof Doberman) {
-         Doberman oWolf = (Doberman) ageableMob;
-         oWolf1 = POEntityTypes.DOBERMAN_ENTITY.get().create(serverLevel);
 
-         int i = this.random.nextInt(9);
+      ODog pup = null;
+      Doberman partner = (Doberman) ageableMob;
+
+      if (ageableMob instanceof Doberman) {
+         pup = POEntityTypes.DOBERMAN_ENTITY.get().create(serverLevel);
+
+         int variantChance = this.random.nextInt(14);
          int variant;
-         if (i < 4) {
+         if (variantChance < 6) {
             variant = this.getVariant();
-         } else if (i < 8) {
-            variant = oWolf.getVariant();
+         } else if (variantChance < 12) {
+            variant = partner.getVariant();
          } else {
-            variant = this.random.nextInt(DobermanModel.Variant.values().length);
+            variant = this.random.nextInt(CommonDogModel.Variant.values().length);
          }
+         pup.setVariant(variant);
+
+         int overlayChance = this.random.nextInt(10);
+         int overlay;
+         if (overlayChance < 4) {
+            overlay = this.getOverlayVariant();
+         } else if (overlayChance < 8) {
+            overlay = partner.getOverlayVariant();
+         } else {
+            overlay = this.random.nextInt(DogMarkingOverlay.values().length);
+         }
+         pup.setOverlayVariant(overlay);
+
+         int fluffyChance = this.random.nextInt(10);
+         int fluff;
+         if (fluffyChance < 5) {
+            fluff = this.getFluff();
+         } else {
+            fluff = partner.getFluff();
+         }
+         pup.setFluff(fluff);
 
          int gender;
-         gender = this.random.nextInt(Doberman.Gender.values().length);
+         gender = this.random.nextInt(ODog.Gender.values().length);
+         pup.setGender(gender);
 
-         oWolf1.setVariant(variant);
-         oWolf1.setGender(gender);
+         if (PetsOverhaulCommonConfig.ALLOW_CROPPED_DOG_SPAWNS.get()){
+            pup.setCropChance();
+         } else {
+            pup.setCropped(0);
+         }
       }
 
-      return oWolf1;
+      return pup;
    }
 
    public boolean wantsToAttack(LivingEntity entity, LivingEntity p_30390_) {

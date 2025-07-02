@@ -53,7 +53,7 @@ public class DobermanCollarLayer extends GeoRenderLayer<Doberman> {
             resourceLocation = TEXTURE_LOCATION[dyeColor.getId()];
         }
 
-        if (resourceLocation == null || !PetsOverhaulClientConfig.RENDER_COLLARS.get()) {
+        if (resourceLocation == null || !PetsOverhaulClientConfig.RENDER_COLLARS.get() || !animatable.isCollared()) {
             return;
         }
 
