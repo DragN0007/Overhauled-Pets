@@ -1,0 +1,19 @@
+{
+  "name": "Extras Information",
+  "icon": "dragnlivestock:gender_test_strip",
+  "category": "dragnpets:extras_category",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "When you tame a pet, you can use shift-left-click to allow it to wander. Just be careful to keep an eye on it so it doesn't wander off too far!"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Pets that can sport collars, such as Dogs, Cats, Wolves, Ocelots and Foxes can have a Gender Indicator on the back  of their collar if turned on in the client config."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "When you tame a collar-able pet, you can use any dye to put a collar on it. Use Shears to remove it again if desired."
+    }
+  ]
+}

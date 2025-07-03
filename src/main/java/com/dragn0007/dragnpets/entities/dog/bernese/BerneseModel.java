@@ -6,20 +6,7 @@ import software.bernie.geckolib.model.GeoModel;
 
 public class BerneseModel extends GeoModel<Bernese> {
 
-    public enum Variant {
-        BLACK(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/dog/bernese/bernese_black.png")),
-        BLUE(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/dog/bernese/bernese_blue.png"));
-
-        public final ResourceLocation resourceLocation;
-        Variant(ResourceLocation resourceLocation) {
-            this.resourceLocation = resourceLocation;
-        }
-
-        public static Variant variantFromOrdinal(int variant) { return Variant.values()[variant % Variant.values().length];
-        }
-    }
-
-    public static final ResourceLocation MODEL = new ResourceLocation(PetsOverhaul.MODID, "geo/bernese.geo.json");
+    public static final ResourceLocation MODEL = new ResourceLocation(PetsOverhaul.MODID, "geo/dog/bernese_mountain.geo.json");
     public static final ResourceLocation ANIMATION = new ResourceLocation(PetsOverhaul.MODID, "animations/dog.animation.json");
 
     @Override
@@ -29,7 +16,7 @@ public class BerneseModel extends GeoModel<Bernese> {
 
     @Override
     public ResourceLocation getTextureResource(Bernese object) {
-        return object.getTextureResource();
+        return object.getTextureLocation();
     }
 
     @Override

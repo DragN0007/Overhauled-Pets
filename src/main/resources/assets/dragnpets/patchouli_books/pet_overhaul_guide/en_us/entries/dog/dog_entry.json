@@ -1,0 +1,55 @@
+{
+  "name": "O-Dogs",
+  "icon": "minecraft:bone",
+  "category": "dragnpets:animals_category",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "O-Dogs come in a few new different breeds. They spawn alongside cats in villages. O-Dogs, much like O-Wolves, slowly regenerate their health if hurt, and run away from fights if under 33% health."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "-The Doberman is a great guarding breed. They will attack hostile monsters without being provoked, making them an amazing bodyguard. Shift-left-click a Doberman to toggle 'Guard Mode'."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "-The Husky is a great dog to bring on adventures. You can add a saddlebag-harness to your Husky by right-clicking it with a chest. They can also walk over powdered snow without falling in!"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "-The Labrador can hunt chickens for you. Simply walk to your favorite spot with lots of chickens around and set it to Hunting mode to allow it to hunt. They can also pick up items and keep them in their inventory. While they can pick up any item, they actively seek out animal loot. Shift-left-click a Labrador to toggle 'Hunting Mode'."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "-The Great Pyrenees is a livestock guardian dog. They will kill wild O-Wolves and O-Foxes on sight, making them amazing herd protectors. As guardians, they’ll follow sheep, cows, goats, pigs, chickens, and rabbits closely behind so they can protect them if needed."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "-The Border Collie is a herding dog. Your sheep, cows, and goats will run from them automatically, and they’ll follow. Might be a good way to keep your herd moving around the pasture. Keep in mind that herding dogs don’t act as guardians."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "-The Bernese Mountain Dog is a livestock guardian dog with an incredible constitution and bite. When chested, they can hold up to 21 slots of items. As guardians, they follow livestock animals to protect them."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "-The Australian Shepherd is a herding dog. Your sheep, cows, and goats will run from them automatically, and they’ll follow. Might be a good way to keep your herd moving around the pasture. Keep in mind that herding dogs don’t act as guardians."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "-The Bloodhound can hunt game for you. Simply walk to your favorite spot with lots of game animals around and set it to Hunting mode to allow it to hunt. Game includes animals like Caribou, Chickens, Rabbits, Pigs, Foxes and Goats. For larger game, such as Caribou, it would be smart to use multiple dogs to ensure a takedown, since larger game can/ will fight back. Shift-left-click a Bloodhound to toggle 'Hunting Mode'."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "-The Cocker Spaniel can hunt chickens for you. Simply walk to your favorite spot with lots of chickens around and set it to Hunting mode to allow it to hunt. They can also pick up items and keep them in their inventory. While they can pick up any item, they actively seek out animal loot.Shift-left-click a Cocker Spaniel to toggle 'Hunting Mode'."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "-The Whippet can hunt rabbits for you. Simply walk to your favorite spot with lots of rabbits around and set it to Hunting mode to allow it to hunt. They can also pick up items and keep them in their inventory. While they can pick up any item, they actively seek out animal loot. Shift-left-click a Whippet to toggle 'Hunting Mode'."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "-The Rottweiler is a player guard dog. Set it to Guard mode to allow it to both hunt and pick up loot from monsters. Shift-left-click a Rottweiler to toggle 'Guard Mode'."
+    }
+  ]
+}

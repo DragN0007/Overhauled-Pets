@@ -1,0 +1,15 @@
+{
+  "type": "patchouli:shapeless_book_recipe",
+  "ingredients": [
+    {
+      "item": "minecraft:book"
+    },
+    {
+      "tag": "forge:dyes"
+    },
+    {
+      "item": "minecraft:leather"
+    }
+  ],
+  "book": "dragnpets:pet_overhaul_guide"
+}

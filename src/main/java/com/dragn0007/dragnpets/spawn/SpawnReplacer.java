@@ -396,7 +396,7 @@ public class SpawnReplacer {
                     return;
                 }
 
-                int i = event.getLevel().getRandom().nextInt(43);
+                int i = event.getLevel().getRandom().nextInt(44);
 
                 if (event.getLevel().getBiome(event.getEntity().blockPosition()).is(Biomes.SWAMP)) {
                     if (commonCat != null) {
@@ -555,6 +555,43 @@ public class SpawnReplacer {
                             }
 
                             event.getLevel().addFreshEntity(doberman);
+                            cat.remove(Entity.RemovalReason.DISCARDED);
+
+                            event.setCanceled(true);
+                        }
+                    }
+
+                    if (bernese != null) {
+                        if (i == 43) {
+                            bernese.copyPosition(cat);
+
+                            bernese.setCustomName(cat.getCustomName());
+                            bernese.setAge(cat.getAge());
+                            bernese.setOwnerUUID(cat.getOwnerUUID());
+
+                            bernese.setGender(random.nextInt(ODog.Gender.values().length));
+
+                            if (LivestockOverhaulCommonConfig.SPAWN_BY_BREED.get()) {
+                                bernese.setColor();
+                                bernese.setMarking();
+                            } else {
+                                bernese.setVariant(random.nextInt(CommonDogModel.Variant.values().length));
+                                bernese.setOverlayVariant(random.nextInt(DogMarkingOverlay.values().length));
+                            }
+
+                            bernese.setFluffChance();
+
+                            if (PetsOverhaulCommonConfig.ALLOW_CROPPED_DOG_SPAWNS.get()) {
+                                bernese.setCropChance();
+                            } else {
+                                bernese.setCropped(0);
+                            }
+
+                            if (event.getLevel().isClientSide) {
+                                cat.remove(Entity.RemovalReason.DISCARDED);
+                            }
+
+                            event.getLevel().addFreshEntity(bernese);
                             cat.remove(Entity.RemovalReason.DISCARDED);
 
                             event.setCanceled(true);
