@@ -1,0 +1,11 @@
+{
+  "name": "O-Ocelot",
+  "icon": "minecraft:salmon",
+  "category": "dragnpets:animals_category",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "O-Ocelots can now be fully tamed and will follow the player like they used to in older Minecraft versions. Wild O-Ocelots hunt chickens, rabbits, parrots and frogs."
+    }
+  ]
+}

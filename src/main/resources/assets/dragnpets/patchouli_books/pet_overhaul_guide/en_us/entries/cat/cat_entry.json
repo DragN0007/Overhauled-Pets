@@ -1,0 +1,11 @@
+{
+  "name": "O-Cat",
+  "icon": "minecraft:cod",
+  "category": "dragnpets:animals_category",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "The O-Cat comes in a Common Cat and in other breeds. O-Cats have a chance to bring you gifts randomly, rather than just after sleeping as long as they’re in Follow mode and not sitting. The Common Cat comes in many different coats, markings, and eye colors. Other breeds include the Maine Coon and Kornish Rex."
+    }
+  ]
+}

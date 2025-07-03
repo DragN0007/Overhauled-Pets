@@ -1,0 +1,11 @@
+{
+  "name": "O-Fox",
+  "icon": "minecraft:sweet_berries",
+  "category": "dragnpets:animals_category",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "O-Foxes can be fully tamed with things like raw chicken, rabbit, cat, or sweet berries, beetroots, or glow berries. Wild O-Foxes generally only come in red, silver, and white. However, when bred, you have a small chance of breeding in a “domestic” color and/ or marking. Wild O-Foxes hunt chickens, rabbits, frogs and common cats."
+    }
+  ]
+}

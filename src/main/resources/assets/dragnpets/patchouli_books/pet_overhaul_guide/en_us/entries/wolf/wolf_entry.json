@@ -1,0 +1,15 @@
+{
+  "name": "O-Wolf",
+  "icon": "minecraft:bone",
+  "category": "dragnpets:animals_category",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "O-Wolves work very similarly to vanilla wolves. However, they do have a few new features and traits to be aware of. $(br2)-O-Wolves hunt o-livestock. Sheep, cows, chickens, pigs, rabbits, goats and horses."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "-Tamed O-Wolves don’t hunt livestock unless told. $(br2)-Wild O-Wolves will be attacked & killed by guardian dog breeds by nature. $(br2)-Tamed O-Wolves will slowly regain health if hurt, and will panic and run away from a fight if under 33% health."
+    }
+  ]
+}

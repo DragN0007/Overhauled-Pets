@@ -1,0 +1,11 @@
+{
+  "name": "O-Parrot",
+  "icon": "minecraft:feather",
+  "category": "dragnpets:animals_category",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "Parrots are now split up into multiple species. These include: Macaws, Cockatiels and Ringneck Parrots. Each one can still be found in Jungles. They too can be told to wander by shift-right clicking. Just make sure to keep an eye on them so they don’t fly away!"
+    }
+  ]
+}

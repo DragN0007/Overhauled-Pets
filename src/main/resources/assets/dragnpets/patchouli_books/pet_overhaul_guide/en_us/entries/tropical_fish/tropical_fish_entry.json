@@ -1,0 +1,11 @@
+{
+  "name": "O-Tropical Fish",
+  "icon": "minecraft:tropical_fish",
+  "category": "dragnpets:animals_category",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "Tropical Fish work exactly the same as their vanilla counterparts. They simply have a more complex model and different colors and markings. If killed, they have a chance to drop Tropical Fish Roe, which can be placed to hatch a baby tropical fish fry."
+    }
+  ]
+}
