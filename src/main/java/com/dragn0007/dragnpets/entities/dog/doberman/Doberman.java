@@ -475,7 +475,7 @@ public class Doberman extends ODog implements NeutralMob, GeoEntity {
    public void setColor() {
       if (random.nextDouble() < 0.07) {
          setVariant(random.nextInt(CommonDogModel.Variant.values().length));
-      } else if (random.nextDouble() > 0.15) {
+      } else if (random.nextDouble() > 0.07) {
          int[] variants = {0, 10};
          int randomIndex = new Random().nextInt(variants.length);
          this.setVariant(variants[randomIndex]);

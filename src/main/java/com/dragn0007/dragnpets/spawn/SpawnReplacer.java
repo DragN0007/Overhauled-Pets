@@ -396,7 +396,7 @@ public class SpawnReplacer {
                     return;
                 }
 
-                int i = event.getLevel().getRandom().nextInt(44);
+                int i = event.getLevel().getRandom().nextInt(45);
 
                 if (event.getLevel().getBiome(event.getEntity().blockPosition()).is(Biomes.SWAMP)) {
                     if (commonCat != null) {
@@ -592,6 +592,43 @@ public class SpawnReplacer {
                             }
 
                             event.getLevel().addFreshEntity(bernese);
+                            cat.remove(Entity.RemovalReason.DISCARDED);
+
+                            event.setCanceled(true);
+                        }
+                    }
+
+                    if (aShepherd != null) {
+                        if (i == 44) {
+                            aShepherd.copyPosition(cat);
+
+                            aShepherd.setCustomName(cat.getCustomName());
+                            aShepherd.setAge(cat.getAge());
+                            aShepherd.setOwnerUUID(cat.getOwnerUUID());
+
+                            aShepherd.setGender(random.nextInt(ODog.Gender.values().length));
+
+                            if (LivestockOverhaulCommonConfig.SPAWN_BY_BREED.get()) {
+                                aShepherd.setColor();
+                                aShepherd.setMarking();
+                            } else {
+                                aShepherd.setVariant(random.nextInt(CommonDogModel.Variant.values().length));
+                                aShepherd.setOverlayVariant(random.nextInt(DogMarkingOverlay.values().length));
+                            }
+
+                            aShepherd.setFluffChance();
+
+                            if (PetsOverhaulCommonConfig.ALLOW_CROPPED_DOG_SPAWNS.get()) {
+                                aShepherd.setCropChance();
+                            } else {
+                                aShepherd.setCropped(0);
+                            }
+
+                            if (event.getLevel().isClientSide) {
+                                cat.remove(Entity.RemovalReason.DISCARDED);
+                            }
+
+                            event.getLevel().addFreshEntity(aShepherd);
                             cat.remove(Entity.RemovalReason.DISCARDED);
 
                             event.setCanceled(true);
