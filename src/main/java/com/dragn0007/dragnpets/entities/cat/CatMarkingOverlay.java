@@ -1,6 +1,5 @@
 package com.dragn0007.dragnpets.entities.cat;
 
-import com.dragn0007.dragnlivestock.LivestockOverhaul;
 import com.dragn0007.dragnpets.PetsOverhaul;
 import net.minecraft.resources.ResourceLocation;
 

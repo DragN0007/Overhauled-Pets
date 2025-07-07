@@ -1,7 +1,6 @@
 package com.dragn0007.dragnpets.entities.dog.doberman;
 
 import com.dragn0007.dragnpets.PetsOverhaul;
-import com.dragn0007.dragnpets.entities.dog.CommonDog;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.renderer.MultiBufferSource;

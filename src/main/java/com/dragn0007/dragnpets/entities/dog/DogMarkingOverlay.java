@@ -1,7 +1,5 @@
 package com.dragn0007.dragnpets.entities.dog;
 
-import com.dragn0007.dragnlivestock.LivestockOverhaul;
-import com.dragn0007.dragnlivestock.entities.marking_layer.EquineMarkingOverlay;
 import com.dragn0007.dragnpets.PetsOverhaul;
 import net.minecraft.resources.ResourceLocation;
 

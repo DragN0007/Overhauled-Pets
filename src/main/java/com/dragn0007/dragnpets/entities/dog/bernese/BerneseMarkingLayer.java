@@ -1,6 +1,5 @@
 package com.dragn0007.dragnpets.entities.dog.bernese;
 
-import com.dragn0007.dragnpets.entities.dog.CommonDog;
 import com.dragn0007.dragnpets.entities.dog.DogMarkingOverlay;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
