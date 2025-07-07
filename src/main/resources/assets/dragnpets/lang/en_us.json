@@ -8,6 +8,7 @@
   "tooltip.dragnpets.guarding.tooltip": "Your Dog is Guarding",
   "tooltip.dragnpets.not_guarding.tooltip": "Your Dog is No Longer Guarding",
   "tooltip.dragnpets.wolf_event.tooltip": "A pack of wolves was spotted near your sheep!",
+  "tooltip.dragnpets.for_dogs.tooltip": "For dogs!",
 
   "item.dragnpets.o_wolf_spawn_egg": "O-Wolf Spawn Egg",
   "entity.dragnpets.o_wolf": "O-Wolf",
@@ -96,5 +97,22 @@
   "item.dragnpets.o_tropical_fish_bucket": "O-Tropical Fish Bucket",
 
   "item.dragnpets.dog_sled": "Dog Sled",
-  "entity.dragnpets.dog_sled": "Dog Sled"
+  "entity.dragnpets.dog_sled": "Dog Sled",
+
+  "item.dragnpets.black_vest": "Black Vest",
+  "item.dragnpets.blue_vest": "Blue Vest",
+  "item.dragnpets.brown_vest": "Brown Vest",
+  "item.dragnpets.cyan_vest": "Cyan Vest",
+  "item.dragnpets.green_vest": "Green Vest",
+  "item.dragnpets.grey_vest": "Grey Vest",
+  "item.dragnpets.light_blue_vest": "Light Blue Vest",
+  "item.dragnpets.light_grey_vest": "Light Grey Vest",
+  "item.dragnpets.lime_vest": "Lime Vest",
+  "item.dragnpets.magenta_vest": "Magenta Vest",
+  "item.dragnpets.orange_vest": "Orange Vest",
+  "item.dragnpets.pink_vest": "Pink Vest",
+  "item.dragnpets.purple_vest": "Purple Vest",
+  "item.dragnpets.red_vest": "Red Vest",
+  "item.dragnpets.white_vest": "White Vest",
+  "item.dragnpets.yellow_vest": "Yellow Vest"
 }

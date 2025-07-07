@@ -1,6 +1,7 @@
 package com.dragn0007.dragnpets.entities.dog.bernese;
 
 import com.dragn0007.dragnpets.entities.dog.CommonDogMarkingLayer;
+import com.dragn0007.dragnpets.entities.dog.doberman.DobermanDecorLayer;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -13,6 +14,7 @@ public class BerneseRender extends GeoEntityRenderer<Bernese> {
         this.addRenderLayer(new BerneseMarkingLayer(this));
         this.addRenderLayer(new BerneseHarnessLayer(this));
         this.addRenderLayer(new BerneseCollarLayer(this));
+        this.addRenderLayer(new BerneseDecorLayer(this));
     }
 
     @Override

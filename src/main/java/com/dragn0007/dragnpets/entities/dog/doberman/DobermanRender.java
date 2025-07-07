@@ -1,5 +1,6 @@
 package com.dragn0007.dragnpets.entities.dog.doberman;
 
+import com.dragn0007.dragnpets.entities.dog.CommonDogDecorLayer;
 import com.dragn0007.dragnpets.entities.dog.bloodhound.BloodhoundMarkingLayer;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -12,6 +13,7 @@ public class DobermanRender extends GeoEntityRenderer<Doberman> {
         super(renderManager, new DobermanModel());
         this.addRenderLayer(new DobermanMarkingLayer(this));
         this.addRenderLayer(new DobermanCollarLayer(this));
+        this.addRenderLayer(new DobermanDecorLayer(this));
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.dragn0007.dragnpets.entities.dog.bloodhound;
 
+import com.dragn0007.dragnpets.entities.dog.doberman.DobermanDecorLayer;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -11,6 +12,7 @@ public class BloodhoundRender extends GeoEntityRenderer<Bloodhound> {
         super(renderManager, new BloodhoundModel());
         this.addRenderLayer(new BloodhoundMarkingLayer(this));
         this.addRenderLayer(new BloodhoundCollarLayer(this));
+        this.addRenderLayer(new BloodhoundDecorLayer(this));
     }
 
     @Override

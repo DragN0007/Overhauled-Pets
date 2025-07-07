@@ -31,6 +31,23 @@ public class POItemModelProvider extends ItemModelProvider {
         simpleItem(POItems.TROPICAL_FISH_ROE);
 
         simpleItem(POItems.DOG_SLED);
+
+        simpleItem(POItems.BLACK_VEST);
+        simpleItem(POItems.BLUE_VEST);
+        simpleItem(POItems.BROWN_VEST);
+        simpleItem(POItems.CYAN_VEST);
+        simpleItem(POItems.GREEN_VEST);
+        simpleItem(POItems.GREY_VEST);
+        simpleItem(POItems.LIGHT_BLUE_VEST);
+        simpleItem(POItems.LIGHT_GREY_VEST);
+        simpleItem(POItems.LIME_VEST);
+        simpleItem(POItems.MAGENTA_VEST);
+        simpleItem(POItems.ORANGE_VEST);
+        simpleItem(POItems.PINK_VEST);
+        simpleItem(POItems.PURPLE_VEST);
+        simpleItem(POItems.RED_VEST);
+        simpleItem(POItems.WHITE_VEST);
+        simpleItem(POItems.YELLOW_VEST);
     }
 
     public ItemModelBuilder simpleItem(RegistryObject<Item> item) {

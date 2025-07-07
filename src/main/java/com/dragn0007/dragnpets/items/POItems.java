@@ -4,8 +4,10 @@ import com.dragn0007.dragnpets.PetsOverhaul;
 import com.dragn0007.dragnpets.entities.POEntityTypes;
 import com.dragn0007.dragnpets.items.custom.DogSledItem;
 import com.dragn0007.dragnpets.items.custom.TropicalFishRoeItem;
+import com.dragn0007.dragnpets.items.custom.VestItem;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.food.FoodProperties;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.MobBucketItem;
 import net.minecraft.world.level.material.Fluids;
@@ -96,6 +98,39 @@ public class POItems {
 
     public static final RegistryObject<Item> DOG_SLED = ITEMS.register("dog_sled", DogSledItem::new);
 
+
+    public static final RegistryObject<Item> BLACK_VEST = ITEMS.register("black_vest",
+            () -> new VestItem(DyeColor.BLACK, new Item.Properties()));
+    public static final RegistryObject<Item> BLUE_VEST = ITEMS.register("blue_vest",
+            () -> new VestItem(DyeColor.BLUE, new Item.Properties()));
+    public static final RegistryObject<Item> BROWN_VEST = ITEMS.register("brown_vest",
+            () -> new VestItem(DyeColor.BROWN, new Item.Properties()));
+    public static final RegistryObject<Item> CYAN_VEST = ITEMS.register("cyan_vest",
+            () -> new VestItem(DyeColor.CYAN, new Item.Properties()));
+    public static final RegistryObject<Item> GREEN_VEST = ITEMS.register("green_vest",
+            () -> new VestItem(DyeColor.GREEN, new Item.Properties()));
+    public static final RegistryObject<Item> GREY_VEST = ITEMS.register("grey_vest",
+            () -> new VestItem(DyeColor.GRAY, new Item.Properties()));
+    public static final RegistryObject<Item> LIGHT_BLUE_VEST = ITEMS.register("light_blue_vest",
+            () -> new VestItem(DyeColor.LIGHT_BLUE, new Item.Properties()));
+    public static final RegistryObject<Item> LIGHT_GREY_VEST = ITEMS.register("light_grey_vest",
+            () -> new VestItem(DyeColor.LIGHT_GRAY, new Item.Properties()));
+    public static final RegistryObject<Item> LIME_VEST = ITEMS.register("lime_vest",
+            () -> new VestItem(DyeColor.LIME, new Item.Properties()));
+    public static final RegistryObject<Item> MAGENTA_VEST = ITEMS.register("magenta_vest",
+            () -> new VestItem(DyeColor.MAGENTA, new Item.Properties()));
+    public static final RegistryObject<Item> ORANGE_VEST = ITEMS.register("orange_vest",
+            () -> new VestItem(DyeColor.ORANGE, new Item.Properties()));
+    public static final RegistryObject<Item> PINK_VEST = ITEMS.register("pink_vest",
+            () -> new VestItem(DyeColor.PINK, new Item.Properties()));
+    public static final RegistryObject<Item> PURPLE_VEST = ITEMS.register("purple_vest",
+            () -> new VestItem(DyeColor.PURPLE, new Item.Properties()));
+    public static final RegistryObject<Item> RED_VEST = ITEMS.register("red_vest",
+            () -> new VestItem(DyeColor.RED, new Item.Properties()));
+    public static final RegistryObject<Item> WHITE_VEST = ITEMS.register("white_vest",
+            () -> new VestItem(DyeColor.WHITE, new Item.Properties()));
+    public static final RegistryObject<Item> YELLOW_VEST = ITEMS.register("yellow_vest",
+            () -> new VestItem(DyeColor.YELLOW, new Item.Properties()));
 
     //Mod Item Tab Icon (UNOBTAINABLE)
     public static final RegistryObject<Item> PETS_OVERHAUL = ITEMS.register("pets_overhaul",

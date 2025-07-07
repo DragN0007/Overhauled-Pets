@@ -11,6 +11,7 @@ public class CommonDogRender extends GeoEntityRenderer<CommonDog> {
         super(renderManager, new CommonDogModel());
         this.addRenderLayer(new CommonDogMarkingLayer(this));
         this.addRenderLayer(new CommonDogCollarLayer(this));
+        this.addRenderLayer(new CommonDogDecorLayer(this));
     }
 
     @Override

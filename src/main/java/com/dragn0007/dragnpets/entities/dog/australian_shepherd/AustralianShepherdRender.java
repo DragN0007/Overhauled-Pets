@@ -1,5 +1,6 @@
 package com.dragn0007.dragnpets.entities.dog.australian_shepherd;
 
+import com.dragn0007.dragnpets.entities.dog.doberman.DobermanDecorLayer;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -11,6 +12,7 @@ public class AustralianShepherdRender extends GeoEntityRenderer<AustralianShephe
         super(renderManager, new AustralianShepherdModel());
         this.addRenderLayer(new AustralianShepherdMarkingLayer(this));
         this.addRenderLayer(new AustralianShepherdCollarLayer(this));
+        this.addRenderLayer(new AustralianShepherdDecorLayer(this));
     }
 
     @Override

@@ -5,6 +5,7 @@ import com.dragn0007.dragnlivestock.util.LivestockOverhaulCommonConfig;
 import com.dragn0007.dragnpets.PetsOverhaul;
 import com.dragn0007.dragnpets.entities.POEntityTypes;
 import com.dragn0007.dragnpets.entities.ai.DogFollowOwnerGoal;
+import com.dragn0007.dragnpets.items.custom.VestItem;
 import com.dragn0007.dragnpets.util.POTags;
 import com.dragn0007.dragnpets.util.PetsOverhaulCommonConfig;
 import net.minecraft.ChatFormatting;
@@ -357,8 +358,9 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity {
       ItemStack itemstack = player.getItemInHand(hand);
       Item item = itemstack.getItem();
 
-      if (itemstack.is(Items.SHEARS) && this.isCollared()) {
+      if (itemstack.is(Items.SHEARS) && (this.isCollared() || this.hasVest())) {
          this.setCollared(false);
+         this.setVest(false);
          this.playSound(SoundEvents.SHEEP_SHEAR, 0.5f, 1f);
          return InteractionResult.sidedSuccess(this.level().isClientSide);
       }
@@ -430,8 +432,22 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity {
             this.gameEvent(GameEvent.EAT, this);
             return InteractionResult.SUCCESS;
          } else {
-            if (item instanceof DyeItem) {
-               DyeItem dyeitem = (DyeItem)item;
+            if (item instanceof VestItem) {
+               VestItem vestItem = (VestItem) item;
+               if (this.isOwnedBy(player)) {
+                  this.setVest(true);
+                  DyeColor dyecolor = vestItem.getDyeColor();
+                  if (dyecolor != this.getVestColor()) {
+                     this.setVestColor(dyecolor);
+                     if (!player.getAbilities().instabuild) {
+                        itemstack.shrink(1);
+                     }
+                     return InteractionResult.SUCCESS;
+                  }
+                  return super.mobInteract(player, hand);
+               }
+            } else if (item instanceof DyeItem) {
+               DyeItem dyeitem = (DyeItem) item;
                if (this.isOwnedBy(player)) {
                   this.setCollared(true);
                   DyeColor dyecolor = dyeitem.getDyeColor();
@@ -593,6 +609,21 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity {
       this.entityData.set(FLUFFY, fluff);
    }
 
+   public static final EntityDataAccessor<Integer> DATA_VEST_COLOR = SynchedEntityData.defineId(ODog.class, EntityDataSerializers.INT);
+   public static final EntityDataAccessor<Boolean> VEST = SynchedEntityData.defineId(ODog.class, EntityDataSerializers.BOOLEAN);
+   public boolean hasVest() {
+      return this.entityData.get(VEST);
+   }
+   public void setVest(boolean collared) {
+      this.entityData.set(VEST, collared);
+   }
+   public DyeColor getVestColor() {
+      return DyeColor.byId(this.entityData.get(DATA_VEST_COLOR));
+   }
+   public void setVestColor(DyeColor color) {
+      this.entityData.set(DATA_VEST_COLOR, color.getId());
+   }
+
    public void defineSynchedData() {
       super.defineSynchedData();
       this.entityData.define(VARIANT, 0);
@@ -603,6 +634,8 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity {
       this.entityData.define(DATA_COLLAR_COLOR, DyeColor.RED.getId());
       this.entityData.define(DATA_REMAINING_ANGER_TIME, 0);
       this.entityData.define(COLLARED, false);
+      this.entityData.define(DATA_VEST_COLOR, DyeColor.RED.getId());
+      this.entityData.define(VEST, false);
    }
 
    public void readAdditionalSaveData(CompoundTag tag) {
@@ -643,6 +676,14 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity {
          this.setCollared(tag.getBoolean("Collared"));
       }
 
+      if (tag.contains("VestColor", 99)) {
+         this.setVestColor(DyeColor.byId(tag.getInt("VestColor")));
+      }
+
+      if(tag.contains("Vest")) {
+         this.setVest(tag.getBoolean("Vest"));
+      }
+
       this.readPersistentAngerSaveData(this.level(), tag);
    }
 
@@ -657,6 +698,8 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity {
       tag.putBoolean("Panicking", this.getPanicking());
       tag.putByte("CollarColor", (byte)this.getCollarColor().getId());
       tag.putBoolean("Collared", this.isCollared());
+      tag.putByte("VestColor", (byte)this.getVestColor().getId());
+      tag.putBoolean("Vest", this.hasVest());
       this.addPersistentAngerSaveData(tag);
    }
 

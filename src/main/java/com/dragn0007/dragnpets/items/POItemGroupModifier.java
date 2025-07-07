@@ -1,6 +1,7 @@
 package com.dragn0007.dragnpets.items;
 
 import com.dragn0007.dragnlivestock.LivestockOverhaul;
+import com.dragn0007.dragnlivestock.items.LOItems;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
@@ -54,6 +55,23 @@ public class POItemGroupModifier {
 
                         output.accept(POItems.O_AXOLOTL_BUCKET.get());
                         output.accept(POItems.O_TROPICAL_FISH_BUCKET.get());
+
+                        output.accept(POItems.BLACK_VEST.get());
+                        output.accept(POItems.BLUE_VEST.get());
+                        output.accept(POItems.BROWN_VEST.get());
+                        output.accept(POItems.CYAN_VEST.get());
+                        output.accept(POItems.GREEN_VEST.get());
+                        output.accept(POItems.GREY_VEST.get());
+                        output.accept(POItems.LIGHT_BLUE_VEST.get());
+                        output.accept(POItems.LIGHT_GREY_VEST.get());
+                        output.accept(POItems.LIME_VEST.get());
+                        output.accept(POItems.MAGENTA_VEST.get());
+                        output.accept(POItems.ORANGE_VEST.get());
+                        output.accept(POItems.PINK_VEST.get());
+                        output.accept(POItems.PURPLE_VEST.get());
+                        output.accept(POItems.RED_VEST.get());
+                        output.accept(POItems.WHITE_VEST.get());
+                        output.accept(POItems.YELLOW_VEST.get());
 
                         //TODO;
 //                        output.accept(POItems.DOG_SLED.get());

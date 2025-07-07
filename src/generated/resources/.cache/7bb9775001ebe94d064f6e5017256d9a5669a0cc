@@ -1,12 +1,28 @@
-// 1.20.1	2025-01-30T05:13:18.6184019	Item Models: dragnpets
+// 1.20.1	2025-07-07T02:18:41.0284533	Item Models: dragnpets
+5b682e13b40efd2dcf595562db186bbcd753666f assets/dragnpets/models/item/black_vest.json
+bed04cc0f467289b3f234f1cebabc0086f2a163f assets/dragnpets/models/item/blue_vest.json
+52b4c057c4f44998e3206e2f3655964d3fb1699b assets/dragnpets/models/item/brown_vest.json
 c06440fe3e7419a08ea9fcf6157dbc438089b7f9 assets/dragnpets/models/item/cat.json
 720f11c51712a885550537de7b53654f2ac03b4c assets/dragnpets/models/item/cooked_cat.json
 484a0588d1fe8dd8d9d44d4678ca082d780d0175 assets/dragnpets/models/item/cooked_parrot_thigh.json
 9ac06c8a466bfbc77bbaf4787ec1bbdc17d01362 assets/dragnpets/models/item/cooked_tropical_fish_fillet.json
 df5a4ff62248bdd45b8e2e99169ac4c3e7d4d0de assets/dragnpets/models/item/cooked_wolf.json
+f86f9952889e7a14759ae478407532438e375788 assets/dragnpets/models/item/cyan_vest.json
 e32336b9128508c5073ac2c596402706b71d5a0d assets/dragnpets/models/item/dog_sled.json
+a6450f48f157c160b5bccb9b73adb1d80a8cfcf8 assets/dragnpets/models/item/green_vest.json
+7df175e28ea6a31a10a525e61b1ee5fc1e29f8be assets/dragnpets/models/item/grey_vest.json
+7639aee3bacf06f0ef0cbe14c53c050875e61899 assets/dragnpets/models/item/light_blue_vest.json
+a0da648244de52a57f982a000320c8778439ebaf assets/dragnpets/models/item/light_grey_vest.json
+ceb35fee077308ac1e4cbc1c2bee4c303fec7143 assets/dragnpets/models/item/lime_vest.json
+8f1f6dadcf5a19fe394ee6dbdd4ddee1bafac68c assets/dragnpets/models/item/magenta_vest.json
+f816a83662d87a571f0ad85b5734cae6d4c0132d assets/dragnpets/models/item/orange_vest.json
 84cfadf13d91e2394ea42d5f6695a712b81e9f0e assets/dragnpets/models/item/parrot_thigh.json
 ce7663d022cae35cf7b0899191ed0c3340e07066 assets/dragnpets/models/item/pets_overhaul.json
+07131158a7650924c97660b64fdde529bcd22e31 assets/dragnpets/models/item/pink_vest.json
+9aa2796e6d1033bccc9d6d84409e20836feae439 assets/dragnpets/models/item/purple_vest.json
+222af436cfb3073f5c203534af63678ed3242a32 assets/dragnpets/models/item/red_vest.json
 5bad5077b65b2d9ddae1179d5b58171df1030646 assets/dragnpets/models/item/tropical_fish_fillet.json
 f4d0f8426c1af2c47ac0accd7f1c0c09f57c25c1 assets/dragnpets/models/item/tropical_fish_roe.json
+d96e77625596e09d730965a7f92c54c1f24c50e5 assets/dragnpets/models/item/white_vest.json
 40b773b1423822aeb41edb034a1ee169c0089aeb assets/dragnpets/models/item/wolf.json
+b7624c59d88b1da4288f3653bf30b096236d2cc7 assets/dragnpets/models/item/yellow_vest.json

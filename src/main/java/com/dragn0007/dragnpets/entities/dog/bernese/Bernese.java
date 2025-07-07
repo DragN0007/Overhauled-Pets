@@ -7,6 +7,7 @@ import com.dragn0007.dragnpets.entities.ai.*;
 import com.dragn0007.dragnpets.entities.dog.CommonDogModel;
 import com.dragn0007.dragnpets.entities.dog.DogMarkingOverlay;
 import com.dragn0007.dragnpets.entities.dog.ODog;
+import com.dragn0007.dragnpets.entities.dog.australian_shepherd.AustralianShepherd;
 import com.dragn0007.dragnpets.entities.dog.doberman.Doberman;
 import com.dragn0007.dragnpets.gui.BerneseMenu;
 import com.dragn0007.dragnpets.util.POTags;
@@ -317,51 +318,13 @@ public class Bernese extends ODog implements NeutralMob, GeoEntity, Chestable, C
 
    // Generates the base texture
    public static final EntityDataAccessor<Boolean> CHESTED = SynchedEntityData.defineId(Bernese.class, EntityDataSerializers.BOOLEAN);
-
    public static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(Bernese.class, EntityDataSerializers.INT);
-   public ResourceLocation getTextureLocation() {
-      return CommonDogModel.Variant.variantFromOrdinal(getVariant()).resourceLocation;
-   }
-   public int getVariant() {
-      return this.entityData.get(VARIANT);
-   }
-   public void setVariant(int variant) {
-      this.entityData.set(VARIANT, variant);
-   }
-
-
    public static final EntityDataAccessor<Integer> OVERLAY = SynchedEntityData.defineId(Bernese.class, EntityDataSerializers.INT);
-   public ResourceLocation getOverlayLocation() {return DogMarkingOverlay.overlayFromOrdinal(getOverlayVariant()).resourceLocation;}
-   public int getOverlayVariant() {
-      return this.entityData.get(OVERLAY);
-   }
-   public void setOverlayVariant(int overlayVariant) {
-      this.entityData.set(OVERLAY, overlayVariant);
-   }
-
    public static final EntityDataAccessor<Boolean> COLLARED = SynchedEntityData.defineId(Bernese.class, EntityDataSerializers.BOOLEAN);
-   public boolean isCollared() {
-      return this.entityData.get(COLLARED);
-   }
-   public void setCollared(boolean collared) {
-      this.entityData.set(COLLARED, collared);
-   }
-
    public static final EntityDataAccessor<Integer> CROPPED = SynchedEntityData.defineId(Bernese.class, EntityDataSerializers.INT);
-   public int getCropped() {
-      return this.entityData.get(CROPPED);
-   }
-   public void setCropped(int cropped) {
-      this.entityData.set(CROPPED, cropped);
-   }
-
    public static final EntityDataAccessor<Integer> FLUFFY = SynchedEntityData.defineId(Bernese.class, EntityDataSerializers.INT);
-   public int getFluff() {
-      return this.entityData.get(FLUFFY);
-   }
-   public void setFluff(int fluff) {
-      this.entityData.set(FLUFFY, fluff);
-   }
+   public static final EntityDataAccessor<Integer> DATA_VEST_COLOR = SynchedEntityData.defineId(Bernese.class, EntityDataSerializers.INT);
+   public static final EntityDataAccessor<Boolean> VEST = SynchedEntityData.defineId(Bernese.class, EntityDataSerializers.BOOLEAN);
 
    public void defineSynchedData() {
       super.defineSynchedData();
@@ -374,6 +337,8 @@ public class Bernese extends ODog implements NeutralMob, GeoEntity, Chestable, C
       this.entityData.define(DATA_REMAINING_ANGER_TIME, 0);
       this.entityData.define(COLLARED, false);
       this.entityData.define(CHESTED, false);
+      this.entityData.define(DATA_VEST_COLOR, DyeColor.RED.getId());
+      this.entityData.define(VEST, false);
    }
 
    public void readAdditionalSaveData(CompoundTag tag) {
@@ -414,6 +379,14 @@ public class Bernese extends ODog implements NeutralMob, GeoEntity, Chestable, C
          this.setCollared(tag.getBoolean("Collared"));
       }
 
+      if (tag.contains("VestColor", 99)) {
+         this.setVestColor(DyeColor.byId(tag.getInt("VestColor")));
+      }
+
+      if(tag.contains("Vest")) {
+         this.setVest(tag.getBoolean("Vest"));
+      }
+
       if(tag.contains("Chested")) {
          this.setChested(tag.getBoolean("Chested"));
       }
@@ -445,6 +418,8 @@ public class Bernese extends ODog implements NeutralMob, GeoEntity, Chestable, C
       tag.putBoolean("Panicking", this.getPanicking());
       tag.putByte("CollarColor", (byte)this.getCollarColor().getId());
       tag.putBoolean("Collared", this.isCollared());
+      tag.putByte("VestColor", (byte)this.getVestColor().getId());
+      tag.putBoolean("Vest", this.hasVest());
 
       tag.putBoolean("Chested", this.isChested());
 
