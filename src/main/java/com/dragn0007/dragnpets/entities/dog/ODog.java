@@ -419,6 +419,26 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity {
          return InteractionResult.SUCCESS;
       }
 
+      if (itemstack.is(LOItems.COAT_OSCILLATOR.get()) && player.getAbilities().instabuild) {
+         if (player.isShiftKeyDown()) {
+            this.setVariant(this.getVariant() - 1);
+            this.playSound(SoundEvents.BEEHIVE_EXIT, 0.5f, 1f);
+            return InteractionResult.sidedSuccess(this.level().isClientSide);
+         }
+         this.setVariant(this.getVariant() + 1);
+         this.playSound(SoundEvents.BEEHIVE_EXIT, 0.5f, 1f);
+         return InteractionResult.sidedSuccess(this.level().isClientSide);
+      } else if (itemstack.is(LOItems.MARKING_OSCILLATOR.get()) && player.getAbilities().instabuild) {
+         if (player.isShiftKeyDown()) {
+            this.setOverlayVariant(this.getOverlayVariant() - 1);
+            this.playSound(SoundEvents.BEEHIVE_EXIT, 0.5f, 1f);
+            return InteractionResult.sidedSuccess(this.level().isClientSide);
+         }
+         this.setOverlayVariant(this.getOverlayVariant() + 1);
+         this.playSound(SoundEvents.BEEHIVE_EXIT, 0.5f, 1f);
+         return InteractionResult.sidedSuccess(this.level().isClientSide);
+      }
+
       if (this.level().isClientSide) {
          boolean flag = this.isOwnedBy(player) || this.isTame() || itemstack.is(Items.BONE) && !this.isTame() && !this.isAngry();
          return flag ? InteractionResult.CONSUME : InteractionResult.PASS;

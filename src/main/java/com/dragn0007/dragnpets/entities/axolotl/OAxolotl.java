@@ -1,6 +1,7 @@
 package com.dragn0007.dragnpets.entities.axolotl;
 
 import com.dragn0007.dragnlivestock.LivestockOverhaul;
+import com.dragn0007.dragnlivestock.items.LOItems;
 import com.dragn0007.dragnlivestock.util.LOTags;
 import com.dragn0007.dragnlivestock.util.LivestockOverhaulCommonConfig;
 import com.dragn0007.dragnpets.entities.POEntityTypes;
@@ -165,8 +166,31 @@ public class OAxolotl extends Animal implements GeoEntity, Bucketable {
 		return super.hurt(damageSource, v);
 	}
 
-	public InteractionResult mobInteract(Player p_149155_, InteractionHand p_149156_) {
-		return Bucketable.bucketMobPickup(p_149155_, p_149156_, this).orElse(super.mobInteract(p_149155_, p_149156_));
+	@Override
+	public InteractionResult mobInteract(Player player, InteractionHand hand) {
+		ItemStack itemStack = player.getItemInHand(hand);
+
+		if (itemStack.is(LOItems.COAT_OSCILLATOR.get()) && player.getAbilities().instabuild) {
+			if (player.isShiftKeyDown()) {
+				this.setVariant(this.getVariant() - 1);
+				this.playSound(SoundEvents.BEEHIVE_EXIT, 0.5f, 1f);
+				return InteractionResult.sidedSuccess(this.level().isClientSide);
+			}
+			this.setVariant(this.getVariant() + 1);
+			this.playSound(SoundEvents.BEEHIVE_EXIT, 0.5f, 1f);
+			return InteractionResult.sidedSuccess(this.level().isClientSide);
+		} else if (itemStack.is(LOItems.MARKING_OSCILLATOR.get()) && player.getAbilities().instabuild) {
+			if (player.isShiftKeyDown()) {
+				this.setOverlayVariant(this.getOverlayVariant() - 1);
+				this.playSound(SoundEvents.BEEHIVE_EXIT, 0.5f, 1f);
+				return InteractionResult.sidedSuccess(this.level().isClientSide);
+			}
+			this.setOverlayVariant(this.getOverlayVariant() + 1);
+			this.playSound(SoundEvents.BEEHIVE_EXIT, 0.5f, 1f);
+			return InteractionResult.sidedSuccess(this.level().isClientSide);
+		} else {
+			return Bucketable.bucketMobPickup(player, hand, this).orElse(super.mobInteract(player, hand));
+		}
 	}
 
 	public boolean removeWhenFarAway(double p_149183_) {

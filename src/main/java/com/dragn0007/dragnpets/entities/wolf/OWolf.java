@@ -1,7 +1,6 @@
 package com.dragn0007.dragnpets.entities.wolf;
 
 import com.dragn0007.dragnlivestock.entities.EntityTypes;
-import com.dragn0007.dragnlivestock.entities.cow.ox.Ox;
 import com.dragn0007.dragnlivestock.entities.donkey.ODonkey;
 import com.dragn0007.dragnlivestock.entities.llama.OLlama;
 import com.dragn0007.dragnlivestock.entities.mule.OMule;
@@ -122,7 +121,6 @@ public class OWolf extends TamableAnimal implements NeutralMob, GeoEntity {
       this.goalSelector.addGoal(1, new OWolf.WolfPanicGoal(1.4D));
       this.goalSelector.addGoal(2, new SitWhenOrderedToGoal(this));
       this.goalSelector.addGoal(3, new AvoidEntityGoal<>(this, OLlama.class, 24.0F, 1.5D, 1.5D));
-      this.goalSelector.addGoal(3, new AvoidEntityGoal<>(this, Ox.class, 24.0F, 1.5D, 1.5D));
       this.goalSelector.addGoal(3, new AvoidEntityGoal<>(this, Camel.class, 24.0F, 1.5D, 1.5D));
       this.goalSelector.addGoal(3, new AvoidEntityGoal<>(this, ODonkey.class, 24.0F, 1.5D, 1.5D));
       this.goalSelector.addGoal(3, new AvoidEntityGoal<>(this, OMule.class, 24.0F, 1.5D, 1.5D));
@@ -401,6 +399,26 @@ public class OWolf extends TamableAnimal implements NeutralMob, GeoEntity {
          ItemStack itemstack1 = ItemUtils.createFilledResult(itemstack, player, LOItems.MALE_GENDER_TEST_STRIP.get().getDefaultInstance());
          player.setItemInHand(hand, itemstack1);
          return InteractionResult.SUCCESS;
+      }
+
+      if (itemstack.is(LOItems.COAT_OSCILLATOR.get()) && player.getAbilities().instabuild) {
+         if (player.isShiftKeyDown()) {
+            this.setVariant(this.getVariant() - 1);
+            this.playSound(SoundEvents.BEEHIVE_EXIT, 0.5f, 1f);
+            return InteractionResult.sidedSuccess(this.level().isClientSide);
+         }
+         this.setVariant(this.getVariant() + 1);
+         this.playSound(SoundEvents.BEEHIVE_EXIT, 0.5f, 1f);
+         return InteractionResult.sidedSuccess(this.level().isClientSide);
+      } else if (itemstack.is(LOItems.MARKING_OSCILLATOR.get()) && player.getAbilities().instabuild) {
+         if (player.isShiftKeyDown()) {
+            this.setOverlayVariant(this.getOverlayVariant() - 1);
+            this.playSound(SoundEvents.BEEHIVE_EXIT, 0.5f, 1f);
+            return InteractionResult.sidedSuccess(this.level().isClientSide);
+         }
+         this.setOverlayVariant(this.getOverlayVariant() + 1);
+         this.playSound(SoundEvents.BEEHIVE_EXIT, 0.5f, 1f);
+         return InteractionResult.sidedSuccess(this.level().isClientSide);
       }
 
       //doggy talents next compat

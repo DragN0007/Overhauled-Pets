@@ -2,6 +2,7 @@ package com.dragn0007.dragnpets.entities.tropical_fish;
 
 import com.dragn0007.dragnlivestock.LivestockOverhaul;
 import com.dragn0007.dragnlivestock.entities.util.AbstractSchoolingOFish;
+import com.dragn0007.dragnlivestock.items.LOItems;
 import com.dragn0007.dragnlivestock.util.LivestockOverhaulCommonConfig;
 import com.dragn0007.dragnpets.PetsOverhaul;
 import com.dragn0007.dragnpets.entities.POEntityTypes;
@@ -15,11 +16,14 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.DifficultyInstance;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.animal.Bucketable;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
@@ -83,6 +87,33 @@ public class OTropicalFish extends AbstractSchoolingOFish implements GeoEntity {
 		this.setSpecies(compoundTag.getInt("Species"));
 
 		if (compoundTag.contains("Age")) {this.setAge(compoundTag.getInt("Age"));}
+	}
+
+	@Override
+	public InteractionResult mobInteract(Player player, InteractionHand hand) {
+		ItemStack itemStack = player.getItemInHand(hand);
+
+		if (itemStack.is(LOItems.COAT_OSCILLATOR.get()) && player.getAbilities().instabuild) {
+			if (player.isShiftKeyDown()) {
+				this.setVariant(this.getVariant() - 1);
+				this.playSound(SoundEvents.BEEHIVE_EXIT, 0.5f, 1f);
+				return InteractionResult.sidedSuccess(this.level().isClientSide);
+			}
+			this.setVariant(this.getVariant() + 1);
+			this.playSound(SoundEvents.BEEHIVE_EXIT, 0.5f, 1f);
+			return InteractionResult.sidedSuccess(this.level().isClientSide);
+		} else if (itemStack.is(LOItems.MARKING_OSCILLATOR.get()) && player.getAbilities().instabuild) {
+			if (player.isShiftKeyDown()) {
+				this.setOverlay(this.getOverlay() - 1);
+				this.playSound(SoundEvents.BEEHIVE_EXIT, 0.5f, 1f);
+				return InteractionResult.sidedSuccess(this.level().isClientSide);
+			}
+			this.setOverlay(this.getOverlay() + 1);
+			this.playSound(SoundEvents.BEEHIVE_EXIT, 0.5f, 1f);
+			return InteractionResult.sidedSuccess(this.level().isClientSide);
+		} else {
+			return Bucketable.bucketMobPickup(player, hand, this).orElse(super.mobInteract(player, hand));
+		}
 	}
 
 	public ItemStack getBucketItemStack() {
