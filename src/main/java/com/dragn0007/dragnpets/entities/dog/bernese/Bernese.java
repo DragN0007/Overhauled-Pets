@@ -497,9 +497,13 @@ public class Bernese extends ODog implements NeutralMob, GeoEntity, Chestable, C
 
    public void setCropChance() {
       if (random.nextDouble() <= 0.02) {
-         this.setCropped(1);
+         this.setCropped(3); // full crop
+      } else if (random.nextDouble() > 0.02 && random.nextDouble() < 0.07) {
+         this.setCropped(2); // tail only
+      } else if (random.nextDouble() > 0.07 && random.nextDouble() < 0.14) {
+         this.setCropped(1); // ears only
       } else {
-         this.setCropped(0);
+         this.setCropped(0); // no crop
       }
    }
 

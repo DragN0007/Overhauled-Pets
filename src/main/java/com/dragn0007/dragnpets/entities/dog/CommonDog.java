@@ -351,10 +351,14 @@ public class CommonDog extends ODog implements NeutralMob, GeoEntity {
    }
 
    public void setCropChance() {
-      if (random.nextDouble() <= 0.15) {
-         this.setCropped(1);
+      if (random.nextDouble() <= 0.10) {
+         this.setCropped(3); // full crop
+      } else if (random.nextDouble() > 0.10 && random.nextDouble() < 0.25) {
+         this.setCropped(2); // tail only
+      } else if (random.nextDouble() > 0.25 && random.nextDouble() < 0.50) {
+         this.setCropped(1); // ears only
       } else {
-         this.setCropped(0);
+         this.setCropped(0); // no crop
       }
    }
 
