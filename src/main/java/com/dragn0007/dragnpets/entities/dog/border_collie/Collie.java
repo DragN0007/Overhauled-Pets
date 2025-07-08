@@ -129,6 +129,7 @@ public class Collie extends ODog implements NeutralMob, GeoEntity {
 
       return PlayState.CONTINUE;
    }
+
    @Override
    public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
       controllers.add(new AnimationController<>(this, "controller", 2, this::predicate));

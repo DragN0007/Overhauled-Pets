@@ -399,7 +399,7 @@ public class SpawnReplacer {
                     return;
                 }
 
-                int i = event.getLevel().getRandom().nextInt(46);
+                int i = event.getLevel().getRandom().nextInt(47);
 
                 if (event.getLevel().getBiome(event.getEntity().blockPosition()).is(Biomes.SWAMP)) {
                     if (commonCat != null) {
@@ -675,7 +675,42 @@ public class SpawnReplacer {
                         }
                     }
 
+                    if (cockerSpaniel != null) {
+                        if (i == 46) {
+                            cockerSpaniel.copyPosition(cat);
 
+                            cockerSpaniel.setCustomName(cat.getCustomName());
+                            cockerSpaniel.setAge(cat.getAge());
+                            cockerSpaniel.setOwnerUUID(cat.getOwnerUUID());
+
+                            cockerSpaniel.setGender(random.nextInt(ODog.Gender.values().length));
+
+                            if (LivestockOverhaulCommonConfig.SPAWN_BY_BREED.get()) {
+                                cockerSpaniel.setColor();
+                                cockerSpaniel.setMarking();
+                            } else {
+                                cockerSpaniel.setVariant(random.nextInt(CommonDogModel.Variant.values().length));
+                                cockerSpaniel.setOverlayVariant(random.nextInt(DogMarkingOverlay.values().length));
+                            }
+
+                            cockerSpaniel.setFluffChance();
+
+                            if (PetsOverhaulCommonConfig.ALLOW_CROPPED_DOG_SPAWNS.get()) {
+                                cockerSpaniel.setCropChance();
+                            } else {
+                                cockerSpaniel.setCropped(0);
+                            }
+
+                            if (event.getLevel().isClientSide) {
+                                cat.remove(Entity.RemovalReason.DISCARDED);
+                            }
+
+                            event.getLevel().addFreshEntity(cockerSpaniel);
+                            cat.remove(Entity.RemovalReason.DISCARDED);
+
+                            event.setCanceled(true);
+                        }
+                    }
 
                 }
             }
