@@ -3,8 +3,12 @@ package com.dragn0007.dragnpets.entities.dog.pyrenees;
 import com.dragn0007.dragnlivestock.util.LivestockOverhaulCommonConfig;
 import com.dragn0007.dragnpets.entities.POEntityTypes;
 import com.dragn0007.dragnpets.entities.ai.*;
+import com.dragn0007.dragnpets.entities.dog.CommonDogModel;
+import com.dragn0007.dragnpets.entities.dog.DogMarkingOverlay;
 import com.dragn0007.dragnpets.entities.dog.ODog;
+import com.dragn0007.dragnpets.entities.dog.border_collie.Collie;
 import com.dragn0007.dragnpets.util.POTags;
+import com.dragn0007.dragnpets.util.PetsOverhaulCommonConfig;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -108,21 +112,24 @@ public class Pyrenees extends ODog implements NeutralMob, GeoEntity {
 
    public <T extends GeoAnimatable> PlayState predicate(software.bernie.geckolib.core.animation.AnimationState<T> tAnimationState) {
       double currentSpeed = this.getDeltaMovement().lengthSqr();
-      double speedThreshold = 0.015;
+      double speedThreshold = 0.02;
 
       AnimationController<T> controller = tAnimationState.getController();
 
       if (tAnimationState.isMoving()) {
          if (currentSpeed > speedThreshold) {
             controller.setAnimation(RawAnimation.begin().then("run", Animation.LoopType.LOOP));
-            controller.setAnimationSpeed(1.3);
+            controller.setAnimationSpeed(1.5);
          } else {
             controller.setAnimation(RawAnimation.begin().then("walk", Animation.LoopType.LOOP));
-            controller.setAnimationSpeed(1.2);
+            controller.setAnimationSpeed(1.5);
          }
       } else {
          if (isInSittingPose()) {
-            controller.setAnimation(RawAnimation.begin().then("sit2", Animation.LoopType.LOOP));
+            controller.setAnimation(RawAnimation.begin().then("sit", Animation.LoopType.LOOP));
+            controller.setAnimationSpeed(1.0);
+         } else if (this.isWagging()) {
+            controller.setAnimation(RawAnimation.begin().then("wag", Animation.LoopType.LOOP));
             controller.setAnimationSpeed(1.0);
          } else {
             controller.setAnimation(RawAnimation.begin().then("idle", Animation.LoopType.LOOP));
@@ -251,50 +258,48 @@ public class Pyrenees extends ODog implements NeutralMob, GeoEntity {
 
 
    // Generates the base texture
-   public ResourceLocation getTextureResource() {
-      return PyreneesModel.Variant.variantFromOrdinal(getVariant()).resourceLocation;
-   }
-
    public static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(Pyrenees.class, EntityDataSerializers.INT);
-
-   public int getVariant() {
-      return this.entityData.get(VARIANT);
-   }
-
-   public void setVariant(int variant) {
-      this.entityData.set(VARIANT, variant);
-   }
+   public static final EntityDataAccessor<Integer> OVERLAY = SynchedEntityData.defineId(Pyrenees.class, EntityDataSerializers.INT);
+   public static final EntityDataAccessor<Boolean> COLLARED = SynchedEntityData.defineId(Pyrenees.class, EntityDataSerializers.BOOLEAN);
+   public static final EntityDataAccessor<Integer> CROPPED = SynchedEntityData.defineId(Pyrenees.class, EntityDataSerializers.INT);
+   public static final EntityDataAccessor<Integer> FLUFFY = SynchedEntityData.defineId(Pyrenees.class, EntityDataSerializers.INT);
+   public static final EntityDataAccessor<Integer> DATA_VEST_COLOR = SynchedEntityData.defineId(Pyrenees.class, EntityDataSerializers.INT);
+   public static final EntityDataAccessor<Boolean> VEST = SynchedEntityData.defineId(Pyrenees.class, EntityDataSerializers.BOOLEAN);
 
    public void defineSynchedData() {
       super.defineSynchedData();
+      this.entityData.define(VARIANT, 0);
+      this.entityData.define(OVERLAY, 0);
+      this.entityData.define(GENDER, 0);
+      this.entityData.define(CROPPED, 0);
+      this.entityData.define(FLUFFY, 0);
       this.entityData.define(DATA_COLLAR_COLOR, DyeColor.RED.getId());
       this.entityData.define(DATA_REMAINING_ANGER_TIME, 0);
-      this.entityData.define(VARIANT, 0);
-      this.entityData.define(GENDER, 0);
-   }
-
-   public void addAdditionalSaveData(CompoundTag tag) {
-      super.addAdditionalSaveData(tag);
-      tag.putByte("CollarColor", (byte)this.getCollarColor().getId());
-      tag.putInt("Variant", getVariant());
-      tag.putInt("Gender", this.getGender());
-      tag.putBoolean("Wandering", this.getToldToWander());
-      tag.putBoolean("Panicking", this.getPanicking());
-      this.addPersistentAngerSaveData(tag);
+      this.entityData.define(COLLARED, false);
+      this.entityData.define(DATA_VEST_COLOR, DyeColor.RED.getId());
+      this.entityData.define(VEST, false);
    }
 
    public void readAdditionalSaveData(CompoundTag tag) {
       super.readAdditionalSaveData(tag);
-      if (tag.contains("CollarColor", 99)) {
-         this.setCollarColor(DyeColor.byId(tag.getInt("CollarColor")));
-      }
-
       if (tag.contains("Variant")) {
          setVariant(tag.getInt("Variant"));
       }
 
+      if (tag.contains("Overlay")) {
+         setOverlayVariant(tag.getInt("Overlay"));
+      }
+
       if (tag.contains("Gender")) {
          this.setGender(tag.getInt("Gender"));
+      }
+
+      if (tag.contains("Fluff")) {
+         this.setFluff(tag.getInt("Fluff"));
+      }
+
+      if (tag.contains("Cropped")) {
+         this.setCropped(tag.getInt("Cropped"));
       }
 
       if (tag.contains("Wandering")) {
@@ -305,7 +310,39 @@ public class Pyrenees extends ODog implements NeutralMob, GeoEntity {
          this.setPanicking(tag.getBoolean("Panicking"));
       }
 
+      if (tag.contains("CollarColor", 99)) {
+         this.setCollarColor(DyeColor.byId(tag.getInt("CollarColor")));
+      }
+
+      if(tag.contains("Collared")) {
+         this.setCollared(tag.getBoolean("Collared"));
+      }
+
+      if (tag.contains("VestColor", 99)) {
+         this.setVestColor(DyeColor.byId(tag.getInt("VestColor")));
+      }
+
+      if(tag.contains("Vest")) {
+         this.setVest(tag.getBoolean("Vest"));
+      }
+
       this.readPersistentAngerSaveData(this.level(), tag);
+   }
+
+   public void addAdditionalSaveData(CompoundTag tag) {
+      super.addAdditionalSaveData(tag);
+      tag.putInt("Variant", getVariant());
+      tag.putInt("Overlay", getOverlayVariant());
+      tag.putInt("Gender", this.getGender());
+      tag.putInt("Cropped", this.getCropped());
+      tag.putInt("Fluff", this.getFluff());
+      tag.putBoolean("Wandering", this.getToldToWander());
+      tag.putBoolean("Panicking", this.getPanicking());
+      tag.putByte("CollarColor", (byte)this.getCollarColor().getId());
+      tag.putBoolean("Collared", this.isCollared());
+      tag.putByte("VestColor", (byte)this.getVestColor().getId());
+      tag.putBoolean("Vest", this.hasVest());
+      this.addPersistentAngerSaveData(tag);
    }
 
    @Override
@@ -315,31 +352,78 @@ public class Pyrenees extends ODog implements NeutralMob, GeoEntity {
          data = new AgeableMobGroupData(0.2F);
       }
       Random random = new Random();
-      setVariant(random.nextInt(PyreneesModel.Variant.values().length));
-      setGender(random.nextInt(Pyrenees.Gender.values().length));
+
+      if (LivestockOverhaulCommonConfig.SPAWN_BY_BREED.get()) {
+         this.setColor();
+         this.setMarking();
+      } else {
+         this.setVariant(random.nextInt(CommonDogModel.Variant.values().length));
+         this.setOverlayVariant(random.nextInt(DogMarkingOverlay.values().length));
+      }
+
+      setGender(random.nextInt(ODog.Gender.values().length));
+
+      this.setFluffChance();
+
+      if (PetsOverhaulCommonConfig.ALLOW_CROPPED_DOG_SPAWNS.get()) {
+         setCropChance();
+      } else {
+         setCropped(0);
+      }
 
       return super.finalizeSpawn(serverLevelAccessor, instance, spawnType, data, tag);
+   }
+
+   public void setCropChance() {
+      if (random.nextDouble() <= 0.02) {
+         this.setCropped(3); // full crop
+      } else if (random.nextDouble() > 0.02 && random.nextDouble() < 0.05) {
+         this.setCropped(2); // tail only
+      } else if (random.nextDouble() > 0.05 && random.nextDouble() < 0.10) {
+         this.setCropped(1); // ears only
+      } else {
+         this.setCropped(0); // no crop
+      }
+   }
+
+   public void setFluffChance() {
+      if (random.nextDouble() <= 0.90) {
+         this.setFluff(1);
+      } else {
+         this.setFluff(0);
+      }
+   }
+
+   public void setColor() {
+      if (random.nextDouble() < 0.02) {
+         setVariant(random.nextInt(CommonDogModel.Variant.values().length));
+      } else if (random.nextDouble() > 0.02) {
+         this.setVariant(14);
+      }
+   }
+
+   public void setMarking() {
+      if (random.nextDouble() < 0.02) {
+         setOverlayVariant(random.nextInt(DogMarkingOverlay.values().length));
+      } else if (random.nextDouble() > 0.02) {
+         this.setOverlayVariant(2);
+      }
    }
 
    public enum Gender {
       FEMALE,
       MALE
    }
-
    public boolean isFemale() {
       return this.getGender() == 0;
    }
-
    public boolean isMale() {
       return this.getGender() == 1;
    }
-
    public static final EntityDataAccessor<Integer> GENDER = SynchedEntityData.defineId(Pyrenees.class, EntityDataSerializers.INT);
-
    public int getGender() {
       return this.entityData.get(GENDER);
    }
-
    public void setGender(int gender) {
       this.entityData.set(GENDER, gender);
    }
@@ -348,57 +432,60 @@ public class Pyrenees extends ODog implements NeutralMob, GeoEntity {
       return !this.isBaby() && this.getHealth() >= this.getMaxHealth() && this.isInLove();
    }
 
-   public boolean canMate(Animal animal) {
-      if (animal == this) {
-         return false;
-      } else if (!(animal instanceof Pyrenees)) {
-         return false;
-      } else {
-         if (!LivestockOverhaulCommonConfig.GENDERS_AFFECT_BREEDING.get()) {
-            return this.canParent() && ((Pyrenees) animal).canParent();
-         } else {
-            Pyrenees partner = (Pyrenees) animal;
-            if (this.canParent() && partner.canParent() && this.getGender() != partner.getGender()) {
-               return true;
-            }
-
-            boolean partnerIsFemale = partner.isFemale();
-            boolean partnerIsMale = partner.isMale();
-            if (LivestockOverhaulCommonConfig.GENDERS_AFFECT_BREEDING.get() && this.canParent() && partner.canParent()
-                    && ((isFemale() && partnerIsMale) || (isMale() && partnerIsFemale))) {
-               return isFemale();
-            }
-         }
-      }
-      return false;
-   }
-
    @Override
    public AgeableMob getBreedOffspring(ServerLevel serverLevel, AgeableMob ageableMob) {
-      Pyrenees oWolf1 = (Pyrenees) ageableMob;
-      if (ageableMob instanceof Pyrenees) {
-         Pyrenees oWolf = (Pyrenees) ageableMob;
-         oWolf1 = POEntityTypes.PYRENEES_ENTITY.get().create(serverLevel);
 
-         int i = this.random.nextInt(9);
+      ODog pup = null;
+      Pyrenees partner = (Pyrenees) ageableMob;
+
+      if (ageableMob instanceof Pyrenees) {
+         pup = POEntityTypes.PYRENEES_ENTITY.get().create(serverLevel);
+
+         int variantChance = this.random.nextInt(14);
          int variant;
-         if (i < 4) {
+         if (variantChance < 6) {
             variant = this.getVariant();
-         } else if (i < 8) {
-            variant = oWolf.getVariant();
+         } else if (variantChance < 12) {
+            variant = partner.getVariant();
          } else {
-            variant = this.random.nextInt(PyreneesModel.Variant.values().length);
+            variant = this.random.nextInt(CommonDogModel.Variant.values().length);
          }
+         pup.setVariant(variant);
+
+         int overlayChance = this.random.nextInt(10);
+         int overlay;
+         if (overlayChance < 4) {
+            overlay = this.getOverlayVariant();
+         } else if (overlayChance < 8) {
+            overlay = partner.getOverlayVariant();
+         } else {
+            overlay = this.random.nextInt(DogMarkingOverlay.values().length);
+         }
+         pup.setOverlayVariant(overlay);
+
+         int fluffyChance = this.random.nextInt(10);
+         int fluff;
+         if (fluffyChance < 5) {
+            fluff = this.getFluff();
+         } else {
+            fluff = partner.getFluff();
+         }
+         pup.setFluff(fluff);
 
          int gender;
-         gender = this.random.nextInt(Pyrenees.Gender.values().length);
+         gender = this.random.nextInt(ODog.Gender.values().length);
+         pup.setGender(gender);
 
-         oWolf1.setVariant(variant);
-         oWolf1.setGender(gender);
+         if (PetsOverhaulCommonConfig.ALLOW_CROPPED_DOG_SPAWNS.get()){
+            pup.setCropChance();
+         } else {
+            pup.setCropped(0);
+         }
       }
 
-      return oWolf1;
+      return pup;
    }
+
 
    public boolean wantsToAttack(LivingEntity entity, LivingEntity p_30390_) {
       if (!(entity instanceof Creeper) && !(entity instanceof Ghast)) {

@@ -399,7 +399,7 @@ public class SpawnReplacer {
                     return;
                 }
 
-                int i = event.getLevel().getRandom().nextInt(48);
+                int i = event.getLevel().getRandom().nextInt(49);
 
                 if (event.getLevel().getBiome(event.getEntity().blockPosition()).is(Biomes.SWAMP)) {
                     if (commonCat != null) {
@@ -743,6 +743,43 @@ public class SpawnReplacer {
                             }
 
                             event.getLevel().addFreshEntity(husky);
+                            cat.remove(Entity.RemovalReason.DISCARDED);
+
+                            event.setCanceled(true);
+                        }
+                    }
+
+                    if (pyrenees != null) {
+                        if (i == 47) {
+                            pyrenees.copyPosition(cat);
+
+                            pyrenees.setCustomName(cat.getCustomName());
+                            pyrenees.setAge(cat.getAge());
+                            pyrenees.setOwnerUUID(cat.getOwnerUUID());
+
+                            pyrenees.setGender(random.nextInt(ODog.Gender.values().length));
+
+                            if (LivestockOverhaulCommonConfig.SPAWN_BY_BREED.get()) {
+                                pyrenees.setColor();
+                                pyrenees.setMarking();
+                            } else {
+                                pyrenees.setVariant(random.nextInt(CommonDogModel.Variant.values().length));
+                                pyrenees.setOverlayVariant(random.nextInt(DogMarkingOverlay.values().length));
+                            }
+
+                            pyrenees.setFluffChance();
+
+                            if (PetsOverhaulCommonConfig.ALLOW_CROPPED_DOG_SPAWNS.get()) {
+                                pyrenees.setCropChance();
+                            } else {
+                                pyrenees.setCropped(0);
+                            }
+
+                            if (event.getLevel().isClientSide) {
+                                cat.remove(Entity.RemovalReason.DISCARDED);
+                            }
+
+                            event.getLevel().addFreshEntity(pyrenees);
                             cat.remove(Entity.RemovalReason.DISCARDED);
 
                             event.setCanceled(true);
