@@ -16,6 +16,7 @@ public enum DogMarkingOverlay {
         COLLIE_SPLASH(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/dog/overlay/collie_splash.png")),
         SPANIEL_SPLASH(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/dog/overlay/australian_rust.png")),
         SPANIEL_LM(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/dog/overlay/spaniel_lm.png")),
+        HUSKY_SPLASH(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/dog/overlay/husky_splash.png")),
         ;
 
         public final ResourceLocation resourceLocation;

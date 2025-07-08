@@ -370,7 +370,7 @@ public class Collie extends ODog implements NeutralMob, GeoEntity {
          this.setCropped(3); // full crop
       } else if (random.nextDouble() > 0.02 && random.nextDouble() < 0.07) {
          this.setCropped(2); // tail only
-      } else if (random.nextDouble() > 0.07 && random.nextDouble() < 0.50) {
+      } else if (random.nextDouble() > 0.07 && random.nextDouble() < 0.70) {
          this.setCropped(1); // ears only
       } else {
          this.setCropped(0); // no crop

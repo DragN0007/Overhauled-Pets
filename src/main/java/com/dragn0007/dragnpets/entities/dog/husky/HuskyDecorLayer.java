@@ -1,7 +1,8 @@
-package com.dragn0007.dragnpets.entities.dog.bernese;
+package com.dragn0007.dragnpets.entities.dog.husky;
 
 import com.dragn0007.dragnpets.PetsOverhaul;
 import com.dragn0007.dragnpets.entities.dog.CommonDogDecorLayer;
+import com.dragn0007.dragnpets.entities.dog.cocker_spaniel.CockerSpaniel;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -16,13 +17,14 @@ import software.bernie.geckolib.renderer.GeoRenderer;
 import software.bernie.geckolib.renderer.layer.GeoRenderLayer;
 
 @OnlyIn(Dist.CLIENT)
-public class BerneseDecorLayer extends GeoRenderLayer<Bernese> {
-    public BerneseDecorLayer(GeoRenderer<Bernese> entityRendererIn) {
+public class HuskyDecorLayer extends GeoRenderLayer<Husky> {
+
+    public HuskyDecorLayer(GeoRenderer<Husky> entityRendererIn) {
         super(entityRendererIn);
     }
 
     @Override
-    public void render(PoseStack poseStack, Bernese animatable, BakedGeoModel bakedModel, RenderType renderType, MultiBufferSource bufferSource, VertexConsumer buffer, float partialTick, int packedLight, int packedOverlay) {
+    public void render(PoseStack poseStack, Husky animatable, BakedGeoModel bakedModel, RenderType renderType, MultiBufferSource bufferSource, VertexConsumer buffer, float partialTick, int packedLight, int packedOverlay) {
         DyeColor dyeColor = animatable.getVestColor();
         ResourceLocation resourceLocation = null;
 

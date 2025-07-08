@@ -1,6 +1,7 @@
 package com.dragn0007.dragnpets.entities.dog.doberman;
 
 import com.dragn0007.dragnpets.PetsOverhaul;
+import com.dragn0007.dragnpets.entities.dog.CommonDogDecorLayer;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -16,25 +17,6 @@ import software.bernie.geckolib.renderer.layer.GeoRenderLayer;
 
 @OnlyIn(Dist.CLIENT)
 public class DobermanDecorLayer extends GeoRenderLayer<Doberman> {
-    public static final ResourceLocation[] VEST = new ResourceLocation[]{
-            new ResourceLocation(PetsOverhaul.MODID, "textures/entity/dog/vest/white.png"),
-            new ResourceLocation(PetsOverhaul.MODID, "textures/entity/dog/vest/orange.png"),
-            new ResourceLocation(PetsOverhaul.MODID, "textures/entity/dog/vest/magenta.png"),
-            new ResourceLocation(PetsOverhaul.MODID, "textures/entity/dog/vest/light_blue.png"),
-            new ResourceLocation(PetsOverhaul.MODID, "textures/entity/dog/vest/yellow.png"),
-            new ResourceLocation(PetsOverhaul.MODID, "textures/entity/dog/vest/lime.png"),
-            new ResourceLocation(PetsOverhaul.MODID, "textures/entity/dog/vest/pink.png"),
-            new ResourceLocation(PetsOverhaul.MODID, "textures/entity/dog/vest/grey.png"),
-            new ResourceLocation(PetsOverhaul.MODID, "textures/entity/dog/vest/light_grey.png"),
-            new ResourceLocation(PetsOverhaul.MODID, "textures/entity/dog/vest/cyan.png"),
-            new ResourceLocation(PetsOverhaul.MODID, "textures/entity/dog/vest/purple.png"),
-            new ResourceLocation(PetsOverhaul.MODID, "textures/entity/dog/vest/blue.png"),
-            new ResourceLocation(PetsOverhaul.MODID, "textures/entity/dog/vest/brown.png"),
-            new ResourceLocation(PetsOverhaul.MODID, "textures/entity/dog/vest/green.png"),
-            new ResourceLocation(PetsOverhaul.MODID, "textures/entity/dog/vest/red.png"),
-            new ResourceLocation(PetsOverhaul.MODID, "textures/entity/dog/vest/black.png")
-    };
-
 
     public DobermanDecorLayer(GeoRenderer<Doberman> entityRendererIn) {
         super(entityRendererIn);
@@ -47,7 +29,7 @@ public class DobermanDecorLayer extends GeoRenderLayer<Doberman> {
 
         if (animatable.hasVest()) {
             if (dyeColor != null) {
-                resourceLocation = VEST[dyeColor.getId()];
+                resourceLocation = CommonDogDecorLayer.VEST[dyeColor.getId()];
             }
 
             RenderType renderType1 = RenderType.entityCutout(resourceLocation);

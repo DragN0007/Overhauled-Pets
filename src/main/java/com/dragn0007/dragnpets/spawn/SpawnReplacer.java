@@ -399,7 +399,7 @@ public class SpawnReplacer {
                     return;
                 }
 
-                int i = event.getLevel().getRandom().nextInt(47);
+                int i = event.getLevel().getRandom().nextInt(48);
 
                 if (event.getLevel().getBiome(event.getEntity().blockPosition()).is(Biomes.SWAMP)) {
                     if (commonCat != null) {
@@ -706,6 +706,43 @@ public class SpawnReplacer {
                             }
 
                             event.getLevel().addFreshEntity(cockerSpaniel);
+                            cat.remove(Entity.RemovalReason.DISCARDED);
+
+                            event.setCanceled(true);
+                        }
+                    }
+
+                    if (husky != null) {
+                        if (i == 47) {
+                            husky.copyPosition(cat);
+
+                            husky.setCustomName(cat.getCustomName());
+                            husky.setAge(cat.getAge());
+                            husky.setOwnerUUID(cat.getOwnerUUID());
+
+                            husky.setGender(random.nextInt(ODog.Gender.values().length));
+
+                            if (LivestockOverhaulCommonConfig.SPAWN_BY_BREED.get()) {
+                                husky.setColor();
+                                husky.setMarking();
+                            } else {
+                                husky.setVariant(random.nextInt(CommonDogModel.Variant.values().length));
+                                husky.setOverlayVariant(random.nextInt(DogMarkingOverlay.values().length));
+                            }
+
+                            husky.setFluffChance();
+
+                            if (PetsOverhaulCommonConfig.ALLOW_CROPPED_DOG_SPAWNS.get()) {
+                                husky.setCropChance();
+                            } else {
+                                husky.setCropped(0);
+                            }
+
+                            if (event.getLevel().isClientSide) {
+                                cat.remove(Entity.RemovalReason.DISCARDED);
+                            }
+
+                            event.getLevel().addFreshEntity(husky);
                             cat.remove(Entity.RemovalReason.DISCARDED);
 
                             event.setCanceled(true);

@@ -1,36 +1,28 @@
 package com.dragn0007.dragnpets.entities.dog.husky;
 
-import com.dragn0007.dragnpets.PetsOverhaul;
+import com.dragn0007.dragnpets.entities.dog.DogMarkingOverlay;
+import com.dragn0007.dragnpets.entities.dog.border_collie.Collie;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.world.entity.monster.Husk;
 import software.bernie.geckolib.cache.object.BakedGeoModel;
 import software.bernie.geckolib.renderer.GeoRenderer;
 import software.bernie.geckolib.renderer.layer.GeoRenderLayer;
 
-@OnlyIn(Dist.CLIENT)
-public class HuskyHarnessLayer extends GeoRenderLayer<Husky> {
-    public HuskyHarnessLayer(GeoRenderer<Husky> entityRendererIn) {
+public class HuskyMarkingLayer extends GeoRenderLayer<Husky> {
+    public HuskyMarkingLayer(GeoRenderer entityRendererIn) {
         super(entityRendererIn);
     }
 
     @Override
     public void render(PoseStack poseStack, Husky animatable, BakedGeoModel bakedModel, RenderType renderType, MultiBufferSource bufferSource, VertexConsumer buffer, float partialTick, int packedLight, int packedOverlay) {
 
-        ResourceLocation resourceLocation = null;
+        DogMarkingOverlay overlay = DogMarkingOverlay.overlayFromOrdinal(animatable.getOverlayVariant());
+        RenderType renderMarkingType = RenderType.entityCutout(overlay.resourceLocation);
 
-        if (animatable.isChested() || animatable.isHitchedToSled()) {
-            resourceLocation = new ResourceLocation(PetsOverhaul.MODID, "textures/entity/dog/harness/harness.png");
-        } else {
-            return;
-        }
-
-        RenderType renderType1 = RenderType.entityCutout(resourceLocation);
         poseStack.pushPose();
         poseStack.scale(1.0f, 1.0f, 1.0f);
         poseStack.translate(0.0d, 0.0d, 0.0d);
@@ -39,8 +31,9 @@ public class HuskyHarnessLayer extends GeoRenderLayer<Husky> {
                 poseStack,
                 bufferSource,
                 animatable,
-                renderType1,
-                bufferSource.getBuffer(renderType1), partialTick, packedLight, OverlayTexture.NO_OVERLAY,
+                renderMarkingType,
+                bufferSource.getBuffer(renderMarkingType), partialTick, packedLight, OverlayTexture.NO_OVERLAY,
                 1, 1, 1, 1);
     }
+
 }
