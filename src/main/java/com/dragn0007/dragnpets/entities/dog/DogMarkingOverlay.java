@@ -12,6 +12,10 @@ public enum DogMarkingOverlay {
         MOUNTAIN_RUST(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/dog/overlay/mountain_rust.png")),
         AUSTRALIAN_RUST(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/dog/overlay/australian_rust.png")),
         AUSTRALIAN_MERLE_RUST(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/dog/overlay/australian_merle_rust.png")),
+        COLLIE_RUST(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/dog/overlay/collie_rust.png")),
+        COLLIE_SPLASH(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/dog/overlay/collie_splash.png")),
+        SPANIEL_SPLASH(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/dog/overlay/australian_rust.png")),
+        SPANIEL_LM(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/dog/overlay/spaniel_lm.png")),
         ;
 
         public final ResourceLocation resourceLocation;

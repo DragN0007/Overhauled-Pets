@@ -1,34 +1,46 @@
 package com.dragn0007.dragnpets.entities.dog.border_collie;
 
+import com.dragn0007.dragnlivestock.LivestockOverhaul;
 import com.dragn0007.dragnpets.PetsOverhaul;
+import com.dragn0007.dragnpets.entities.dog.CommonDog;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
+import software.bernie.geckolib.constant.DataTickets;
+import software.bernie.geckolib.core.animatable.model.CoreGeoBone;
+import software.bernie.geckolib.core.animation.AnimationState;
+import software.bernie.geckolib.model.DefaultedEntityGeoModel;
 import software.bernie.geckolib.model.GeoModel;
+import software.bernie.geckolib.model.data.EntityModelData;
 
-public class CollieModel extends GeoModel<Collie> {
+public class CollieModel extends DefaultedEntityGeoModel<Collie> {
 
-    public enum Variant {
-        BLACK(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/dog/border_collie/collie_black.png")),
-        BLACK_BROWN(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/dog/border_collie/collie_black_brown.png")),
-        GREY(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/dog/border_collie/collie_grey.png")),
-        GREY_BROWN(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/dog/border_collie/collie_grey_brown.png")),
-        BROWN(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/dog/border_collie/collie_brown.png")),
-        BROWN_BROWN(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/dog/border_collie/collie_brown_brown.png")),
-        FAWN(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/dog/border_collie/collie_fawn.png")),
-        FAWN_BROWN(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/dog/border_collie/collie_fawn_brown.png")),
-        RED(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/dog/border_collie/collie_red.png")),
-        RED_BROWN(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/dog/border_collie/collie_red_brown.png"));
+    public CollieModel() {
+        super(new ResourceLocation(LivestockOverhaul.MODID, "collie"), true);
+    }
 
-        public final ResourceLocation resourceLocation;
-        Variant(ResourceLocation resourceLocation) {
-            this.resourceLocation = resourceLocation;
+    @Override
+    public void setCustomAnimations(Collie animatable, long instanceId, AnimationState<Collie> animationState) {
+
+        CoreGeoBone neck = getAnimationProcessor().getBone("neck");
+        CoreGeoBone head = getAnimationProcessor().getBone("head");
+
+        if (neck != null) {
+            EntityModelData entityData = animationState.getData(DataTickets.ENTITY_MODEL_DATA);
+            neck.setRotX(neck.getRotX() + (entityData.headPitch() * Mth.DEG_TO_RAD));
+            float maxYaw = Mth.clamp(entityData.netHeadYaw(), -25.0f, 25.0f);
+            neck.setRotY(neck.getRotY() + (maxYaw * Mth.DEG_TO_RAD));
         }
 
-        public static Variant variantFromOrdinal(int variant) { return Variant.values()[variant % Variant.values().length];
+        if (head != null) {
+            EntityModelData entityData = animationState.getData(DataTickets.ENTITY_MODEL_DATA);
+            head.setRotX(head.getRotX() + (entityData.headPitch() * Mth.DEG_TO_RAD));
+            float maxYaw = Mth.clamp(entityData.netHeadYaw(), -25.0f, 25.0f);
+            head.setRotY(head.getRotY() + (maxYaw * Mth.DEG_TO_RAD));
         }
     }
 
-    public static final ResourceLocation MODEL = new ResourceLocation(PetsOverhaul.MODID, "geo/border_collie.geo.json");
-    public static final ResourceLocation ANIMATION = new ResourceLocation(PetsOverhaul.MODID, "animations/border_collie.animation.json");
+    public static final ResourceLocation MODEL = new ResourceLocation(PetsOverhaul.MODID, "geo/dog/border_collie.geo.json");
+    public static final ResourceLocation ANIMATION = new ResourceLocation(PetsOverhaul.MODID, "animations/dog.animation.json");
 
     @Override
     public ResourceLocation getModelResource(Collie object) {
@@ -37,7 +49,7 @@ public class CollieModel extends GeoModel<Collie> {
 
     @Override
     public ResourceLocation getTextureResource(Collie object) {
-        return object.getTextureResource();
+        return object.getTextureLocation();
     }
 
     @Override

@@ -43,6 +43,7 @@ public class FollowSheepGoal extends Goal {
 
    public boolean canUse() {
       List<OSheep> list = this.mob.level().getEntitiesOfClass(OSheep.class, this.mob.getBoundingBox().inflate((double)this.areaSize), this.followPredicate);
+
       if (!list.isEmpty()) {
          for(OSheep mob : list) {
             if (!mob.isInvisible()) {
