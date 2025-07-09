@@ -50,6 +50,10 @@
     {
       "type": "patchouli:text",
       "text": "-The Rottweiler is a player guard dog. Set it to Guard mode to allow it to both hunt and pick up loot from monsters. Shift-left-click a Rottweiler to toggle 'Guard Mode'."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "-(DDD Compat) The American Ridgeback can hunt medium and small dinosaurs for you. Set it to Hunting mode to allow it to hunt dinos. Shift-left-click a American Ridgeback to toggle 'Hunting Mode'."
     }
   ]
 }
