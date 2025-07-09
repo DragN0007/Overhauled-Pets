@@ -127,76 +127,26 @@ public class KornishRex extends OCat implements GeoEntity {
 
    public static AttributeSupplier.Builder createAttributes() {
       return Mob.createMobAttributes()
-              .add(Attributes.MAX_HEALTH, 8.0D).
+              .add(Attributes.MAX_HEALTH, 6.0D).
               add(Attributes.MOVEMENT_SPEED, (double)0.3F)
               .add(Attributes.ATTACK_DAMAGE, 3.0D);
-   }
-
-   public int giftTime = this.random.nextInt(24000) + 48000;
-
-   public void aiStep() {
-      super.aiStep();
-
-      if (!this.level().isClientSide && this.isAlive() && !this.isBaby() && --this.giftTime <= 0 && PetsOverhaulCommonConfig.CATS_GIVE_GIFTS.get() && this.isTame() && !this.wasToldToWander() && !this.isOrderedToSit()) {
-         this.playSound(SoundEvents.CAT_PURREOW, 1.0F, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.0F);
-
-         int i = this.getRandom().nextInt(100);
-
-         if (i < 15) {
-            this.spawnAtLocation(Items.STRING);
-         } else if (i < 20) {
-            this.spawnAtLocation(Items.RABBIT_HIDE);
-         } else if (i < 25) {
-            this.spawnAtLocation(Items.FEATHER);
-         } else if (i < 35) {
-            this.spawnAtLocation(Items.RED_MUSHROOM);
-         } else if (i < 45) {
-            this.spawnAtLocation(Items.BONE_MEAL);
-         } else if (i < 55) {
-            this.spawnAtLocation(Items.STICK);
-         } else if (i < 65) {
-            this.spawnAtLocation(LOItems.CHICKEN_THIGH.get());
-         } else if (i < 70) {
-            this.spawnAtLocation(POItems.PARROT_THIGH.get());
-         } else if (i < 75) {
-            this.spawnAtLocation(LOItems.FROG.get());
-         } else if (i < 80) {
-            this.spawnAtLocation(Items.SALMON);
-         } else if (i < 85) {
-            this.spawnAtLocation(Items.COD);
-         } else if (i < 90) {
-            this.spawnAtLocation(Items.WHITE_WOOL);
-         } else if (i < 95) {
-            this.spawnAtLocation(Items.GUNPOWDER);
-         } else if (i < 98.5) {
-            this.spawnAtLocation(Items.RABBIT_FOOT);
-         } else if (i < 99.0) {
-            this.spawnAtLocation(LOItems.COOKED_CHICKEN_THIGH.get());
-         } else if (i < 99.5) {
-            this.spawnAtLocation(Items.MUSIC_DISC_CAT);
-         } else if (i < 100) {
-            this.spawnAtLocation(Items.CREEPER_HEAD);
-         }
-
-         this.giftTime = this.random.nextInt(24000) + 48000;
-      }
    }
 
    public final AnimatableInstanceCache geoCache = GeckoLibUtil.createInstanceCache(this);
 
    public <T extends GeoAnimatable> PlayState predicate(software.bernie.geckolib.core.animation.AnimationState<T> tAnimationState) {
       double currentSpeed = this.getDeltaMovement().lengthSqr();
-      double speedThreshold = 0.015;
+      double speedThreshold = 0.02;
 
       AnimationController<T> controller = tAnimationState.getController();
 
       if (tAnimationState.isMoving()) {
          if (currentSpeed > speedThreshold) {
             controller.setAnimation(RawAnimation.begin().then("run", Animation.LoopType.LOOP));
-            controller.setAnimationSpeed(1.3);
+            controller.setAnimationSpeed(1.5);
          } else {
             controller.setAnimation(RawAnimation.begin().then("walk", Animation.LoopType.LOOP));
-            controller.setAnimationSpeed(1.3);
+            controller.setAnimationSpeed(1.5);
          }
       } else {
          if (isInSittingPose()) {
@@ -238,43 +188,6 @@ public class KornishRex extends OCat implements GeoEntity {
       } else {
          this.setPose(Pose.STANDING);
          this.setSprinting(false);
-      }
-
-   }
-
-   public int regenHealthCounter = 0;
-   public int wagCounter = this.random.nextInt(1200) + 1200;
-   public int stayWaggingCounter = 0;
-
-   private boolean wag = false;
-   public boolean isWagging() {
-      return this.wag;
-   }
-   public void setWagging(boolean wagging) {
-      this.wag = wagging;
-   }
-
-   public void tick() {
-      super.tick();
-
-      wagCounter--;
-
-      if (--this.wagCounter <= 0) {
-         this.stayWaggingCounter++;
-         setWagging(true);
-         if (this.stayWaggingCounter >= 300) {
-            this.wagCounter = this.random.nextInt(1200) + 1200;
-            this.stayWaggingCounter = 0;
-            setWagging(false);
-         }
-      }
-
-      regenHealthCounter++;
-
-      if (this.getHealth() < this.getMaxHealth() && regenHealthCounter >= 150 && this.isTame() && this.isAlive()) {
-         this.setHealth(this.getHealth() + 2);
-         regenHealthCounter = 0;
-         this.level().addParticle(ParticleTypes.HEART, this.getRandomX(0.6D), this.getRandomY(), this.getRandomZ(0.6D), 0.7D, 0.7D, 0.7D);
       }
 
    }
@@ -337,114 +250,13 @@ public class KornishRex extends OCat implements GeoEntity {
       this.getAttribute(Attributes.ATTACK_DAMAGE).setBaseValue(2.0D);
    }
 
-   public InteractionResult mobInteract(Player player, InteractionHand hand) {
-      ItemStack itemstack = player.getItemInHand(hand);
-      Item item = itemstack.getItem();
-
-      if (itemstack.is(Items.SHEARS) && this.isCollared()) {
-         this.setCollared(false);
-         this.playSound(SoundEvents.SHEEP_SHEAR, 0.5f, 1f);
-         return InteractionResult.sidedSuccess(this.level().isClientSide);
-      }
-
-      if (itemstack.is(LOItems.GENDER_TEST_STRIP.get()) && this.isFemale()) {
-         player.playSound(SoundEvents.BEEHIVE_EXIT, 1.0F, 1.0F);
-         ItemStack itemstack1 = ItemUtils.createFilledResult(itemstack, player, LOItems.FEMALE_GENDER_TEST_STRIP.get().getDefaultInstance());
-         player.setItemInHand(hand, itemstack1);
-         return InteractionResult.SUCCESS;
-      }
-
-      if (itemstack.is(LOItems.GENDER_TEST_STRIP.get()) && this.isMale()) {
-         player.playSound(SoundEvents.BEEHIVE_EXIT, 1.0F, 1.0F);
-         ItemStack itemstack1 = ItemUtils.createFilledResult(itemstack, player, LOItems.MALE_GENDER_TEST_STRIP.get().getDefaultInstance());
-         player.setItemInHand(hand, itemstack1);
-         return InteractionResult.SUCCESS;
-      }
-
-      if (player.isShiftKeyDown() && !this.isFood(itemstack) && !this.isOrderedToSit() && !this.wasToldToWander() && this.isOwnedBy(player)) {
-         this.setToldToWander(true);
-         player.displayClientMessage(Component.translatable("tooltip.dragnpets.wandering.tooltip").withStyle(ChatFormatting.GOLD), true);
-         return InteractionResult.SUCCESS;
-      }
-
-      if (player.isShiftKeyDown() && !this.isFood(itemstack) && !this.isOrderedToSit() && this.wasToldToWander() && this.isOwnedBy(player)) {
-         this.setToldToWander(false);
-         player.displayClientMessage(Component.translatable("tooltip.dragnpets.following.tooltip").withStyle(ChatFormatting.GOLD), true);
-         return InteractionResult.SUCCESS;
-      }
-
-      if (this.level().isClientSide) {
-         boolean flag = this.isOwnedBy(player) || this.isTame() || itemstack.is(POTags.Items.CAT_FOOD) && !this.isTame();
-         return flag ? InteractionResult.CONSUME : InteractionResult.PASS;
-      } else if (this.isTame()) {
-         if (this.isFood(itemstack) && this.getHealth() < this.getMaxHealth()) {
-            this.heal((float)itemstack.getFoodProperties(this).getNutrition());
-            if (!player.getAbilities().instabuild) {
-               itemstack.shrink(1);
-            }
-
-            this.gameEvent(GameEvent.EAT, this);
-            return InteractionResult.SUCCESS;
-         } else {
-            if (item instanceof DyeItem) {
-               DyeItem dyeitem = (DyeItem)item;
-               if (this.isOwnedBy(player)) {
-                  DyeColor dyecolor = dyeitem.getDyeColor();
-                  if (dyecolor != this.getCollarColor()) {
-                     this.setCollarColor(dyecolor);
-                     if (!player.getAbilities().instabuild) {
-                        itemstack.shrink(1);
-                     }
-
-                     return InteractionResult.SUCCESS;
-                  }
-
-                  return super.mobInteract(player, hand);
-               }
-            }
-
-            InteractionResult interactionresult = super.mobInteract(player, hand);
-            if ((!interactionresult.consumesAction() || this.isBaby()) && this.isOwnedBy(player)) {
-               this.setOrderedToSit(!this.isOrderedToSit());
-               this.jumping = false;
-               this.navigation.stop();
-               this.setTarget(null);
-               return InteractionResult.SUCCESS;
-            } else {
-               return interactionresult;
-            }
-         }
-      } else if (itemstack.is(POTags.Items.CAT_FOOD)) {
-         if (!player.getAbilities().instabuild) {
-            itemstack.shrink(1);
-         }
-
-         if (this.random.nextInt(3) == 0 && !net.minecraftforge.event.ForgeEventFactory.onAnimalTame(this, player)) {
-            this.tame(player);
-            this.navigation.stop();
-            this.setTarget((LivingEntity)null);
-            this.setOrderedToSit(true);
-            this.level().broadcastEntityEvent(this, (byte)7);
-         } else {
-            this.level().broadcastEntityEvent(this, (byte)6);
-         }
-
-         return InteractionResult.SUCCESS;
-      } else {
-         return super.mobInteract(player, hand);
-      }
-   }
-
    public boolean toldToWander = false;
-
    public boolean wasToldToWander() {
       return this.toldToWander;
    }
-
    public boolean getToldToWander() {
       return this.toldToWander;
    }
-
    public void setToldToWander(boolean toldToWander) {
       this.toldToWander = toldToWander;
    }
@@ -468,41 +280,10 @@ public class KornishRex extends OCat implements GeoEntity {
    // Generates the base texture
 
    public static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(KornishRex.class, EntityDataSerializers.INT);
-   public ResourceLocation getTextureLocation() {
-      return OCatModel.Variant.variantFromOrdinal(getVariant()).resourceLocation;
-   }
-   public int getVariant() {
-      return this.entityData.get(VARIANT);
-   }
-   public void setVariant(int variant) {
-      this.entityData.set(VARIANT, variant);
-   }
 
    public static final EntityDataAccessor<Integer> OVERLAY = SynchedEntityData.defineId(KornishRex.class, EntityDataSerializers.INT);
-   public ResourceLocation getOverlayLocation() {return CatMarkingOverlay.overlayFromOrdinal(getOverlayVariant()).resourceLocation;}
-   public int getOverlayVariant() {
-      return this.entityData.get(OVERLAY);
-   }
-   public void setOverlayVariant(int overlayVariant) {
-      this.entityData.set(OVERLAY, overlayVariant);
-   }
-
    public static final EntityDataAccessor<Integer> EYES = SynchedEntityData.defineId(KornishRex.class, EntityDataSerializers.INT);
-   public ResourceLocation getEyeLocation() {return OCatEyeLayer.Eyes.overlayFromOrdinal(getEyes()).resourceLocation;}
-   public int getEyes() {
-      return this.entityData.get(EYES);
-   }
-   public void setEyes(int eyes) {
-      this.entityData.set(EYES, eyes);
-   }
-
    public static final EntityDataAccessor<Boolean> COLLARED = SynchedEntityData.defineId(KornishRex.class, EntityDataSerializers.BOOLEAN);
-   public boolean isCollared() {
-      return this.entityData.get(COLLARED);
-   }
-   public void setCollared(boolean collared) {
-      this.entityData.set(COLLARED, collared);
-   }
 
    public void defineSynchedData() {
       super.defineSynchedData();
@@ -564,12 +345,45 @@ public class KornishRex extends OCat implements GeoEntity {
          data = new AgeableMobGroupData(0.2F);
       }
       Random random = new Random();
+
+      if (LivestockOverhaulCommonConfig.SPAWN_BY_BREED.get()) {
+         this.setEyeColor();
+      } else {
+         setEyes(random.nextInt(OCatEyeLayer.Eyes.values().length));
+      }
+
       setVariant(random.nextInt(OCatModel.Variant.values().length));
       setOverlayVariant(random.nextInt(CatMarkingOverlay.values().length));
-      setEyes(random.nextInt(OCatEyeLayer.Eyes.values().length));
-      setGender(random.nextInt(KornishRex.Gender.values().length));
+      setGender(random.nextInt(OCat.Gender.values().length));
 
       return super.finalizeSpawn(serverLevelAccessor, instance, spawnType, data, tag);
+   }
+
+   public void setEyeColor() {
+
+      //white and cream cats have a better chance of gaining blue or green eyes
+      if (this.getVariant() == 4 || this.getVariant() == 14 || this.getOverlayVariant() == 85) {
+         if (random.nextDouble() < 0.10) {
+            this.setEyes(5); //green
+         } else if (random.nextDouble() < 0.30 && random.nextDouble() > 0.10) {
+            this.setEyes(4); //blue
+         } else if (random.nextDouble() > 0.30) {
+            this.setEyes(this.getRandom().nextInt(3)); //random (between orange and brown)
+         } else {
+            this.setEyes(0);
+         }
+      } else {
+         if (random.nextDouble() < 0.03) {
+            this.setEyes(5);
+         } else if (random.nextDouble() < 0.10 && random.nextDouble() > 0.03) {
+            this.setEyes(4);
+         } else if (random.nextDouble() > 0.10) {
+            this.setEyes(this.getRandom().nextInt(3));
+         } else {
+            this.setEyes(0);
+         }
+      }
+
    }
 
    public enum Gender {
@@ -596,13 +410,13 @@ public class KornishRex extends OCat implements GeoEntity {
    public boolean canMate(Animal animal) {
       if (animal == this) {
          return false;
-      } else if (!(animal instanceof KornishRex)) {
+      } else if (!(animal instanceof OCat)) {
          return false;
       } else {
          if (!LivestockOverhaulCommonConfig.GENDERS_AFFECT_BREEDING.get()) {
-            return this.canParent() && ((KornishRex) animal).canParent();
+            return this.canParent() && ((OCat) animal).canParent();
          } else {
-            KornishRex partner = (KornishRex) animal;
+            OCat partner = (OCat) animal;
             if (this.canParent() && partner.canParent() && this.getGender() != partner.getGender()) {
                return isFemale();
             }
@@ -651,7 +465,7 @@ public class KornishRex extends OCat implements GeoEntity {
       kitten.setEyes(eyes);
 
       int gender;
-      gender = this.random.nextInt(KornishRex.Gender.values().length);
+      gender = this.random.nextInt(OCat.Gender.values().length);
       kitten.setGender(gender);
 
       return kitten;

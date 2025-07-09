@@ -12,6 +12,7 @@ import com.dragn0007.dragnpets.entities.cat.OCatEyeLayer;
 import com.dragn0007.dragnpets.entities.cat.OCatModel;
 import com.dragn0007.dragnpets.entities.cat.kornish_rex.KornishRex;
 import com.dragn0007.dragnpets.entities.cat.maine_coon.MaineCoon;
+import com.dragn0007.dragnpets.entities.cat.manx.Manx;
 import com.dragn0007.dragnpets.entities.dog.CommonDog;
 import com.dragn0007.dragnpets.entities.dog.CommonDogModel;
 import com.dragn0007.dragnpets.entities.dog.DogMarkingOverlay;
@@ -391,6 +392,7 @@ public class SpawnReplacer {
         CockerSpaniel cockerSpaniel = POEntityTypes.COCKER_SPANIEL_ENTITY.get().create(event.getLevel());
         Whippet whippet = POEntityTypes.WHIPPET_ENTITY.get().create(event.getLevel());
         Rottweiler rottweiler = POEntityTypes.ROTTWEILER_ENTITY.get().create(event.getLevel());
+        Manx manx = POEntityTypes.MANX_ENTITY.get().create(event.getLevel());
         if (!LivestockOverhaulCommonConfig.FAILSAFE_REPLACER.get() && PetsOverhaulCommonConfig.REPLACE_CATS.get() && event.getEntity() instanceof Cat cat) {
 
             if (event.getEntity().getClass() == Cat.class && (((!(cat.getSpawnType() == MobSpawnType.SPAWN_EGG)) && !LivestockOverhaulCommonConfig.REPLACE_SPAWN_EGG_ANIMALS.get()) || LivestockOverhaulCommonConfig.REPLACE_SPAWN_EGG_ANIMALS.get())) {
@@ -399,7 +401,7 @@ public class SpawnReplacer {
                     return;
                 }
 
-                int i = event.getLevel().getRandom().nextInt(49);
+                int i = event.getLevel().getRandom().nextInt(51);
 
                 if (event.getLevel().getBiome(event.getEntity().blockPosition()).is(Biomes.SWAMP)) {
                     if (commonCat != null) {
@@ -780,6 +782,96 @@ public class SpawnReplacer {
                             }
 
                             event.getLevel().addFreshEntity(pyrenees);
+                            cat.remove(Entity.RemovalReason.DISCARDED);
+
+                            event.setCanceled(true);
+                        }
+                    }
+
+                    if (kornishRex != null) {
+                        if (i == 48) {
+                            kornishRex.copyPosition(cat);
+
+                            kornishRex.setCustomName(cat.getCustomName());
+                            kornishRex.setAge(cat.getAge());
+                            kornishRex.setOwnerUUID(cat.getOwnerUUID());
+
+                            kornishRex.setGender(random.nextInt(OCat.Gender.values().length));
+
+                            if (LivestockOverhaulCommonConfig.SPAWN_BY_BREED.get()) {
+                                kornishRex.setEyeColor();
+                            } else {
+                                kornishRex.setEyes(random.nextInt(OCatEyeLayer.Eyes.values().length));
+                            }
+
+                            kornishRex.setVariant(random.nextInt(OCatModel.Variant.values().length));
+                            kornishRex.setOverlayVariant(random.nextInt(CatMarkingOverlay.values().length));
+
+                            if (event.getLevel().isClientSide) {
+                                cat.remove(Entity.RemovalReason.DISCARDED);
+                            }
+
+                            event.getLevel().addFreshEntity(kornishRex);
+                            cat.remove(Entity.RemovalReason.DISCARDED);
+
+                            event.setCanceled(true);
+                        }
+                    }
+
+                    if (maineCoon != null) {
+                        if (i == 49) {
+                            maineCoon.copyPosition(cat);
+
+                            maineCoon.setCustomName(cat.getCustomName());
+                            maineCoon.setAge(cat.getAge());
+                            maineCoon.setOwnerUUID(cat.getOwnerUUID());
+
+                            maineCoon.setGender(random.nextInt(OCat.Gender.values().length));
+
+                            if (LivestockOverhaulCommonConfig.SPAWN_BY_BREED.get()) {
+                                maineCoon.setEyeColor();
+                            } else {
+                                maineCoon.setEyes(random.nextInt(OCatEyeLayer.Eyes.values().length));
+                            }
+
+                            maineCoon.setVariant(random.nextInt(OCatModel.Variant.values().length));
+                            maineCoon.setOverlayVariant(random.nextInt(CatMarkingOverlay.values().length));
+
+                            if (event.getLevel().isClientSide) {
+                                cat.remove(Entity.RemovalReason.DISCARDED);
+                            }
+
+                            event.getLevel().addFreshEntity(maineCoon);
+                            cat.remove(Entity.RemovalReason.DISCARDED);
+
+                            event.setCanceled(true);
+                        }
+                    }
+
+                    if (manx != null) {
+                        if (i == 49) {
+                            manx.copyPosition(cat);
+
+                            manx.setCustomName(cat.getCustomName());
+                            manx.setAge(cat.getAge());
+                            manx.setOwnerUUID(cat.getOwnerUUID());
+
+                            manx.setGender(random.nextInt(OCat.Gender.values().length));
+
+                            if (LivestockOverhaulCommonConfig.SPAWN_BY_BREED.get()) {
+                                manx.setEyeColor();
+                            } else {
+                                manx.setEyes(random.nextInt(OCatEyeLayer.Eyes.values().length));
+                            }
+
+                            manx.setVariant(random.nextInt(OCatModel.Variant.values().length));
+                            manx.setOverlayVariant(random.nextInt(CatMarkingOverlay.values().length));
+
+                            if (event.getLevel().isClientSide) {
+                                cat.remove(Entity.RemovalReason.DISCARDED);
+                            }
+
+                            event.getLevel().addFreshEntity(manx);
                             cat.remove(Entity.RemovalReason.DISCARDED);
 
                             event.setCanceled(true);

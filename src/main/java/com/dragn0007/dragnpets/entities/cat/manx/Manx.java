@@ -1,4 +1,4 @@
-package com.dragn0007.dragnpets.entities.cat.maine_coon;
+package com.dragn0007.dragnpets.entities.cat.manx;
 
 import com.dragn0007.dragnlivestock.entities.EntityTypes;
 import com.dragn0007.dragnlivestock.util.LivestockOverhaulCommonConfig;
@@ -52,18 +52,18 @@ import javax.annotation.Nullable;
 import java.util.Random;
 import java.util.function.Predicate;
 
-public class MaineCoon extends OCat implements GeoEntity {
+public class Manx extends OCat implements GeoEntity {
 
-   public MaineCoon(EntityType<? extends MaineCoon> entityType, Level level) {
+   public Manx(EntityType<? extends Manx> entityType, Level level) {
       super(entityType, level);
       this.setTame(false);
       this.reassessTrustingGoals();
    }
 
    @Nullable
-   public MaineCoon.OcelotAvoidEntityGoal<Player> ocelotAvoidPlayersGoal;
+   public OcelotAvoidEntityGoal<Player> ocelotAvoidPlayersGoal;
    @Nullable
-   public MaineCoon.OcelotTemptGoal temptGoal;
+   public OcelotTemptGoal temptGoal;
 
    public static final ResourceLocation LOOT_TABLE = new ResourceLocation(PetsOverhaul.MODID, "entities/o_ocelot");
    public static final ResourceLocation VANILLA_LOOT_TABLE = new ResourceLocation("minecraft", "entities/cat");
@@ -77,7 +77,7 @@ public class MaineCoon extends OCat implements GeoEntity {
 
    public void reassessTrustingGoals() {
       if (this.ocelotAvoidPlayersGoal == null) {
-         this.ocelotAvoidPlayersGoal = new MaineCoon.OcelotAvoidEntityGoal<>(this, Player.class, 16.0F, 0.8D, 1.33D);
+         this.ocelotAvoidPlayersGoal = new OcelotAvoidEntityGoal<>(this, Player.class, 16.0F, 0.8D, 1.33D);
       }
 
       this.goalSelector.removeGoal(this.ocelotAvoidPlayersGoal);
@@ -85,8 +85,8 @@ public class MaineCoon extends OCat implements GeoEntity {
 
    }
 
-   public static final EntityDataAccessor<Integer> DATA_COLLAR_COLOR = SynchedEntityData.defineId(MaineCoon.class, EntityDataSerializers.INT);
-   public static final EntityDataAccessor<Integer> DATA_REMAINING_ANGER_TIME = SynchedEntityData.defineId(MaineCoon.class, EntityDataSerializers.INT);
+   public static final EntityDataAccessor<Integer> DATA_COLLAR_COLOR = SynchedEntityData.defineId(Manx.class, EntityDataSerializers.INT);
+   public static final EntityDataAccessor<Integer> DATA_REMAINING_ANGER_TIME = SynchedEntityData.defineId(Manx.class, EntityDataSerializers.INT);
    public static final Predicate<LivingEntity> PREY_SELECTOR = (entity) -> {
       EntityType<?> entitytype = entity.getType();
       return entitytype == EntityTypes.O_RABBIT_ENTITY.get() ||
@@ -100,7 +100,7 @@ public class MaineCoon extends OCat implements GeoEntity {
 
    public void registerGoals() {
       this.goalSelector.addGoal(1, new FloatGoal(this));
-      this.temptGoal = new MaineCoon.OcelotTemptGoal(this, 0.6D, FOOD_ITEMS, true);
+      this.temptGoal = new OcelotTemptGoal(this, 0.6D, FOOD_ITEMS, true);
       this.goalSelector.addGoal(3, this.temptGoal);
       this.goalSelector.addGoal(8, new OcelotAttackGoal(this));
       this.goalSelector.addGoal(2, new SitWhenOrderedToGoal(this));
@@ -120,7 +120,7 @@ public class MaineCoon extends OCat implements GeoEntity {
 
    public static AttributeSupplier.Builder createAttributes() {
       return Mob.createMobAttributes()
-              .add(Attributes.MAX_HEALTH, 10.0D).
+              .add(Attributes.MAX_HEALTH, 8.0D).
               add(Attributes.MOVEMENT_SPEED, (double)0.3F)
               .add(Attributes.ATTACK_DAMAGE, 3.0D);
    }
@@ -272,11 +272,11 @@ public class MaineCoon extends OCat implements GeoEntity {
 
    // Generates the base texture
 
-   public static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(MaineCoon.class, EntityDataSerializers.INT);
+   public static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(Manx.class, EntityDataSerializers.INT);
 
-   public static final EntityDataAccessor<Integer> OVERLAY = SynchedEntityData.defineId(MaineCoon.class, EntityDataSerializers.INT);
-   public static final EntityDataAccessor<Integer> EYES = SynchedEntityData.defineId(MaineCoon.class, EntityDataSerializers.INT);
-   public static final EntityDataAccessor<Boolean> COLLARED = SynchedEntityData.defineId(MaineCoon.class, EntityDataSerializers.BOOLEAN);
+   public static final EntityDataAccessor<Integer> OVERLAY = SynchedEntityData.defineId(Manx.class, EntityDataSerializers.INT);
+   public static final EntityDataAccessor<Integer> EYES = SynchedEntityData.defineId(Manx.class, EntityDataSerializers.INT);
+   public static final EntityDataAccessor<Boolean> COLLARED = SynchedEntityData.defineId(Manx.class, EntityDataSerializers.BOOLEAN);
 
    public void defineSynchedData() {
       super.defineSynchedData();
@@ -389,7 +389,7 @@ public class MaineCoon extends OCat implements GeoEntity {
    public boolean isMale() {
       return this.getGender() == 1;
    }
-   public static final EntityDataAccessor<Integer> GENDER = SynchedEntityData.defineId(MaineCoon.class, EntityDataSerializers.INT);
+   public static final EntityDataAccessor<Integer> GENDER = SynchedEntityData.defineId(Manx.class, EntityDataSerializers.INT);
    public int getGender() {
       return this.entityData.get(GENDER);
    }
@@ -420,9 +420,9 @@ public class MaineCoon extends OCat implements GeoEntity {
 
    @Override
    public AgeableMob getBreedOffspring(ServerLevel serverLevel, AgeableMob ageableMob) {
-      MaineCoon kitten;
-      MaineCoon partner = (MaineCoon) ageableMob;
-      kitten = POEntityTypes.MAINE_COON_ENTITY.get().create(serverLevel);
+      Manx kitten;
+      Manx partner = (Manx) ageableMob;
+      kitten = POEntityTypes.MANX_ENTITY.get().create(serverLevel);
 
       int variantChance = this.random.nextInt(14);
       int variant;
@@ -503,9 +503,9 @@ public class MaineCoon extends OCat implements GeoEntity {
    }
 
    static class OcelotAvoidEntityGoal<T extends LivingEntity> extends AvoidEntityGoal<T> {
-      public final MaineCoon ocelot;
+      public final Manx ocelot;
 
-      public OcelotAvoidEntityGoal(MaineCoon p_29051_, Class<T> p_29052_, float p_29053_, double p_29054_, double p_29055_) {
+      public OcelotAvoidEntityGoal(Manx p_29051_, Class<T> p_29052_, float p_29053_, double p_29054_, double p_29055_) {
          super(p_29051_, p_29052_, p_29053_, p_29054_, p_29055_, EntitySelector.NO_CREATIVE_OR_SPECTATOR::test);
          this.ocelot = p_29051_;
       }
@@ -520,9 +520,9 @@ public class MaineCoon extends OCat implements GeoEntity {
    }
 
    static class OcelotTemptGoal extends TemptGoal {
-      public final MaineCoon ocelot;
+      public final Manx ocelot;
 
-      public OcelotTemptGoal(MaineCoon p_29060_, double p_29061_, Ingredient p_29062_, boolean p_29063_) {
+      public OcelotTemptGoal(Manx p_29060_, double p_29061_, Ingredient p_29062_, boolean p_29063_) {
          super(p_29060_, p_29061_, p_29062_, p_29063_);
          this.ocelot = p_29060_;
       }

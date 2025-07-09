@@ -28,6 +28,7 @@ public class POItemGroupModifier {
                         output.accept(POItems.O_CAT_SPAWN_EGG.get());
                         output.accept(POItems.MAINE_COON_SPAWN_EGG.get());
                         output.accept(POItems.KORNISH_REX_SPAWN_EGG.get());
+                        output.accept(POItems.MANX_SPAWN_EGG.get());
                         output.accept(POItems.O_DOG_SPAWN_EGG.get());
                         output.accept(POItems.BORDER_COLLIE_SPAWN_EGG.get());
                         output.accept(POItems.PYRENEES_SPAWN_EGG.get());

@@ -7,7 +7,11 @@ import com.dragn0007.dragnpets.entities.axolotl.OAxolotlRender;
 import com.dragn0007.dragnpets.entities.cat.OCat;
 import com.dragn0007.dragnpets.entities.cat.OCatRender;
 import com.dragn0007.dragnpets.entities.cat.kornish_rex.KornishRex;
+import com.dragn0007.dragnpets.entities.cat.kornish_rex.KornishRexRender;
 import com.dragn0007.dragnpets.entities.cat.maine_coon.MaineCoon;
+import com.dragn0007.dragnpets.entities.cat.maine_coon.MaineCoonRender;
+import com.dragn0007.dragnpets.entities.cat.manx.Manx;
+import com.dragn0007.dragnpets.entities.cat.manx.ManxRender;
 import com.dragn0007.dragnpets.entities.dog.CommonDog;
 import com.dragn0007.dragnpets.entities.dog.CommonDogRender;
 import com.dragn0007.dragnpets.entities.dog.australian_shepherd.AustralianShepherd;
@@ -84,6 +88,7 @@ public class PetsOverhaulEvent {
         event.put(POEntityTypes.WHIPPET_ENTITY.get(), Whippet.createAttributes().build());
         event.put(POEntityTypes.ROTTWEILER_ENTITY.get(), Rottweiler.createAttributes().build());
         event.put(POEntityTypes.O_DOG_ENTITY.get(), CommonDog.createAttributes().build());
+        event.put(POEntityTypes.MANX_ENTITY.get(), Manx.createAttributes().build());
     }
 
     @SubscribeEvent
@@ -102,15 +107,16 @@ public class PetsOverhaulEvent {
         EntityRenderers.register(POEntityTypes.HUSKY_ENTITY.get(), HuskyRender::new);
         EntityRenderers.register(POEntityTypes.PYRENEES_ENTITY.get(), PyreneesRender::new);
         EntityRenderers.register(POEntityTypes.BORDER_COLLIE_ENTITY.get(), CollieRender::new);
-//        EntityRenderers.register(POEntityTypes.MAINE_COON_ENTITY.get(), MaineCoonRender::new);
+        EntityRenderers.register(POEntityTypes.MAINE_COON_ENTITY.get(), MaineCoonRender::new);
         EntityRenderers.register(POEntityTypes.BERNESE_ENTITY.get(), BerneseRender::new);
         EntityRenderers.register(POEntityTypes.AUSTRALIAN_SHEPHERD_ENTITY.get(), AustralianShepherdRender::new);
         EntityRenderers.register(POEntityTypes.BLOODHOUND_ENTITY.get(), BloodhoundRender::new);
-//        EntityRenderers.register(POEntityTypes.KORNISH_REX_ENTITY.get(), KornishRexRender::new);
+        EntityRenderers.register(POEntityTypes.KORNISH_REX_ENTITY.get(), KornishRexRender::new);
         EntityRenderers.register(POEntityTypes.COCKER_SPANIEL_ENTITY.get(), CockerSpanielRender::new);
         EntityRenderers.register(POEntityTypes.WHIPPET_ENTITY.get(), WhippetRender::new);
         EntityRenderers.register(POEntityTypes.ROTTWEILER_ENTITY.get(), RottweilerRender::new);
         EntityRenderers.register(POEntityTypes.O_DOG_ENTITY.get(), CommonDogRender::new);
+        EntityRenderers.register(POEntityTypes.MANX_ENTITY.get(), ManxRender::new);
 
         MenuScreens.register(POMenuTypes.HUSKY_MENU.get(), HuskyScreen::new);
         MenuScreens.register(POMenuTypes.BERNESE_MENU.get(), BerneseScreen::new);

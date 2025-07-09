@@ -79,18 +79,17 @@
   "item.dragnpets.rottweiler_spawn_egg": "Rottweiler Spawn Egg",
   "entity.dragnpets.rottweiler": "Rottweiler",
 
+  "item.dragnpets.manx_spawn_egg": "Manx Spawn Egg",
+  "entity.dragnpets.manx": "Manx",
+
   "item.dragnpets.wolf": "Dog",
   "item.dragnpets.cooked_wolf": "Cooked Dog",
-
   "item.dragnpets.cat": "Cat",
   "item.dragnpets.cooked_cat": "Cooked Cat",
-
   "item.dragnpets.parrot_thigh": "Parrot Thigh",
   "item.dragnpets.cooked_parrot_thigh": "Cooked Parrot Thigh",
-
   "item.dragnpets.tropical_fish_fillet": "Tropical Fish Fillet",
   "item.dragnpets.cooked_tropical_fish_fillet": "Cooked Tropical Fish Fillet",
-
   "item.dragnpets.tropical_fish_roe": "Tropical Fish Roe",
 
   "item.dragnpets.o_axolotl_bucket": "O-Axolotl Bucket",

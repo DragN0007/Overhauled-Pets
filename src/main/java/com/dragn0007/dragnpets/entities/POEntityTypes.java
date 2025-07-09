@@ -5,6 +5,7 @@ import com.dragn0007.dragnpets.entities.axolotl.OAxolotl;
 import com.dragn0007.dragnpets.entities.cat.OCat;
 import com.dragn0007.dragnpets.entities.cat.kornish_rex.KornishRex;
 import com.dragn0007.dragnpets.entities.cat.maine_coon.MaineCoon;
+import com.dragn0007.dragnpets.entities.cat.manx.Manx;
 import com.dragn0007.dragnpets.entities.dog.CommonDog;
 import com.dragn0007.dragnpets.entities.dog.australian_shepherd.AustralianShepherd;
 import com.dragn0007.dragnpets.entities.dog.bernese.Bernese;
@@ -175,6 +176,12 @@ public class POEntityTypes {
                             MobCategory.CREATURE)
                     .sized(0.7f,0.7f)
                     .build(new ResourceLocation(LivestockOverhaul.MODID,"rottweiler").toString()));
+
+    public static final RegistryObject<EntityType<Manx>> MANX_ENTITY = ENTITY_TYPES.register("manx",
+            () -> EntityType.Builder.of(Manx::new,
+                            MobCategory.CREATURE)
+                    .sized(0.6f,0.6f)
+                    .build(new ResourceLocation(LivestockOverhaul.MODID,"manx").toString()));
 
 
     public static final RegistryObject<EntityType<DogSled>> DOG_SLED_ENTITY = ENTITY_TYPES.register("dog_sled",
