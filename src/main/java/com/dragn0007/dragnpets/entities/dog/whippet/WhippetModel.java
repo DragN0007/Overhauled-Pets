@@ -1,33 +1,46 @@
 package com.dragn0007.dragnpets.entities.dog.whippet;
 
+import com.dragn0007.dragnlivestock.LivestockOverhaul;
 import com.dragn0007.dragnpets.PetsOverhaul;
+import com.dragn0007.dragnpets.entities.dog.labrador.Labrador;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
+import software.bernie.geckolib.constant.DataTickets;
+import software.bernie.geckolib.core.animatable.model.CoreGeoBone;
+import software.bernie.geckolib.core.animation.AnimationState;
+import software.bernie.geckolib.model.DefaultedEntityGeoModel;
 import software.bernie.geckolib.model.GeoModel;
+import software.bernie.geckolib.model.data.EntityModelData;
 
-public class WhippetModel extends GeoModel<Whippet> {
+public class WhippetModel extends DefaultedEntityGeoModel<Whippet> {
 
-    public enum Variant {
-        BLACK(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/dog/whippet/whippet_black.png")),
-        BLUE(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/dog/whippet/whippet_blue.png")),
-        BROWN(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/dog/whippet/whippet_brown.png")),
-        FAWN(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/dog/whippet/whippet_fawn.png")),
-        GREY(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/dog/whippet/whippet_grey.png")),
-        RED(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/dog/whippet/whippet_red.png")),
-        SILVER(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/dog/whippet/whippet_silver.png")),
-        WHITE(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/dog/whippet/whippet_white.png")),
-        LOSTMELODIES(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/dog/whippet/whippet_lostmelodies.png"));
+    public WhippetModel() {
+        super(new ResourceLocation(LivestockOverhaul.MODID, "whippet"), true);
+    }
 
-        public final ResourceLocation resourceLocation;
-        Variant(ResourceLocation resourceLocation) {
-            this.resourceLocation = resourceLocation;
+    @Override
+    public void setCustomAnimations(Whippet animatable, long instanceId, AnimationState<Whippet> animationState) {
+
+        CoreGeoBone neck = getAnimationProcessor().getBone("neck");
+        CoreGeoBone head = getAnimationProcessor().getBone("head");
+
+        if (neck != null) {
+            EntityModelData entityData = animationState.getData(DataTickets.ENTITY_MODEL_DATA);
+            neck.setRotX(neck.getRotX() + (entityData.headPitch() * Mth.DEG_TO_RAD));
+            float maxYaw = Mth.clamp(entityData.netHeadYaw(), -25.0f, 25.0f);
+            neck.setRotY(neck.getRotY() + (maxYaw * Mth.DEG_TO_RAD));
         }
 
-        public static Variant variantFromOrdinal(int variant) { return Variant.values()[variant % Variant.values().length];
+        if (head != null) {
+            EntityModelData entityData = animationState.getData(DataTickets.ENTITY_MODEL_DATA);
+            head.setRotX(head.getRotX() + (entityData.headPitch() * Mth.DEG_TO_RAD));
+            float maxYaw = Mth.clamp(entityData.netHeadYaw(), -25.0f, 25.0f);
+            head.setRotY(head.getRotY() + (maxYaw * Mth.DEG_TO_RAD));
         }
     }
 
-    public static final ResourceLocation MODEL = new ResourceLocation(PetsOverhaul.MODID, "geo/whippet.geo.json");
-    public static final ResourceLocation ANIMATION = new ResourceLocation(PetsOverhaul.MODID, "animations/whippet.animation.json");
+    public static final ResourceLocation MODEL = new ResourceLocation(PetsOverhaul.MODID, "geo/dog/whippet.geo.json");
+    public static final ResourceLocation ANIMATION = new ResourceLocation(PetsOverhaul.MODID, "animations/dog.animation.json");
 
     @Override
     public ResourceLocation getModelResource(Whippet object) {
@@ -36,7 +49,7 @@ public class WhippetModel extends GeoModel<Whippet> {
 
     @Override
     public ResourceLocation getTextureResource(Whippet object) {
-        return object.getTextureResource();
+        return object.getTextureLocation();
     }
 
     @Override

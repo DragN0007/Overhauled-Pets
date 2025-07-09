@@ -1,4 +1,4 @@
-package com.dragn0007.dragnpets.entities.dog.whippet;
+package com.dragn0007.dragnpets.entities.dog.rottweiler;
 
 import com.dragn0007.dragnpets.entities.dog.DogMarkingOverlay;
 import com.dragn0007.dragnpets.entities.dog.labrador.Labrador;
@@ -11,13 +11,13 @@ import software.bernie.geckolib.cache.object.BakedGeoModel;
 import software.bernie.geckolib.renderer.GeoRenderer;
 import software.bernie.geckolib.renderer.layer.GeoRenderLayer;
 
-public class WhippetMarkingLayer extends GeoRenderLayer<Whippet> {
-    public WhippetMarkingLayer(GeoRenderer entityRendererIn) {
+public class RottweilerMarkingLayer extends GeoRenderLayer<Rottweiler> {
+    public RottweilerMarkingLayer(GeoRenderer entityRendererIn) {
         super(entityRendererIn);
     }
 
     @Override
-    public void render(PoseStack poseStack, Whippet animatable, BakedGeoModel bakedModel, RenderType renderType, MultiBufferSource bufferSource, VertexConsumer buffer, float partialTick, int packedLight, int packedOverlay) {
+    public void render(PoseStack poseStack, Rottweiler animatable, BakedGeoModel bakedModel, RenderType renderType, MultiBufferSource bufferSource, VertexConsumer buffer, float partialTick, int packedLight, int packedOverlay) {
 
         DogMarkingOverlay overlay = DogMarkingOverlay.overlayFromOrdinal(animatable.getOverlayVariant());
         RenderType renderMarkingType = RenderType.entityCutout(overlay.resourceLocation);

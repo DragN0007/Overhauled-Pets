@@ -446,7 +446,7 @@ public class CockerSpaniel extends ODog implements InventoryCarrier, NeutralMob,
          setOverlayVariant(random.nextInt(DogMarkingOverlay.values().length));
       } else if (random.nextDouble() > 0.05 && random.nextDouble() < 0.20) {
          this.setOverlayVariant(11);
-      } else if (random.nextDouble() > 0.05) {
+      } else if (random.nextDouble() > 0.20) {
          this.setOverlayVariant(10);
       }
    }

@@ -946,6 +946,117 @@ public class SpawnReplacer {
                         }
                     }
 
+                    if (labrador != null) {
+                        if (i == 52) {
+                            labrador.copyPosition(cat);
+
+                            labrador.setCustomName(cat.getCustomName());
+                            labrador.setAge(cat.getAge());
+                            labrador.setOwnerUUID(cat.getOwnerUUID());
+
+                            labrador.setGender(random.nextInt(ODog.Gender.values().length));
+
+                            if (LivestockOverhaulCommonConfig.SPAWN_BY_BREED.get()) {
+                                labrador.setColor();
+                                labrador.setMarking();
+                            } else {
+                                labrador.setVariant(random.nextInt(CommonDogModel.Variant.values().length));
+                                labrador.setOverlayVariant(random.nextInt(DogMarkingOverlay.values().length));
+                            }
+
+                            labrador.setFluffChance();
+
+                            if (PetsOverhaulCommonConfig.ALLOW_CROPPED_DOG_SPAWNS.get()) {
+                                labrador.setCropChance();
+                            } else {
+                                labrador.setCropped(0);
+                            }
+
+                            if (event.getLevel().isClientSide) {
+                                cat.remove(Entity.RemovalReason.DISCARDED);
+                            }
+
+                            event.getLevel().addFreshEntity(labrador);
+                            cat.remove(Entity.RemovalReason.DISCARDED);
+
+                            event.setCanceled(true);
+                        }
+                    }
+
+                    if (rottweiler != null) {
+                        if (i == 53) {
+                            rottweiler.copyPosition(cat);
+
+                            rottweiler.setCustomName(cat.getCustomName());
+                            rottweiler.setAge(cat.getAge());
+                            rottweiler.setOwnerUUID(cat.getOwnerUUID());
+
+                            rottweiler.setGender(random.nextInt(ODog.Gender.values().length));
+
+                            if (LivestockOverhaulCommonConfig.SPAWN_BY_BREED.get()) {
+                                rottweiler.setColor();
+                                rottweiler.setMarking();
+                            } else {
+                                rottweiler.setVariant(random.nextInt(CommonDogModel.Variant.values().length));
+                                rottweiler.setOverlayVariant(random.nextInt(DogMarkingOverlay.values().length));
+                            }
+
+                            rottweiler.setFluffChance();
+
+                            if (PetsOverhaulCommonConfig.ALLOW_CROPPED_DOG_SPAWNS.get()) {
+                                rottweiler.setCropChance();
+                            } else {
+                                rottweiler.setCropped(0);
+                            }
+
+                            if (event.getLevel().isClientSide) {
+                                cat.remove(Entity.RemovalReason.DISCARDED);
+                            }
+
+                            event.getLevel().addFreshEntity(rottweiler);
+                            cat.remove(Entity.RemovalReason.DISCARDED);
+
+                            event.setCanceled(true);
+                        }
+                    }
+
+                    if (whippet != null) {
+                        if (i == 54) {
+                            whippet.copyPosition(cat);
+
+                            whippet.setCustomName(cat.getCustomName());
+                            whippet.setAge(cat.getAge());
+                            whippet.setOwnerUUID(cat.getOwnerUUID());
+
+                            whippet.setGender(random.nextInt(ODog.Gender.values().length));
+
+                            if (LivestockOverhaulCommonConfig.SPAWN_BY_BREED.get()) {
+                                whippet.setColor();
+                                whippet.setMarking();
+                            } else {
+                                whippet.setVariant(random.nextInt(CommonDogModel.Variant.values().length));
+                                whippet.setOverlayVariant(random.nextInt(DogMarkingOverlay.values().length));
+                            }
+
+                            whippet.setFluffChance();
+
+                            if (PetsOverhaulCommonConfig.ALLOW_CROPPED_DOG_SPAWNS.get()) {
+                                whippet.setCropChance();
+                            } else {
+                                whippet.setCropped(0);
+                            }
+
+                            if (event.getLevel().isClientSide) {
+                                cat.remove(Entity.RemovalReason.DISCARDED);
+                            }
+
+                            event.getLevel().addFreshEntity(whippet);
+                            cat.remove(Entity.RemovalReason.DISCARDED);
+
+                            event.setCanceled(true);
+                        }
+                    }
+
 
                 }
             }
