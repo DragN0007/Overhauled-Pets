@@ -14,6 +14,8 @@ import com.dragn0007.dragnpets.entities.cat.manx.Manx;
 import com.dragn0007.dragnpets.entities.cat.manx.ManxRender;
 import com.dragn0007.dragnpets.entities.dog.CommonDog;
 import com.dragn0007.dragnpets.entities.dog.CommonDogRender;
+import com.dragn0007.dragnpets.entities.dog.american_ridgeback.AmericanRidgeback;
+import com.dragn0007.dragnpets.entities.dog.american_ridgeback.AmericanRidgebackRender;
 import com.dragn0007.dragnpets.entities.dog.australian_shepherd.AustralianShepherd;
 import com.dragn0007.dragnpets.entities.dog.australian_shepherd.AustralianShepherdRender;
 import com.dragn0007.dragnpets.entities.dog.bernese.Bernese;
@@ -89,6 +91,7 @@ public class PetsOverhaulEvent {
         event.put(POEntityTypes.ROTTWEILER_ENTITY.get(), Rottweiler.createAttributes().build());
         event.put(POEntityTypes.O_DOG_ENTITY.get(), CommonDog.createAttributes().build());
         event.put(POEntityTypes.MANX_ENTITY.get(), Manx.createAttributes().build());
+        event.put(POEntityTypes.AMERICAN_RIDGEBACK_ENTITY.get(), AmericanRidgeback.createAttributes().build());
     }
 
     @SubscribeEvent
@@ -117,6 +120,7 @@ public class PetsOverhaulEvent {
         EntityRenderers.register(POEntityTypes.ROTTWEILER_ENTITY.get(), RottweilerRender::new);
         EntityRenderers.register(POEntityTypes.O_DOG_ENTITY.get(), CommonDogRender::new);
         EntityRenderers.register(POEntityTypes.MANX_ENTITY.get(), ManxRender::new);
+        EntityRenderers.register(POEntityTypes.AMERICAN_RIDGEBACK_ENTITY.get(), AmericanRidgebackRender::new);
 
         MenuScreens.register(POMenuTypes.HUSKY_MENU.get(), HuskyScreen::new);
         MenuScreens.register(POMenuTypes.BERNESE_MENU.get(), BerneseScreen::new);

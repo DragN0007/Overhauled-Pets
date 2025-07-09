@@ -17,6 +17,7 @@ import com.dragn0007.dragnpets.entities.dog.CommonDog;
 import com.dragn0007.dragnpets.entities.dog.CommonDogModel;
 import com.dragn0007.dragnpets.entities.dog.DogMarkingOverlay;
 import com.dragn0007.dragnpets.entities.dog.ODog;
+import com.dragn0007.dragnpets.entities.dog.american_ridgeback.AmericanRidgeback;
 import com.dragn0007.dragnpets.entities.dog.australian_shepherd.AustralianShepherd;
 import com.dragn0007.dragnpets.entities.dog.bernese.Bernese;
 import com.dragn0007.dragnpets.entities.dog.bloodhound.Bloodhound;
@@ -51,6 +52,7 @@ import net.minecraft.world.level.biome.Biomes;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
 
 import java.util.Random;
@@ -393,6 +395,7 @@ public class SpawnReplacer {
         Whippet whippet = POEntityTypes.WHIPPET_ENTITY.get().create(event.getLevel());
         Rottweiler rottweiler = POEntityTypes.ROTTWEILER_ENTITY.get().create(event.getLevel());
         Manx manx = POEntityTypes.MANX_ENTITY.get().create(event.getLevel());
+        AmericanRidgeback americanRidgeback = POEntityTypes.AMERICAN_RIDGEBACK_ENTITY.get().create(event.getLevel());
         if (!LivestockOverhaulCommonConfig.FAILSAFE_REPLACER.get() && PetsOverhaulCommonConfig.REPLACE_CATS.get() && event.getEntity() instanceof Cat cat) {
 
             if (event.getEntity().getClass() == Cat.class && (((!(cat.getSpawnType() == MobSpawnType.SPAWN_EGG)) && !LivestockOverhaulCommonConfig.REPLACE_SPAWN_EGG_ANIMALS.get()) || LivestockOverhaulCommonConfig.REPLACE_SPAWN_EGG_ANIMALS.get())) {
@@ -401,7 +404,7 @@ public class SpawnReplacer {
                     return;
                 }
 
-                int i = event.getLevel().getRandom().nextInt(51);
+                int i = event.getLevel().getRandom().nextInt(52);
 
                 if (event.getLevel().getBiome(event.getEntity().blockPosition()).is(Biomes.SWAMP)) {
                     if (commonCat != null) {
@@ -877,6 +880,72 @@ public class SpawnReplacer {
                             event.setCanceled(true);
                         }
                     }
+
+                    if (americanRidgeback != null) {
+                        if (i == 51) {
+                            if (ModList.get().isLoaded("deadlydinos")) {
+                                americanRidgeback.copyPosition(cat);
+
+                                americanRidgeback.setCustomName(cat.getCustomName());
+                                americanRidgeback.setAge(cat.getAge());
+                                americanRidgeback.setOwnerUUID(cat.getOwnerUUID());
+
+                                americanRidgeback.setGender(random.nextInt(ODog.Gender.values().length));
+
+                                if (LivestockOverhaulCommonConfig.SPAWN_BY_BREED.get()) {
+                                    americanRidgeback.setColor();
+                                    americanRidgeback.setMarking();
+                                } else {
+                                    americanRidgeback.setVariant(random.nextInt(CommonDogModel.Variant.values().length));
+                                    americanRidgeback.setOverlayVariant(random.nextInt(DogMarkingOverlay.values().length));
+                                }
+
+                                americanRidgeback.setFluffChance();
+
+                                if (PetsOverhaulCommonConfig.ALLOW_CROPPED_DOG_SPAWNS.get()) {
+                                    americanRidgeback.setCropChance();
+                                } else {
+                                    americanRidgeback.setCropped(0);
+                                }
+
+                                if (event.getLevel().isClientSide) {
+                                    cat.remove(Entity.RemovalReason.DISCARDED);
+                                }
+
+                                event.getLevel().addFreshEntity(americanRidgeback);
+                                cat.remove(Entity.RemovalReason.DISCARDED);
+
+                                event.setCanceled(true);
+                            } else {
+                                commonDog.copyPosition(cat);
+
+                                commonDog.setCustomName(cat.getCustomName());
+                                commonDog.setAge(cat.getAge());
+                                commonDog.setOwnerUUID(cat.getOwnerUUID());
+
+                                commonDog.setGender(random.nextInt(ODog.Gender.values().length));
+                                commonDog.setVariant(random.nextInt(CommonDogModel.Variant.values().length));
+                                commonDog.setOverlayVariant(random.nextInt(DogMarkingOverlay.values().length));
+                                commonDog.setFluffChance();
+
+                                if (PetsOverhaulCommonConfig.ALLOW_CROPPED_DOG_SPAWNS.get()) {
+                                    commonDog.setCropChance();
+                                } else {
+                                    commonDog.setCropped(0);
+                                }
+
+                                if (event.getLevel().isClientSide) {
+                                    cat.remove(Entity.RemovalReason.DISCARDED);
+                                }
+
+                                event.getLevel().addFreshEntity(commonDog);
+                                cat.remove(Entity.RemovalReason.DISCARDED);
+
+                                event.setCanceled(true);
+                            }
+                        }
+                    }
+
 
                 }
             }

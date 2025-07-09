@@ -6,7 +6,9 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
 public class POItemGroupModifier {
@@ -41,6 +43,9 @@ public class POItemGroupModifier {
                         output.accept(POItems.COCKER_SPANIEL_SPAWN_EGG.get());
                         output.accept(POItems.WHIPPET_SPAWN_EGG.get());
                         output.accept(POItems.ROTTWEILER_SPAWN_EGG.get());
+                        if (ModList.get().isLoaded("deadlydinos")) {
+                            output.accept(POItems.AMERICAN_RIDGEBACK_SPAWN_EGG.get());
+                        }
 
                         output.accept(POItems.WOLF.get());
                         output.accept(POItems.COOKED_WOLF.get());
