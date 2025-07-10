@@ -1,13 +1,11 @@
 package com.dragn0007.dragnpets.entities.dog.husky;
 
 import com.dragn0007.dragnpets.entities.dog.DogMarkingOverlay;
-import com.dragn0007.dragnpets.entities.dog.border_collie.Collie;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.world.entity.monster.Husk;
 import software.bernie.geckolib.cache.object.BakedGeoModel;
 import software.bernie.geckolib.renderer.GeoRenderer;
 import software.bernie.geckolib.renderer.layer.GeoRenderLayer;

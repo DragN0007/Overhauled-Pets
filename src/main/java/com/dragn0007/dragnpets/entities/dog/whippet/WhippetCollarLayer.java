@@ -1,7 +1,6 @@
 package com.dragn0007.dragnpets.entities.dog.whippet;
 
 import com.dragn0007.dragnpets.entities.dog.CommonDogCollarLayer;
-import com.dragn0007.dragnpets.entities.dog.labrador.Labrador;
 import com.dragn0007.dragnpets.util.PetsOverhaulClientConfig;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;

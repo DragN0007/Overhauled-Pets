@@ -1,7 +1,5 @@
 package com.dragn0007.dragnpets.entities.cat.kornish_rex;
 
-import com.dragn0007.dragnpets.PetsOverhaul;
-import com.dragn0007.dragnpets.entities.cat.OCat;
 import com.dragn0007.dragnpets.entities.cat.OCatCollarLayer;
 import com.dragn0007.dragnpets.util.PetsOverhaulClientConfig;
 import com.mojang.blaze3d.vertex.PoseStack;

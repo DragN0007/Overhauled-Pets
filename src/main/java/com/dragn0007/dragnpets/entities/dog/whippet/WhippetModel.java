@@ -2,14 +2,12 @@ package com.dragn0007.dragnpets.entities.dog.whippet;
 
 import com.dragn0007.dragnlivestock.LivestockOverhaul;
 import com.dragn0007.dragnpets.PetsOverhaul;
-import com.dragn0007.dragnpets.entities.dog.labrador.Labrador;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import software.bernie.geckolib.constant.DataTickets;
 import software.bernie.geckolib.core.animatable.model.CoreGeoBone;
 import software.bernie.geckolib.core.animation.AnimationState;
 import software.bernie.geckolib.model.DefaultedEntityGeoModel;
-import software.bernie.geckolib.model.GeoModel;
 import software.bernie.geckolib.model.data.EntityModelData;
 
 public class WhippetModel extends DefaultedEntityGeoModel<Whippet> {

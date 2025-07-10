@@ -1,7 +1,6 @@
 package com.dragn0007.dragnpets.entities.cat.maine_coon;
 
 import com.dragn0007.dragnpets.entities.cat.CatMarkingOverlay;
-import com.dragn0007.dragnpets.entities.cat.kornish_rex.KornishRex;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.renderer.MultiBufferSource;

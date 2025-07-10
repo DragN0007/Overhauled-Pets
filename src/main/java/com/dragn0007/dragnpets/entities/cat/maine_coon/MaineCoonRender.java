@@ -1,6 +1,5 @@
 package com.dragn0007.dragnpets.entities.cat.maine_coon;
 
-import com.dragn0007.dragnpets.entities.cat.kornish_rex.KornishRex;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;

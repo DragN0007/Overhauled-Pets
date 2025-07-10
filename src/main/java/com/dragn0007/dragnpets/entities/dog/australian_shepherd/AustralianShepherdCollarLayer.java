@@ -1,6 +1,5 @@
 package com.dragn0007.dragnpets.entities.dog.australian_shepherd;
 
-import com.dragn0007.dragnpets.PetsOverhaul;
 import com.dragn0007.dragnpets.entities.dog.CommonDogCollarLayer;
 import com.dragn0007.dragnpets.util.PetsOverhaulClientConfig;
 import com.mojang.blaze3d.vertex.PoseStack;

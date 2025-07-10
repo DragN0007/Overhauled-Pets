@@ -1,8 +1,5 @@
 package com.dragn0007.dragnpets.entities.dog.border_collie;
 
-import com.dragn0007.dragnpets.entities.dog.doberman.DobermanCollarLayer;
-import com.dragn0007.dragnpets.entities.dog.doberman.DobermanDecorLayer;
-import com.dragn0007.dragnpets.entities.dog.doberman.DobermanMarkingLayer;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;

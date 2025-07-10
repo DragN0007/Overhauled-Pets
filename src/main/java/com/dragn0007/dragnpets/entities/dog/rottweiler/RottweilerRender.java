@@ -1,6 +1,5 @@
 package com.dragn0007.dragnpets.entities.dog.rottweiler;
 
-import com.dragn0007.dragnpets.entities.dog.labrador.*;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;

@@ -1,6 +1,5 @@
 package com.dragn0007.dragnpets.entities.dog.cocker_spaniel;
 
-import com.dragn0007.dragnpets.entities.dog.border_collie.CollieDecorLayer;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;

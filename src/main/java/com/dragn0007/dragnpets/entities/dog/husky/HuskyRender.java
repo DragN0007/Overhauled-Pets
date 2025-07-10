@@ -1,8 +1,5 @@
 package com.dragn0007.dragnpets.entities.dog.husky;
 
-import com.dragn0007.dragnpets.entities.dog.border_collie.CollieCollarLayer;
-import com.dragn0007.dragnpets.entities.dog.border_collie.CollieDecorLayer;
-import com.dragn0007.dragnpets.entities.dog.border_collie.CollieMarkingLayer;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
