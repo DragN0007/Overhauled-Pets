@@ -1,7 +1,6 @@
 package com.dragn0007.dragnpets.compat.jade.gender;
 
 import com.dragn0007.dragnlivestock.LivestockOverhaul;
-import com.dragn0007.dragnpets.entities.dog.ODog;
 import com.dragn0007.dragnpets.entities.wolf.OWolf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
