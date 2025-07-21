@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "item": "minecraft:pink_dye"
+    },
+    "B": {
+      "tag": "minecraft:wool"
+    }
+  },
+  "pattern": [
+    "ABB"
+  ],
+  "result": {
+    "item": "dragnpets:pink_vest"
+  },
+  "show_notification": true
+}

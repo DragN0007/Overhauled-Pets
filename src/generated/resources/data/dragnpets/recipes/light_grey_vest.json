@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "item": "minecraft:light_gray_dye"
+    },
+    "B": {
+      "tag": "minecraft:wool"
+    }
+  },
+  "pattern": [
+    "ABB"
+  ],
+  "result": {
+    "item": "dragnpets:light_grey_vest"
+  },
+  "show_notification": true
+}

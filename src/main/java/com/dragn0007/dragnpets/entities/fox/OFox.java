@@ -156,7 +156,7 @@ public class OFox extends TamableAnimal implements GeoEntity {
          }
       } else {
          if (isInSittingPose()) {
-            controller.setAnimation(RawAnimation.begin().then("loaf", Animation.LoopType.LOOP));
+            controller.setAnimation(RawAnimation.begin().then("sit", Animation.LoopType.LOOP));
             controller.setAnimationSpeed(1.0);
          } else {
             controller.setAnimation(RawAnimation.begin().then("idle", Animation.LoopType.LOOP));
