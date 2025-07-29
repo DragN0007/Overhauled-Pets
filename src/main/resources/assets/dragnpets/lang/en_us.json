@@ -85,6 +85,12 @@
   "item.dragnpets.american_ridgeback_spawn_egg": "American Ridgeback Spawn Egg",
   "entity.dragnpets.american_ridgeback": "American Ridgeback",
 
+  "item.dragnpets.beagle_spawn_egg": "Beagle Spawn Egg",
+  "entity.dragnpets.beagle": "Beagle",
+
+  "item.dragnpets.coonhound_spawn_egg": "Coonhound Spawn Egg",
+  "entity.dragnpets.coonhound": "Coonhound",
+
   "item.dragnpets.wolf": "Dog",
   "item.dragnpets.cooked_wolf": "Cooked Dog",
   "item.dragnpets.cat": "Cat",

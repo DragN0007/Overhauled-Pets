@@ -302,7 +302,10 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity {
               || entity.getType() == POEntityTypes.LABRADOR_ENTITY.get()
               || entity.getType() == POEntityTypes.COCKER_SPANIEL_ENTITY.get()
               || entity.getType() == POEntityTypes.WHIPPET_ENTITY.get()
-              || entity.getType() == POEntityTypes.AMERICAN_RIDGEBACK_ENTITY.get();
+              || entity.getType() == POEntityTypes.AMERICAN_RIDGEBACK_ENTITY.get()
+              || entity.getType() == POEntityTypes.BEAGLE_ENTITY.get()
+              || entity.getType() == POEntityTypes.COONHOUND_ENTITY.get()
+              ;
    }
 
    public boolean hurt(DamageSource damageSource, float amount) {

@@ -9,10 +9,12 @@ import com.dragn0007.dragnpets.entities.cat.manx.Manx;
 import com.dragn0007.dragnpets.entities.dog.CommonDog;
 import com.dragn0007.dragnpets.entities.dog.american_ridgeback.AmericanRidgeback;
 import com.dragn0007.dragnpets.entities.dog.australian_shepherd.AustralianShepherd;
+import com.dragn0007.dragnpets.entities.dog.beagle.Beagle;
 import com.dragn0007.dragnpets.entities.dog.bernese.Bernese;
 import com.dragn0007.dragnpets.entities.dog.bloodhound.Bloodhound;
 import com.dragn0007.dragnpets.entities.dog.border_collie.Collie;
 import com.dragn0007.dragnpets.entities.dog.cocker_spaniel.CockerSpaniel;
+import com.dragn0007.dragnpets.entities.dog.coonhound.Coonhound;
 import com.dragn0007.dragnpets.entities.dog.doberman.Doberman;
 import com.dragn0007.dragnpets.entities.dog.husky.Husky;
 import com.dragn0007.dragnpets.entities.dog.labrador.Labrador;
@@ -189,6 +191,18 @@ public class POEntityTypes {
                             MobCategory.CREATURE)
                     .sized(0.6f,0.6f)
                     .build(new ResourceLocation(LivestockOverhaul.MODID,"american_ridgeback").toString()));
+
+    public static final RegistryObject<EntityType<Beagle>> BEAGLE_ENTITY = ENTITY_TYPES.register("beagle",
+            () -> EntityType.Builder.of(Beagle::new,
+                            MobCategory.CREATURE)
+                    .sized(0.6f,0.6f)
+                    .build(new ResourceLocation(LivestockOverhaul.MODID,"beagle").toString()));
+
+    public static final RegistryObject<EntityType<Coonhound>> COONHOUND_ENTITY = ENTITY_TYPES.register("coonhound",
+            () -> EntityType.Builder.of(Coonhound::new,
+                            MobCategory.CREATURE)
+                    .sized(0.6f,0.6f)
+                    .build(new ResourceLocation(LivestockOverhaul.MODID,"coonhound").toString()));
 
 
     public static final RegistryObject<EntityType<DogSled>> DOG_SLED_ENTITY = ENTITY_TYPES.register("dog_sled",

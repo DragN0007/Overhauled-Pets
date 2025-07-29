@@ -23,13 +23,16 @@ public class POItemGroupModifier {
                         output.accept(POItems.O_FOX_SPAWN_EGG.get());
                         output.accept(POItems.O_AXOLOTL_SPAWN_EGG.get());
                         output.accept(POItems.O_TROPICAL_FISH_SPAWN_EGG.get());
+
                         output.accept(POItems.MACAW_SPAWN_EGG.get());
                         output.accept(POItems.COCKATIEL_SPAWN_EGG.get());
                         output.accept(POItems.RINGNECK_SPAWN_EGG.get());
+
                         output.accept(POItems.O_CAT_SPAWN_EGG.get());
                         output.accept(POItems.MAINE_COON_SPAWN_EGG.get());
                         output.accept(POItems.KORNISH_REX_SPAWN_EGG.get());
                         output.accept(POItems.MANX_SPAWN_EGG.get());
+
                         output.accept(POItems.O_DOG_SPAWN_EGG.get());
                         output.accept(POItems.BORDER_COLLIE_SPAWN_EGG.get());
                         output.accept(POItems.PYRENEES_SPAWN_EGG.get());
@@ -42,6 +45,8 @@ public class POItemGroupModifier {
                         output.accept(POItems.COCKER_SPANIEL_SPAWN_EGG.get());
                         output.accept(POItems.WHIPPET_SPAWN_EGG.get());
                         output.accept(POItems.ROTTWEILER_SPAWN_EGG.get());
+                        output.accept(POItems.BEAGLE_SPAWN_EGG.get());
+                        output.accept(POItems.COONHOUND_SPAWN_EGG.get());
                         if (ModList.get().isLoaded("deadlydinos")) {
                             output.accept(POItems.AMERICAN_RIDGEBACK_SPAWN_EGG.get());
                         }

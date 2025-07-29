@@ -18,6 +18,8 @@ import com.dragn0007.dragnpets.entities.dog.american_ridgeback.AmericanRidgeback
 import com.dragn0007.dragnpets.entities.dog.american_ridgeback.AmericanRidgebackRender;
 import com.dragn0007.dragnpets.entities.dog.australian_shepherd.AustralianShepherd;
 import com.dragn0007.dragnpets.entities.dog.australian_shepherd.AustralianShepherdRender;
+import com.dragn0007.dragnpets.entities.dog.beagle.Beagle;
+import com.dragn0007.dragnpets.entities.dog.beagle.BeagleRender;
 import com.dragn0007.dragnpets.entities.dog.bernese.Bernese;
 import com.dragn0007.dragnpets.entities.dog.bernese.BerneseRender;
 import com.dragn0007.dragnpets.entities.dog.bloodhound.Bloodhound;
@@ -26,6 +28,8 @@ import com.dragn0007.dragnpets.entities.dog.border_collie.Collie;
 import com.dragn0007.dragnpets.entities.dog.border_collie.CollieRender;
 import com.dragn0007.dragnpets.entities.dog.cocker_spaniel.CockerSpaniel;
 import com.dragn0007.dragnpets.entities.dog.cocker_spaniel.CockerSpanielRender;
+import com.dragn0007.dragnpets.entities.dog.coonhound.Coonhound;
+import com.dragn0007.dragnpets.entities.dog.coonhound.CoonhoundRender;
 import com.dragn0007.dragnpets.entities.dog.doberman.Doberman;
 import com.dragn0007.dragnpets.entities.dog.doberman.DobermanRender;
 import com.dragn0007.dragnpets.entities.dog.husky.Husky;
@@ -92,6 +96,8 @@ public class PetsOverhaulEvent {
         event.put(POEntityTypes.O_DOG_ENTITY.get(), CommonDog.createAttributes().build());
         event.put(POEntityTypes.MANX_ENTITY.get(), Manx.createAttributes().build());
         event.put(POEntityTypes.AMERICAN_RIDGEBACK_ENTITY.get(), AmericanRidgeback.createAttributes().build());
+        event.put(POEntityTypes.BEAGLE_ENTITY.get(), Beagle.createAttributes().build());
+        event.put(POEntityTypes.COONHOUND_ENTITY.get(), Coonhound.createAttributes().build());
     }
 
     @SubscribeEvent
@@ -121,6 +127,8 @@ public class PetsOverhaulEvent {
         EntityRenderers.register(POEntityTypes.O_DOG_ENTITY.get(), CommonDogRender::new);
         EntityRenderers.register(POEntityTypes.MANX_ENTITY.get(), ManxRender::new);
         EntityRenderers.register(POEntityTypes.AMERICAN_RIDGEBACK_ENTITY.get(), AmericanRidgebackRender::new);
+        EntityRenderers.register(POEntityTypes.BEAGLE_ENTITY.get(), BeagleRender::new);
+        EntityRenderers.register(POEntityTypes.COONHOUND_ENTITY.get(), CoonhoundRender::new);
 
         MenuScreens.register(POMenuTypes.HUSKY_MENU.get(), HuskyScreen::new);
         MenuScreens.register(POMenuTypes.BERNESE_MENU.get(), BerneseScreen::new);
