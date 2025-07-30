@@ -16,7 +16,9 @@ import com.dragn0007.dragnpets.entities.dog.border_collie.Collie;
 import com.dragn0007.dragnpets.entities.dog.cocker_spaniel.CockerSpaniel;
 import com.dragn0007.dragnpets.entities.dog.coonhound.Coonhound;
 import com.dragn0007.dragnpets.entities.dog.doberman.Doberman;
+import com.dragn0007.dragnpets.entities.dog.foxhound.Foxhound;
 import com.dragn0007.dragnpets.entities.dog.husky.Husky;
+import com.dragn0007.dragnpets.entities.dog.jack_russell.JackRussell;
 import com.dragn0007.dragnpets.entities.dog.labrador.Labrador;
 import com.dragn0007.dragnpets.entities.dog.pyrenees.Pyrenees;
 import com.dragn0007.dragnpets.entities.dog.rottweiler.Rottweiler;
@@ -203,6 +205,18 @@ public class POEntityTypes {
                             MobCategory.CREATURE)
                     .sized(0.6f,0.6f)
                     .build(new ResourceLocation(LivestockOverhaul.MODID,"coonhound").toString()));
+
+    public static final RegistryObject<EntityType<Foxhound>> FOXHOUND_ENTITY = ENTITY_TYPES.register("foxhound",
+            () -> EntityType.Builder.of(Foxhound::new,
+                            MobCategory.CREATURE)
+                    .sized(0.6f,0.6f)
+                    .build(new ResourceLocation(LivestockOverhaul.MODID,"foxhound").toString()));
+
+    public static final RegistryObject<EntityType<JackRussell>> JACK_RUSSELL_ENTITY = ENTITY_TYPES.register("jack_russell",
+            () -> EntityType.Builder.of(JackRussell::new,
+                            MobCategory.CREATURE)
+                    .sized(0.6f,0.6f)
+                    .build(new ResourceLocation(LivestockOverhaul.MODID,"jack_russell").toString()));
 
 
     public static final RegistryObject<EntityType<DogSled>> DOG_SLED_ENTITY = ENTITY_TYPES.register("dog_sled",

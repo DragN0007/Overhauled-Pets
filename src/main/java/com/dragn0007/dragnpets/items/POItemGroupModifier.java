@@ -47,6 +47,8 @@ public class POItemGroupModifier {
                         output.accept(POItems.ROTTWEILER_SPAWN_EGG.get());
                         output.accept(POItems.BEAGLE_SPAWN_EGG.get());
                         output.accept(POItems.COONHOUND_SPAWN_EGG.get());
+                        output.accept(POItems.FOXHOUND_SPAWN_EGG.get());
+                        output.accept(POItems.JACK_RUSSELL_SPAWN_EGG.get());
                         if (ModList.get().isLoaded("deadlydinos")) {
                             output.accept(POItems.AMERICAN_RIDGEBACK_SPAWN_EGG.get());
                         }

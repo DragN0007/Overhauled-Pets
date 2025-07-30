@@ -32,8 +32,12 @@ import com.dragn0007.dragnpets.entities.dog.coonhound.Coonhound;
 import com.dragn0007.dragnpets.entities.dog.coonhound.CoonhoundRender;
 import com.dragn0007.dragnpets.entities.dog.doberman.Doberman;
 import com.dragn0007.dragnpets.entities.dog.doberman.DobermanRender;
+import com.dragn0007.dragnpets.entities.dog.foxhound.Foxhound;
+import com.dragn0007.dragnpets.entities.dog.foxhound.FoxhoundRender;
 import com.dragn0007.dragnpets.entities.dog.husky.Husky;
 import com.dragn0007.dragnpets.entities.dog.husky.HuskyRender;
+import com.dragn0007.dragnpets.entities.dog.jack_russell.JackRussell;
+import com.dragn0007.dragnpets.entities.dog.jack_russell.JackRussellRender;
 import com.dragn0007.dragnpets.entities.dog.labrador.Labrador;
 import com.dragn0007.dragnpets.entities.dog.labrador.LabradorRender;
 import com.dragn0007.dragnpets.entities.dog.pyrenees.Pyrenees;
@@ -98,6 +102,8 @@ public class PetsOverhaulEvent {
         event.put(POEntityTypes.AMERICAN_RIDGEBACK_ENTITY.get(), AmericanRidgeback.createAttributes().build());
         event.put(POEntityTypes.BEAGLE_ENTITY.get(), Beagle.createAttributes().build());
         event.put(POEntityTypes.COONHOUND_ENTITY.get(), Coonhound.createAttributes().build());
+        event.put(POEntityTypes.FOXHOUND_ENTITY.get(), Foxhound.createAttributes().build());
+        event.put(POEntityTypes.JACK_RUSSELL_ENTITY.get(), JackRussell.createAttributes().build());
     }
 
     @SubscribeEvent
@@ -129,6 +135,8 @@ public class PetsOverhaulEvent {
         EntityRenderers.register(POEntityTypes.AMERICAN_RIDGEBACK_ENTITY.get(), AmericanRidgebackRender::new);
         EntityRenderers.register(POEntityTypes.BEAGLE_ENTITY.get(), BeagleRender::new);
         EntityRenderers.register(POEntityTypes.COONHOUND_ENTITY.get(), CoonhoundRender::new);
+        EntityRenderers.register(POEntityTypes.FOXHOUND_ENTITY.get(), FoxhoundRender::new);
+        EntityRenderers.register(POEntityTypes.JACK_RUSSELL_ENTITY.get(), JackRussellRender::new);
 
         MenuScreens.register(POMenuTypes.HUSKY_MENU.get(), HuskyScreen::new);
         MenuScreens.register(POMenuTypes.BERNESE_MENU.get(), BerneseScreen::new);
