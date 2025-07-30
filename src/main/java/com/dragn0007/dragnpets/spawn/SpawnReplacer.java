@@ -20,15 +20,15 @@ import com.dragn0007.dragnpets.entities.dog.ODog;
 import com.dragn0007.dragnpets.entities.dog.american_ridgeback.AmericanRidgeback;
 import com.dragn0007.dragnpets.entities.dog.australian_shepherd.AustralianShepherd;
 import com.dragn0007.dragnpets.entities.dog.beagle.Beagle;
-import com.dragn0007.dragnpets.entities.dog.beagle.BeagleModel;
 import com.dragn0007.dragnpets.entities.dog.bernese.Bernese;
 import com.dragn0007.dragnpets.entities.dog.bloodhound.Bloodhound;
 import com.dragn0007.dragnpets.entities.dog.border_collie.Collie;
 import com.dragn0007.dragnpets.entities.dog.cocker_spaniel.CockerSpaniel;
 import com.dragn0007.dragnpets.entities.dog.coonhound.Coonhound;
-import com.dragn0007.dragnpets.entities.dog.coonhound.CoonhoundRender;
 import com.dragn0007.dragnpets.entities.dog.doberman.Doberman;
+import com.dragn0007.dragnpets.entities.dog.foxhound.Foxhound;
 import com.dragn0007.dragnpets.entities.dog.husky.Husky;
+import com.dragn0007.dragnpets.entities.dog.jack_russell.JackRussell;
 import com.dragn0007.dragnpets.entities.dog.labrador.Labrador;
 import com.dragn0007.dragnpets.entities.dog.pyrenees.Pyrenees;
 import com.dragn0007.dragnpets.entities.dog.rottweiler.Rottweiler;
@@ -402,6 +402,9 @@ public class SpawnReplacer {
         AmericanRidgeback americanRidgeback = POEntityTypes.AMERICAN_RIDGEBACK_ENTITY.get().create(event.getLevel());
         Beagle beagle = POEntityTypes.BEAGLE_ENTITY.get().create(event.getLevel());
         Coonhound coonhound = POEntityTypes.COONHOUND_ENTITY.get().create(event.getLevel());
+        Foxhound foxhound = POEntityTypes.FOXHOUND_ENTITY.get().create(event.getLevel());
+        JackRussell jackRussell = POEntityTypes.JACK_RUSSELL_ENTITY.get().create(event.getLevel());
+
         if (!LivestockOverhaulCommonConfig.FAILSAFE_REPLACER.get() && PetsOverhaulCommonConfig.REPLACE_CATS.get() && event.getEntity() instanceof Cat cat) {
 
             if (event.getEntity().getClass() == Cat.class && (((!(cat.getSpawnType() == MobSpawnType.SPAWN_EGG)) && !LivestockOverhaulCommonConfig.REPLACE_SPAWN_EGG_ANIMALS.get()) || LivestockOverhaulCommonConfig.REPLACE_SPAWN_EGG_ANIMALS.get())) {
@@ -410,7 +413,7 @@ public class SpawnReplacer {
                     return;
                 }
 
-                int i = event.getLevel().getRandom().nextInt(57);
+                int i = event.getLevel().getRandom().nextInt(59);
 
                 if (event.getLevel().getBiome(event.getEntity().blockPosition()).is(Biomes.SWAMP)) {
                     if (commonCat != null) {
@@ -1131,6 +1134,118 @@ public class SpawnReplacer {
                             }
 
                             event.getLevel().addFreshEntity(coonhound);
+                            cat.remove(Entity.RemovalReason.DISCARDED);
+
+                            event.setCanceled(true);
+                        }
+                    }
+
+                    if (jackRussell != null) {
+                        if (i == 57) {
+                            jackRussell.copyPosition(cat);
+
+                            jackRussell.setCustomName(cat.getCustomName());
+                            jackRussell.setAge(cat.getAge());
+                            jackRussell.setOwnerUUID(cat.getOwnerUUID());
+
+                            jackRussell.setGender(random.nextInt(ODog.Gender.values().length));
+
+                            if (LivestockOverhaulCommonConfig.SPAWN_BY_BREED.get()) {
+                                jackRussell.setColor();
+                                jackRussell.setMarking();
+                            } else {
+                                jackRussell.setVariant(random.nextInt(CommonDogModel.Variant.values().length));
+                                jackRussell.setOverlayVariant(random.nextInt(DogMarkingOverlay.values().length));
+                            }
+
+                            jackRussell.setFluffChance();
+
+                            if (PetsOverhaulCommonConfig.ALLOW_CROPPED_DOG_SPAWNS.get()) {
+                                jackRussell.setCropChance();
+                            } else {
+                                jackRussell.setCropped(0);
+                            }
+
+                            if (event.getLevel().isClientSide) {
+                                cat.remove(Entity.RemovalReason.DISCARDED);
+                            }
+
+                            event.getLevel().addFreshEntity(jackRussell);
+                            cat.remove(Entity.RemovalReason.DISCARDED);
+
+                            event.setCanceled(true);
+                        }
+                    }
+
+
+                    if (jackRussell != null) {
+                        if (i == 57) {
+                            jackRussell.copyPosition(cat);
+
+                            jackRussell.setCustomName(cat.getCustomName());
+                            jackRussell.setAge(cat.getAge());
+                            jackRussell.setOwnerUUID(cat.getOwnerUUID());
+
+                            jackRussell.setGender(random.nextInt(ODog.Gender.values().length));
+
+                            if (LivestockOverhaulCommonConfig.SPAWN_BY_BREED.get()) {
+                                jackRussell.setColor();
+                                jackRussell.setMarking();
+                            } else {
+                                jackRussell.setVariant(random.nextInt(CommonDogModel.Variant.values().length));
+                                jackRussell.setOverlayVariant(random.nextInt(DogMarkingOverlay.values().length));
+                            }
+
+                            jackRussell.setFluffChance();
+
+                            if (PetsOverhaulCommonConfig.ALLOW_CROPPED_DOG_SPAWNS.get()) {
+                                jackRussell.setCropChance();
+                            } else {
+                                jackRussell.setCropped(0);
+                            }
+
+                            if (event.getLevel().isClientSide) {
+                                cat.remove(Entity.RemovalReason.DISCARDED);
+                            }
+
+                            event.getLevel().addFreshEntity(jackRussell);
+                            cat.remove(Entity.RemovalReason.DISCARDED);
+
+                            event.setCanceled(true);
+                        }
+                    }
+
+                    if (foxhound != null) {
+                        if (i == 58) {
+                            foxhound.copyPosition(cat);
+
+                            foxhound.setCustomName(cat.getCustomName());
+                            foxhound.setAge(cat.getAge());
+                            foxhound.setOwnerUUID(cat.getOwnerUUID());
+
+                            foxhound.setGender(random.nextInt(ODog.Gender.values().length));
+
+                            if (LivestockOverhaulCommonConfig.SPAWN_BY_BREED.get()) {
+                                foxhound.setColor();
+                                foxhound.setMarking();
+                            } else {
+                                foxhound.setVariant(random.nextInt(CommonDogModel.Variant.values().length));
+                                foxhound.setOverlayVariant(random.nextInt(DogMarkingOverlay.values().length));
+                            }
+
+                            foxhound.setFluffChance();
+
+                            if (PetsOverhaulCommonConfig.ALLOW_CROPPED_DOG_SPAWNS.get()) {
+                                foxhound.setCropChance();
+                            } else {
+                                foxhound.setCropped(0);
+                            }
+
+                            if (event.getLevel().isClientSide) {
+                                cat.remove(Entity.RemovalReason.DISCARDED);
+                            }
+
+                            event.getLevel().addFreshEntity(foxhound);
                             cat.remove(Entity.RemovalReason.DISCARDED);
 
                             event.setCanceled(true);

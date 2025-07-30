@@ -13,7 +13,7 @@ import software.bernie.geckolib.model.data.EntityModelData;
 public class JackRussellModel extends DefaultedEntityGeoModel<JackRussell> {
 
     public JackRussellModel() {
-        super(new ResourceLocation(LivestockOverhaul.MODID, "beagle"), true);
+        super(new ResourceLocation(LivestockOverhaul.MODID, "jack_russell"), true);
     }
 
     @Override
@@ -37,7 +37,7 @@ public class JackRussellModel extends DefaultedEntityGeoModel<JackRussell> {
         }
     }
 
-    public static final ResourceLocation MODEL = new ResourceLocation(PetsOverhaul.MODID, "geo/dog/beagle.geo.json");
+    public static final ResourceLocation MODEL = new ResourceLocation(PetsOverhaul.MODID, "geo/dog/jack_russel.geo.json");
     public static final ResourceLocation ANIMATION = new ResourceLocation(PetsOverhaul.MODID, "animations/dog.animation.json");
 
     @Override
