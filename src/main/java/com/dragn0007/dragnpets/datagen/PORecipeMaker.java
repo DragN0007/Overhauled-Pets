@@ -20,6 +20,88 @@ public class PORecipeMaker extends RecipeProvider implements IConditionBuilder {
     @Override
     public void buildRecipes(Consumer<FinishedRecipe> pFinishedRecipeConsumer) {
 
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, POItems.LEATHER_DOG_ARMOR.get())
+                .define('A', Items.LEATHER)
+                .pattern("AAA")
+                .pattern("AAA")
+                .unlockedBy("has_leather", inventoryTrigger(ItemPredicate.Builder.item()
+                        .of(Items.LEATHER).build()))
+                .save(pFinishedRecipeConsumer);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, POItems.CHAINMAIL_DOG_ARMOR.get())
+                .define('A', Items.CHAIN)
+                .define('B', Items.LEATHER)
+                .pattern("AAA")
+                .pattern("ABA")
+                .unlockedBy("has_leather", inventoryTrigger(ItemPredicate.Builder.item()
+                        .of(Items.LEATHER).build()))
+                .save(pFinishedRecipeConsumer);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, POItems.IRON_DOG_ARMOR.get())
+                .define('A', Items.IRON_INGOT)
+                .define('B', Items.LEATHER)
+                .pattern("AAA")
+                .pattern("ABA")
+                .unlockedBy("has_leather", inventoryTrigger(ItemPredicate.Builder.item()
+                        .of(Items.LEATHER).build()))
+                .save(pFinishedRecipeConsumer);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, POItems.COPPER_DOG_ARMOR.get())
+                .define('A', Items.COPPER_INGOT)
+                .define('B', Items.LEATHER)
+                .pattern("AAA")
+                .pattern("ABA")
+                .unlockedBy("has_leather", inventoryTrigger(ItemPredicate.Builder.item()
+                        .of(Items.LEATHER).build()))
+                .save(pFinishedRecipeConsumer);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, POItems.RIOT_DOG_ARMOR.get())
+                .define('A', Items.BLACK_WOOL)
+                .define('B', Items.LEATHER)
+                .pattern("AAA")
+                .pattern("ABA")
+                .unlockedBy("has_leather", inventoryTrigger(ItemPredicate.Builder.item()
+                        .of(Items.LEATHER).build()))
+                .save(pFinishedRecipeConsumer);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, POItems.QUARTZ_DOG_ARMOR.get())
+                .define('A', Items.QUARTZ)
+                .define('B', Items.LEATHER)
+                .pattern("AAA")
+                .pattern("ABA")
+                .unlockedBy("has_leather", inventoryTrigger(ItemPredicate.Builder.item()
+                        .of(Items.LEATHER).build()))
+                .save(pFinishedRecipeConsumer);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, POItems.GOLD_DOG_ARMOR.get())
+                .define('A', Items.GOLD_INGOT)
+                .define('B', Items.LEATHER)
+                .pattern("AAA")
+                .pattern("ABA")
+                .unlockedBy("has_leather", inventoryTrigger(ItemPredicate.Builder.item()
+                        .of(Items.LEATHER).build()))
+                .save(pFinishedRecipeConsumer);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, POItems.EMERALD_DOG_ARMOR.get())
+                .define('A', Items.EMERALD)
+                .define('B', Items.LEATHER)
+                .pattern("AAA")
+                .pattern("ABA")
+                .unlockedBy("has_leather", inventoryTrigger(ItemPredicate.Builder.item()
+                        .of(Items.LEATHER).build()))
+                .save(pFinishedRecipeConsumer);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, POItems.DIAMOND_DOG_ARMOR.get())
+                .define('A', Items.DIAMOND)
+                .define('B', Items.LEATHER)
+                .pattern("AAA")
+                .pattern("ABA")
+                .unlockedBy("has_leather", inventoryTrigger(ItemPredicate.Builder.item()
+                        .of(Items.LEATHER).build()))
+                .save(pFinishedRecipeConsumer);
+
+
+
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, POItems.BLACK_VEST.get())
                 .define('A', Items.BLACK_DYE)
                 .define('B', ItemTags.WOOL)

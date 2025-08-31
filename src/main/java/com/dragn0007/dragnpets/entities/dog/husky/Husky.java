@@ -105,7 +105,13 @@ public class Husky extends ODog implements NeutralMob, GeoEntity, Chestable, Con
       return Mob.createMobAttributes()
               .add(Attributes.MOVEMENT_SPEED, 0.26F)
               .add(Attributes.MAX_HEALTH, 12.0D)
+              .add(Attributes.ARMOR, 0.0D)
               .add(Attributes.ATTACK_DAMAGE, 3.0D);
+   }
+
+   @Override
+   public boolean canWearArmor() {
+      return true;
    }
 
    public final AnimatableInstanceCache geoCache = GeckoLibUtil.createInstanceCache(this);

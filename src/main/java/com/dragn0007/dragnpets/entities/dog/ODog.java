@@ -1,10 +1,13 @@
 package com.dragn0007.dragnpets.entities.dog;
 
 import com.dragn0007.dragnlivestock.items.LOItems;
+import com.dragn0007.dragnlivestock.items.custom.LightHorseArmorItem;
+import com.dragn0007.dragnlivestock.util.LOTags;
 import com.dragn0007.dragnlivestock.util.LivestockOverhaulCommonConfig;
 import com.dragn0007.dragnpets.PetsOverhaul;
 import com.dragn0007.dragnpets.entities.POEntityTypes;
 import com.dragn0007.dragnpets.entities.ai.DogFollowOwnerGoal;
+import com.dragn0007.dragnpets.items.custom.DogArmorItem;
 import com.dragn0007.dragnpets.items.custom.VestItem;
 import com.dragn0007.dragnpets.util.POTags;
 import com.dragn0007.dragnpets.util.PetsOverhaulCommonConfig;
@@ -27,6 +30,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.*;
@@ -364,11 +368,23 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity {
       ItemStack itemstack = player.getItemInHand(hand);
       Item item = itemstack.getItem();
 
-      if (itemstack.is(Items.SHEARS) && (this.isCollared() || this.hasVest())) {
-         this.setCollared(false);
-         this.setVest(false);
-         this.playSound(SoundEvents.SHEEP_SHEAR, 0.5f, 1f);
-         return InteractionResult.sidedSuccess(this.level().isClientSide);
+      if (this.isOwnedBy(player)) {
+         if (itemstack.getItem() instanceof DogArmorItem && this.getArmor().isEmpty() && !this.hasVest()) {
+            this.setArmor(itemstack);
+            this.playSound(SoundEvents.HORSE_ARMOR, 0.5f, 1f);
+            return InteractionResult.sidedSuccess(this.level().isClientSide);
+         }
+
+         if (itemstack.is(Items.SHEARS) && (this.isCollared() || this.hasVest() || !this.getArmor().isEmpty())) {
+            this.setCollared(false);
+            this.setVest(false);
+            if (!this.getArmor().isEmpty() && this.getArmor().getItem() instanceof DogArmorItem armorItem) {
+               this.spawnAtLocation(armorItem);
+               this.setArmor(Items.AIR.getDefaultInstance());
+            }
+            this.playSound(SoundEvents.SHEEP_SHEAR, 0.5f, 1f);
+            return InteractionResult.sidedSuccess(this.level().isClientSide);
+         }
       }
 
       if (itemstack.is(LOItems.GENDER_TEST_STRIP.get()) && this.isFemale()) {
@@ -458,7 +474,7 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity {
             this.gameEvent(GameEvent.EAT, this);
             return InteractionResult.SUCCESS;
          } else {
-            if (item instanceof VestItem) {
+            if (item instanceof VestItem && this.getArmor().isEmpty()) {
                VestItem vestItem = (VestItem) item;
                if (this.isOwnedBy(player)) {
                   this.setVest(true);
@@ -557,6 +573,41 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity {
 
    protected float getStandingEyeHeight(Pose pose, EntityDimensions entityDimensions) {
       return entityDimensions.height * 1.1F;
+   }
+
+   public static final UUID ARMOR_MODIFIER_UUID = UUID.fromString("3c50e848-b2e3-404a-9879-7550b12dd09b");
+
+   public boolean canWearArmor() {
+      return false;
+   }
+
+   public boolean isArmor(ItemStack itemStack) {
+      return itemStack.getItem() instanceof DogArmorItem;
+   }
+
+   public void setArmorEquipment(ItemStack itemStack) {
+      this.setArmor(itemStack);
+      if (!this.level().isClientSide) {
+         this.getAttribute(Attributes.ARMOR).removeModifier(ARMOR_MODIFIER_UUID);
+
+         if (itemStack.getItem() instanceof DogArmorItem dogArmorItem) {
+            int protection = dogArmorItem.getProtection();
+            if (protection > 0) {
+               this.getAttribute(Attributes.ARMOR).addTransientModifier(
+                       new AttributeModifier(ARMOR_MODIFIER_UUID, "Dog armor bonus", (double) protection, AttributeModifier.Operation.ADDITION)
+               );
+            }
+         }
+      }
+   }
+
+   public ItemStack getArmor() {
+      return this.getItemBySlot(EquipmentSlot.CHEST);
+   }
+
+   public void setArmor(ItemStack itemStack) {
+      this.setItemSlot(EquipmentSlot.CHEST, itemStack);
+      this.setDropChance(EquipmentSlot.CHEST, 0f);
    }
 
    public static final Ingredient FOOD_ITEMS = Ingredient.of(POTags.Items.DOG_FOOD);
@@ -710,6 +761,12 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity {
          this.setVest(tag.getBoolean("Vest"));
       }
 
+      if(tag.contains("ArmorItem")) {
+         ItemStack armorItem = ItemStack.of(tag.getCompound("ArmorItem"));
+         this.setArmorEquipment(armorItem);
+         this.setArmor(armorItem);
+      }
+
       this.readPersistentAngerSaveData(this.level(), tag);
    }
 
@@ -726,6 +783,9 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity {
       tag.putBoolean("Collared", this.isCollared());
       tag.putByte("VestColor", (byte)this.getVestColor().getId());
       tag.putBoolean("Vest", this.hasVest());
+      if(!this.getArmor().isEmpty()) {
+         tag.put("ArmorItem", this.getArmor().save(new CompoundTag()));
+      }
       this.addPersistentAngerSaveData(tag);
    }
 

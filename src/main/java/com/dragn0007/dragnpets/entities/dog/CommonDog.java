@@ -85,6 +85,7 @@ public class CommonDog extends ODog implements NeutralMob, GeoEntity {
       return Mob.createMobAttributes()
               .add(Attributes.MOVEMENT_SPEED, 0.26F)
               .add(Attributes.MAX_HEALTH, 12.0D)
+              .add(Attributes.ARMOR, 0.0D)
               .add(Attributes.ATTACK_DAMAGE, 3.0D);
    }
 
@@ -214,6 +215,10 @@ public class CommonDog extends ODog implements NeutralMob, GeoEntity {
       this.entityData.set(DATA_COLLAR_COLOR, p_30398_.getId());
    }
 
+   @Override
+   public boolean canWearArmor() {
+      return true;
+   }
 
    // Generates the base texture
    public static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(CommonDog.class, EntityDataSerializers.INT);

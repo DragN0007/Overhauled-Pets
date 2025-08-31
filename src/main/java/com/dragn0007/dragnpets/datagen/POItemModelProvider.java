@@ -8,6 +8,7 @@ import net.minecraft.world.item.Item;
 import net.minecraftforge.client.model.generators.ItemModelBuilder;
 import net.minecraftforge.client.model.generators.ItemModelProvider;
 import net.minecraftforge.common.data.ExistingFileHelper;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.registries.RegistryObject;
 
 public class POItemModelProvider extends ItemModelProvider {
@@ -31,6 +32,18 @@ public class POItemModelProvider extends ItemModelProvider {
         simpleItem(POItems.TROPICAL_FISH_ROE);
 
         simpleItem(POItems.DOG_SLED);
+
+        simpleItem(POItems.LEATHER_DOG_ARMOR);
+        simpleItem(POItems.CHAINMAIL_DOG_ARMOR);
+        simpleItem(POItems.COPPER_DOG_ARMOR);
+        simpleItem(POItems.IRON_DOG_ARMOR);
+        simpleItem(POItems.RIOT_DOG_ARMOR);
+        simpleItem(POItems.QUARTZ_DOG_ARMOR);
+        simpleItem(POItems.GOLD_DOG_ARMOR);
+        simpleItem(POItems.EMERALD_DOG_ARMOR);
+        simpleItem(POItems.DIAMOND_DOG_ARMOR);
+        simpleItem(POItems.NETHERITE_DOG_ARMOR);
+        simpleItem(POItems.OBSIDIAN_DOG_ARMOR);
 
         simpleItem(POItems.BLACK_VEST);
         simpleItem(POItems.BLUE_VEST);

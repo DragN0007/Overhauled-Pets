@@ -11,6 +11,7 @@ public class OWolfRender extends GeoEntityRenderer<OWolf> {
         super(renderManager, new OWolfModel());
         this.addRenderLayer(new OWolfMarkingLayer(this));
         this.addRenderLayer(new OWolfCollarLayer(this));
+        this.addRenderLayer(new OWolfDecorLayer(this));
     }
 
     @Override

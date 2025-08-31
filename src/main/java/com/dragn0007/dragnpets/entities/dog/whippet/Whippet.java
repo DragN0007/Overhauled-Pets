@@ -110,6 +110,7 @@ public class Whippet extends ODog implements InventoryCarrier, NeutralMob, GeoEn
       return Mob.createMobAttributes()
               .add(Attributes.MOVEMENT_SPEED, 0.30F)
               .add(Attributes.MAX_HEALTH, 9.0D)
+              .add(Attributes.ARMOR, 0.0D)
               .add(Attributes.ATTACK_DAMAGE, 1.5D);
    }
 

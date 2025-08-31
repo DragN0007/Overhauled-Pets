@@ -67,6 +67,22 @@ public class POItemGroupModifier {
                         output.accept(POItems.O_AXOLOTL_BUCKET.get());
                         output.accept(POItems.O_TROPICAL_FISH_BUCKET.get());
 
+                        output.accept(POItems.LEATHER_DOG_ARMOR.get());
+                        output.accept(POItems.CHAINMAIL_DOG_ARMOR.get());
+                        output.accept(POItems.COPPER_DOG_ARMOR.get());
+                        output.accept(POItems.IRON_DOG_ARMOR.get());
+                        if (ModList.get().isLoaded("deadlydinos")) {
+                        output.accept(POItems.RIOT_DOG_ARMOR.get());
+                        }
+                        output.accept(POItems.QUARTZ_DOG_ARMOR.get());
+                        output.accept(POItems.GOLD_DOG_ARMOR.get());
+                        output.accept(POItems.EMERALD_DOG_ARMOR.get());
+                        output.accept(POItems.DIAMOND_DOG_ARMOR.get());
+                        output.accept(POItems.NETHERITE_DOG_ARMOR.get());
+                        if (ModList.get().isLoaded("medievalembroidery")) {
+                        output.accept(POItems.OBSIDIAN_DOG_ARMOR.get());
+                        }
+
                         output.accept(POItems.BLACK_VEST.get());
                         output.accept(POItems.BLUE_VEST.get());
                         output.accept(POItems.BROWN_VEST.get());

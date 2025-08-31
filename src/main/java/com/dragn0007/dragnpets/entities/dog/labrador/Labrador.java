@@ -110,6 +110,7 @@ public class Labrador extends ODog implements InventoryCarrier, NeutralMob, GeoE
       return Mob.createMobAttributes()
               .add(Attributes.MOVEMENT_SPEED, 0.26F)
               .add(Attributes.MAX_HEALTH, 12.0D)
+              .add(Attributes.ARMOR, 0.0D)
               .add(Attributes.ATTACK_DAMAGE, 3.0D);
    }
 

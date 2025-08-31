@@ -10,6 +10,7 @@ import com.dragn0007.dragnpets.PetsOverhaul;
 import com.dragn0007.dragnpets.entities.POEntityTypes;
 import com.dragn0007.dragnpets.entities.ai.CanineFollowPackLeaderGoal;
 import com.dragn0007.dragnpets.entities.ai.WolfFollowOwnerGoal;
+import com.dragn0007.dragnpets.items.custom.DogArmorItem;
 import com.dragn0007.dragnpets.util.POTags;
 import com.dragn0007.dragnpets.util.PetsOverhaulCommonConfig;
 import net.minecraft.ChatFormatting;
@@ -31,6 +32,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.*;
@@ -143,7 +145,7 @@ public class OWolf extends TamableAnimal implements NeutralMob, GeoEntity {
 
 
       this.goalSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, Player.class, 2, true, false,
-              entity -> entity instanceof Player && (this.isFollower() || this.hasFollowers()) && PetsOverhaulCommonConfig.WOLF_PACKS_ATTACK_PLAYERS.get()));
+              entity -> entity instanceof Player && (this.isFollower() || this.hasFollowers()) && PetsOverhaulCommonConfig.WOLF_PACKS_ATTACK_PLAYERS.get() && !this.isTame()));
    }
 
    public static AttributeSupplier.Builder createAttributes() {
@@ -381,10 +383,22 @@ public class OWolf extends TamableAnimal implements NeutralMob, GeoEntity {
       ItemStack itemstack = player.getItemInHand(hand);
       Item item = itemstack.getItem();
 
-      if (itemstack.is(Items.SHEARS) && this.isCollared()) {
-         this.setCollared(false);
-         this.playSound(SoundEvents.SHEEP_SHEAR, 0.5f, 1f);
-         return InteractionResult.sidedSuccess(this.level().isClientSide);
+      if (this.isOwnedBy(player)) {
+         if (itemstack.getItem() instanceof DogArmorItem && this.getArmor().isEmpty()) {
+            this.setArmor(itemstack);
+            this.playSound(SoundEvents.HORSE_ARMOR, 0.5f, 1f);
+            return InteractionResult.sidedSuccess(this.level().isClientSide);
+         }
+
+         if (itemstack.is(Items.SHEARS) && (this.isCollared() || !this.getArmor().isEmpty())) {
+            this.setCollared(false);
+            if (!this.getArmor().isEmpty() && this.getArmor().getItem() instanceof DogArmorItem armorItem) {
+               this.spawnAtLocation(armorItem);
+               this.setArmor(Items.AIR.getDefaultInstance());
+            }
+            this.playSound(SoundEvents.SHEEP_SHEAR, 0.5f, 1f);
+            return InteractionResult.sidedSuccess(this.level().isClientSide);
+         }
       }
 
       if (itemstack.is(LOItems.GENDER_TEST_STRIP.get()) && this.isFemale()) {
@@ -554,6 +568,41 @@ public class OWolf extends TamableAnimal implements NeutralMob, GeoEntity {
       this.entityData.set(DATA_COLLAR_COLOR, p_30398_.getId());
    }
 
+   public static final UUID ARMOR_MODIFIER_UUID = UUID.fromString("3c50e848-b2e3-404a-9879-7550b12dd09b");
+
+   public boolean canWearArmor() {
+      return false;
+   }
+
+   public boolean isArmor(ItemStack itemStack) {
+      return itemStack.getItem() instanceof DogArmorItem;
+   }
+
+   public void setArmorEquipment(ItemStack itemStack) {
+      this.setArmor(itemStack);
+      if (!this.level().isClientSide) {
+         this.getAttribute(Attributes.ARMOR).removeModifier(ARMOR_MODIFIER_UUID);
+
+         if (itemStack.getItem() instanceof DogArmorItem dogArmorItem) {
+            int protection = dogArmorItem.getProtection();
+            if (protection > 0) {
+               this.getAttribute(Attributes.ARMOR).addTransientModifier(
+                       new AttributeModifier(ARMOR_MODIFIER_UUID, "Dog armor bonus", (double) protection, AttributeModifier.Operation.ADDITION)
+               );
+            }
+         }
+      }
+   }
+
+   public ItemStack getArmor() {
+      return this.getItemBySlot(EquipmentSlot.CHEST);
+   }
+
+   public void setArmor(ItemStack itemStack) {
+      this.setItemSlot(EquipmentSlot.CHEST, itemStack);
+      this.setDropChance(EquipmentSlot.CHEST, 0f);
+   }
+
 
    // Generates the base texture
    public static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(OWolf.class, EntityDataSerializers.INT);
@@ -636,6 +685,12 @@ public class OWolf extends TamableAnimal implements NeutralMob, GeoEntity {
          this.setCollared(tag.getBoolean("Collared"));
       }
 
+      if(tag.contains("ArmorItem")) {
+         ItemStack armorItem = ItemStack.of(tag.getCompound("ArmorItem"));
+         this.setArmorEquipment(armorItem);
+         this.setArmor(armorItem);
+      }
+
       this.readPersistentAngerSaveData(this.level(), tag);
    }
 
@@ -648,6 +703,9 @@ public class OWolf extends TamableAnimal implements NeutralMob, GeoEntity {
       tag.putBoolean("Panicking", this.getPanicking());
       tag.putByte("CollarColor", (byte)this.getCollarColor().getId());
       tag.putBoolean("Collared", this.isCollared());
+      if(!this.getArmor().isEmpty()) {
+         tag.put("ArmorItem", this.getArmor().save(new CompoundTag()));
+      }
       this.addPersistentAngerSaveData(tag);
    }
 

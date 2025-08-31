@@ -102,7 +102,13 @@ public class Pyrenees extends ODog implements NeutralMob, GeoEntity {
       return Mob.createMobAttributes()
               .add(Attributes.MOVEMENT_SPEED, 0.28F)
               .add(Attributes.MAX_HEALTH, 14.0D)
+              .add(Attributes.ARMOR, 0.0D)
               .add(Attributes.ATTACK_DAMAGE, 3.0D);
+   }
+
+   @Override
+   public boolean canWearArmor() {
+      return true;
    }
 
    public final AnimatableInstanceCache geoCache = GeckoLibUtil.createInstanceCache(this);

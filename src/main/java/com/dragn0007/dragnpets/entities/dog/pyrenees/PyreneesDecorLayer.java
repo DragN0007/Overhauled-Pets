@@ -1,6 +1,8 @@
 package com.dragn0007.dragnpets.entities.dog.pyrenees;
 
+import com.dragn0007.dragnpets.PetsOverhaul;
 import com.dragn0007.dragnpets.entities.dog.CommonDogDecorLayer;
+import com.dragn0007.dragnpets.items.custom.DogArmorItem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -28,6 +30,25 @@ public class PyreneesDecorLayer extends GeoRenderLayer<Pyrenees> {
         if (animatable.hasVest()) {
             if (dyeColor != null) {
                 resourceLocation = CommonDogDecorLayer.VEST[dyeColor.getId()];
+            }
+
+            RenderType renderType1 = RenderType.entityCutout(resourceLocation);
+            poseStack.pushPose();
+            poseStack.scale(1.0f, 1.0f, 1.0f);
+            poseStack.translate(0.0d, 0.0d, 0.0d);
+            poseStack.popPose();
+            getRenderer().reRender(getDefaultBakedModel(animatable),
+                    poseStack,
+                    bufferSource,
+                    animatable,
+                    renderType1,
+                    bufferSource.getBuffer(renderType1), partialTick, packedLight, OverlayTexture.NO_OVERLAY,
+                    1, 1, 1, 1);
+        }
+
+        if (!animatable.getArmor().isEmpty()) {
+            if (animatable.getArmor().getItem() instanceof DogArmorItem armorItem) {
+                resourceLocation = new ResourceLocation(PetsOverhaul.MODID, "textures/entity/dog/armor/" + armorItem + ".png");
             }
 
             RenderType renderType1 = RenderType.entityCutout(resourceLocation);

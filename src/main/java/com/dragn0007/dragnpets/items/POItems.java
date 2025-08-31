@@ -2,12 +2,14 @@ package com.dragn0007.dragnpets.items;
 
 import com.dragn0007.dragnpets.PetsOverhaul;
 import com.dragn0007.dragnpets.entities.POEntityTypes;
+import com.dragn0007.dragnpets.items.custom.DogArmorItem;
 import com.dragn0007.dragnpets.items.custom.DogSledItem;
 import com.dragn0007.dragnpets.items.custom.TropicalFishRoeItem;
 import com.dragn0007.dragnpets.items.custom.VestItem;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.HorseArmorItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.MobBucketItem;
 import net.minecraft.world.level.material.Fluids;
@@ -110,6 +112,29 @@ public class POItems {
 
     public static final RegistryObject<Item> DOG_SLED = ITEMS.register("dog_sled", DogSledItem::new);
 
+
+    public static final RegistryObject<Item> LEATHER_DOG_ARMOR = ITEMS.register("leather_dog_armor",
+            () -> new DogArmorItem(2, "leather", (new Item.Properties()).stacksTo(1)));
+    public static final RegistryObject<Item> CHAINMAIL_DOG_ARMOR = ITEMS.register("chainmail_dog_armor",
+            () -> new DogArmorItem(3, "chainmail", (new Item.Properties()).stacksTo(1)));
+    public static final RegistryObject<Item> COPPER_DOG_ARMOR = ITEMS.register("copper_dog_armor",
+            () -> new DogArmorItem(3, "copper", (new Item.Properties()).stacksTo(1)));
+    public static final RegistryObject<Item> IRON_DOG_ARMOR = ITEMS.register("iron_dog_armor",
+            () -> new DogArmorItem(4, "iron", (new Item.Properties()).stacksTo(1)));
+    public static final RegistryObject<Item> RIOT_DOG_ARMOR = ITEMS.register("riot_dog_armor",
+            () -> new DogArmorItem(4, "riot", (new Item.Properties()).stacksTo(1)));
+    public static final RegistryObject<Item> QUARTZ_DOG_ARMOR = ITEMS.register("quartz_dog_armor",
+            () -> new DogArmorItem(5, "quartz", (new Item.Properties()).stacksTo(1)));
+    public static final RegistryObject<Item> GOLD_DOG_ARMOR = ITEMS.register("gold_dog_armor",
+            () -> new DogArmorItem(6, "gold", (new Item.Properties()).stacksTo(1)));
+    public static final RegistryObject<Item> EMERALD_DOG_ARMOR = ITEMS.register("emerald_dog_armor",
+            () -> new DogArmorItem(8, "emerald", (new Item.Properties()).stacksTo(1)));
+    public static final RegistryObject<Item> DIAMOND_DOG_ARMOR = ITEMS.register("diamond_dog_armor",
+            () -> new DogArmorItem(8, "diamond", (new Item.Properties()).stacksTo(1)));
+    public static final RegistryObject<Item> NETHERITE_DOG_ARMOR = ITEMS.register("netherite_dog_armor",
+            () -> new DogArmorItem(10, "netherite", (new Item.Properties()).stacksTo(1)));
+    public static final RegistryObject<Item> OBSIDIAN_DOG_ARMOR = ITEMS.register("obsidian_dog_armor",
+            () -> new DogArmorItem(12, "obsidian", (new Item.Properties()).stacksTo(1)));
 
     public static final RegistryObject<Item> BLACK_VEST = ITEMS.register("black_vest",
             () -> new VestItem(DyeColor.BLACK, new Item.Properties()));

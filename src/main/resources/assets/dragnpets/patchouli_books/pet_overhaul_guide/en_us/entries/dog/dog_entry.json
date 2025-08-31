@@ -5,7 +5,7 @@
   "pages": [
     {
       "type": "patchouli:text",
-      "text": "O-Dogs come in a few new different breeds. They spawn alongside cats in villages. O-Dogs, much like O-Wolves, slowly regenerate their health if hurt, and run away from fights if under 33% health."
+      "text": "O-Dogs come in a few new different breeds. They spawn alongside cats in villages. O-Dogs, much like O-Wolves, slowly regenerate their health if hurt, and run away from fights if under 33% health. $(br2)Some breeds, such as the Common Dog, Doberman, Husky, Great Pyrenees, Bernese Mountain Dog, Bloodhound, Rottweiler and American Ridgeback can wear Dog Armor."
     },
     {
       "type": "patchouli:text",
@@ -50,6 +50,22 @@
     {
       "type": "patchouli:text",
       "text": "-The Rottweiler is a player guard dog. Set it to Guard mode to allow it to both hunt and pick up loot from monsters. Shift-left-click a Rottweiler to toggle 'Guard Mode'."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "-The Beagle can hunt rabbits for you. Simply walk to your favorite spot with lots of rabbits around and set it to Hunting mode to allow it to hunt. They can also pick up items and keep them in their inventory. While they can pick up any item, they actively seek out animal loot. Shift-left-click a Beagle to toggle 'Hunting Mode'."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "-The Coonhound can hunt game for you. Simply walk to your favorite spot with lots of game animals around and set it to Hunting mode to allow it to hunt. Game includes animals like Caribou, Chickens, Rabbits, Pigs, Foxes and Goats. For larger game, such as Caribou, it would be smart to use multiple dogs to ensure a takedown, since larger game can/ will fight back. Shift-left-click a Coonhound to toggle 'Hunting Mode'."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "-The Foxhound can hunt foxes for you. Let your Foxhound wander in your chicken coop and set it to Hunting mode to allow it to hunt. Shift-left-click a Foxhound to toggle 'Hunting Mode'."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "-The Jack Russel can hunt rabbits and chickens for you. Simply walk to your favorite spot with lots of rabbits/ chickens around and set it to Hunting mode to allow it to hunt. They can also pick up items and keep them in their inventory. While they can pick up any item, they actively seek out animal loot. Shift-left-click a Jack Russel to toggle 'Hunting Mode'."
     },
     {
       "type": "patchouli:text",

@@ -116,6 +116,7 @@ public class JackRussell extends ODog implements InventoryCarrier, NeutralMob, G
       return Mob.createMobAttributes()
               .add(Attributes.MOVEMENT_SPEED, 0.28F)
               .add(Attributes.MAX_HEALTH, 9.0D)
+              .add(Attributes.ARMOR, 0.0D)
               .add(Attributes.ATTACK_DAMAGE, 1.5D);
    }
 

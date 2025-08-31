@@ -105,6 +105,11 @@ public class AmericanRidgeback extends ODog implements NeutralMob, GeoEntity {
               .add(Attributes.ATTACK_DAMAGE, 4.5D);
    }
 
+   @Override
+   public boolean canWearArmor() {
+      return true;
+   }
+
    public final AnimatableInstanceCache geoCache = GeckoLibUtil.createInstanceCache(this);
 
    public <T extends GeoAnimatable> PlayState predicate(software.bernie.geckolib.core.animation.AnimationState<T> tAnimationState) {

@@ -93,6 +93,7 @@ public class Collie extends ODog implements NeutralMob, GeoEntity {
       return Mob.createMobAttributes()
               .add(Attributes.MOVEMENT_SPEED, 0.30F)
               .add(Attributes.MAX_HEALTH, 10.0D)
+              .add(Attributes.ARMOR, 0.0D)
               .add(Attributes.ATTACK_DAMAGE, 2.5D);
    }
 

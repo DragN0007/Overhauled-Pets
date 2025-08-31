@@ -93,6 +93,7 @@ public class AustralianShepherd extends ODog implements NeutralMob, GeoEntity {
       return Mob.createMobAttributes()
               .add(Attributes.MOVEMENT_SPEED, 0.29F)
               .add(Attributes.MAX_HEALTH, 12.0D)
+              .add(Attributes.ARMOR, 0.0D)
               .add(Attributes.ATTACK_DAMAGE, 2.5D);
    }
 

@@ -97,6 +97,7 @@ public class Foxhound extends ODog implements NeutralMob, GeoEntity {
       return Mob.createMobAttributes()
               .add(Attributes.MOVEMENT_SPEED, 0.27F)
               .add(Attributes.MAX_HEALTH, 16.0D)
+              .add(Attributes.ARMOR, 0.0D)
               .add(Attributes.ATTACK_DAMAGE, 3.5D);
    }
 

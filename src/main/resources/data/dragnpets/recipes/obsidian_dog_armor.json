@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "B": {
+      "item": "minecraft:leather"
+    },
+    "A": {
+      "item": "medievalembroidery:obsidian_shard"
+    }
+  },
+  "pattern": [
+    "AAA",
+    "ABA"
+  ],
+  "result": {
+    "item": "dragnpets:obsidian_dog_armor"
+  },
+  "show_notification": true
+}

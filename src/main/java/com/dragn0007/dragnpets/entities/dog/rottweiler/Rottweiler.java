@@ -118,7 +118,13 @@ public class Rottweiler extends ODog implements InventoryCarrier, NeutralMob, Ge
       return Mob.createMobAttributes()
               .add(Attributes.MOVEMENT_SPEED, 0.26F)
               .add(Attributes.MAX_HEALTH, 16.0D)
+              .add(Attributes.ARMOR, 0.0D)
               .add(Attributes.ATTACK_DAMAGE, 4.5D);
+   }
+
+   @Override
+   public boolean canWearArmor() {
+      return true;
    }
 
    public final AnimatableInstanceCache geoCache = GeckoLibUtil.createInstanceCache(this);
