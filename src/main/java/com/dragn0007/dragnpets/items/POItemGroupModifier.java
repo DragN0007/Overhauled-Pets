@@ -1,6 +1,9 @@
 package com.dragn0007.dragnpets.items;
 
 import com.dragn0007.dragnlivestock.LivestockOverhaul;
+import com.dragn0007.dragnlivestock.entities.wagon.base.AbstractWagon;
+import com.dragn0007.dragnlivestock.items.LOItems;
+import com.dragn0007.dragnlivestock.items.custom.WagonItem;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
@@ -67,6 +70,17 @@ public class POItemGroupModifier {
                         output.accept(POItems.O_AXOLOTL_BUCKET.get());
                         output.accept(POItems.O_TROPICAL_FISH_BUCKET.get());
 
+                        output.accept(WagonItem.setupNbt(new ItemStack(LOItems.DOG_SLED.get()), AbstractWagon.Type.OAK));
+                        output.accept(WagonItem.setupNbt(new ItemStack(LOItems.DOG_SLED.get()), AbstractWagon.Type.ACACIA));
+                        output.accept(WagonItem.setupNbt(new ItemStack(LOItems.DOG_SLED.get()), AbstractWagon.Type.BIRCH));
+                        output.accept(WagonItem.setupNbt(new ItemStack(LOItems.DOG_SLED.get()), AbstractWagon.Type.CHERRY));
+                        output.accept(WagonItem.setupNbt(new ItemStack(LOItems.DOG_SLED.get()), AbstractWagon.Type.CRIMSON));
+                        output.accept(WagonItem.setupNbt(new ItemStack(LOItems.DOG_SLED.get()), AbstractWagon.Type.DARK_OAK));
+                        output.accept(WagonItem.setupNbt(new ItemStack(LOItems.DOG_SLED.get()), AbstractWagon.Type.JUNGLE));
+                        output.accept(WagonItem.setupNbt(new ItemStack(LOItems.DOG_SLED.get()), AbstractWagon.Type.MANGROVE));
+                        output.accept(WagonItem.setupNbt(new ItemStack(LOItems.DOG_SLED.get()), AbstractWagon.Type.SPRUCE));
+                        output.accept(WagonItem.setupNbt(new ItemStack(LOItems.DOG_SLED.get()), AbstractWagon.Type.WARPED));
+
                         output.accept(POItems.LEATHER_DOG_ARMOR.get());
                         output.accept(POItems.CHAINMAIL_DOG_ARMOR.get());
                         output.accept(POItems.COPPER_DOG_ARMOR.get());
@@ -99,9 +113,6 @@ public class POItemGroupModifier {
                         output.accept(POItems.RED_VEST.get());
                         output.accept(POItems.WHITE_VEST.get());
                         output.accept(POItems.YELLOW_VEST.get());
-
-                        //TODO;
-//                        output.accept(POItems.DOG_SLED.get());
 
                     }).build());
 

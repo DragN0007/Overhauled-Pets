@@ -1,5 +1,6 @@
 package com.dragn0007.dragnpets.datagen;
 
+import com.dragn0007.dragnlivestock.items.LOItems;
 import com.dragn0007.dragnpets.items.POItems;
 import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.data.PackOutput;
@@ -19,6 +20,17 @@ public class PORecipeMaker extends RecipeProvider implements IConditionBuilder {
 
     @Override
     public void buildRecipes(Consumer<FinishedRecipe> pFinishedRecipeConsumer) {
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, LOItems.DOG_SLED.get())
+                .define('#', Items.IRON_INGOT)
+                .define('A', LOItems.WAGON_BODY.get())
+                .define('C', Items.CHEST)
+                .pattern("#AC")
+                .pattern("###")
+                .unlockedBy("has_wood", inventoryTrigger(ItemPredicate.Builder.item()
+                        .of(ItemTags.PLANKS).build()))
+                .save(pFinishedRecipeConsumer);
+
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, POItems.LEATHER_DOG_ARMOR.get())
                 .define('A', Items.LEATHER)
@@ -230,19 +242,6 @@ public class PORecipeMaker extends RecipeProvider implements IConditionBuilder {
                         .of(ItemTags.WOOL).build()))
                 .save(pFinishedRecipeConsumer);
 
-
-
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, POItems.DOG_SLED.get())
-                .define('A', Items.IRON_INGOT)
-                .define('B', Items.SPRUCE_PLANKS)
-                .define('C', Items.CHEST)
-                .define('D', Items.BARREL)
-                .pattern("CD ")
-                .pattern("BBB")
-                .pattern("AAA")
-                .unlockedBy("has_iron", inventoryTrigger(ItemPredicate.Builder.item()
-                        .of(Items.IRON_INGOT).build()))
-                .save(pFinishedRecipeConsumer);
 
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, POItems.TROPICAL_FISH_FILLET.get(), 2)
                 .requires(Items.TROPICAL_FISH)

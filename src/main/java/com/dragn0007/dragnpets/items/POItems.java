@@ -3,13 +3,11 @@ package com.dragn0007.dragnpets.items;
 import com.dragn0007.dragnpets.PetsOverhaul;
 import com.dragn0007.dragnpets.entities.POEntityTypes;
 import com.dragn0007.dragnpets.items.custom.DogArmorItem;
-import com.dragn0007.dragnpets.items.custom.DogSledItem;
 import com.dragn0007.dragnpets.items.custom.TropicalFishRoeItem;
 import com.dragn0007.dragnpets.items.custom.VestItem;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.DyeColor;
-import net.minecraft.world.item.HorseArmorItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.MobBucketItem;
 import net.minecraft.world.level.material.Fluids;
@@ -109,8 +107,6 @@ public class POItems {
             () -> new MobBucketItem(POEntityTypes.O_AXOLOTL_ENTITY, () -> Fluids.WATER, () -> SoundEvents.BUCKET_FILL_AXOLOTL, new Item.Properties().stacksTo(1)));
     public static final RegistryObject<Item> O_TROPICAL_FISH_BUCKET = ITEMS.register("o_tropical_fish_bucket",
             () -> new MobBucketItem(POEntityTypes.O_TROPICAL_FISH_ENTITY, () -> Fluids.WATER, () -> SoundEvents.BUCKET_FILL_FISH, new Item.Properties().stacksTo(1)));
-
-    public static final RegistryObject<Item> DOG_SLED = ITEMS.register("dog_sled", DogSledItem::new);
 
 
     public static final RegistryObject<Item> LEATHER_DOG_ARMOR = ITEMS.register("leather_dog_armor",

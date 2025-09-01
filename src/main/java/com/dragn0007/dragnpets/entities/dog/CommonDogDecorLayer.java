@@ -1,6 +1,5 @@
 package com.dragn0007.dragnpets.entities.dog;
 
-import com.dragn0007.dragnlivestock.LivestockOverhaul;
 import com.dragn0007.dragnpets.PetsOverhaul;
 import com.dragn0007.dragnpets.items.custom.DogArmorItem;
 import com.mojang.blaze3d.vertex.PoseStack;

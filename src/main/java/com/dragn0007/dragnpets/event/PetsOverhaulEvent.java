@@ -48,8 +48,6 @@ import com.dragn0007.dragnpets.entities.dog.whippet.Whippet;
 import com.dragn0007.dragnpets.entities.dog.whippet.WhippetRender;
 import com.dragn0007.dragnpets.entities.fox.OFox;
 import com.dragn0007.dragnpets.entities.fox.OFoxRender;
-import com.dragn0007.dragnpets.entities.misc.sled.DogSledModel;
-import com.dragn0007.dragnpets.entities.misc.sled.DogSledRender;
 import com.dragn0007.dragnpets.entities.ocelot.OOcelot;
 import com.dragn0007.dragnpets.entities.ocelot.OOcelotRender;
 import com.dragn0007.dragnpets.entities.parrot.*;
@@ -63,7 +61,6 @@ import com.dragn0007.dragnpets.gui.LabradorScreen;
 import com.dragn0007.dragnpets.gui.POMenuTypes;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.entity.EntityRenderers;
-import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -141,16 +138,5 @@ public class PetsOverhaulEvent {
         MenuScreens.register(POMenuTypes.HUSKY_MENU.get(), HuskyScreen::new);
         MenuScreens.register(POMenuTypes.BERNESE_MENU.get(), BerneseScreen::new);
         MenuScreens.register(POMenuTypes.LABRADOR_MENU.get(), LabradorScreen::new);
-    }
-
-    @SubscribeEvent
-    public static void registerLayerDefinitionEvent(EntityRenderersEvent.RegisterLayerDefinitions event) {
-        event.registerLayerDefinition(DogSledRender.LAYER_LOCATION, DogSledModel::createBodyLayer);
-
-    }
-
-    @SubscribeEvent
-    public static void registerRendererEvent(EntityRenderersEvent.RegisterRenderers event) {
-        event.registerEntityRenderer(POEntityTypes.DOG_SLED_ENTITY.get(), DogSledRender::new);
     }
 }

@@ -1,8 +1,6 @@
 package com.dragn0007.dragnpets.entities.dog;
 
 import com.dragn0007.dragnlivestock.items.LOItems;
-import com.dragn0007.dragnlivestock.items.custom.LightHorseArmorItem;
-import com.dragn0007.dragnlivestock.util.LOTags;
 import com.dragn0007.dragnlivestock.util.LivestockOverhaulCommonConfig;
 import com.dragn0007.dragnpets.PetsOverhaul;
 import com.dragn0007.dragnpets.entities.POEntityTypes;

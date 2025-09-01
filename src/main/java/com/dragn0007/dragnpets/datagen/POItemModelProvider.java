@@ -8,7 +8,6 @@ import net.minecraft.world.item.Item;
 import net.minecraftforge.client.model.generators.ItemModelBuilder;
 import net.minecraftforge.client.model.generators.ItemModelProvider;
 import net.minecraftforge.common.data.ExistingFileHelper;
-import net.minecraftforge.fml.ModList;
 import net.minecraftforge.registries.RegistryObject;
 
 public class POItemModelProvider extends ItemModelProvider {
@@ -30,8 +29,6 @@ public class POItemModelProvider extends ItemModelProvider {
         simpleItem(POItems.COOKED_TROPICAL_FISH_FILLET);
 
         simpleItem(POItems.TROPICAL_FISH_ROE);
-
-        simpleItem(POItems.DOG_SLED);
 
         simpleItem(POItems.LEATHER_DOG_ARMOR);
         simpleItem(POItems.CHAINMAIL_DOG_ARMOR);
