@@ -367,7 +367,7 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity {
       Item item = itemstack.getItem();
 
       if (this.isOwnedBy(player)) {
-         if (itemstack.getItem() instanceof DogArmorItem && this.getArmor().isEmpty() && !this.hasVest()) {
+         if (itemstack.getItem() instanceof DogArmorItem && this.getArmor().isEmpty() && !this.hasVest() && this.canWearArmor()) {
             this.setArmor(itemstack);
             this.playSound(SoundEvents.HORSE_ARMOR, 0.5f, 1f);
             return InteractionResult.sidedSuccess(this.level().isClientSide);

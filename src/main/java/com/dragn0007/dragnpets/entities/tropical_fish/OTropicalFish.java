@@ -1,6 +1,5 @@
 package com.dragn0007.dragnpets.entities.tropical_fish;
 
-import com.dragn0007.dragnlivestock.LivestockOverhaul;
 import com.dragn0007.dragnlivestock.entities.util.AbstractSchoolingOFish;
 import com.dragn0007.dragnlivestock.items.LOItems;
 import com.dragn0007.dragnlivestock.util.LivestockOverhaulCommonConfig;
@@ -203,30 +202,22 @@ public class OTropicalFish extends AbstractSchoolingOFish implements GeoEntity {
 
 	// Generates the base texture
 
-	public static final EntityDataAccessor<ResourceLocation> VARIANT_TEXTURE = SynchedEntityData.defineId(OTropicalFish.class, LivestockOverhaul.RESOURCE_LOCATION);
-	public static final EntityDataAccessor<ResourceLocation> OVERLAY_TEXTURE = SynchedEntityData.defineId(OTropicalFish.class, LivestockOverhaul.RESOURCE_LOCATION);
-	public ResourceLocation getDynamicResource() {
+	public static final EntityDataAccessor<String> VARIANT_TEXTURE = SynchedEntityData.defineId(OTropicalFish.class, EntityDataSerializers.STRING);
+	public static final EntityDataAccessor<String> OVERLAY_TEXTURE = SynchedEntityData.defineId(OTropicalFish.class, EntityDataSerializers.STRING);
+	public String getDynamicResource() {
 		return this.entityData.get(VARIANT_TEXTURE);
 	}
 
-	public ResourceLocation getDynamicOverlayLocation() {
+	public String getDynamicOverlayLocation() {
 		return this.entityData.get(OVERLAY_TEXTURE);
 	}
 
 	public void setVariantTexture(String variant) {
-		ResourceLocation resourceLocation = ResourceLocation.tryParse(variant);
-		if (resourceLocation == null) {
-			resourceLocation = OTropicalFishModel.Variant.BLACK.resourceLocation;
-		}
-		this.entityData.set(VARIANT_TEXTURE, resourceLocation);
+		this.entityData.set(VARIANT_TEXTURE, variant);
 	}
 
 	public void setOverlayVariantTexture(String variant) {
-		ResourceLocation resourceLocation = ResourceLocation.tryParse(variant);
-		if (resourceLocation == null) {
-			resourceLocation = OTropicalFishMarkingLayer.Overlay.NONE.resourceLocation;
-		}
-		this.entityData.set(OVERLAY_TEXTURE, resourceLocation);
+		this.entityData.set(OVERLAY_TEXTURE, variant);
 	}
 
 	public ResourceLocation getTextureResource() {
@@ -248,7 +239,7 @@ public class OTropicalFish extends AbstractSchoolingOFish implements GeoEntity {
 	}
 
 	public void setVariant(int variant) {
-		this.entityData.set(VARIANT_TEXTURE, OTropicalFishModel.Variant.variantFromOrdinal(variant).resourceLocation);
+		this.entityData.set(VARIANT_TEXTURE, OTropicalFishModel.Variant.variantFromOrdinal(variant).resourceLocation.toString());
 		this.entityData.set(VARIANT, variant);
 	}
 
@@ -259,7 +250,7 @@ public class OTropicalFish extends AbstractSchoolingOFish implements GeoEntity {
 	}
 
 	public void setOverlay(int overlay) {
-		this.entityData.set(OVERLAY_TEXTURE, OTropicalFishMarkingLayer.Overlay.overlayFromOrdinal(overlay).resourceLocation);
+		this.entityData.set(OVERLAY_TEXTURE, OTropicalFishMarkingLayer.Overlay.overlayFromOrdinal(overlay).resourceLocation.toString());
 		this.entityData.set(OVERLAY, overlay);
 	}
 
@@ -314,7 +305,7 @@ public class OTropicalFish extends AbstractSchoolingOFish implements GeoEntity {
 		this.entityData.define(VARIANT, 0);
 		this.entityData.define(OVERLAY, 0);
 		this.entityData.define(SPECIES, 0);
-		this.entityData.define(VARIANT_TEXTURE, OTropicalFishModel.Variant.BLACK.resourceLocation);
-		this.entityData.define(OVERLAY_TEXTURE, OTropicalFishMarkingLayer.Overlay.NONE.resourceLocation);
+		this.entityData.define(VARIANT_TEXTURE, OTropicalFishModel.Variant.BLACK.resourceLocation.toString());
+		this.entityData.define(OVERLAY_TEXTURE, OTropicalFishMarkingLayer.Overlay.NONE.resourceLocation.toString());
 	}
 }

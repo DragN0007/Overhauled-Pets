@@ -4,7 +4,7 @@ license="All Rights Reserved, DragN0007"
 #issueTrackerURL="https://discord.gg/2WznNTtVac"
 [[mods]]
 modId="dragnpets"
-version="${1.8}"
+version="${1.9}"
 displayName="DragN's Livestock Overhaul: Pets Addon!"
 logoFile="pets_overhaul_logo.png"
 authors="DragN0007"
@@ -32,7 +32,7 @@ side="BOTH"
 [[dependencies.dragnpets]]
 modId="dragnlivestock"
 mandatory=true
-versionRange = "[2.8,)"
+versionRange = "[3.1,)"
 ordering="NONE"
 side="BOTH"
 [[mixins]]
