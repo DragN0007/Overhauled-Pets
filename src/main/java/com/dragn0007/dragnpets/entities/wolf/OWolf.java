@@ -25,8 +25,10 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.RandomSource;
 import net.minecraft.util.TimeUtil;
 import net.minecraft.util.valueproviders.UniformInt;
+import net.minecraft.world.Difficulty;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -44,13 +46,16 @@ import net.minecraft.world.entity.animal.horse.AbstractHorse;
 import net.minecraft.world.entity.monster.AbstractSkeleton;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.monster.Ghast;
+import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.pathfinder.BlockPathTypes;
 import net.minecraft.world.phys.Vec3;
@@ -153,6 +158,25 @@ public class OWolf extends TamableAnimal implements NeutralMob, GeoEntity {
               .add(Attributes.MOVEMENT_SPEED, 0.28F)
               .add(Attributes.MAX_HEALTH, 14.0D)
               .add(Attributes.ATTACK_DAMAGE, 4.0D);
+   }
+
+   public static boolean isDarkEnoughToSpawn(ServerLevelAccessor accessor, BlockPos pos, RandomSource source) {
+      if (accessor.getBrightness(LightLayer.SKY, pos) > source.nextInt(24)) {
+         return false;
+      } else {
+         DimensionType dimensiontype = accessor.dimensionType();
+         int lightLimit = dimensiontype.monsterSpawnBlockLightLimit();
+         if (lightLimit < 15 && accessor.getBrightness(LightLayer.BLOCK, pos) > lightLimit) {
+            return false;
+         } else {
+            int j = accessor.getLevel().isThundering() ? accessor.getMaxLocalRawBrightness(pos, 10) : accessor.getMaxLocalRawBrightness(pos);
+            return j <= dimensiontype.monsterSpawnLightTest().sample(source);
+         }
+      }
+   }
+
+   public static boolean checkPredatorSpawnRules(EntityType<? extends Animal> type, ServerLevelAccessor accessor, MobSpawnType spawnType, BlockPos pos, RandomSource source) {
+      return accessor.getDifficulty() != Difficulty.PEACEFUL && isDarkEnoughToSpawn(accessor, pos, source) && checkMobSpawnRules(type, accessor, spawnType, pos, source);
    }
 
    public final AnimatableInstanceCache geoCache = GeckoLibUtil.createInstanceCache(this);
@@ -417,22 +441,28 @@ public class OWolf extends TamableAnimal implements NeutralMob, GeoEntity {
 
       if (itemstack.is(LOItems.COAT_OSCILLATOR.get()) && player.getAbilities().instabuild) {
          if (player.isShiftKeyDown()) {
-            this.setVariant(this.getVariant() - 1);
-            this.playSound(SoundEvents.BEEHIVE_EXIT, 0.5f, 1f);
-            return InteractionResult.sidedSuccess(this.level().isClientSide);
+            if (this.getVariant() > 0) {
+               this.setVariant(this.getVariant() - 1);
+               this.playSound(SoundEvents.BEEHIVE_EXIT, 0.5f, 1f);
+               return InteractionResult.SUCCESS;
+            }
          }
          this.setVariant(this.getVariant() + 1);
          this.playSound(SoundEvents.BEEHIVE_EXIT, 0.5f, 1f);
-         return InteractionResult.sidedSuccess(this.level().isClientSide);
-      } else if (itemstack.is(LOItems.MARKING_OSCILLATOR.get()) && player.getAbilities().instabuild) {
+         return InteractionResult.SUCCESS;
+      }
+
+      if (itemstack.is(LOItems.MARKING_OSCILLATOR.get()) && player.getAbilities().instabuild) {
          if (player.isShiftKeyDown()) {
-            this.setOverlayVariant(this.getOverlayVariant() - 1);
-            this.playSound(SoundEvents.BEEHIVE_EXIT, 0.5f, 1f);
-            return InteractionResult.sidedSuccess(this.level().isClientSide);
+            if (this.getOverlayVariant() > 0) {
+               this.setOverlayVariant(this.getOverlayVariant() - 1);
+               this.playSound(SoundEvents.BEEHIVE_EXIT, 0.5f, 1f);
+               return InteractionResult.SUCCESS;
+            }
          }
          this.setOverlayVariant(this.getOverlayVariant() + 1);
          this.playSound(SoundEvents.BEEHIVE_EXIT, 0.5f, 1f);
-         return InteractionResult.sidedSuccess(this.level().isClientSide);
+         return InteractionResult.SUCCESS;
       }
 
       //doggy talents next compat
@@ -570,10 +600,6 @@ public class OWolf extends TamableAnimal implements NeutralMob, GeoEntity {
 
    public static final UUID ARMOR_MODIFIER_UUID = UUID.fromString("3c50e848-b2e3-404a-9879-7550b12dd09b");
 
-   public boolean canWearArmor() {
-      return false;
-   }
-
    public boolean isArmor(ItemStack itemStack) {
       return itemStack.getItem() instanceof DogArmorItem;
    }
@@ -645,6 +671,14 @@ public class OWolf extends TamableAnimal implements NeutralMob, GeoEntity {
       this.entityData.set(COLLARED, collared);
    }
 
+   public static final EntityDataAccessor<Boolean> PREDATOR_SPAWN = SynchedEntityData.defineId(OWolf.class, EntityDataSerializers.BOOLEAN);
+   public boolean isPredatorSpawn() {
+      return this.entityData.get(PREDATOR_SPAWN);
+   }
+   public void setPredatorSpawn(boolean predSpawn) {
+      this.entityData.set(PREDATOR_SPAWN, predSpawn);
+   }
+
    public void defineSynchedData() {
       super.defineSynchedData();
       this.entityData.define(VARIANT, 0);
@@ -653,6 +687,7 @@ public class OWolf extends TamableAnimal implements NeutralMob, GeoEntity {
       this.entityData.define(DATA_COLLAR_COLOR, DyeColor.RED.getId());
       this.entityData.define(DATA_REMAINING_ANGER_TIME, 0);
       this.entityData.define(COLLARED, false);
+      this.entityData.define(PREDATOR_SPAWN, false);
    }
 
    public void readAdditionalSaveData(CompoundTag tag) {
@@ -691,6 +726,10 @@ public class OWolf extends TamableAnimal implements NeutralMob, GeoEntity {
          this.setArmor(armorItem);
       }
 
+      if(tag.contains("PredatorSpawn")) {
+         this.setPredatorSpawn(tag.getBoolean("PredatorSpawn"));
+      }
+
       this.readPersistentAngerSaveData(this.level(), tag);
    }
 
@@ -706,6 +745,7 @@ public class OWolf extends TamableAnimal implements NeutralMob, GeoEntity {
       if(!this.getArmor().isEmpty()) {
          tag.put("ArmorItem", this.getArmor().save(new CompoundTag()));
       }
+      tag.putBoolean("PredatorSpawn", this.isPredatorSpawn());
       this.addPersistentAngerSaveData(tag);
    }
 
@@ -720,7 +760,14 @@ public class OWolf extends TamableAnimal implements NeutralMob, GeoEntity {
       setOverlayVariant(random.nextInt(OWolfMarkingLayer.Overlay.values().length));
       setGender(random.nextInt(OWolf.Gender.values().length));
 
+      setPredatorSpawn(this.getSpawnType() == MobSpawnType.NATURAL && this.level().isNight());
+
       return super.finalizeSpawn(serverLevelAccessor, instance, spawnType, data, tag);
+   }
+
+   @Override
+   protected boolean shouldDespawnInPeaceful() {
+      return this.isPredatorSpawn();
    }
 
    public enum Gender {

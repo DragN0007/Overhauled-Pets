@@ -251,6 +251,10 @@ public class OFox extends TamableAnimal implements GeoEntity {
       ItemStack itemstack = player.getItemInHand(hand);
       Item item = itemstack.getItem();
 
+      if (itemstack.is(LOItems.BREED_OSCILLATOR.get()) && player.getAbilities().instabuild) {
+         return InteractionResult.PASS;
+      }
+
       if (itemstack.is(Items.SHEARS) && this.isCollared()) {
          this.setCollared(false);
          this.playSound(SoundEvents.SHEEP_SHEAR, 0.5f, 1f);
@@ -273,22 +277,28 @@ public class OFox extends TamableAnimal implements GeoEntity {
 
       if (itemstack.is(LOItems.COAT_OSCILLATOR.get()) && player.getAbilities().instabuild) {
          if (player.isShiftKeyDown()) {
-            this.setVariant(this.getVariant() - 1);
-            this.playSound(SoundEvents.BEEHIVE_EXIT, 0.5f, 1f);
-            return InteractionResult.sidedSuccess(this.level().isClientSide);
+            if (this.getVariant() > 0) {
+               this.setVariant(this.getVariant() - 1);
+               this.playSound(SoundEvents.BEEHIVE_EXIT, 0.5f, 1f);
+               return InteractionResult.SUCCESS;
+            }
          }
          this.setVariant(this.getVariant() + 1);
          this.playSound(SoundEvents.BEEHIVE_EXIT, 0.5f, 1f);
-         return InteractionResult.sidedSuccess(this.level().isClientSide);
-      } else if (itemstack.is(LOItems.MARKING_OSCILLATOR.get()) && player.getAbilities().instabuild) {
+         return InteractionResult.SUCCESS;
+      }
+
+      if (itemstack.is(LOItems.MARKING_OSCILLATOR.get()) && player.getAbilities().instabuild) {
          if (player.isShiftKeyDown()) {
-            this.setOverlayVariant(this.getOverlayVariant() - 1);
-            this.playSound(SoundEvents.BEEHIVE_EXIT, 0.5f, 1f);
-            return InteractionResult.sidedSuccess(this.level().isClientSide);
+            if (this.getOverlayVariant() > 0) {
+               this.setOverlayVariant(this.getOverlayVariant() - 1);
+               this.playSound(SoundEvents.BEEHIVE_EXIT, 0.5f, 1f);
+               return InteractionResult.SUCCESS;
+            }
          }
          this.setOverlayVariant(this.getOverlayVariant() + 1);
          this.playSound(SoundEvents.BEEHIVE_EXIT, 0.5f, 1f);
-         return InteractionResult.sidedSuccess(this.level().isClientSide);
+         return InteractionResult.SUCCESS;
       }
 
       if (player.isShiftKeyDown() && !this.isFood(itemstack) && !this.isOrderedToSit() && !this.wasToldToWander() && this.isOwnedBy(player)) {

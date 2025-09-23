@@ -170,24 +170,32 @@ public class OAxolotl extends Animal implements GeoEntity, Bucketable {
 	public InteractionResult mobInteract(Player player, InteractionHand hand) {
 		ItemStack itemStack = player.getItemInHand(hand);
 
+		if (itemStack.is(LOItems.BREED_OSCILLATOR.get()) && player.getAbilities().instabuild) {
+			return InteractionResult.PASS;
+		}
+
 		if (itemStack.is(LOItems.COAT_OSCILLATOR.get()) && player.getAbilities().instabuild) {
 			if (player.isShiftKeyDown()) {
-				this.setVariant(this.getVariant() - 1);
-				this.playSound(SoundEvents.BEEHIVE_EXIT, 0.5f, 1f);
-				return InteractionResult.sidedSuccess(this.level().isClientSide);
+				if (this.getVariant() > 0) {
+					this.setVariant(this.getVariant() - 1);
+					this.playSound(SoundEvents.BEEHIVE_EXIT, 0.5f, 1f);
+					return InteractionResult.SUCCESS;
+				}
 			}
 			this.setVariant(this.getVariant() + 1);
 			this.playSound(SoundEvents.BEEHIVE_EXIT, 0.5f, 1f);
-			return InteractionResult.sidedSuccess(this.level().isClientSide);
+			return InteractionResult.SUCCESS;
 		} else if (itemStack.is(LOItems.MARKING_OSCILLATOR.get()) && player.getAbilities().instabuild) {
 			if (player.isShiftKeyDown()) {
-				this.setOverlayVariant(this.getOverlayVariant() - 1);
-				this.playSound(SoundEvents.BEEHIVE_EXIT, 0.5f, 1f);
-				return InteractionResult.sidedSuccess(this.level().isClientSide);
+				if (this.getOverlayVariant() > 0) {
+					this.setOverlayVariant(this.getOverlayVariant() - 1);
+					this.playSound(SoundEvents.BEEHIVE_EXIT, 0.5f, 1f);
+					return InteractionResult.SUCCESS;
+				}
 			}
 			this.setOverlayVariant(this.getOverlayVariant() + 1);
 			this.playSound(SoundEvents.BEEHIVE_EXIT, 0.5f, 1f);
-			return InteractionResult.sidedSuccess(this.level().isClientSide);
+			return InteractionResult.SUCCESS;
 		} else {
 			return Bucketable.bucketMobPickup(player, hand, this).orElse(super.mobInteract(player, hand));
 		}

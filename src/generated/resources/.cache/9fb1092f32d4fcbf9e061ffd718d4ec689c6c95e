@@ -1,4 +1,4 @@
-// 1.20.1	2025-08-31T17:45:06.5211428	Recipes
+// 1.20.1	2025-09-19T18:43:46.463365	Recipes
 59ff6eb0ad6d2559b266c40b52c8232333bbad73 data/dragnlivestock/advancements/recipes/misc/dog_sled.json
 8998e84b176121f0c7f081adcdda75b84a50e8ba data/dragnlivestock/recipes/dog_sled.json
 47630b4dfc5070d78c5d8f8ddd81886227f2e2bd data/dragnpets/advancements/recipes/misc/black_vest.json
@@ -20,7 +20,6 @@ dad7df332c4a797a05c85b30db9d1c2d3e720334 data/dragnpets/advancements/recipes/mis
 823c1099567275e9020b1e91dd4d112bd04d2e99 data/dragnpets/advancements/recipes/misc/copper_dog_armor.json
 4621038dc1e337f8c6efc4a6ffed0aa2653e9819 data/dragnpets/advancements/recipes/misc/cyan_vest.json
 9180f9c81b540669882fc25338060df5f648d81d data/dragnpets/advancements/recipes/misc/diamond_dog_armor.json
-39578b820fde288f877898bb89e7c4bf2ac28f39 data/dragnpets/advancements/recipes/misc/dog_sled.json
 008136dc1c8e7ba160db732b9077442921a955c7 data/dragnpets/advancements/recipes/misc/emerald_dog_armor.json
 8b59f92110b18de11d428cabfd34b37d8d1e1f76 data/dragnpets/advancements/recipes/misc/gold_dog_armor.json
 9805d12ded7396c9480a041d37108408649227fc data/dragnpets/advancements/recipes/misc/green_vest.json
@@ -59,7 +58,6 @@ de013919ab7c10d314f373a1bfd04276e2ac73e5 data/dragnpets/recipes/cooked_parrot_sm
 a3465b7101235a0bc0f00ff32f8de0e007ecfb5e data/dragnpets/recipes/copper_dog_armor.json
 4a0224e1416d6dc8e9ebb535f61e63f95a6077eb data/dragnpets/recipes/cyan_vest.json
 be987c8a1da30e2768e5252fca42aa2a73ea7876 data/dragnpets/recipes/diamond_dog_armor.json
-20cb6f80a7d9af65a0c19585744b2939237bbedb data/dragnpets/recipes/dog_sled.json
 073fbc00b286fc84326f836e292e4dd6791f84c3 data/dragnpets/recipes/emerald_dog_armor.json
 cda199fb16c924b01ccb370e2552145225b64891 data/dragnpets/recipes/gold_dog_armor.json
 333f4b664f847d6d67a123d47d70761d02ce203e data/dragnpets/recipes/green_vest.json

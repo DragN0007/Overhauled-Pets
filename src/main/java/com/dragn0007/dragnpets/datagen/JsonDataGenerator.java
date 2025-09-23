@@ -1,5 +1,6 @@
 package com.dragn0007.dragnpets.datagen;
 
+import com.dragn0007.dragnlivestock.datagen.LOWorldGenerator;
 import com.dragn0007.dragnpets.PetsOverhaul;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
@@ -22,5 +23,6 @@ public class JsonDataGenerator {
 
         generator.addProvider(event.includeServer(), new PORecipeMaker(packOutput));
         generator.addProvider(event.includeClient(), new POItemModelProvider(packOutput, existingFileHelper));
+        generator.addProvider(event.includeServer(), new POWorldGenerator(packOutput, lookupProvider));
     }
 }

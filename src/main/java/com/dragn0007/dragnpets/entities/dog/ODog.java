@@ -366,6 +366,10 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity {
       ItemStack itemstack = player.getItemInHand(hand);
       Item item = itemstack.getItem();
 
+      if (itemstack.is(LOItems.BREED_OSCILLATOR.get()) && player.getAbilities().instabuild) {
+         return InteractionResult.PASS;
+      }
+
       if (this.isOwnedBy(player)) {
          if (itemstack.getItem() instanceof DogArmorItem && this.getArmor().isEmpty() && !this.hasVest() && this.canWearArmor()) {
             this.setArmor(itemstack);
@@ -373,7 +377,7 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity {
             return InteractionResult.sidedSuccess(this.level().isClientSide);
          }
 
-         if (itemstack.is(Items.SHEARS) && (this.isCollared() || this.hasVest() || !this.getArmor().isEmpty())) {
+         if (itemstack.is(Items.SHEARS) && this.canWearArmor() && (this.isCollared() || this.hasVest() || !this.getArmor().isEmpty())) {
             this.setCollared(false);
             this.setVest(false);
             if (!this.getArmor().isEmpty() && this.getArmor().getItem() instanceof DogArmorItem armorItem) {
@@ -441,22 +445,28 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity {
 
       if (itemstack.is(LOItems.COAT_OSCILLATOR.get()) && player.getAbilities().instabuild) {
          if (player.isShiftKeyDown()) {
-            this.setVariant(this.getVariant() - 1);
-            this.playSound(SoundEvents.BEEHIVE_EXIT, 0.5f, 1f);
-            return InteractionResult.sidedSuccess(this.level().isClientSide);
+            if (this.getVariant() > 0) {
+               this.setVariant(this.getVariant() - 1);
+               this.playSound(SoundEvents.BEEHIVE_EXIT, 0.5f, 1f);
+               return InteractionResult.SUCCESS;
+            }
          }
          this.setVariant(this.getVariant() + 1);
          this.playSound(SoundEvents.BEEHIVE_EXIT, 0.5f, 1f);
-         return InteractionResult.sidedSuccess(this.level().isClientSide);
-      } else if (itemstack.is(LOItems.MARKING_OSCILLATOR.get()) && player.getAbilities().instabuild) {
+         return InteractionResult.SUCCESS;
+      }
+
+      if (itemstack.is(LOItems.MARKING_OSCILLATOR.get()) && player.getAbilities().instabuild) {
          if (player.isShiftKeyDown()) {
-            this.setOverlayVariant(this.getOverlayVariant() - 1);
-            this.playSound(SoundEvents.BEEHIVE_EXIT, 0.5f, 1f);
-            return InteractionResult.sidedSuccess(this.level().isClientSide);
+            if (this.getOverlayVariant() > 0) {
+               this.setOverlayVariant(this.getOverlayVariant() - 1);
+               this.playSound(SoundEvents.BEEHIVE_EXIT, 0.5f, 1f);
+               return InteractionResult.SUCCESS;
+            }
          }
          this.setOverlayVariant(this.getOverlayVariant() + 1);
          this.playSound(SoundEvents.BEEHIVE_EXIT, 0.5f, 1f);
-         return InteractionResult.sidedSuccess(this.level().isClientSide);
+         return InteractionResult.SUCCESS;
       }
 
       if (this.level().isClientSide) {
