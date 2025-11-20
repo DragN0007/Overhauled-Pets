@@ -149,7 +149,7 @@ public class OWolf extends TamableAnimal implements NeutralMob, GeoEntity {
 
 
       this.goalSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, Player.class, 2, true, false,
-              entity -> entity instanceof Player && (this.isFollower() || this.hasFollowers()) && PetsOverhaulCommonConfig.WOLF_PACKS_ATTACK_PLAYERS.get() && !this.isTame()));
+              entity -> !this.isBaby() && entity instanceof Player && (this.isFollower() || this.hasFollowers()) && PetsOverhaulCommonConfig.WOLF_PACKS_ATTACK_PLAYERS.get() && !this.isTame()));
    }
 
    public static AttributeSupplier.Builder createAttributes() {

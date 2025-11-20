@@ -33,6 +33,7 @@ import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NonTameRandomTargetGoal;
 import net.minecraft.world.entity.animal.Animal;
+import net.minecraft.world.entity.animal.Cat;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -61,11 +62,10 @@ public class OCat extends TamableAnimal implements GeoEntity {
    public OCat(EntityType<? extends OCat> entityType, Level level) {
       super(entityType, level);
       this.setTame(false);
-      this.reassessTrustingGoals();
    }
 
    @Nullable
-   public OCat.OcelotAvoidEntityGoal<Player> ocelotAvoidPlayersGoal;
+   private OCat.CatAvoidEntityGoal<Player> avoidPlayersGoal;
    @Nullable
    public OCat.OcelotTemptGoal temptGoal;
 
@@ -83,13 +83,15 @@ public class OCat extends TamableAnimal implements GeoEntity {
       return LOOT_TABLE;
    }
 
-   public void reassessTrustingGoals() {
-      if (this.ocelotAvoidPlayersGoal == null) {
-         this.ocelotAvoidPlayersGoal = new OCat.OcelotAvoidEntityGoal<>(this, Player.class, 16.0F, 0.8D, 1.33D);
+   protected void reassessTameGoals() {
+      if (this.avoidPlayersGoal == null) {
+         this.avoidPlayersGoal = new OCat.CatAvoidEntityGoal<>(this, Player.class, 16.0F, 0.8D, 1.33D);
       }
 
-      this.goalSelector.removeGoal(this.ocelotAvoidPlayersGoal);
-      this.goalSelector.addGoal(4, this.ocelotAvoidPlayersGoal);
+      this.goalSelector.removeGoal(this.avoidPlayersGoal);
+      if (!this.isTame()) {
+         this.goalSelector.addGoal(4, this.avoidPlayersGoal);
+      }
 
    }
 
@@ -123,7 +125,7 @@ public class OCat extends TamableAnimal implements GeoEntity {
       this.targetSelector.addGoal(5, new NonTameRandomTargetGoal<>(this, Animal.class, false, PREY_SELECTOR));
 
       this.goalSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, LivingEntity.class, 2, true, false,
-              entity -> entity.getType().is(POTags.Entity_Types.CATS_HUNT) && ((entity instanceof TamableAnimal && !((TamableAnimal) entity).isTame()) || (!this.isTame()) || (this.isTame() && this.wasToldToWander() && entity instanceof TamableAnimal && !((TamableAnimal) entity).isTame())))  {
+              entity -> !this.isBaby() && entity.getType().is(POTags.Entity_Types.CATS_HUNT) && ((entity instanceof TamableAnimal && !((TamableAnimal) entity).isTame()) || (!this.isTame()) || (this.isTame() && this.wasToldToWander() && entity instanceof TamableAnimal && !((TamableAnimal) entity).isTame())))  {
       });
    }
 
@@ -764,20 +766,20 @@ public class OCat extends TamableAnimal implements GeoEntity {
       return this.isCrouching() || super.isSteppingCarefully();
    }
 
-   static class OcelotAvoidEntityGoal<T extends LivingEntity> extends AvoidEntityGoal<T> {
-      public final OCat ocelot;
+   static class CatAvoidEntityGoal<T extends LivingEntity> extends AvoidEntityGoal<T> {
+      private final OCat cat;
 
-      public OcelotAvoidEntityGoal(OCat p_29051_, Class<T> p_29052_, float p_29053_, double p_29054_, double p_29055_) {
-         super(p_29051_, p_29052_, p_29053_, p_29054_, p_29055_, EntitySelector.NO_CREATIVE_OR_SPECTATOR::test);
-         this.ocelot = p_29051_;
+      public CatAvoidEntityGoal(OCat p_28191_, Class<T> p_28192_, float p_28193_, double p_28194_, double p_28195_) {
+         super(p_28191_, p_28192_, p_28193_, p_28194_, p_28195_, EntitySelector.NO_CREATIVE_OR_SPECTATOR::test);
+         this.cat = p_28191_;
       }
 
       public boolean canUse() {
-         return super.canUse();
+         return !this.cat.isTame() && super.canUse();
       }
 
       public boolean canContinueToUse() {
-         return super.canContinueToUse();
+         return !this.cat.isTame() && super.canContinueToUse();
       }
    }
 
