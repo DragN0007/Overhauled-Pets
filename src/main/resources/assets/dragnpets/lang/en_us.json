@@ -34,68 +34,11 @@
   "item.dragnpets.ringneck_spawn_egg": "Ringneck Parrot Spawn Egg",
   "entity.dragnpets.ringneck": "Ringneck Parrot",
 
-  "item.dragnpets.doberman_spawn_egg": "Doberman Pinscher Spawn Egg",
-  "entity.dragnpets.doberman": "Doberman Pinscher",
+  "item.dragnpets.o_cat_spawn_egg": "O-Cat Spawn Egg",
+  "entity.dragnpets.o_cat": "O-Cat",
 
-  "item.dragnpets.o_cat_spawn_egg": "Common Cat Spawn Egg",
-  "entity.dragnpets.o_cat": "Common Cat",
-
-  "item.dragnpets.o_dog_spawn_egg": "Common Dog Spawn Egg",
-  "entity.dragnpets.o_dog": "Common Dog",
-
-  "item.dragnpets.labrador_spawn_egg": "Labrador Retriever Spawn Egg",
-  "entity.dragnpets.labrador": "Labrador Retriever",
-
-  "item.dragnpets.husky_spawn_egg": "Husky Spawn Egg",
-  "entity.dragnpets.husky": "Husky",
-
-  "item.dragnpets.pyrenees_spawn_egg": "Great Pyrenees Spawn Egg",
-  "entity.dragnpets.pyrenees": "Great Pyrenees",
-
-  "item.dragnpets.border_collie_spawn_egg": "Border Collie Spawn Egg",
-  "entity.dragnpets.border_collie": "Border Collie",
-
-  "item.dragnpets.bernese_spawn_egg": "Bernese Mountain Dog Spawn Egg",
-  "entity.dragnpets.bernese": "Bernese Mountain Dog",
-
-  "item.dragnpets.maine_coon_spawn_egg": "Maine Coon Spawn Egg",
-  "entity.dragnpets.maine_coon": "Maine Coon",
-
-  "item.dragnpets.ashepherd_spawn_egg": "Australian Shepherd Spawn Egg",
-  "entity.dragnpets.australian_shepherd": "Australian Shepherd",
-
-  "item.dragnpets.bloodhound_spawn_egg": "Bloodhound Spawn Egg",
-  "entity.dragnpets.bloodhound": "Bloodhound",
-
-  "item.dragnpets.kornish_rex_spawn_egg": "Kornish Rex Spawn Egg",
-  "entity.dragnpets.kornish_rex": "Kornish Rex",
-
-  "item.dragnpets.cocker_spaniel_spawn_egg": "Cocker Spaniel Spawn Egg",
-  "entity.dragnpets.cocker_spaniel": "Cocker Spaniel",
-
-  "item.dragnpets.whippet_spawn_egg": "Whippet Spawn Egg",
-  "entity.dragnpets.whippet": "Whippet",
-
-  "item.dragnpets.rottweiler_spawn_egg": "Rottweiler Spawn Egg",
-  "entity.dragnpets.rottweiler": "Rottweiler",
-
-  "item.dragnpets.manx_spawn_egg": "Manx Spawn Egg",
-  "entity.dragnpets.manx": "Manx",
-
-  "item.dragnpets.american_ridgeback_spawn_egg": "American Ridgeback Spawn Egg",
-  "entity.dragnpets.american_ridgeback": "American Ridgeback",
-
-  "item.dragnpets.beagle_spawn_egg": "Beagle Spawn Egg",
-  "entity.dragnpets.beagle": "Beagle",
-
-  "item.dragnpets.coonhound_spawn_egg": "Coonhound Spawn Egg",
-  "entity.dragnpets.coonhound": "Coonhound",
-
-  "item.dragnpets.foxhound_spawn_egg": "Foxhound Spawn Egg",
-  "entity.dragnpets.foxhound": "Foxhound",
-
-  "item.dragnpets.jack_russell_spawn_egg": "Jack Russell Spawn Egg",
-  "entity.dragnpets.jack_russell": "Jack Russell",
+  "item.dragnpets.o_dog_spawn_egg": "O-Dog Spawn Egg",
+  "entity.dragnpets.o_dog": "O-Dog",
 
   "item.dragnpets.wolf": "Dog",
   "item.dragnpets.cooked_wolf": "Cooked Dog",

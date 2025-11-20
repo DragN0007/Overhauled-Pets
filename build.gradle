@@ -85,14 +85,14 @@ repositories {
             includeGroupByRegex("software\\.bernie.*")
             includeGroup("com.eliotlash.mclib")
         }
+    }
 
-        maven {
-            url 'https://www.cursemaven.com'
-        }
+    maven {
+        url 'https://www.cursemaven.com'
+    }
 
-        maven {
-            url 'https://maven.blamejared.com'
-        }
+    maven {
+        url 'https://maven.blamejared.com'
     }
 }
 

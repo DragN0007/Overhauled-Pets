@@ -1,6 +1,6 @@
 package com.dragn0007.dragnpets.entities.dog.border_collie;
 
-import com.dragn0007.dragnpets.entities.dog.CommonDogDecorLayer;
+import com.dragn0007.dragnpets.entities.dog.ODogDecorLayer;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -27,7 +27,7 @@ public class CollieDecorLayer extends GeoRenderLayer<Collie> {
 
         if (animatable.hasVest()) {
             if (dyeColor != null) {
-                resourceLocation = CommonDogDecorLayer.VEST[dyeColor.getId()];
+                resourceLocation = ODogDecorLayer.VEST[dyeColor.getId()];
             }
 
             RenderType renderType1 = RenderType.entityCutout(resourceLocation);

@@ -38,21 +38,30 @@ public class OAxolotlModel extends DefaultedEntityGeoModel<OAxolotl> {
     }
 
     public enum Variant {
-        ALBINO(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/axolotl/axolotl_albino.png")),
-        BLACK(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/axolotl/axolotl_black.png")),
-        BLUE(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/axolotl/axolotl_blue.png")),
-        BROWN(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/axolotl/axolotl_brown.png")),
-        COPPER(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/axolotl/axolotl_copper.png")),
-        GOLD(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/axolotl/axolotl_gold.png")),
-        GREEN(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/axolotl/axolotl_green.png")),
-        GREY(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/axolotl/axolotl_grey.png")),
-        PINK(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/axolotl/axolotl_pink.png")),
-        PURPLE(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/axolotl/axolotl_purple.png")),
-        STONE(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/axolotl/axolotl_stone.png")),
-        MELANOID_ALBINO(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/axolotl/axolotl_melanoid_albino.png")),
-        BLUE_CREAM(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/axolotl/axolotl_blue_cream.png")),
-        BURGUNDY_CREAM(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/axolotl/axolotl_burgundy_cream.png")),
-        GALAXY_PURPLE(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/axolotl/axolotl_galaxy_purple.png"));
+        ALBINO(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/axolotl/albino.png")),
+        BLACK(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/axolotl/black.png")),
+        BLUE(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/axolotl/blue.png")),
+        BROWN(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/axolotl/brown.png")),
+        COPPER(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/axolotl/copper.png")),
+        GOLD(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/axolotl/gold.png")),
+        GREEN(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/axolotl/green.png")),
+        SILVER(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/axolotl/silver.png")),
+        PINK(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/axolotl/pink.png")),
+        PURPLE(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/axolotl/purple.png")),
+        STONE(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/axolotl/stone.png")),
+        MELANOID_ALBINO(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/axolotl/melanoid_albino.png")),
+        BLUE_CREAM(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/axolotl/blue_cream.png")),
+        BURGUNDY_CREAM(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/axolotl/burgundy_cream.png")),
+        GALAXY_PURPLE(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/axolotl/galaxy_purple.png")),
+        CHOCOLATE(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/axolotl/chocolate.png")),
+        CREAM(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/axolotl/cream.png")),
+        FAWN(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/axolotl/fawn.png")),
+        LILAC(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/axolotl/lilac.png")),
+        MAHOGANY(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/axolotl/mahogany.png")),
+        RED(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/axolotl/red.png")),
+        SEAL(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/axolotl/seal.png")),
+        TAN(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/axolotl/tan.png")),
+        WHITE(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/axolotl/white.png"));
 
         public final ResourceLocation resourceLocation;
         Variant(ResourceLocation resourceLocation) {

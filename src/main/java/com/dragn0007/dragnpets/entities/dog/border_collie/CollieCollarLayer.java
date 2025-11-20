@@ -1,6 +1,6 @@
 package com.dragn0007.dragnpets.entities.dog.border_collie;
 
-import com.dragn0007.dragnpets.entities.dog.CommonDogCollarLayer;
+import com.dragn0007.dragnpets.entities.dog.ODogCollarLayer;
 import com.dragn0007.dragnpets.util.PetsOverhaulClientConfig;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -28,7 +28,7 @@ public class CollieCollarLayer extends GeoRenderLayer<Collie> {
         ResourceLocation resourceLocation = null;
 
         if (dyeColor != null) {
-            resourceLocation = CommonDogCollarLayer.TEXTURE_LOCATION[dyeColor.getId()];
+            resourceLocation = ODogCollarLayer.TEXTURE_LOCATION[dyeColor.getId()];
         }
 
         if (resourceLocation == null || !PetsOverhaulClientConfig.RENDER_COLLARS.get() || !animatable.isCollared()) {
@@ -50,7 +50,7 @@ public class CollieCollarLayer extends GeoRenderLayer<Collie> {
 
 
         if (PetsOverhaulClientConfig.COLLAR_GENDER_INDICATOR.get()) {
-            ResourceLocation genderIndicator = animatable.isFemale() ? CommonDogCollarLayer.FEMALE_INDICATOR : CommonDogCollarLayer.MALE_INDICATOR;
+            ResourceLocation genderIndicator = animatable.isFemale() ? ODogCollarLayer.FEMALE_INDICATOR : ODogCollarLayer.MALE_INDICATOR;
 
 
             RenderType genderRenderType = RenderType.entityCutout(genderIndicator);

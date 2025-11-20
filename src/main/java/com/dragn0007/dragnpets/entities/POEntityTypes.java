@@ -6,7 +6,7 @@ import com.dragn0007.dragnpets.entities.cat.OCat;
 import com.dragn0007.dragnpets.entities.cat.kornish_rex.KornishRex;
 import com.dragn0007.dragnpets.entities.cat.maine_coon.MaineCoon;
 import com.dragn0007.dragnpets.entities.cat.manx.Manx;
-import com.dragn0007.dragnpets.entities.dog.CommonDog;
+import com.dragn0007.dragnpets.entities.dog.ODog;
 import com.dragn0007.dragnpets.entities.dog.american_ridgeback.AmericanRidgeback;
 import com.dragn0007.dragnpets.entities.dog.australian_shepherd.AustralianShepherd;
 import com.dragn0007.dragnpets.entities.dog.beagle.Beagle;
@@ -91,8 +91,8 @@ public class POEntityTypes {
                     .sized(0.4f,0.4f)
                     .build(new ResourceLocation(LivestockOverhaul.MODID,"o_tropical_fish").toString()));
 
-    public static final RegistryObject<EntityType<CommonDog>> O_DOG_ENTITY = ENTITY_TYPES.register("o_dog",
-            () -> EntityType.Builder.of(CommonDog::new,
+    public static final RegistryObject<EntityType<ODog>> O_DOG_ENTITY = ENTITY_TYPES.register("o_dog",
+            () -> EntityType.Builder.of(ODog::new,
                             MobCategory.CREATURE)
                     .sized(0.6f,0.6f)
                     .build(new ResourceLocation(LivestockOverhaul.MODID,"o_dog").toString()));

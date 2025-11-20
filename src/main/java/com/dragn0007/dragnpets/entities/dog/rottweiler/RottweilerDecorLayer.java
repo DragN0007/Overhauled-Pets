@@ -1,7 +1,7 @@
 package com.dragn0007.dragnpets.entities.dog.rottweiler;
 
 import com.dragn0007.dragnpets.PetsOverhaul;
-import com.dragn0007.dragnpets.entities.dog.CommonDogDecorLayer;
+import com.dragn0007.dragnpets.entities.dog.ODogDecorLayer;
 import com.dragn0007.dragnpets.items.custom.DogArmorItem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -29,7 +29,7 @@ public class RottweilerDecorLayer extends GeoRenderLayer<Rottweiler> {
 
         if (animatable.hasVest()) {
             if (dyeColor != null) {
-                resourceLocation = CommonDogDecorLayer.VEST[dyeColor.getId()];
+                resourceLocation = ODogDecorLayer.VEST[dyeColor.getId()];
             }
 
             RenderType renderType1 = RenderType.entityCutout(resourceLocation);

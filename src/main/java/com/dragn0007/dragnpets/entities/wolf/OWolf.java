@@ -46,7 +46,6 @@ import net.minecraft.world.entity.animal.horse.AbstractHorse;
 import net.minecraft.world.entity.monster.AbstractSkeleton;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.monster.Ghast;
-import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.item.*;
@@ -628,7 +627,6 @@ public class OWolf extends TamableAnimal implements NeutralMob, GeoEntity {
       this.setItemSlot(EquipmentSlot.CHEST, itemStack);
       this.setDropChance(EquipmentSlot.CHEST, 0f);
    }
-
 
    // Generates the base texture
    public static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(OWolf.class, EntityDataSerializers.INT);

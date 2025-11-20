@@ -1,6 +1,6 @@
 package com.dragn0007.dragnpets.gui;
 
-import com.dragn0007.dragnpets.entities.dog.ODog;
+import com.dragn0007.dragnpets.entities.dog.DogBase;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
@@ -13,13 +13,13 @@ import net.minecraft.world.item.ItemStack;
 public class LabradorMenu extends AbstractContainerMenu {
 
     public Container container;
-    public ODog labrador;
+    public DogBase labrador;
 
     public LabradorMenu(int containerId, Inventory inventory, FriendlyByteBuf extraData) {
-        this(containerId, inventory, new SimpleContainer(extraData.readInt()), (ODog) inventory.player.level().getEntity(extraData.readInt()));
+        this(containerId, inventory, new SimpleContainer(extraData.readInt()), (DogBase) inventory.player.level().getEntity(extraData.readInt()));
     }
 
-    public LabradorMenu(int containerId, Inventory inventory, Container container, ODog labrador) {
+    public LabradorMenu(int containerId, Inventory inventory, Container container, DogBase labrador) {
         super(POMenuTypes.LABRADOR_MENU.get(), containerId);
         this.container = container;
         this.labrador = labrador;

@@ -7,7 +7,7 @@ import com.dragn0007.dragnpets.entities.cat.OCat;
 import com.dragn0007.dragnpets.entities.cat.kornish_rex.KornishRex;
 import com.dragn0007.dragnpets.entities.cat.maine_coon.MaineCoon;
 import com.dragn0007.dragnpets.entities.cat.manx.Manx;
-import com.dragn0007.dragnpets.entities.dog.CommonDog;
+import com.dragn0007.dragnpets.entities.dog.ODog;
 import com.dragn0007.dragnpets.entities.dog.american_ridgeback.AmericanRidgeback;
 import com.dragn0007.dragnpets.entities.dog.australian_shepherd.AustralianShepherd;
 import com.dragn0007.dragnpets.entities.dog.beagle.Beagle;
@@ -64,7 +64,7 @@ public class PetsOverhaulEvent {
         event.put(POEntityTypes.COCKER_SPANIEL_ENTITY.get(), CockerSpaniel.createAttributes().build());
         event.put(POEntityTypes.WHIPPET_ENTITY.get(), Whippet.createAttributes().build());
         event.put(POEntityTypes.ROTTWEILER_ENTITY.get(), Rottweiler.createAttributes().build());
-        event.put(POEntityTypes.O_DOG_ENTITY.get(), CommonDog.createAttributes().build());
+        event.put(POEntityTypes.O_DOG_ENTITY.get(), ODog.createAttributes().build());
         event.put(POEntityTypes.MANX_ENTITY.get(), Manx.createAttributes().build());
         event.put(POEntityTypes.AMERICAN_RIDGEBACK_ENTITY.get(), AmericanRidgeback.createAttributes().build());
         event.put(POEntityTypes.BEAGLE_ENTITY.get(), Beagle.createAttributes().build());

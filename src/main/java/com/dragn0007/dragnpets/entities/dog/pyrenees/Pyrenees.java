@@ -3,9 +3,9 @@ package com.dragn0007.dragnpets.entities.dog.pyrenees;
 import com.dragn0007.dragnlivestock.util.LivestockOverhaulCommonConfig;
 import com.dragn0007.dragnpets.entities.POEntityTypes;
 import com.dragn0007.dragnpets.entities.ai.*;
-import com.dragn0007.dragnpets.entities.dog.CommonDogModel;
+import com.dragn0007.dragnpets.entities.dog.DogBase;
 import com.dragn0007.dragnpets.entities.dog.DogMarkingOverlay;
-import com.dragn0007.dragnpets.entities.dog.ODog;
+import com.dragn0007.dragnpets.entities.dog.ODogModel;
 import com.dragn0007.dragnpets.util.POTags;
 import com.dragn0007.dragnpets.util.PetsOverhaulCommonConfig;
 import net.minecraft.core.BlockPos;
@@ -50,7 +50,7 @@ import software.bernie.geckolib.util.GeckoLibUtil;
 import java.util.Random;
 import java.util.UUID;
 
-public class Pyrenees extends ODog implements NeutralMob, GeoEntity {
+public class Pyrenees extends DogBase implements NeutralMob, GeoEntity {
 
    public static final EntityDataAccessor<Integer> DATA_COLLAR_COLOR = SynchedEntityData.defineId(Pyrenees.class, EntityDataSerializers.INT);
    public static final EntityDataAccessor<Integer> DATA_REMAINING_ANGER_TIME = SynchedEntityData.defineId(Pyrenees.class, EntityDataSerializers.INT);
@@ -81,9 +81,9 @@ public class Pyrenees extends ODog implements NeutralMob, GeoEntity {
       this.targetSelector.addGoal(3, (new HurtByTargetGoal(this)).setAlertOthers());
       this.targetSelector.addGoal(4, new NearestAttackableTargetGoal<>(this, Player.class, 10, true, false, this::isAngryAt));
       this.targetSelector.addGoal(8, new ResetUniversalAngerTargetGoal<>(this, true));
-      this.goalSelector.addGoal(10, new DogFollowPackLeaderGoal(this));
-
-      this.goalSelector.addGoal(6, new DogFollowOwnerGoal(this, 1.0D, 10.0F, 2.0F, false));
+//      this.goalSelector.addGoal(10, new DogFollowPackLeaderGoal(this));
+//
+//      this.goalSelector.addGoal(6, new DogFollowOwnerGoal(this, 1.0D, 10.0F, 2.0F, false));
 
       this.goalSelector.addGoal(7, new FollowSheepGoal(this, 1.0D, 6.0F, 7.0F));
       this.goalSelector.addGoal(7, new FollowGoatGoal(this, 1.0D, 6.0F, 7.0F));
@@ -360,11 +360,11 @@ public class Pyrenees extends ODog implements NeutralMob, GeoEntity {
          this.setColor();
          this.setMarking();
       } else {
-         this.setVariant(random.nextInt(CommonDogModel.Variant.values().length));
+         this.setVariant(random.nextInt(ODogModel.Variant.values().length));
          this.setOverlayVariant(random.nextInt(DogMarkingOverlay.values().length));
       }
 
-      setGender(random.nextInt(ODog.Gender.values().length));
+      setGender(random.nextInt(DogBase.Gender.values().length));
 
       this.setFluffChance();
 
@@ -399,7 +399,7 @@ public class Pyrenees extends ODog implements NeutralMob, GeoEntity {
 
    public void setColor() {
       if (random.nextDouble() < 0.02) {
-         setVariant(random.nextInt(CommonDogModel.Variant.values().length));
+         setVariant(random.nextInt(ODogModel.Variant.values().length));
       } else if (random.nextDouble() > 0.02) {
          this.setVariant(14);
       }
@@ -438,7 +438,7 @@ public class Pyrenees extends ODog implements NeutralMob, GeoEntity {
    @Override
    public AgeableMob getBreedOffspring(ServerLevel serverLevel, AgeableMob ageableMob) {
 
-      ODog pup = null;
+      DogBase pup = null;
       Pyrenees partner = (Pyrenees) ageableMob;
 
       if (ageableMob instanceof Pyrenees) {
@@ -451,7 +451,7 @@ public class Pyrenees extends ODog implements NeutralMob, GeoEntity {
          } else if (variantChance < 12) {
             variant = partner.getVariant();
          } else {
-            variant = this.random.nextInt(CommonDogModel.Variant.values().length);
+            variant = this.random.nextInt(ODogModel.Variant.values().length);
          }
          pup.setVariant(variant);
 
@@ -476,7 +476,7 @@ public class Pyrenees extends ODog implements NeutralMob, GeoEntity {
          pup.setFluff(fluff);
 
          int gender;
-         gender = this.random.nextInt(ODog.Gender.values().length);
+         gender = this.random.nextInt(DogBase.Gender.values().length);
          pup.setGender(gender);
 
          if (PetsOverhaulCommonConfig.ALLOW_CROPPED_DOG_SPAWNS.get()){

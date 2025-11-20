@@ -1,6 +1,6 @@
 package com.dragn0007.dragnpets.entities.dog.foxhound;
 
-import com.dragn0007.dragnpets.entities.dog.CommonDogDecorLayer;
+import com.dragn0007.dragnpets.entities.dog.ODogDecorLayer;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -27,7 +27,7 @@ public class FoxhoundDecorLayer extends GeoRenderLayer<Foxhound> {
 
         if (animatable.hasVest()) {
             if (dyeColor != null) {
-                resourceLocation = CommonDogDecorLayer.VEST[dyeColor.getId()];
+                resourceLocation = ODogDecorLayer.VEST[dyeColor.getId()];
             }
 
             RenderType renderType1 = RenderType.entityCutout(resourceLocation);

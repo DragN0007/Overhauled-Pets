@@ -5,9 +5,9 @@ import com.dragn0007.dragnlivestock.util.LivestockOverhaulCommonConfig;
 import com.dragn0007.dragnpets.entities.POEntityTypes;
 import com.dragn0007.dragnpets.entities.ai.DogFollowOwnerGoal;
 import com.dragn0007.dragnpets.entities.ai.DogFollowPackLeaderGoal;
-import com.dragn0007.dragnpets.entities.dog.CommonDogModel;
+import com.dragn0007.dragnpets.entities.dog.DogBase;
 import com.dragn0007.dragnpets.entities.dog.DogMarkingOverlay;
-import com.dragn0007.dragnpets.entities.dog.ODog;
+import com.dragn0007.dragnpets.entities.dog.ODogModel;
 import com.dragn0007.dragnpets.gui.LabradorMenu;
 import com.dragn0007.dragnpets.util.POTags;
 import com.dragn0007.dragnpets.util.PetsOverhaulCommonConfig;
@@ -63,7 +63,7 @@ import java.util.Random;
 import java.util.UUID;
 import java.util.function.Predicate;
 
-public class Labrador extends ODog implements InventoryCarrier, NeutralMob, GeoEntity, ContainerListener {
+public class Labrador extends DogBase implements InventoryCarrier, NeutralMob, GeoEntity, ContainerListener {
 
    public static final EntityDataAccessor<Integer> DATA_COLLAR_COLOR = SynchedEntityData.defineId(Labrador.class, EntityDataSerializers.INT);
    public static final EntityDataAccessor<Integer> DATA_REMAINING_ANGER_TIME = SynchedEntityData.defineId(Labrador.class, EntityDataSerializers.INT);
@@ -96,11 +96,11 @@ public class Labrador extends ODog implements InventoryCarrier, NeutralMob, GeoE
       this.targetSelector.addGoal(3, (new HurtByTargetGoal(this)).setAlertOthers());
       this.targetSelector.addGoal(4, new NearestAttackableTargetGoal<>(this, Player.class, 10, true, false, this::isAngryAt));
       this.targetSelector.addGoal(8, new ResetUniversalAngerTargetGoal<>(this, true));
-      this.goalSelector.addGoal(7, new DogFollowPackLeaderGoal(this));
-
-      this.goalSelector.addGoal(7, new LabradorSearchForItemsGoal());
-
-      this.goalSelector.addGoal(6, new DogFollowOwnerGoal(this, 1.0D, 10.0F, 2.0F, false));
+//      this.goalSelector.addGoal(7, new DogFollowPackLeaderGoal(this));
+//
+//      this.goalSelector.addGoal(7, new LabradorSearchForItemsGoal());
+//
+//      this.goalSelector.addGoal(6, new DogFollowOwnerGoal(this, 1.0D, 10.0F, 2.0F, false));
 
       this.goalSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, OChicken.class, 2, true, false,
               entity -> entity instanceof OChicken && (this.isTame() && this.wasToldToHunt())));
@@ -392,11 +392,11 @@ public class Labrador extends ODog implements InventoryCarrier, NeutralMob, GeoE
          this.setColor();
          this.setMarking();
       } else {
-         this.setVariant(random.nextInt(CommonDogModel.Variant.values().length));
+         this.setVariant(random.nextInt(ODogModel.Variant.values().length));
          this.setOverlayVariant(random.nextInt(DogMarkingOverlay.values().length));
       }
 
-      setGender(random.nextInt(ODog.Gender.values().length));
+      setGender(random.nextInt(DogBase.Gender.values().length));
 
       this.setFluffChance();
 
@@ -431,7 +431,7 @@ public class Labrador extends ODog implements InventoryCarrier, NeutralMob, GeoE
 
    public void setColor() {
       if (random.nextDouble() < 0.07) {
-         setVariant(random.nextInt(CommonDogModel.Variant.values().length));
+         setVariant(random.nextInt(ODogModel.Variant.values().length));
       } else if (random.nextDouble() > 0.07) {
          int[] variants = {0, 3, 4, 5, 9, 12};
          int randomIndex = new Random().nextInt(variants.length);
@@ -472,7 +472,7 @@ public class Labrador extends ODog implements InventoryCarrier, NeutralMob, GeoE
    @Override
    public AgeableMob getBreedOffspring(ServerLevel serverLevel, AgeableMob ageableMob) {
 
-      ODog pup = null;
+      DogBase pup = null;
       Labrador partner = (Labrador) ageableMob;
 
       if (ageableMob instanceof Labrador) {
@@ -485,7 +485,7 @@ public class Labrador extends ODog implements InventoryCarrier, NeutralMob, GeoE
          } else if (variantChance < 12) {
             variant = partner.getVariant();
          } else {
-            variant = this.random.nextInt(CommonDogModel.Variant.values().length);
+            variant = this.random.nextInt(ODogModel.Variant.values().length);
          }
          pup.setVariant(variant);
 
@@ -510,7 +510,7 @@ public class Labrador extends ODog implements InventoryCarrier, NeutralMob, GeoE
          pup.setFluff(fluff);
 
          int gender;
-         gender = this.random.nextInt(ODog.Gender.values().length);
+         gender = this.random.nextInt(DogBase.Gender.values().length);
          pup.setGender(gender);
 
          if (PetsOverhaulCommonConfig.ALLOW_CROPPED_DOG_SPAWNS.get()){

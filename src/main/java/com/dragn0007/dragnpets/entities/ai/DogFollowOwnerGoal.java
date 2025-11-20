@@ -1,5 +1,6 @@
 package com.dragn0007.dragnpets.entities.ai;
 
+import com.dragn0007.dragnpets.entities.dog.DogBase;
 import com.dragn0007.dragnpets.entities.dog.ODog;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.LivingEntity;

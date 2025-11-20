@@ -4,9 +4,9 @@ import com.dragn0007.dragnlivestock.util.LivestockOverhaulCommonConfig;
 import com.dragn0007.dragnpets.entities.POEntityTypes;
 import com.dragn0007.dragnpets.entities.ai.DogFollowOwnerGoal;
 import com.dragn0007.dragnpets.entities.ai.DogFollowPackLeaderGoal;
-import com.dragn0007.dragnpets.entities.dog.CommonDogModel;
+import com.dragn0007.dragnpets.entities.dog.DogBase;
 import com.dragn0007.dragnpets.entities.dog.DogMarkingOverlay;
-import com.dragn0007.dragnpets.entities.dog.ODog;
+import com.dragn0007.dragnpets.entities.dog.ODogModel;
 import com.dragn0007.dragnpets.gui.LabradorMenu;
 import com.dragn0007.dragnpets.util.POTags;
 import com.dragn0007.dragnpets.util.PetsOverhaulCommonConfig;
@@ -68,7 +68,7 @@ import java.util.Random;
 import java.util.UUID;
 import java.util.function.Predicate;
 
-public class Rottweiler extends ODog implements InventoryCarrier, NeutralMob, GeoEntity, ContainerListener {
+public class Rottweiler extends DogBase implements InventoryCarrier, NeutralMob, GeoEntity, ContainerListener {
 
    public static final EntityDataAccessor<Integer> DATA_COLLAR_COLOR = SynchedEntityData.defineId(Rottweiler.class, EntityDataSerializers.INT);
    public static final EntityDataAccessor<Integer> DATA_REMAINING_ANGER_TIME = SynchedEntityData.defineId(Rottweiler.class, EntityDataSerializers.INT);
@@ -101,11 +101,11 @@ public class Rottweiler extends ODog implements InventoryCarrier, NeutralMob, Ge
       this.targetSelector.addGoal(3, (new HurtByTargetGoal(this)).setAlertOthers());
       this.targetSelector.addGoal(4, new NearestAttackableTargetGoal<>(this, Player.class, 10, true, false, this::isAngryAt));
       this.targetSelector.addGoal(8, new ResetUniversalAngerTargetGoal<>(this, true));
-      this.goalSelector.addGoal(7, new DogFollowPackLeaderGoal(this));
-
-      this.goalSelector.addGoal(7, new RottweilerSearchForItemsGoal());
-
-      this.goalSelector.addGoal(6, new DogFollowOwnerGoal(this, 1.0D, 10.0F, 2.0F, false));
+//      this.goalSelector.addGoal(7, new DogFollowPackLeaderGoal(this));
+//
+//      this.goalSelector.addGoal(7, new RottweilerSearchForItemsGoal());
+//
+//      this.goalSelector.addGoal(6, new DogFollowOwnerGoal(this, 1.0D, 10.0F, 2.0F, false));
 
       this.goalSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, Monster.class, 2, true, false,
               entity -> entity instanceof Monster && this.isTame() && this.wasToldToGuard()));
@@ -189,7 +189,7 @@ public class Rottweiler extends ODog implements InventoryCarrier, NeutralMob, Ge
    public void tick() {
       super.tick();
       if (this.hasFollowers() && this.level().random.nextInt(200) == 1) {
-         List<? extends ODog> list = this.level().getEntitiesOfClass(this.getClass(), this.getBoundingBox().inflate(20.0D, 20.0D, 20.0D));
+         List<? extends DogBase> list = this.level().getEntitiesOfClass(this.getClass(), this.getBoundingBox().inflate(20.0D, 20.0D, 20.0D));
          if (list.size() <= 1) {
             this.packSize = 1;
          }
@@ -475,11 +475,11 @@ public class Rottweiler extends ODog implements InventoryCarrier, NeutralMob, Ge
          this.setColor();
          this.setMarking();
       } else {
-         this.setVariant(random.nextInt(CommonDogModel.Variant.values().length));
+         this.setVariant(random.nextInt(ODogModel.Variant.values().length));
          this.setOverlayVariant(random.nextInt(DogMarkingOverlay.values().length));
       }
 
-      setGender(random.nextInt(ODog.Gender.values().length));
+      setGender(random.nextInt(DogBase.Gender.values().length));
 
       this.setFluffChance();
 
@@ -514,7 +514,7 @@ public class Rottweiler extends ODog implements InventoryCarrier, NeutralMob, Ge
 
    public void setColor() {
       if (random.nextDouble() < 0.07) {
-         setVariant(random.nextInt(CommonDogModel.Variant.values().length));
+         setVariant(random.nextInt(ODogModel.Variant.values().length));
       } else if (random.nextDouble() > 0.07) {
          int[] variants = {0, 10};
          int randomIndex = new Random().nextInt(variants.length);
@@ -557,7 +557,7 @@ public class Rottweiler extends ODog implements InventoryCarrier, NeutralMob, Ge
    @Override
    public AgeableMob getBreedOffspring(ServerLevel serverLevel, AgeableMob ageableMob) {
 
-      ODog pup = null;
+      DogBase pup = null;
       Rottweiler partner = (Rottweiler) ageableMob;
 
       if (ageableMob instanceof Rottweiler) {
@@ -570,7 +570,7 @@ public class Rottweiler extends ODog implements InventoryCarrier, NeutralMob, Ge
          } else if (variantChance < 12) {
             variant = partner.getVariant();
          } else {
-            variant = this.random.nextInt(CommonDogModel.Variant.values().length);
+            variant = this.random.nextInt(ODogModel.Variant.values().length);
          }
          pup.setVariant(variant);
 
@@ -595,7 +595,7 @@ public class Rottweiler extends ODog implements InventoryCarrier, NeutralMob, Ge
          pup.setFluff(fluff);
 
          int gender;
-         gender = this.random.nextInt(ODog.Gender.values().length);
+         gender = this.random.nextInt(DogBase.Gender.values().length);
          pup.setGender(gender);
 
          if (PetsOverhaulCommonConfig.ALLOW_CROPPED_DOG_SPAWNS.get()){

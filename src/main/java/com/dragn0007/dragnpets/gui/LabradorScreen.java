@@ -1,7 +1,7 @@
 package com.dragn0007.dragnpets.gui;
 
 import com.dragn0007.dragnpets.PetsOverhaul;
-import com.dragn0007.dragnpets.entities.dog.ODog;
+import com.dragn0007.dragnpets.entities.dog.DogBase;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -12,7 +12,7 @@ import net.minecraft.world.entity.player.Inventory;
 
 public class LabradorScreen extends AbstractContainerScreen<LabradorMenu> {
     public static final ResourceLocation INVENTORY_LOCATION = new ResourceLocation(PetsOverhaul.MODID, "textures/gui/labrador.png");
-    public final ODog labrador;
+    public final DogBase labrador;
 
     public LabradorScreen(LabradorMenu labradorMenu, Inventory inventory, Component component) {
         super(labradorMenu, inventory, component);

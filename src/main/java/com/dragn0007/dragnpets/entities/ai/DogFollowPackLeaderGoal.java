@@ -1,6 +1,7 @@
 package com.dragn0007.dragnpets.entities.ai;
 
 import com.dragn0007.dragnlivestock.util.LivestockOverhaulCommonConfig;
+import com.dragn0007.dragnpets.entities.dog.DogBase;
 import com.dragn0007.dragnpets.entities.dog.ODog;
 import com.mojang.datafixers.DataFixUtils;
 import net.minecraft.world.entity.ai.goal.AvoidEntityGoal;
@@ -38,8 +39,8 @@ public class DogFollowPackLeaderGoal extends Goal {
             return follower.canBeFollowed() || !follower.isFollower();
          };
          List<? extends ODog> list = this.mob.level().getEntitiesOfClass(this.mob.getClass(), this.mob.getBoundingBox().inflate(8.0D, 8.0D, 8.0D), predicate);
-         ODog ODog = DataFixUtils.orElse(list.stream().filter(com.dragn0007.dragnpets.entities.dog.ODog::canBeFollowed).findAny(), this.mob);
-         ODog.addFollowers(list.stream().filter((cow) -> {
+         ODog dog = DataFixUtils.orElse(list.stream().filter(ODog::canBeFollowed).findAny(), this.mob);
+         dog.addFollowers(list.stream().filter((cow) -> {
             return !cow.isFollower();
          }));
          return this.mob.isFollower();
