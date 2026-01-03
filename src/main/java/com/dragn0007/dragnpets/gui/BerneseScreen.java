@@ -1,7 +1,7 @@
 package com.dragn0007.dragnpets.gui;
 
 import com.dragn0007.dragnpets.PetsOverhaul;
-import com.dragn0007.dragnpets.entities.dog.bernese.Bernese;
+import com.dragn0007.dragnpets.entities.dog.ODog;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -12,7 +12,7 @@ import net.minecraft.world.entity.player.Inventory;
 
 public class BerneseScreen extends AbstractContainerScreen<BerneseMenu> {
     public static final ResourceLocation LOCATION = new ResourceLocation(PetsOverhaul.MODID, "textures/gui/bernese_mountain_dog.png");
-    public final Bernese bernese;
+    public final ODog bernese;
 
     public BerneseScreen(BerneseMenu berneseMenu, Inventory inventory, Component component) {
         super(berneseMenu, inventory, component);
@@ -28,9 +28,9 @@ public class BerneseScreen extends AbstractContainerScreen<BerneseMenu> {
         int y = (this.height - this.imageHeight) / 2;
         graphics.blit(LOCATION, x, y, 0, 0, this.imageWidth, this.imageHeight);
 
-        if (this.bernese.isChested()) {
-            graphics.blit(LOCATION, x + 25, y + 17, 0, this.imageHeight, 145, 54);
-        }
+//        if (this.bernese.isChested()) {
+//            graphics.blit(LOCATION, x + 25, y + 17, 0, this.imageHeight, 145, 54);
+//        }
     }
 
     @Override

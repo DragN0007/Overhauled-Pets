@@ -35,52 +35,14 @@ public class POItems {
             () -> new ForgeSpawnEggItem(POEntityTypes.O_TROPICAL_FISH_ENTITY, 0xce7b22, 0xffffff, new Item.Properties().stacksTo(64)));
     public static final RegistryObject<Item> O_CAT_SPAWN_EGG = ITEMS.register("o_cat_spawn_egg",
             () -> new ForgeSpawnEggItem(POEntityTypes.O_CAT_ENTITY, 0xd5913f, 0xa7631a, new Item.Properties().stacksTo(64)));
+    public static final RegistryObject<Item> O_DOG_SPAWN_EGG = ITEMS.register("o_dog_spawn_egg",
+            () -> new ForgeSpawnEggItem(POEntityTypes.O_DOG_ENTITY, 0x95715f, 0xb8947a, new Item.Properties().stacksTo(64)));
     public static final RegistryObject<Item> MACAW_SPAWN_EGG = ITEMS.register("macaw_spawn_egg",
             () -> new ForgeSpawnEggItem(POEntityTypes.MACAW_ENTITY, 0xab2f23, 0xda9e35, new Item.Properties().stacksTo(64)));
     public static final RegistryObject<Item> COCKATIEL_SPAWN_EGG = ITEMS.register("cockatiel_spawn_egg",
             () -> new ForgeSpawnEggItem(POEntityTypes.COCKATIEL_ENTITY, 0x9d9d9d, 0xfff469, new Item.Properties().stacksTo(64)));
     public static final RegistryObject<Item> RINGNECK_SPAWN_EGG = ITEMS.register("ringneck_spawn_egg",
             () -> new ForgeSpawnEggItem(POEntityTypes.RINGNECK_ENTITY, 0xa3a855, 0x2f3515, new Item.Properties().stacksTo(64)));
-    public static final RegistryObject<Item> DOBERMAN_SPAWN_EGG = ITEMS.register("doberman_spawn_egg",
-            () -> new ForgeSpawnEggItem(POEntityTypes.DOBERMAN_ENTITY, 0x232323, 0x8c4716, new Item.Properties().stacksTo(64)));
-    public static final RegistryObject<Item> LABRADOR_SPAWN_EGG = ITEMS.register("labrador_spawn_egg",
-            () -> new ForgeSpawnEggItem(POEntityTypes.LABRADOR_ENTITY, 0xf2ca8c, 0xc8a56d, new Item.Properties().stacksTo(64)));
-    public static final RegistryObject<Item> HUSKY_SPAWN_EGG = ITEMS.register("husky_spawn_egg",
-            () -> new ForgeSpawnEggItem(POEntityTypes.HUSKY_ENTITY, 0x4a4743, 0xfaf4e9, new Item.Properties().stacksTo(64)));
-    public static final RegistryObject<Item> PYRENEES_SPAWN_EGG = ITEMS.register("pyrenees_spawn_egg",
-            () -> new ForgeSpawnEggItem(POEntityTypes.PYRENEES_ENTITY, 0xfdfcf8, 0xe0dcd1, new Item.Properties().stacksTo(64)));
-    public static final RegistryObject<Item> BORDER_COLLIE_SPAWN_EGG = ITEMS.register("border_collie_spawn_egg",
-            () -> new ForgeSpawnEggItem(POEntityTypes.BORDER_COLLIE_ENTITY, 0x683f20, 0xfff8f8, new Item.Properties().stacksTo(64)));
-    public static final RegistryObject<Item> MAINE_COON_SPAWN_EGG = ITEMS.register("maine_coon_spawn_egg",
-            () -> new ForgeSpawnEggItem(POEntityTypes.MAINE_COON_ENTITY, 0x565353, 0x413f3f, new Item.Properties().stacksTo(64)));
-    public static final RegistryObject<Item> BERNESE_SPAWN_EGG = ITEMS.register("bernese_spawn_egg",
-            () -> new ForgeSpawnEggItem(POEntityTypes.BERNESE_ENTITY, 0x262627, 0xc27f3a, new Item.Properties().stacksTo(64)));
-    public static final RegistryObject<Item> ASHEPHERD_SPAWN_EGG = ITEMS.register("ashepherd_spawn_egg",
-            () -> new ForgeSpawnEggItem(POEntityTypes.AUSTRALIAN_SHEPHERD_ENTITY, 0x8d9199, 0x3c3735, new Item.Properties().stacksTo(64)));
-    public static final RegistryObject<Item> BLOODHOUND_SPAWN_EGG = ITEMS.register("bloodhound_spawn_egg",
-            () -> new ForgeSpawnEggItem(POEntityTypes.BLOODHOUND_ENTITY, 0x472914, 0x2a2726, new Item.Properties().stacksTo(64)));
-    public static final RegistryObject<Item> KORNISH_REX_SPAWN_EGG = ITEMS.register("kornish_rex_spawn_egg",
-            () -> new ForgeSpawnEggItem(POEntityTypes.KORNISH_REX_ENTITY, 0x956239, 0x6e3b16, new Item.Properties().stacksTo(64)));
-    public static final RegistryObject<Item> COCKER_SPANIEL_SPAWN_EGG = ITEMS.register("cocker_spaniel_spawn_egg",
-            () -> new ForgeSpawnEggItem(POEntityTypes.COCKER_SPANIEL_ENTITY, 0xbc6738, 0x77371c, new Item.Properties().stacksTo(64)));
-    public static final RegistryObject<Item> WHIPPET_SPAWN_EGG = ITEMS.register("whippet_spawn_egg",
-            () -> new ForgeSpawnEggItem(POEntityTypes.WHIPPET_ENTITY, 0x9496a1, 0x72737e, new Item.Properties().stacksTo(64)));
-    public static final RegistryObject<Item> ROTTWEILER_SPAWN_EGG = ITEMS.register("rottweiler_spawn_egg",
-            () -> new ForgeSpawnEggItem(POEntityTypes.ROTTWEILER_ENTITY, 0x232323, 0x8c4716, new Item.Properties().stacksTo(64)));
-    public static final RegistryObject<Item> O_DOG_SPAWN_EGG = ITEMS.register("o_dog_spawn_egg",
-            () -> new ForgeSpawnEggItem(POEntityTypes.O_DOG_ENTITY, 0x95715f, 0xb8947a, new Item.Properties().stacksTo(64)));
-    public static final RegistryObject<Item> MANX_SPAWN_EGG = ITEMS.register("manx_spawn_egg",
-            () -> new ForgeSpawnEggItem(POEntityTypes.MANX_ENTITY, 0x6b4d41, 0x482d28, new Item.Properties().stacksTo(64)));
-    public static final RegistryObject<Item> AMERICAN_RIDGEBACK_SPAWN_EGG = ITEMS.register("american_ridgeback_spawn_egg",
-            () -> new ForgeSpawnEggItem(POEntityTypes.AMERICAN_RIDGEBACK_ENTITY, 0x5c362d, 0xf0ecec, new Item.Properties().stacksTo(64)));
-    public static final RegistryObject<Item> BEAGLE_SPAWN_EGG = ITEMS.register("beagle_spawn_egg",
-            () -> new ForgeSpawnEggItem(POEntityTypes.BEAGLE_ENTITY, 0xae6e40, 0xf0ecec, new Item.Properties().stacksTo(64)));
-    public static final RegistryObject<Item> COONHOUND_SPAWN_EGG = ITEMS.register("coonhound_spawn_egg",
-            () -> new ForgeSpawnEggItem(POEntityTypes.COONHOUND_ENTITY, 0x939393, 0x465062, new Item.Properties().stacksTo(64)));
-    public static final RegistryObject<Item> FOXHOUND_SPAWN_EGG = ITEMS.register("foxhound_spawn_egg",
-            () -> new ForgeSpawnEggItem(POEntityTypes.FOXHOUND_ENTITY, 0xae6e40, 0xf0ecec, new Item.Properties().stacksTo(64)));
-    public static final RegistryObject<Item> JACK_RUSSELL_SPAWN_EGG = ITEMS.register("jack_russell_spawn_egg",
-            () -> new ForgeSpawnEggItem(POEntityTypes.JACK_RUSSELL_ENTITY, 0xffffff, 0xae6e40, new Item.Properties().stacksTo(64)));
 
     //Food
     public static final RegistryObject<Item> WOLF = ITEMS.register("wolf",

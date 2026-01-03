@@ -1,7 +1,7 @@
 package com.dragn0007.dragnpets.gui;
 
 import com.dragn0007.dragnpets.PetsOverhaul;
-import com.dragn0007.dragnpets.entities.dog.husky.Husky;
+import com.dragn0007.dragnpets.entities.dog.ODog;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -12,7 +12,7 @@ import net.minecraft.world.entity.player.Inventory;
 
 public class HuskyScreen extends AbstractContainerScreen<HuskyMenu> {
     public static final ResourceLocation HUSKY_INVENTORY_LOCATION = new ResourceLocation(PetsOverhaul.MODID, "textures/gui/husky.png");
-    public final Husky husky;
+    public final ODog husky;
 
     public HuskyScreen(HuskyMenu huskyMenu, Inventory inventory, Component component) {
         super(huskyMenu, inventory, component);
@@ -28,9 +28,9 @@ public class HuskyScreen extends AbstractContainerScreen<HuskyMenu> {
         int y = (this.height - this.imageHeight) / 2;
         graphics.blit(HUSKY_INVENTORY_LOCATION, x, y, 0, 0, this.imageWidth, this.imageHeight);
 
-        if (this.husky.isChested()) {
-            graphics.blit(HUSKY_INVENTORY_LOCATION, x + 57, y + 17, 0, this.imageHeight, 145, 54);
-        }
+//        if (this.husky.isChested()) {
+//            graphics.blit(HUSKY_INVENTORY_LOCATION, x + 57, y + 17, 0, this.imageHeight, 145, 54);
+//        }
     }
 
     @Override

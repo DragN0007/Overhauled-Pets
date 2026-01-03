@@ -1,6 +1,5 @@
 package com.dragn0007.dragnpets.datagen;
 
-import com.dragn0007.dragnlivestock.datagen.LOWorldGenerator;
 import com.dragn0007.dragnpets.PetsOverhaul;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;

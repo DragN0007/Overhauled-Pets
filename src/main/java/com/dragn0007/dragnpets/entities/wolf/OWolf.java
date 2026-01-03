@@ -106,7 +106,7 @@ public class OWolf extends TamableAnimal implements NeutralMob, GeoEntity {
               entitytype == EntityTypes.O_PIG_ENTITY.get() ||
               entitytype == POEntityTypes.O_FOX_ENTITY.get() ||
               entitytype == POEntityTypes.O_OCELOT_ENTITY.get() ||
-              entitytype == POEntityTypes.DOBERMAN_ENTITY.get()||
+              entitytype == POEntityTypes.O_DOG_ENTITY.get() ||
               entitytype == POEntityTypes.O_CAT_ENTITY.get()
               ;
    };

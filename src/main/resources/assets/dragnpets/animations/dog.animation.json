@@ -787,6 +787,11 @@
 					"rotation": {
 						"vector": [7.5, 0, "math.sin(query.anim_time*560)*16"]
 					}
+				},
+				"tail2": {
+					"rotation": {
+						"vector": [-62.5, 0, "math.cos(query.anim_time*560)*18"]
+					}
 				}
 			}
 		},
@@ -938,6 +943,11 @@
 					"scale": {
 						"vector": [1, 1, 1]
 					}
+				},
+				"tail2": {
+					"rotation": {
+						"vector": [-80, 0, "math.cos(query.anim_time * 140) * 7"]
+					}
 				}
 			}
 		},
@@ -1074,7 +1084,7 @@
 				},
 				"tail": {
 					"rotation": {
-						"vector": [-27.5, 0, "math.cos(query.anim_time*560)*25"]
+						"vector": [-80, 0, "math.cos(query.anim_time * 140) * 7"]
 					}
 				},
 				"tail_bottom": {
@@ -1088,6 +1098,11 @@
 					},
 					"scale": {
 						"vector": [1, 1, 1]
+					}
+				},
+				"tail2": {
+					"rotation": {
+						"vector": [-80, 0, "math.cos(query.anim_time * 140) * 7"]
 					}
 				}
 			}
@@ -1261,6 +1276,11 @@
 					},
 					"scale": {
 						"vector": [1, 1, 1]
+					}
+				},
+				"tail2": {
+					"rotation": {
+						"vector": [-80, 0, "math.cos(query.anim_time * 140) * 7"]
 					}
 				}
 			}
@@ -1992,10 +2012,10 @@
 				"tail": {
 					"rotation": {
 						"0.0": {
-							"vector": ["math.cos(query.anim_time*840)*30-10", 0, 0]
+							"vector": ["math.cos(query.anim_time*840)*30+10", 0, 0]
 						},
 						"0.4286": {
-							"vector": ["math.cos(query.anim_time*840)*30-10", 0, 0]
+							"vector": ["math.cos(query.anim_time*840)*30+10", 0, 0]
 						}
 					},
 					"position": {
@@ -2056,6 +2076,30 @@
 						"0.4286": {
 							"vector": [1, 1, 1]
 						}
+					}
+				},
+				"tail2": {
+					"rotation": {
+						"0.0": {
+							"vector": ["math.cos(query.anim_time*840)*30+10", 0, 0]
+						},
+						"0.4286": {
+							"vector": ["math.cos(query.anim_time*840)*30+10", 0, 0]
+						}
+					},
+					"position": {
+						"0.0": {
+							"vector": [0, -1.5, -0.3]
+						},
+						"0.2": {
+							"vector": [0, 1.7, -2.4]
+						},
+						"0.4286": {
+							"vector": [0, -1.5, -0.3]
+						}
+					},
+					"scale": {
+						"vector": [1, 0.9, 1]
 					}
 				}
 			}

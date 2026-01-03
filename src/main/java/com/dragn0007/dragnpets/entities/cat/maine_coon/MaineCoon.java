@@ -420,48 +420,48 @@ public class MaineCoon extends OCat implements GeoEntity {
 
    @Override
    public AgeableMob getBreedOffspring(ServerLevel serverLevel, AgeableMob ageableMob) {
-      MaineCoon kitten;
-      MaineCoon partner = (MaineCoon) ageableMob;
-      kitten = POEntityTypes.MAINE_COON_ENTITY.get().create(serverLevel);
+//      MaineCoon kitten;
+//      MaineCoon partner = (MaineCoon) ageableMob;
+//      kitten = POEntityTypes.MAINE_COON_ENTITY.get().create(serverLevel);
+//
+//      int variantChance = this.random.nextInt(14);
+//      int variant;
+//      if (variantChance < 6) {
+//         variant = this.getVariant();
+//      } else if (variantChance < 12) {
+//         variant = partner.getVariant();
+//      } else {
+//         variant = this.random.nextInt(OCatModel.Variant.values().length);
+//      }
+//      kitten.setVariant(variant);
+//
+//      int overlayChance = this.random.nextInt(10);
+//      int overlay;
+//      if (overlayChance < 4) {
+//         overlay = this.getOverlayVariant();
+//      } else if (overlayChance < 8) {
+//         overlay = partner.getOverlayVariant();
+//      } else {
+//         overlay = this.random.nextInt(CatMarkingOverlay.values().length);
+//      }
+//      kitten.setOverlayVariant(overlay);
+//
+//      int eyeChance = this.random.nextInt(10);
+//      int eyes;
+//      if (eyeChance < 4) {
+//         eyes = this.getEyes();
+//      } else if (eyeChance < 8) {
+//         eyes = partner.getEyes();
+//      } else {
+//         eyes = this.random.nextInt(OCatEyeLayer.Eyes.values().length);
+//      }
+//      kitten.setEyes(eyes);
+//
+//      int gender;
+//      gender = this.random.nextInt(OCat.Gender.values().length);
+//      kitten.setGender(gender);
 
-      int variantChance = this.random.nextInt(14);
-      int variant;
-      if (variantChance < 6) {
-         variant = this.getVariant();
-      } else if (variantChance < 12) {
-         variant = partner.getVariant();
-      } else {
-         variant = this.random.nextInt(OCatModel.Variant.values().length);
-      }
-      kitten.setVariant(variant);
-
-      int overlayChance = this.random.nextInt(10);
-      int overlay;
-      if (overlayChance < 4) {
-         overlay = this.getOverlayVariant();
-      } else if (overlayChance < 8) {
-         overlay = partner.getOverlayVariant();
-      } else {
-         overlay = this.random.nextInt(CatMarkingOverlay.values().length);
-      }
-      kitten.setOverlayVariant(overlay);
-
-      int eyeChance = this.random.nextInt(10);
-      int eyes;
-      if (eyeChance < 4) {
-         eyes = this.getEyes();
-      } else if (eyeChance < 8) {
-         eyes = partner.getEyes();
-      } else {
-         eyes = this.random.nextInt(OCatEyeLayer.Eyes.values().length);
-      }
-      kitten.setEyes(eyes);
-
-      int gender;
-      gender = this.random.nextInt(OCat.Gender.values().length);
-      kitten.setGender(gender);
-
-      return kitten;
+      return null;
    }
 
    public boolean canBeLeashed(Player p_30396_) {

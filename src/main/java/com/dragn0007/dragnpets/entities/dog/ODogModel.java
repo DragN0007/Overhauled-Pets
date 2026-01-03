@@ -62,12 +62,12 @@ public class ODogModel extends DefaultedEntityGeoModel<ODog> {
         }
     }
 
-    public static final ResourceLocation MODEL = new ResourceLocation(PetsOverhaul.MODID, "geo/dog/o_dog.geo.json");
+//    public static final ResourceLocation MODEL = new ResourceLocation(PetsOverhaul.MODID, "geo/dog/o_dog.geo.json");
     public static final ResourceLocation ANIMATION = new ResourceLocation(PetsOverhaul.MODID, "animations/dog.animation.json");
 
     @Override
     public ResourceLocation getModelResource(ODog object) {
-        return MODEL;
+        return DogBreed.breedFromOrdinal(object.getBreed()).resourceLocation;
     }
 
     @Override

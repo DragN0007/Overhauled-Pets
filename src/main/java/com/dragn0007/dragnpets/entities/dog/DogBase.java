@@ -4,7 +4,6 @@ import com.dragn0007.dragnlivestock.items.LOItems;
 import com.dragn0007.dragnlivestock.util.LivestockOverhaulCommonConfig;
 import com.dragn0007.dragnpets.PetsOverhaul;
 import com.dragn0007.dragnpets.entities.POEntityTypes;
-import com.dragn0007.dragnpets.entities.ai.DogFollowOwnerGoal;
 import com.dragn0007.dragnpets.items.custom.DogArmorItem;
 import com.dragn0007.dragnpets.items.custom.VestItem;
 import com.dragn0007.dragnpets.util.POTags;

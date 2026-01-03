@@ -1,7 +1,7 @@
 package com.dragn0007.dragnpets.compat.jade.gender;
 
 import com.dragn0007.dragnlivestock.LivestockOverhaul;
-import com.dragn0007.dragnpets.entities.dog.DogBase;
+import com.dragn0007.dragnpets.entities.dog.ODog;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import snownee.jade.api.EntityAccessor;
@@ -16,7 +16,7 @@ public class DogGenderTooltip implements IEntityComponentProvider {
 
     @Override
     public void appendTooltip(ITooltip tooltip, EntityAccessor entityAccessor, IPluginConfig iPluginConfig) {
-        DogBase animal = (DogBase)entityAccessor.getEntity();
+        ODog animal = (ODog)entityAccessor.getEntity();
         if (animal.isFemale()) {
             tooltip.add(Component.translatable("tooltip.dragnlivestock.jade.female.tooltip"));
         } else if (animal.isMale()) {

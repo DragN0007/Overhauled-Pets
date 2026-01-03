@@ -1,6 +1,6 @@
 package com.dragn0007.dragnpets.gui;
 
-import com.dragn0007.dragnpets.entities.dog.husky.Husky;
+import com.dragn0007.dragnpets.entities.dog.ODog;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
@@ -13,26 +13,26 @@ import net.minecraft.world.item.ItemStack;
 public class HuskyMenu extends AbstractContainerMenu {
 
     public Container container;
-    public Husky husky;
+    public ODog husky;
 
     public HuskyMenu(int containerId, Inventory inventory, FriendlyByteBuf extraData) {
-        this(containerId, inventory, new SimpleContainer(extraData.readInt()), (Husky) inventory.player.level().getEntity(extraData.readInt()));
+        this(containerId, inventory, new SimpleContainer(extraData.readInt()), (ODog) inventory.player.level().getEntity(extraData.readInt()));
     }
 
-    public HuskyMenu(int containerId, Inventory inventory, Container container, Husky husky) {
+    public HuskyMenu(int containerId, Inventory inventory, Container container, ODog husky) {
         super(POMenuTypes.HUSKY_MENU.get(), containerId);
         this.container = container;
         this.husky = husky;
 
         int huskySlots = 0;
 
-        if (this.husky.isChested()) {
-            for (int y = 0; y < 3; y++) {
-                for (int x = 0; x < 4; x++) {
-                    this.addSlot(new Slot(this.container, huskySlots++, 58 + x * 18, 18 + y * 18));
-                }
-            }
-        }
+//        if (this.husky.isChested()) {
+//            for (int y = 0; y < 3; y++) {
+//                for (int x = 0; x < 4; x++) {
+//                    this.addSlot(new Slot(this.container, huskySlots++, 58 + x * 18, 18 + y * 18));
+//                }
+//            }
+//        }
 
         int playerSlots = 0;
         for (int x = 0; x < 9; x++) {

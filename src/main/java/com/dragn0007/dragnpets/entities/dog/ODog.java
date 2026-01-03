@@ -1,10 +1,7 @@
 package com.dragn0007.dragnpets.entities.dog;
 
+import com.dragn0007.dragnlivestock.entities.Chestable;
 import com.dragn0007.dragnlivestock.entities.chicken.OChicken;
-import com.dragn0007.dragnlivestock.entities.cow.CowBreed;
-import com.dragn0007.dragnlivestock.entities.cow.OCow;
-import com.dragn0007.dragnlivestock.entities.horse.HorseBreed;
-import com.dragn0007.dragnlivestock.entities.horse.OHorse;
 import com.dragn0007.dragnlivestock.entities.rabbit.ORabbit;
 import com.dragn0007.dragnlivestock.entities.util.AbstractOMount;
 import com.dragn0007.dragnlivestock.items.LOItems;
@@ -12,6 +9,7 @@ import com.dragn0007.dragnlivestock.util.LivestockOverhaulCommonConfig;
 import com.dragn0007.dragnpets.PetsOverhaul;
 import com.dragn0007.dragnpets.entities.POEntityTypes;
 import com.dragn0007.dragnpets.entities.ai.*;
+import com.dragn0007.dragnpets.gui.BerneseMenu;
 import com.dragn0007.dragnpets.items.custom.DogArmorItem;
 import com.dragn0007.dragnpets.items.custom.VestItem;
 import com.dragn0007.dragnpets.util.POTags;
@@ -20,19 +18,20 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.TimeUtil;
 import net.minecraft.util.valueproviders.UniformInt;
-import net.minecraft.world.DifficultyInstance;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.*;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -51,20 +50,24 @@ import net.minecraft.world.item.*;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.pathfinder.BlockPathTypes;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.common.Tags;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.fml.ModList;
+import net.minecraftforge.items.wrapper.InvWrapper;
+import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.core.animatable.GeoAnimatable;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
-import software.bernie.geckolib.core.animation.AnimatableManager;
-import software.bernie.geckolib.core.animation.Animation;
-import software.bernie.geckolib.core.animation.AnimationController;
-import software.bernie.geckolib.core.animation.RawAnimation;
+import software.bernie.geckolib.core.animation.AnimationState;
+import software.bernie.geckolib.core.animation.*;
 import software.bernie.geckolib.core.object.PlayState;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
@@ -73,7 +76,7 @@ import java.util.Random;
 import java.util.UUID;
 import java.util.stream.Stream;
 
-public class ODog extends TamableAnimal implements NeutralMob, GeoEntity {
+public class ODog extends TamableAnimal implements NeutralMob, GeoEntity, Chestable, ContainerListener {
 
    public static final ResourceLocation LOOT_TABLE = new ResourceLocation(PetsOverhaul.MODID, "entities/o_wolf");
    public static final ResourceLocation VANILLA_LOOT_TABLE = new ResourceLocation("minecraft", "entities/wolf");
@@ -96,6 +99,8 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity {
    public ODog(EntityType<? extends ODog> entityType, Level level) {
       super(entityType, level);
       this.setTame(false);
+      this.canPickUpLoot();
+      this.updateInventory();
       this.setPathfindingMalus(BlockPathTypes.POWDER_SNOW, -1.0F);
       this.setPathfindingMalus(BlockPathTypes.DANGER_POWDER_SNOW, -1.0F);
    }
@@ -138,7 +143,7 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity {
                  entity -> entity instanceof Slime && this.isTame() && this.wasToldToGuard()));
       }
 
-      if (this.isBigGameHunter()) {
+      if (this.isBigGameHunter() && this.getBreed() == 5) {
          this.goalSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, LivingEntity.class, 2, true, false,
                  entity ->
                          (entity.getType().is(POTags.Entity_Types.GAME) && this.isTame() && this.wasToldToHunt())
@@ -147,17 +152,17 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity {
          ));
       }
 
-      if (this.getBreed() == 2 || this.getBreed() == 15) {
+      if (this.getBreed() == 3 || this.getBreed() == 16) {
          this.goalSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, ORabbit.class, 2, true, false,
                  entity -> entity instanceof ORabbit && (entity instanceof TamableAnimal && !((TamableAnimal) entity).isTame() && this.isTame() && this.wasToldToHunt())));
       }
 
-      if (this.getBreed() == 6 || this.getBreed() == 11 || this.getBreed() == 12) {
+      if (this.getBreed() == 7 || this.getBreed() == 12 || this.getBreed() == 13) {
          this.goalSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, OChicken.class, 2, true, false,
                  entity -> entity instanceof OChicken && (this.isTame() && this.wasToldToHunt())));
       }
 
-      if (this.getBreed() == 9 || this.getBreed() == 11) {
+      if (this.getBreed() == 10 || this.getBreed() == 12) {
          this.goalSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, LivingEntity.class, 2, true, false,
                  entity ->
                          (entity.getType().is(POTags.Entity_Types.FOX) && this.isTame() && this.wasToldToHunt())
@@ -166,6 +171,14 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity {
       }
 
       if (this.getBreed() == 19) {
+         this.goalSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, LivingEntity.class, 2, true, false,
+                 entity ->
+                         (entity.getType().is(POTags.Entity_Types.WOLVES) && this.isTame() && this.wasToldToHunt())
+                                 || (entity.getType().is(POTags.Entity_Types.WOLVES) && entity instanceof TamableAnimal && !((TamableAnimal) entity).isTame() && this.isTame() && this.wasToldToHunt())
+         ));
+      }
+
+      if (this.getBreed() == 1) {
          this.goalSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, LivingEntity.class, 2, true, false,
                  entity ->
                          (entity.getType().is(POTags.Entity_Types.DDD_GAME) && this.isTame() && this.wasToldToHunt())
@@ -178,26 +191,76 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity {
    public static AttributeSupplier.Builder createAttributes() {
       return Mob.createMobAttributes()
               .add(Attributes.MOVEMENT_SPEED, 0.26F)
-              .add(Attributes.MAX_HEALTH, 12.0D)
+              .add(Attributes.MAX_HEALTH, 24.0D)
               .add(Attributes.ARMOR, 0.0D)
-              .add(Attributes.ATTACK_DAMAGE, 3.0D);
+              .add(Attributes.ATTACK_DAMAGE, 2.0D);
+   }
+
+   public void setODogAttributes() {
+      this.getAttribute(Attributes.MAX_HEALTH).setBaseValue(this.generateODogMaxHealth());
+      this.getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(this.generateODogSpeed());
+      this.getAttribute(Attributes.ATTACK_DAMAGE).setBaseValue(this.generateODogAttackDamage());
+   }
+
+   public double generateODogMaxHealth() {
+      if (this.isHuntingDog()) {
+         return 14.0D;
+      } else if (this.isBigGameHunter()) {
+         return 16.0D;
+      } else if (this.isGuardDog()) {
+         return 18.0D;
+      } else if (this.isLivestockGuardian()) {
+         return 20.0D;
+      } else {
+         return 12.0D;
+      }
+   }
+
+   public float generateODogSpeed() {
+      if (this.isHuntingDog()) {
+         return 0.29F;
+      } else if (this.isBigGameHunter()) {
+         return 0.27F;
+      } else if (this.isGuardDog()) {
+         return 0.26F;
+      } else if (this.isLivestockGuardian()) {
+         return 0.24F;
+      } else {
+         return 0.26F;
+      }
+   }
+
+   public double generateODogAttackDamage() {
+      if (this.isHuntingDog()) {
+         return 2.0D;
+      } else if (this.isBigGameHunter()) {
+         return 3.0D;
+      } else if (this.isGuardDog()) {
+         return 4.0D;
+      } else if (this.isLivestockGuardian()) {
+         return 3.0D;
+      } else {
+         return 2.0D;
+      }
    }
 
    public final AnimatableInstanceCache geoCache = GeckoLibUtil.createInstanceCache(this);
 
-   public <T extends GeoAnimatable> PlayState predicate(software.bernie.geckolib.core.animation.AnimationState<T> tAnimationState) {
+   public <T extends GeoAnimatable> PlayState predicate(AnimationState<T> tAnimationState) {
       double currentSpeed = this.getDeltaMovement().lengthSqr();
-      double speedThreshold = 0.015;
+      double speedThreshold = 0.02;
+      double movementSpeed = this.getAttributeBaseValue(Attributes.MOVEMENT_SPEED);
+      double animationSpeed = Math.max(0.1, movementSpeed);
 
       AnimationController<T> controller = tAnimationState.getController();
 
       if (tAnimationState.isMoving()) {
          if (currentSpeed > speedThreshold) {
             controller.setAnimation(RawAnimation.begin().then("run", Animation.LoopType.LOOP));
-            controller.setAnimationSpeed(1.3);
+            controller.setAnimationSpeed(Math.max(0.1, 0.8 * controller.getAnimationSpeed() + animationSpeed));
          } else {
             controller.setAnimation(RawAnimation.begin().then("walk", Animation.LoopType.LOOP));
-            controller.setAnimationSpeed(1.3);
+            controller.setAnimationSpeed(Math.max(0.1, 0.8 * controller.getAnimationSpeed() + animationSpeed));
          }
       } else {
          if (isInSittingPose()) {
@@ -376,14 +439,6 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity {
 
    public void setTame(boolean p_30443_) {
       super.setTame(p_30443_);
-      if (p_30443_) {
-         this.getAttribute(Attributes.MAX_HEALTH).setBaseValue(18.0D);
-         this.setHealth(20.0F);
-      } else {
-         this.getAttribute(Attributes.MAX_HEALTH).setBaseValue(7.0D);
-      }
-
-      this.getAttribute(Attributes.ATTACK_DAMAGE).setBaseValue(2.5D);
    }
 
    public boolean hurt(DamageSource damageSource, float amount) {
@@ -393,37 +448,39 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity {
             if (!this.level().isClientSide && this.isTame() && !this.isOrderedToSit() && !this.isInSittingPose() && !this.wasToldToHunt()) {
                this.setToldToHunt(true);
                player.displayClientMessage(Component.translatable("tooltip.dragnpets.hunting.tooltip").withStyle(ChatFormatting.GOLD), true);
+               return false;
             }
-
             if (!this.level().isClientSide && this.isTame() && !this.isOrderedToSit() && !this.isInSittingPose() && this.wasToldToHunt()) {
                this.setToldToHunt(false);
                player.displayClientMessage(Component.translatable("tooltip.dragnpets.not_hunting.tooltip").withStyle(ChatFormatting.GOLD), true);
+               return false;
             }
          } else if (this.isGuardDog() && this.isOwnedBy(player) && player.isShiftKeyDown()) {
             if (!this.level().isClientSide && this.isTame() && !this.isOrderedToSit() && !this.isInSittingPose() && !this.wasToldToGuard()) {
                this.setToldToGuard(true);
                player.displayClientMessage(Component.translatable("tooltip.dragnpets.guarding.tooltip").withStyle(ChatFormatting.GOLD), true);
+               return false;
             }
-
             if (!this.level().isClientSide && this.isTame() && !this.isOrderedToSit() && !this.isInSittingPose() && this.wasToldToGuard()) {
                this.setToldToGuard(false);
                player.displayClientMessage(Component.translatable("tooltip.dragnpets.not_guarding.tooltip").withStyle(ChatFormatting.GOLD), true);
+               return false;
             }
-         }
-
-         if (this.isInvulnerableTo(damageSource)) {
-            return false;
          } else {
-            Entity entity = damageSource.getEntity();
-            if (!this.level().isClientSide) {
-               this.setOrderedToSit(false);
-            }
+            if (this.isInvulnerableTo(damageSource)) {
+               return false;
+            } else {
+               Entity entity = damageSource.getEntity();
+               if (!this.level().isClientSide) {
+                  this.setOrderedToSit(false);
+               }
 
-            if (entity != null && !(entity instanceof Player) && !(entity instanceof AbstractArrow)) {
-               amount = (amount + 1.0F) / 2.0F;
-            }
+               if (entity != null && !(entity instanceof Player) && !(entity instanceof AbstractArrow)) {
+                  amount = (amount + 1.0F) / 2.0F;
+               }
 
-            return super.hurt(damageSource, amount);
+               return super.hurt(damageSource, amount);
+            }
          }
       }
 
@@ -442,22 +499,28 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity {
       }
    }
 
+   public boolean hasInventory() {
+      return this.getBreed() == 4 || this.getBreed() == 11 || this.isHuntingDog();
+   }
+
    public InteractionResult mobInteract(Player player, InteractionHand hand) {
       ItemStack itemstack = player.getItemInHand(hand);
       Item item = itemstack.getItem();
 
-      if (itemstack.is(LOItems.BREED_OSCILLATOR.get()) && player.getAbilities().instabuild) {
-         return InteractionResult.PASS;
-      }
 
+      //TODO; Fix armor bug in survival, inventories
       if (this.isOwnedBy(player)) {
-         if (itemstack.getItem() instanceof DogArmorItem && this.getArmor().isEmpty() && !this.hasVest() && this.canWearArmor()) {
+         if (itemstack.getItem() instanceof DogArmorItem && this.getArmor().is(Items.AIR) && !this.hasVest() && this.canWearArmor()) {
             this.setArmor(itemstack);
+            this.updateInventory();
             this.playSound(SoundEvents.HORSE_ARMOR, 0.5f, 1f);
-            return InteractionResult.sidedSuccess(this.level().isClientSide);
+            if (!player.getAbilities().instabuild) {
+               itemstack.shrink(1);
+            }
+            return InteractionResult.SUCCESS;
          }
 
-         if (itemstack.is(Items.SHEARS) && this.canWearArmor() && (this.isCollared() || this.hasVest() || !this.getArmor().isEmpty())) {
+         if (itemstack.is(Items.SHEARS)) {
             this.setCollared(false);
             this.setVest(false);
             if (!this.getArmor().isEmpty() && this.getArmor().getItem() instanceof DogArmorItem armorItem) {
@@ -465,7 +528,50 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity {
                this.setArmor(Items.AIR.getDefaultInstance());
             }
             this.playSound(SoundEvents.SHEEP_SHEAR, 0.5f, 1f);
+            this.dropEquipment();
+            this.inventory.removeAllItems();
+            this.updateInventory();
+            return InteractionResult.SUCCESS;
+         }
+         return super.mobInteract(player, hand);
+      }
+
+      if (player.getAbilities().instabuild) {
+         if (itemstack.is(LOItems.COAT_OSCILLATOR.get())) {
+            if (player.isShiftKeyDown()) {
+               if (this.getVariant() > 0) {
+                  this.setVariant(this.getVariant() - 1);
+                  this.playSound(SoundEvents.BEEHIVE_EXIT, 0.5f, 1f);
+                  return InteractionResult.SUCCESS;
+               }
+            }
+            this.setVariant(this.getVariant() + 1);
+            this.playSound(SoundEvents.BEEHIVE_EXIT, 0.5f, 1f);
             return InteractionResult.sidedSuccess(this.level().isClientSide);
+         } else if (itemstack.is(LOItems.MARKING_OSCILLATOR.get())) {
+            if (player.isShiftKeyDown()) {
+               if (this.getOverlayVariant() > 0) {
+                  this.setOverlayVariant(this.getOverlayVariant() - 1);
+                  this.playSound(SoundEvents.BEEHIVE_EXIT, 0.5f, 1f);
+                  return InteractionResult.sidedSuccess(this.level().isClientSide);
+               }
+            }
+            this.setOverlayVariant(this.getOverlayVariant() + 1);
+            this.playSound(SoundEvents.BEEHIVE_EXIT, 0.5f, 1f);
+            return InteractionResult.sidedSuccess(this.level().isClientSide);
+         } else if (itemstack.is(LOItems.BREED_OSCILLATOR.get())) {
+            if (player.isShiftKeyDown()) {
+               if (this.getBreed() > 0) {
+                  this.setBreed(this.getBreed() - 1);
+                  this.playSound(SoundEvents.BEEHIVE_EXIT, 0.5f, 1f);
+                  return InteractionResult.SUCCESS;
+               }
+            }
+            DogBreed currentBreed = DogBreed.values()[this.getBreed()];
+            DogBreed nextBreed = currentBreed.next();
+            this.setBreed(nextBreed.ordinal());
+            this.playSound(SoundEvents.BEEHIVE_EXIT, 0.5f, 1f);
+            return InteractionResult.SUCCESS;
          }
       }
 
@@ -481,6 +587,36 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity {
          ItemStack itemstack1 = ItemUtils.createFilledResult(itemstack, player, LOItems.MALE_GENDER_TEST_STRIP.get().getDefaultInstance());
          player.setItemInHand(hand, itemstack1);
          return InteractionResult.SUCCESS;
+      }
+
+      if (this.hasInventory()) {
+         if (!this.isChested() && itemstack.is(Blocks.CHEST.asItem()) && this.isOwnedBy(player) && !this.isBaby()) {
+            this.playChestEquipsSound();
+            if (!player.getAbilities().instabuild) {
+               itemstack.shrink(1);
+            }
+            this.setChested(true);
+
+            return InteractionResult.sidedSuccess(this.level().isClientSide);
+         }
+
+         if (this.isOwnedBy(player) && !itemstack.is(Items.SHEARS) && this.isChested() && !this.isBaby()) {
+            if (this.isTame() && player.isSecondaryUseActive() && this.isOrderedToSit()) {
+               this.openInventory(player);
+               return InteractionResult.SUCCESS;
+            }
+         }
+
+         if (itemstack.is(Items.SHEARS) && player.isShiftKeyDown() && this.isOwnedBy(player) && !this.isBaby()) {
+            if (this.isChested()) {
+               this.dropEquipment();
+               this.inventory.removeAllItems();
+               this.setChested(false);
+               this.playChestEquipsSound();
+
+               return InteractionResult.SUCCESS;
+            }
+         }
       }
 
       //doggy talents next compat
@@ -520,32 +656,6 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity {
       if (player.isShiftKeyDown() && !this.isFood(itemstack) && !this.isInSittingPose() && this.wasToldToWander() && this.isOwnedBy(player)) {
          this.setToldToWander(false);
          player.displayClientMessage(Component.translatable("tooltip.dragnpets.following.tooltip").withStyle(ChatFormatting.GOLD), true);
-         return InteractionResult.SUCCESS;
-      }
-
-      if (itemstack.is(LOItems.COAT_OSCILLATOR.get()) && player.getAbilities().instabuild) {
-         if (player.isShiftKeyDown()) {
-            if (this.getVariant() > 0) {
-               this.setVariant(this.getVariant() - 1);
-               this.playSound(SoundEvents.BEEHIVE_EXIT, 0.5f, 1f);
-               return InteractionResult.SUCCESS;
-            }
-         }
-         this.setVariant(this.getVariant() + 1);
-         this.playSound(SoundEvents.BEEHIVE_EXIT, 0.5f, 1f);
-         return InteractionResult.SUCCESS;
-      }
-
-      if (itemstack.is(LOItems.MARKING_OSCILLATOR.get()) && player.getAbilities().instabuild) {
-         if (player.isShiftKeyDown()) {
-            if (this.getOverlayVariant() > 0) {
-               this.setOverlayVariant(this.getOverlayVariant() - 1);
-               this.playSound(SoundEvents.BEEHIVE_EXIT, 0.5f, 1f);
-               return InteractionResult.SUCCESS;
-            }
-         }
-         this.setOverlayVariant(this.getOverlayVariant() + 1);
-         this.playSound(SoundEvents.BEEHIVE_EXIT, 0.5f, 1f);
          return InteractionResult.SUCCESS;
       }
 
@@ -610,22 +720,20 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity {
             itemstack.shrink(1);
          }
 
-         if (this.random.nextInt(3) == 0 && !net.minecraftforge.event.ForgeEventFactory.onAnimalTame(this, player)) {
+         if (this.random.nextInt(3) == 0 && !ForgeEventFactory.onAnimalTame(this, player)) {
             this.tame(player);
             this.navigation.stop();
-            this.setTarget((LivingEntity)null);
+            this.setTarget((LivingEntity) null);
             this.setOrderedToSit(true);
-            this.level().broadcastEntityEvent(this, (byte)7);
+            this.level().broadcastEntityEvent(this, (byte) 7);
          } else {
-            this.level().broadcastEntityEvent(this, (byte)6);
+            this.level().broadcastEntityEvent(this, (byte) 6);
          }
-
          return InteractionResult.SUCCESS;
       } else {
          return super.mobInteract(player, hand);
       }
    }
-
 
    public static final EntityDataAccessor<Integer> DATA_REMAINING_ANGER_TIME = SynchedEntityData.defineId(ODog.class, EntityDataSerializers.INT);
    public int getRemainingPersistentAngerTime() {
@@ -716,30 +824,33 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity {
    }
 
    public boolean canWearArmor() {
-      return this.getBreed() == 2;
+      return this.isLivestockGuardian() || this.isGuardDog();
    }
 
    public boolean isHerdingDog() {
-      return this.getBreed() == 1 || this.getBreed() == 5;
+      return this.getBreed() == 2 || this.getBreed() == 6;
    }
 
    public boolean isHuntingDog() {
-      return this.getBreed() == 2 || this.getBreed() == 4 || this.getBreed() == 6 || this.getBreed() == 7 || this.getBreed() == 9 || this.getBreed() == 11 || this.getBreed() == 12 || this.getBreed() == 15 || this.getBreed() == 18 || this.getBreed() == 19;
+      return this.getBreed() == 3 || this.getBreed() == 7 || this.getBreed() == 8 || this.getBreed() == 10 ||
+              this.getBreed() == 12 || this.getBreed() == 13 || this.getBreed() == 16;
    }
 
    public boolean isGuardDog() {
-      return this.getBreed() == 8 || this.getBreed() == 14 || this.getBreed() == 16 || this.getBreed() == 17;
+      return this.getBreed() == 9 || this.getBreed() == 15 || this.getBreed() == 17 || this.getBreed() == 18;
    }
 
    public boolean isLivestockGuardian() {
-      return this.getBreed() == 3 || this.getBreed() == 13;
+      return this.getBreed() == 4 || this.getBreed() == 14;
    }
 
    public boolean isBigGameHunter() {
-      return this.getBreed() == 4 || this.getBreed() == 7;
+      return this.getBreed() == 1 || this.getBreed() == 5 || this.getBreed() == 19;
    }
 
    // Generates the base texture
+   public static final EntityDataAccessor<Boolean> CHESTED = SynchedEntityData.defineId(ODog.class, EntityDataSerializers.BOOLEAN);
+
    public static final EntityDataAccessor<Integer> BREED = SynchedEntityData.defineId(ODog.class, EntityDataSerializers.INT);
    public ResourceLocation getModelResource() {
       return DogBreed.breedFromOrdinal(getBreed()).resourceLocation;
@@ -827,6 +938,7 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity {
       this.entityData.define(GENDER, 0);
       this.entityData.define(CROPPED, 0);
       this.entityData.define(FLUFFY, 0);
+      this.entityData.define(CHESTED, false);
       this.entityData.define(DATA_REMAINING_ANGER_TIME, 0);
       this.entityData.define(DATA_COLLAR_COLOR, DyeColor.RED.getId());
       this.entityData.define(COLLARED, false);
@@ -884,6 +996,23 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity {
          this.setVest(tag.getBoolean("Vest"));
       }
 
+      if(tag.contains("Chested")) {
+         this.setChested(tag.getBoolean("Chested"));
+      }
+
+      this.updateInventory();
+      if(this.isChested()) {
+         ListTag listTag = tag.getList("Items", 10);
+
+         for(int i = 0; i < listTag.size(); i++) {
+            CompoundTag compoundTag = listTag.getCompound(i);
+            int j = compoundTag.getByte("Slot") & 255;
+            if(j < this.inventory.getContainerSize()) {
+               this.inventory.setItem(j, ItemStack.of(compoundTag));
+            }
+         }
+      }
+
       this.readPersistentAngerSaveData(this.level(), tag);
    }
 
@@ -901,6 +1030,24 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity {
       tag.putBoolean("Collared", this.isCollared());
       tag.putByte("VestColor", (byte)this.getVestColor().getId());
       tag.putBoolean("Vest", this.hasVest());
+
+      tag.putBoolean("Chested", this.isChested());
+
+      if(this.isChested()) {
+         ListTag listTag = new ListTag();
+
+         for(int i = 0; i < this.inventory.getContainerSize(); i++) {
+            ItemStack itemStack = this.inventory.getItem(i);
+            if(!itemStack.isEmpty()) {
+               CompoundTag compoundTag = new CompoundTag();
+               compoundTag.putByte("Slot", (byte) i);
+               itemStack.save(compoundTag);
+               listTag.add(compoundTag);
+            }
+         }
+         tag.put("Items", listTag);
+      }
+
       this.addPersistentAngerSaveData(tag);
    }
 
@@ -911,38 +1058,28 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity {
          data = new AgeableMobGroupData(0.2F);
       }
       Random random = new Random();
-      setVariant(random.nextInt(ODogModel.Variant.values().length));
-      setOverlayVariant(random.nextInt(DogMarkingOverlay.values().length));
-      setGender(random.nextInt(DogBase.Gender.values().length));
-      setFluffChance();
+      this.setGender(random.nextInt(DogBase.Gender.values().length));
+
+      if (ModList.get().isLoaded("deadlydinos")) {
+         this.setBreed(random.nextInt(DogBreed.values().length));
+      } else {
+         do {
+            this.setBreed(random.nextInt(DogBreed.values().length));
+         } while (getBreed() == 1);
+      }
+
+      this.setColor();
+      this.setMarking();
+      this.setFluffChance();
 
       if (PetsOverhaulCommonConfig.ALLOW_CROPPED_DOG_SPAWNS.get()) {
-         setCropChance();
+         this.setCropChance();
       } else {
-         setCropped(0);
+         this.setCropped(0);
       }
 
+      this.setODogAttributes();
       return super.finalizeSpawn(serverLevelAccessor, instance, spawnType, data, tag);
-   }
-
-   public void setCropChance() {
-      if (random.nextDouble() <= 0.10) {
-         this.setCropped(3); // full crop
-      } else if (random.nextDouble() > 0.10 && random.nextDouble() < 0.25) {
-         this.setCropped(2); // tail only
-      } else if (random.nextDouble() > 0.25 && random.nextDouble() < 0.50) {
-         this.setCropped(1); // ears only
-      } else {
-         this.setCropped(0); // no crop
-      }
-   }
-
-   public void setFluffChance() {
-      if (random.nextDouble() <= 0.30) {
-         this.setFluff(1);
-      } else {
-         this.setFluff(0);
-      }
    }
 
    public enum Gender {
@@ -973,27 +1110,60 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity {
       ODog partner = (ODog) ageableMob;
       pup = POEntityTypes.O_DOG_ENTITY.get().create(serverLevel);
 
-      int variantChance = this.random.nextInt(14);
-      int variant;
-      if (variantChance < 6) {
-         variant = this.getVariant();
-      } else if (variantChance < 12) {
-         variant = partner.getVariant();
+      int breedChance = this.random.nextInt(100);
+      int breed;
+      if (this.getBreed() == partner.getBreed()) {
+         if (breedChance < 40) {
+            breed = this.getBreed();
+         } else if (breedChance < 80) {
+            breed = partner.getBreed();
+         } else if (breedChance < 95) {
+            breed = 0;
+         } else {
+            breed = this.random.nextInt(DogBreed.values().length);
+         }
       } else {
-         variant = this.random.nextInt(ODogModel.Variant.values().length);
+         if (breedChance < 20) {
+            breed = this.getBreed();
+         } else if (breedChance < 40) {
+            breed = partner.getBreed();
+         } else if (breedChance < 95) {
+            breed = 0;
+         } else {
+            breed = this.random.nextInt(DogBreed.values().length);
+         }
       }
-      pup.setVariant(variant);
+      pup.setBreed(breed);
 
-      int overlayChance = this.random.nextInt(10);
-      int overlay;
-      if (overlayChance < 4) {
-         overlay = this.getOverlayVariant();
-      } else if (overlayChance < 8) {
-         overlay = partner.getOverlayVariant();
-      } else {
-         overlay = this.random.nextInt(DogMarkingOverlay.values().length);
+      if (!(breedChance == 0)) {
+         int variantChance = this.random.nextInt(100);
+         int variant;
+         if (variantChance < 40) {
+            variant = this.getVariant();
+         } else if (variantChance < 80) {
+            variant = partner.getVariant();
+         } else {
+            variant = this.random.nextInt(ODogModel.Variant.values().length);
+         }
+         pup.setVariant(variant);
+      } else if (breedChance == 0 && random.nextDouble() < 0.50) {
+         pup.setColor();
       }
-      pup.setOverlayVariant(overlay);
+
+      if (!(breedChance == 0)) {
+         int overlayChance = this.random.nextInt(100);
+         int overlay;
+         if (overlayChance < 40) {
+            overlay = this.getOverlayVariant();
+         } else if (overlayChance < 80) {
+            overlay = partner.getOverlayVariant();
+         } else {
+            overlay = this.random.nextInt(DogMarkingOverlay.values().length);
+         }
+         pup.setOverlayVariant(overlay);
+      } else if (breedChance == 0 && random.nextDouble() < 0.50) {
+         pup.setMarking();
+      }
 
       int fluffyChance = this.random.nextInt(10);
       int fluff;
@@ -1013,6 +1183,8 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity {
       } else {
          pup.setCropped(0);
       }
+
+      pup.setODogAttributes();
 
       return pup;
    }
@@ -1062,5 +1234,613 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity {
          return this.mob.isFreezing() || this.mob.isOnFire() || this.mob.getHealth() < this.mob.getMaxHealth() / 3 && this.mob.isAlive();
       }
    }
+
+   public SimpleContainer inventory;
+   public LazyOptional<?> itemHandler = null;
+
+   @Override
+   public boolean isChestable() {
+      return this.isAlive() && !this.isBaby();
+   }
+
+   @Override
+   public void equipChest(@javax.annotation.Nullable SoundSource soundSource) {
+      if(soundSource != null) {
+         this.level().playSound(null, this, SoundEvents.MULE_CHEST, soundSource, 0.5f, 1f);
+      }
+   }
+
+   public void updateInventory() {
+      SimpleContainer tempInventory = this.inventory;
+      this.inventory = new SimpleContainer(this.getInventorySize());
+
+      if(tempInventory != null) {
+         tempInventory.removeListener(this);
+         int maxSize = Math.min(tempInventory.getContainerSize(), this.inventory.getContainerSize());
+
+         for(int i = 0; i < maxSize; i++) {
+            ItemStack itemStack = tempInventory.getItem(i);
+            if(!itemStack.isEmpty()) {
+               this.inventory.setItem(i, itemStack.copy());
+            }
+         }
+      }
+      this.inventory.addListener(this);
+      this.itemHandler = LazyOptional.of(() -> new InvWrapper(this.inventory));
+   }
+
+   @Override
+   public boolean isChested() {
+      return this.entityData.get(CHESTED);
+   }
+
+   public void setChested(boolean chested) {
+      this.entityData.set(CHESTED, chested);
+   }
+
+   @Override
+   public void dropEquipment() {
+      if(!this.level().isClientSide) {
+         super.dropEquipment();
+         if(this.isChested()) {
+            this.spawnAtLocation(Items.CHEST);
+         }
+         Containers.dropContents(this.level(), this, this.inventory);
+      }
+   }
+
+   @Override
+   public void invalidateCaps() {
+      super.invalidateCaps();
+      if(this.itemHandler != null) {
+         LazyOptional<?> oldHandler = this.itemHandler;
+         this.itemHandler = null;
+         oldHandler.invalidate();
+      }
+   }
+
+   public int getInventorySize() {
+      return 24;
+   }
+
+   public void playChestEquipsSound() {
+      this.playSound(SoundEvents.LLAMA_CHEST, 1.0F, (this.random.nextFloat() - this.random.nextFloat()) * 0.2F + 1.0F);
+   }
+
+   public void openInventory(Player player) {
+      if(player instanceof ServerPlayer serverPlayer && this.isTame()) {
+         NetworkHooks.openScreen(serverPlayer, new SimpleMenuProvider((containerId, inventory, p) -> {
+            return new BerneseMenu(containerId, inventory, this.inventory, this);
+         }, this.getDisplayName()), (data) -> {
+            data.writeInt(this.getInventorySize());
+            data.writeInt(this.getId());
+         });
+      }
+   }
+
+   @Override
+   public void containerChanged(Container p_18983_) {
+      return;
+   }
+
+   public void setColor() {
+      if (this.getBreed() == 0) {
+         setVariant(random.nextInt(ODogModel.Variant.values().length));
+      }
+
+      if (this.getBreed() == 1) {
+         if (random.nextDouble() < 0.05) {
+            setVariant(random.nextInt(ODogModel.Variant.values().length));
+         } else if (random.nextDouble() > 0.05) {
+            int[] variants = {0, 1, 2, 3, 8, 9, 10, 12};
+            int randomIndex = new Random().nextInt(variants.length);
+            this.setVariant(variants[randomIndex]);
+         }
+      }
+
+      if (this.getBreed() == 2) {
+         if (random.nextDouble() < 0.15) {
+            setVariant(random.nextInt(ODogModel.Variant.values().length));
+         } else if (random.nextDouble() > 0.15) {
+            int[] variants = {1, 7, 9, 11};
+            int randomIndex = new Random().nextInt(variants.length);
+            this.setVariant(variants[randomIndex]);
+         }
+      }
+
+      if (this.getBreed() == 3) {
+         if (random.nextDouble() < 0.07) {
+            setVariant(random.nextInt(ODogModel.Variant.values().length));
+         } else if (random.nextDouble() > 0.07) {
+            int[] variants = {2, 3, 8};
+            int randomIndex = new Random().nextInt(variants.length);
+            this.setVariant(variants[randomIndex]);
+         }
+      }
+
+      if (this.getBreed() == 4) {
+         if (random.nextDouble() < 0.07) {
+            setVariant(random.nextInt(ODogModel.Variant.values().length));
+         } else if (random.nextDouble() > 0.07) {
+            int[] variants = {0, 1};
+            int randomIndex = new Random().nextInt(variants.length);
+            this.setVariant(variants[randomIndex]);
+         }
+      }
+
+      if (this.getBreed() == 5) {
+         if (random.nextDouble() < 0.05) {
+            setVariant(random.nextInt(ODogModel.Variant.values().length));
+         } else if (random.nextDouble() > 0.05) {
+            int[] variants = {2, 3, 8, 9, 10};
+            int randomIndex = new Random().nextInt(variants.length);
+            this.setVariant(variants[randomIndex]);
+         }
+      }
+
+      if (this.getBreed() == 6) {
+         if (random.nextDouble() < 0.07) {
+            setVariant(random.nextInt(ODogModel.Variant.values().length));
+         } else if (random.nextDouble() > 0.07) {
+            int[] variants = {0, 2, 3, 8, 10};
+            int randomIndex = new Random().nextInt(variants.length);
+            this.setVariant(variants[randomIndex]);
+         }
+      }
+
+      if (this.getBreed() == 7) {
+         if (random.nextDouble() < 0.07) {
+            setVariant(random.nextInt(ODogModel.Variant.values().length));
+         } else if (random.nextDouble() > 0.07) {
+            int[] variants = {0, 2, 3, 8, 9, 10};
+            int randomIndex = new Random().nextInt(variants.length);
+            this.setVariant(variants[randomIndex]);
+         }
+      }
+
+      if (this.getBreed() == 8) {
+         if (random.nextDouble() < 0.05) {
+            setVariant(random.nextInt(ODogModel.Variant.values().length));
+         } else if (random.nextDouble() > 0.05) {
+            int[] variants = {0, 1, 2, 3, 6, 8, 9};
+            int randomIndex = new Random().nextInt(variants.length);
+            this.setVariant(variants[randomIndex]);
+         }
+      }
+
+      if (this.getBreed() == 9) {
+         if (random.nextDouble() < 0.07) {
+            setVariant(random.nextInt(ODogModel.Variant.values().length));
+         } else if (random.nextDouble() > 0.07) {
+            int[] variants = {0, 10};
+            int randomIndex = new Random().nextInt(variants.length);
+            this.setVariant(variants[randomIndex]);
+         }
+      }
+
+      if (this.getBreed() == 10) {
+         if (random.nextDouble() < 0.05) {
+            setVariant(random.nextInt(ODogModel.Variant.values().length));
+         } else if (random.nextDouble() > 0.05) {
+            int[] variants = {2, 3, 8};
+            int randomIndex = new Random().nextInt(variants.length);
+            this.setVariant(variants[randomIndex]);
+         }
+      }
+
+      if (this.getBreed() == 11) {
+         if (random.nextDouble() < 0.07) {
+            setVariant(random.nextInt(ODogModel.Variant.values().length));
+         } else if (random.nextDouble() > 0.07) {
+            int[] variants = {0, 1, 2};
+            int randomIndex = new Random().nextInt(variants.length);
+            this.setVariant(variants[randomIndex]);
+         }
+      }
+
+      if (this.getBreed() == 12) {
+         if (random.nextDouble() < 0.07) {
+            setVariant(random.nextInt(ODogModel.Variant.values().length));
+         } else if (random.nextDouble() > 0.07) {
+            int[] variants = {0, 2, 3, 8};
+            int randomIndex = new Random().nextInt(variants.length);
+            this.setVariant(variants[randomIndex]);
+         }
+      }
+
+      if (this.getBreed() == 13) {
+         if (random.nextDouble() < 0.07) {
+            setVariant(random.nextInt(ODogModel.Variant.values().length));
+         } else if (random.nextDouble() > 0.07) {
+            int[] variants = {0, 3, 4, 5, 9, 12};
+            int randomIndex = new Random().nextInt(variants.length);
+            this.setVariant(variants[randomIndex]);
+         }
+      }
+
+      if (this.getBreed() == 14) {
+         if (random.nextDouble() < 0.02) {
+            setVariant(random.nextInt(ODogModel.Variant.values().length));
+         } else if (random.nextDouble() > 0.02) {
+            this.setVariant(14);
+         }
+      }
+
+      if (this.getBreed() == 15) {
+         if (random.nextDouble() < 0.07) {
+            setVariant(random.nextInt(ODogModel.Variant.values().length));
+         } else if (random.nextDouble() > 0.07) {
+            int[] variants = {0, 10};
+            int randomIndex = new Random().nextInt(variants.length);
+            this.setVariant(variants[randomIndex]);
+         }
+      }
+
+      if (this.getBreed() == 16) {
+         if (random.nextDouble() < 0.07) {
+            setVariant(random.nextInt(ODogModel.Variant.values().length));
+         } else if (random.nextDouble() > 0.07) {
+            int[] variants = {0, 1, 2};
+            int randomIndex = new Random().nextInt(variants.length);
+            this.setVariant(variants[randomIndex]);
+         }
+      }
+
+      if (this.getBreed() == 17) {
+      }
+
+      if (this.getBreed() == 18) {
+      }
+
+      if (this.getBreed() == 19) {
+      }
+   }
+
+   public void setMarking() {
+      if (this.getBreed() == 0) {
+         setOverlayVariant(random.nextInt(DogMarkingOverlay.values().length));
+      }
+
+      if (this.getBreed() == 1) {
+         if (random.nextDouble() < 0.05) {
+            setOverlayVariant(random.nextInt(DogMarkingOverlay.values().length));
+         } else if (random.nextDouble() > 0.05) {
+            this.setOverlayVariant(3);
+         }
+      }
+
+      if (this.getBreed() == 2) {
+         if (random.nextDouble() < 0.05) {
+            setOverlayVariant(random.nextInt(DogMarkingOverlay.values().length));
+         } else if (random.nextDouble() > 0.05) {
+            int[] variants = {6, 7};
+            int randomIndex = new Random().nextInt(variants.length);
+            this.setOverlayVariant(variants[randomIndex]);
+         }
+      }
+
+      if (this.getBreed() == 3) {
+         if (random.nextDouble() < 0.10) {
+            setOverlayVariant(random.nextInt(DogMarkingOverlay.values().length));
+         } else if (random.nextDouble() > 0.10) {
+            this.setOverlayVariant(15);
+         }
+      }
+
+      if (this.getBreed() == 4) {
+         if (random.nextDouble() < 0.05) {
+            setOverlayVariant(random.nextInt(DogMarkingOverlay.values().length));
+         } else if (random.nextDouble() > 0.05) {
+            this.setOverlayVariant(5);
+         }
+      }
+
+      if (this.getBreed() == 5) {
+         if (random.nextDouble() < 0.05) {
+            setOverlayVariant(random.nextInt(DogMarkingOverlay.values().length));
+         } else if (random.nextDouble() > 0.05) {
+            this.setOverlayVariant(1);
+         }
+      }
+
+      if (this.getBreed() == 6) {
+         if (random.nextDouble() < 0.05) {
+            setOverlayVariant(random.nextInt(DogMarkingOverlay.values().length));
+         } else if (random.nextDouble() > 0.05) {
+            int[] variants = {8, 9};
+            int randomIndex = new Random().nextInt(variants.length);
+            this.setOverlayVariant(variants[randomIndex]);
+         }
+      }
+
+      if (this.getBreed() == 7) {
+         if (random.nextDouble() < 0.02) {
+            setOverlayVariant(random.nextInt(DogMarkingOverlay.values().length));
+         } else if (random.nextDouble() > 0.02) {
+            this.setOverlayVariant(2);
+         }
+      }
+
+      if (this.getBreed() == 8) {
+         if (random.nextDouble() < 0.05) {
+            setOverlayVariant(random.nextInt(DogMarkingOverlay.values().length));
+         } else if (random.nextDouble() > 0.05) {
+            this.setOverlayVariant(16);
+         }
+      }
+
+      if (this.getBreed() == 9) {
+         if (random.nextDouble() < 0.05) {
+            setOverlayVariant(random.nextInt(DogMarkingOverlay.values().length));
+         } else if (random.nextDouble() > 0.05 && random.nextDouble() < 0.20) {
+            this.setOverlayVariant(0);
+         } else if (random.nextDouble() > 0.20) {
+            this.setOverlayVariant(4);
+         }
+      }
+
+      if (this.getBreed() == 10) {
+         if (random.nextDouble() < 0.05) {
+            setOverlayVariant(random.nextInt(DogMarkingOverlay.values().length));
+         } else if (random.nextDouble() > 0.05) {
+            int[] variants = {15, 17};
+            int randomIndex = new Random().nextInt(variants.length);
+            this.setOverlayVariant(variants[randomIndex]);
+         }
+      }
+
+      if (this.getBreed() == 11) {
+         if (random.nextDouble() < 0.05) {
+            setOverlayVariant(random.nextInt(DogMarkingOverlay.values().length));
+         } else {
+            this.setOverlayVariant(12);
+         }
+      }
+
+      if (this.getBreed() == 12) {
+         if (random.nextDouble() < 0.10) {
+            setOverlayVariant(random.nextInt(DogMarkingOverlay.values().length));
+         } else if (random.nextDouble() > 0.10) {
+            this.setOverlayVariant(18);
+         }
+      }
+
+      if (this.getBreed() == 13) {
+         if (random.nextDouble() < 0.02) {
+            setOverlayVariant(random.nextInt(DogMarkingOverlay.values().length));
+         } else {
+            this.setOverlayVariant(0);
+         }
+      }
+
+      if (this.getBreed() == 14) {
+         if (random.nextDouble() < 0.02) {
+            setOverlayVariant(random.nextInt(DogMarkingOverlay.values().length));
+         } else if (random.nextDouble() > 0.02) {
+            this.setOverlayVariant(2);
+         }
+      }
+
+      if (this.getBreed() == 15) {
+         if (random.nextDouble() < 0.05) {
+            setOverlayVariant(random.nextInt(DogMarkingOverlay.values().length));
+         } else if (random.nextDouble() > 0.05 && random.nextDouble() < 0.20) {
+            this.setOverlayVariant(0);
+         } else if (random.nextDouble() > 0.20) {
+            this.setOverlayVariant(4);
+         }
+      }
+
+      if (this.getBreed() == 16) {
+         if (random.nextDouble() < 0.10) {
+            setOverlayVariant(random.nextInt(DogMarkingOverlay.values().length));
+         } else if (random.nextDouble() > 0.10 && random.nextDouble() < 0.30) {
+            int[] variants = {13, 14};
+            int randomIndex = new Random().nextInt(variants.length);
+            this.setOverlayVariant(variants[randomIndex]);
+         } else if (random.nextDouble() > 0.40) {
+            this.setOverlayVariant(0);
+         }
+      }
+
+      if (this.getBreed() == 17) {
+      }
+
+      if (this.getBreed() == 18) {
+      }
+
+      if (this.getBreed() == 19) {
+      }
+   }
+
+   public void setCropChance() {
+      if (this.getBreed() == 0) {
+         if (random.nextDouble() <= 0.10) {
+            this.setCropped(3); // full crop
+         } else if (random.nextDouble() > 0.10 && random.nextDouble() < 0.25) {
+            this.setCropped(2); // tail only
+         } else if (random.nextDouble() > 0.25 && random.nextDouble() < 0.50) {
+            this.setCropped(1); // ears only
+         } else {
+            this.setCropped(0); // no crop
+         }
+      }
+
+      if (this.getBreed() == 1 || this.getBreed() == 6) {
+         if (random.nextDouble() <= 0.02) {
+            this.setCropped(3); // full crop
+         } else if (random.nextDouble() > 0.02 && random.nextDouble() < 0.07) {
+            this.setCropped(2); // tail only
+         } else if (random.nextDouble() > 0.07 && random.nextDouble() < 0.70) {
+            this.setCropped(1); // ears only
+         } else {
+            this.setCropped(0); // no crop
+         }
+      }
+
+      if (this.getBreed() == 2 || this.getBreed() == 4 || this.getBreed() == 5 || this.getBreed() == 19) {
+         if (random.nextDouble() <= 0.02) {
+            this.setCropped(3); // full crop
+         } else if (random.nextDouble() > 0.02 && random.nextDouble() < 0.07) {
+            this.setCropped(2); // tail only
+         } else if (random.nextDouble() > 0.07 && random.nextDouble() < 0.14) {
+            this.setCropped(1); // ears only
+         } else {
+            this.setCropped(0); // no crop
+         }
+      }
+
+      if (this.getBreed() == 3 || this.getBreed() == 8 || this.getBreed() == 13 || this.getBreed() == 14 || this.getBreed() == 16) {
+         if (random.nextDouble() <= 0.02) {
+            this.setCropped(3); // full crop
+         } else if (random.nextDouble() > 0.02 && random.nextDouble() < 0.05) {
+            this.setCropped(2); // tail only
+         } else if (random.nextDouble() > 0.05 && random.nextDouble() < 0.10) {
+            this.setCropped(1); // ears only
+         } else {
+            this.setCropped(0); // no crop
+         }
+      }
+
+      if (this.getBreed() == 7) {
+         if (random.nextDouble() <= 0.02) {
+            this.setCropped(3); // full crop
+         } else if (random.nextDouble() > 0.02 && random.nextDouble() < 0.07) {
+            this.setCropped(1); // ears only
+         } else if (random.nextDouble() > 0.07 && random.nextDouble() < 0.40) {
+            this.setCropped(2); // tail only
+         } else {
+            this.setCropped(0); // no crop
+         }
+      }
+
+      if (this.getBreed() == 9) {
+         if (random.nextDouble() <= 0.50) {
+            this.setCropped(3); // full crop
+         } else if (random.nextDouble() > 0.50 && random.nextDouble() < 0.70) {
+            this.setCropped(2); // tail only
+         } else if (random.nextDouble() > 0.70 && random.nextDouble() < 0.90) {
+            this.setCropped(1); // ears only
+         } else {
+            this.setCropped(0); // no crop
+         }
+      }
+
+      if (this.getBreed() == 10 || this.getBreed() == 12) {
+         if (random.nextDouble() <= 0.02) {
+            this.setCropped(3); // full crop
+         } else if (random.nextDouble() > 0.02 && random.nextDouble() < 0.20) {
+            this.setCropped(2); // tail only
+         } else if (random.nextDouble() > 0.20 && random.nextDouble() < 0.25) {
+            this.setCropped(1); // ears only
+         } else {
+            this.setCropped(0); // no crop
+         }
+      }
+
+      if (this.getBreed() == 11 || this.getBreed() == 18) {
+         if (random.nextDouble() <= 0.02) {
+            this.setCropped(3); // full crop
+         } else if (random.nextDouble() > 0.02 && random.nextDouble() < 0.07) {
+            this.setCropped(2); // tail only
+         } else if (random.nextDouble() > 0.07 && random.nextDouble() < 0.95) {
+            this.setCropped(1); // ears only
+         } else {
+            this.setCropped(0); // no crop
+         }
+      }
+
+      if (this.getBreed() == 15 || this.getBreed() == 17) {
+         if (random.nextDouble() <= 0.02) {
+            this.setCropped(3); // full crop
+         } else if (random.nextDouble() > 0.02 && random.nextDouble() < 0.07) {
+            this.setCropped(1); // ears only
+         } else if (random.nextDouble() > 0.07 && random.nextDouble() < 0.55) {
+            this.setCropped(2); // tail only
+         } else {
+            this.setCropped(0); // no crop
+         }
+      }
+   }
+
+   public void setFluffChance() {
+      if (this.getBreed() == 0) {
+         if (random.nextDouble() <= 0.30) {
+            this.setFluff(1);
+         } else {
+            this.setFluff(0);
+         }
+      }
+
+      if (this.getBreed() == 1 || this.getBreed() == 6 || this.getBreed() == 11) {
+         if (random.nextDouble() <= 0.90) {
+            this.setFluff(1);
+         } else {
+            this.setFluff(0);
+         }
+      }
+
+      if (this.getBreed() == 2 || this.getBreed() == 4 || this.getBreed() == 14 || this.getBreed() == 19) {
+         if (random.nextDouble() <= 0.95) {
+            this.setFluff(1);
+         } else {
+            this.setFluff(0);
+         }
+      }
+
+      if (this.getBreed() == 3 || this.getBreed() == 5 || this.getBreed() == 8 || this.getBreed() == 9
+              || this.getBreed() == 10 || this.getBreed() == 12 || this.getBreed() == 13 || this.getBreed() == 15
+              || this.getBreed() == 16 || this.getBreed() == 17) {
+         if (random.nextDouble() <= 0.02) {
+            this.setFluff(1);
+         } else {
+            this.setFluff(0);
+         }
+      }
+
+      if (this.getBreed() == 7 || this.getBreed() == 18) {
+         if (random.nextDouble() <= 0.80) {
+            this.setFluff(1);
+         } else {
+            this.setFluff(0);
+         }
+      }
+   }
+
+   public void setBreedByBiome() {
+      if (LivestockOverhaulCommonConfig.SPAWN_BY_BREED.get()) {
+         if (this.level().getBiome(this.blockPosition()).is(Tags.Biomes.IS_HOT_OVERWORLD)) {
+            if (random.nextDouble() < 0.10) {
+               this.setBreed(random.nextInt(DogBreed.values().length));
+            } else {
+               int[] variants = {0, 2, 6};
+               int randomIndex = new Random().nextInt(variants.length);
+               this.setBreed(variants[randomIndex]);
+            }
+
+         } else if (this.level().getBiome(this.blockPosition()).is(Tags.Biomes.IS_COLD_OVERWORLD)) {
+            if (random.nextDouble() < 0.10) {
+               this.setBreed(random.nextInt(DogBreed.values().length));
+            } else {
+               int[] variants = {0, 4, 11, 14};
+               int randomIndex = new Random().nextInt(variants.length);
+               this.setBreed(variants[randomIndex]);
+            }
+
+         } else {
+            if (random.nextDouble() < 0.10) {
+               this.setBreed(random.nextInt(DogBreed.values().length));
+            } else {
+               int[] variants = {0, 3, 5, 7, 8, 9, 10, 12, 13, 15, 16, 17, 18, 19};
+               int randomIndex = new Random().nextInt(variants.length);
+               this.setBreed(variants[randomIndex]);
+            }
+         }
+      } else {
+         this.setBreed(random.nextInt(DogBreed.values().length));
+      }
+   }
+
+
 
 }

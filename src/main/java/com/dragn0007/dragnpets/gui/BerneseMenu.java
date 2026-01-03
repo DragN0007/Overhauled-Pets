@@ -1,6 +1,6 @@
 package com.dragn0007.dragnpets.gui;
 
-import com.dragn0007.dragnpets.entities.dog.bernese.Bernese;
+import com.dragn0007.dragnpets.entities.dog.ODog;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
@@ -13,26 +13,26 @@ import net.minecraft.world.item.ItemStack;
 public class BerneseMenu extends AbstractContainerMenu {
 
     public Container container;
-    public Bernese bernese;
+    public ODog bernese;
 
     public BerneseMenu(int containerId, Inventory inventory, FriendlyByteBuf extraData) {
-        this(containerId, inventory, new SimpleContainer(extraData.readInt()), (Bernese) inventory.player.level().getEntity(extraData.readInt()));
+        this(containerId, inventory, new SimpleContainer(extraData.readInt()), (ODog) inventory.player.level().getEntity(extraData.readInt()));
     }
 
-    public BerneseMenu(int containerId, Inventory inventory, Container container, Bernese bernese) {
+    public BerneseMenu(int containerId, Inventory inventory, Container container, ODog bernese) {
         super(POMenuTypes.BERNESE_MENU.get(), containerId);
         this.container = container;
         this.bernese = bernese;
 
         int berneseSlots = 0;
 
-        if (this.bernese.isChested()) {
-            for (int y = 0; y < 3; y++) {
-                for (int x = 0; x < 7; x++) {
-                    this.addSlot(new Slot(this.container, berneseSlots++, 26 + x * 18, 18 + y * 18));
-                }
-            }
-        }
+//        if (this.bernese.isChested()) {
+//            for (int y = 0; y < 3; y++) {
+//                for (int x = 0; x < 7; x++) {
+//                    this.addSlot(new Slot(this.container, berneseSlots++, 26 + x * 18, 18 + y * 18));
+//                }
+//            }
+//        }
 
         int playerSlots = 0;
         for (int x = 0; x < 9; x++) {

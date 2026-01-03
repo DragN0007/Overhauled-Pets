@@ -1,7 +1,6 @@
 package com.dragn0007.dragnpets.entities.ai;
 
 import com.dragn0007.dragnlivestock.util.LivestockOverhaulCommonConfig;
-import com.dragn0007.dragnpets.entities.dog.DogBase;
 import com.dragn0007.dragnpets.entities.dog.ODog;
 import com.mojang.datafixers.DataFixUtils;
 import net.minecraft.world.entity.ai.goal.AvoidEntityGoal;

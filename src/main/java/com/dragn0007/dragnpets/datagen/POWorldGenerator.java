@@ -1,6 +1,5 @@
 package com.dragn0007.dragnpets.datagen;
 
-import com.dragn0007.dragnlivestock.LivestockOverhaul;
 import com.dragn0007.dragnpets.PetsOverhaul;
 import com.dragn0007.dragnpets.spawn.BiomeHitter;
 import net.minecraft.core.HolderLookup;

@@ -10,29 +10,7 @@ import com.dragn0007.dragnpets.entities.cat.CatMarkingOverlay;
 import com.dragn0007.dragnpets.entities.cat.OCat;
 import com.dragn0007.dragnpets.entities.cat.OCatEyeLayer;
 import com.dragn0007.dragnpets.entities.cat.OCatModel;
-import com.dragn0007.dragnpets.entities.cat.kornish_rex.KornishRex;
-import com.dragn0007.dragnpets.entities.cat.maine_coon.MaineCoon;
-import com.dragn0007.dragnpets.entities.cat.manx.Manx;
 import com.dragn0007.dragnpets.entities.dog.ODog;
-import com.dragn0007.dragnpets.entities.dog.ODogModel;
-import com.dragn0007.dragnpets.entities.dog.DogBase;
-import com.dragn0007.dragnpets.entities.dog.DogMarkingOverlay;
-import com.dragn0007.dragnpets.entities.dog.american_ridgeback.AmericanRidgeback;
-import com.dragn0007.dragnpets.entities.dog.australian_shepherd.AustralianShepherd;
-import com.dragn0007.dragnpets.entities.dog.beagle.Beagle;
-import com.dragn0007.dragnpets.entities.dog.bernese.Bernese;
-import com.dragn0007.dragnpets.entities.dog.bloodhound.Bloodhound;
-import com.dragn0007.dragnpets.entities.dog.border_collie.Collie;
-import com.dragn0007.dragnpets.entities.dog.cocker_spaniel.CockerSpaniel;
-import com.dragn0007.dragnpets.entities.dog.coonhound.Coonhound;
-import com.dragn0007.dragnpets.entities.dog.doberman.Doberman;
-import com.dragn0007.dragnpets.entities.dog.foxhound.Foxhound;
-import com.dragn0007.dragnpets.entities.dog.husky.Husky;
-import com.dragn0007.dragnpets.entities.dog.jack_russell.JackRussell;
-import com.dragn0007.dragnpets.entities.dog.labrador.Labrador;
-import com.dragn0007.dragnpets.entities.dog.pyrenees.Pyrenees;
-import com.dragn0007.dragnpets.entities.dog.rottweiler.Rottweiler;
-import com.dragn0007.dragnpets.entities.dog.whippet.Whippet;
 import com.dragn0007.dragnpets.entities.fox.OFox;
 import com.dragn0007.dragnpets.entities.fox.OFoxMarkingLayer;
 import com.dragn0007.dragnpets.entities.fox.OFoxModel;
@@ -56,7 +34,6 @@ import net.minecraft.world.level.biome.Biomes;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
 
 import java.util.Random;
@@ -393,7 +370,7 @@ public class SpawnReplacer {
                     return;
                 }
 
-                int i = event.getLevel().getRandom().nextInt(59);
+                int i = event.getLevel().getRandom().nextInt(100);
 
                 if (event.getLevel().getBiome(event.getEntity().blockPosition()).is(Biomes.SWAMP)) {
                     if (oCat != null) {
@@ -424,68 +401,64 @@ public class SpawnReplacer {
                     }
 
                 } else {
-                    if (oCat != null) {
-                        if (i <= 30) {
-                            oCat.copyPosition(cat);
+                    if (i <= 70) {
+                        oCat.copyPosition(cat);
 
-                            oCat.setCustomName(cat.getCustomName());
-                            oCat.setAge(cat.getAge());
-                            oCat.setOwnerUUID(cat.getOwnerUUID());
+                        oCat.setCustomName(cat.getCustomName());
+                        oCat.setAge(cat.getAge());
+                        oCat.setOwnerUUID(cat.getOwnerUUID());
 
-                            oCat.setGender(random.nextInt(OCat.Gender.values().length));
+                        oCat.setGender(random.nextInt(OCat.Gender.values().length));
 
-                            if (LivestockOverhaulCommonConfig.SPAWN_BY_BREED.get()) {
-                                oCat.setEyeColor();
-                            } else {
-                                oCat.setEyes(random.nextInt(OCatEyeLayer.Eyes.values().length));
-                            }
-
-                            oCat.setVariant(random.nextInt(OCatModel.Variant.values().length));
-                            oCat.setOverlayVariant(random.nextInt(CatMarkingOverlay.values().length));
-
-                            if (event.getLevel().isClientSide) {
-                                cat.remove(Entity.RemovalReason.DISCARDED);
-                            }
-
-                            event.getLevel().addFreshEntity(oCat);
-                            cat.remove(Entity.RemovalReason.DISCARDED);
-
-                            event.setCanceled(true);
+                        if (LivestockOverhaulCommonConfig.SPAWN_BY_BREED.get()) {
+                            oCat.setEyeColor();
+                        } else {
+                            oCat.setEyes(random.nextInt(OCatEyeLayer.Eyes.values().length));
                         }
-                    }
 
-                    if (oDog != null) {
-                        if (i > 30 && i < 40) {
-                            oDog.copyPosition(cat);
+                        oCat.setVariant(random.nextInt(OCatModel.Variant.values().length));
+                        oCat.setOverlayVariant(random.nextInt(CatMarkingOverlay.values().length));
 
-                            oDog.setCustomName(cat.getCustomName());
-                            oDog.setAge(cat.getAge());
-                            oDog.setOwnerUUID(cat.getOwnerUUID());
-
-                            oDog.setGender(random.nextInt(DogBase.Gender.values().length));
-                            oDog.setVariant(random.nextInt(ODogModel.Variant.values().length));
-                            oDog.setOverlayVariant(random.nextInt(DogMarkingOverlay.values().length));
-                            oDog.setFluffChance();
-
-                            if (PetsOverhaulCommonConfig.ALLOW_CROPPED_DOG_SPAWNS.get()) {
-                                oDog.setCropChance();
-                            } else {
-                                oDog.setCropped(0);
-                            }
-
-                            if (event.getLevel().isClientSide) {
-                                cat.remove(Entity.RemovalReason.DISCARDED);
-                            }
-
-                            event.getLevel().addFreshEntity(oDog);
+                        if (event.getLevel().isClientSide) {
                             cat.remove(Entity.RemovalReason.DISCARDED);
-
-                            event.setCanceled(true);
                         }
+
+                        event.getLevel().addFreshEntity(oCat);
+                        cat.remove(Entity.RemovalReason.DISCARDED);
+
+                        event.setCanceled(true);
+                    } else if (i <= 100) {
+                        oDog.copyPosition(cat);
+
+                        oDog.setCustomName(cat.getCustomName());
+                        oDog.setAge(cat.getAge());
+                        oDog.setOwnerUUID(cat.getOwnerUUID());
+
+                        oDog.setGender(random.nextInt(ODog.Gender.values().length));
+                        oDog.setBreedByBiome();
+                        oDog.setColor();
+                        oDog.setMarking();
+                        oDog.setFluffChance();
+
+                        if (PetsOverhaulCommonConfig.ALLOW_CROPPED_DOG_SPAWNS.get()) {
+                            oDog.setCropChance();
+                        } else {
+                            oDog.setCropped(0);
+                        }
+
+                        oDog.setODogAttributes();
+
+                        if (event.getLevel().isClientSide) {
+                            cat.remove(Entity.RemovalReason.DISCARDED);
+                        }
+
+                        event.getLevel().addFreshEntity(oDog);
+                        cat.remove(Entity.RemovalReason.DISCARDED);
+
+                        event.setCanceled(true);
                     }
-
-
                 }
+
             }
         }
 

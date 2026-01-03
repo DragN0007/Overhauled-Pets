@@ -1,8 +1,10 @@
 package com.dragn0007.dragnpets.entities.dog;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import software.bernie.geckolib.cache.object.BakedGeoModel;
 import software.bernie.geckolib.renderer.GeoEntityRenderer;
 
 public class ODogRender extends GeoEntityRenderer<ODog> {
@@ -15,7 +17,13 @@ public class ODogRender extends GeoEntityRenderer<ODog> {
     }
 
     @Override
-    public void render(ODog entity, float entityYaw, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight) {
+    public void preRender(PoseStack poseStack, ODog entity, BakedGeoModel model, MultiBufferSource bufferSource, VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+
+        if (entity.isBaby()) {
+            poseStack.scale(0.5F, 0.5F, 0.5F);
+        } else {
+            poseStack.scale(1F, 1F, 1F);
+        }
 
         if (entity.isTame()) {
             model.getBone("collar").ifPresent(b -> b.setHidden(false));
@@ -42,50 +50,44 @@ public class ODogRender extends GeoEntityRenderer<ODog> {
             model.getBone("tail_fluff_2").ifPresent(b -> b.setHidden(true));
         }
 
-        if(entity.isBaby()) {
-            poseStack.scale(0.5F, 0.5F, 0.5F);
+        if (entity.getCropped() == 0) { // no crop
+            model.getBone("tail").ifPresent(b -> b.setHidden(false));
+            model.getBone("right_ear2").ifPresent(b -> b.setHidden(false));
+            model.getBone("left_ear2").ifPresent(b -> b.setHidden(false));
+            model.getBone("tail2").ifPresent(b -> b.setHidden(true));
+            model.getBone("right_ear").ifPresent(b -> b.setHidden(true));
+            model.getBone("left_ear").ifPresent(b -> b.setHidden(true));
+        } else if (entity.getCropped() == 1) { // ears only
+            model.getBone("tail").ifPresent(b -> b.setHidden(false));
+            model.getBone("right_ear2").ifPresent(b -> b.setHidden(true));
+            model.getBone("left_ear2").ifPresent(b -> b.setHidden(true));
+            model.getBone("tail2").ifPresent(b -> b.setHidden(true));
+            model.getBone("right_ear").ifPresent(b -> b.setHidden(false));
+            model.getBone("left_ear").ifPresent(b -> b.setHidden(false));
+        } else if (entity.getCropped() == 2) { // tail only
+            model.getBone("tail").ifPresent(b -> b.setHidden(true));
+            model.getBone("right_ear2").ifPresent(b -> b.setHidden(false));
+            model.getBone("left_ear2").ifPresent(b -> b.setHidden(false));
+            model.getBone("tail2").ifPresent(b -> b.setHidden(false));
+            model.getBone("right_ear").ifPresent(b -> b.setHidden(true));
+            model.getBone("left_ear").ifPresent(b -> b.setHidden(true));
+        } else if (entity.getCropped() == 3) { // full crop
+            model.getBone("tail").ifPresent(b -> b.setHidden(true));
+            model.getBone("right_ear2").ifPresent(b -> b.setHidden(true));
+            model.getBone("left_ear2").ifPresent(b -> b.setHidden(true));
+            model.getBone("tail2").ifPresent(b -> b.setHidden(false));
+            model.getBone("right_ear").ifPresent(b -> b.setHidden(false));
+            model.getBone("left_ear").ifPresent(b -> b.setHidden(false));
         } else {
-            poseStack.scale(1F, 1F, 1F);
-
-            if (entity.getCropped() == 0) { // no crop
-                model.getBone("tail").ifPresent(b -> b.setHidden(false));
-                model.getBone("right_ear2").ifPresent(b -> b.setHidden(false));
-                model.getBone("left_ear2").ifPresent(b -> b.setHidden(false));
-                model.getBone("tail2").ifPresent(b -> b.setHidden(true));
-                model.getBone("right_ear").ifPresent(b -> b.setHidden(true));
-                model.getBone("left_ear").ifPresent(b -> b.setHidden(true));
-            } else if (entity.getCropped() == 1) { // ears only
-                model.getBone("tail").ifPresent(b -> b.setHidden(false));
-                model.getBone("right_ear2").ifPresent(b -> b.setHidden(true));
-                model.getBone("left_ear2").ifPresent(b -> b.setHidden(true));
-                model.getBone("tail2").ifPresent(b -> b.setHidden(true));
-                model.getBone("right_ear").ifPresent(b -> b.setHidden(false));
-                model.getBone("left_ear").ifPresent(b -> b.setHidden(false));
-            } else if (entity.getCropped() == 2) { // tail only
-                model.getBone("tail").ifPresent(b -> b.setHidden(true));
-                model.getBone("right_ear2").ifPresent(b -> b.setHidden(false));
-                model.getBone("left_ear2").ifPresent(b -> b.setHidden(false));
-                model.getBone("tail2").ifPresent(b -> b.setHidden(false));
-                model.getBone("right_ear").ifPresent(b -> b.setHidden(true));
-                model.getBone("left_ear").ifPresent(b -> b.setHidden(true));
-            } else if (entity.getCropped() == 3) { // full crop
-                model.getBone("tail").ifPresent(b -> b.setHidden(true));
-                model.getBone("right_ear2").ifPresent(b -> b.setHidden(true));
-                model.getBone("left_ear2").ifPresent(b -> b.setHidden(true));
-                model.getBone("tail2").ifPresent(b -> b.setHidden(false));
-                model.getBone("right_ear").ifPresent(b -> b.setHidden(false));
-                model.getBone("left_ear").ifPresent(b -> b.setHidden(false));
-            } else {
-                model.getBone("tail").ifPresent(b -> b.setHidden(false));
-                model.getBone("right_ear2").ifPresent(b -> b.setHidden(false));
-                model.getBone("left_ear2").ifPresent(b -> b.setHidden(false));
-                model.getBone("tail2").ifPresent(b -> b.setHidden(true));
-                model.getBone("right_ear").ifPresent(b -> b.setHidden(true));
-                model.getBone("left_ear").ifPresent(b -> b.setHidden(true));
-            }
+            model.getBone("tail").ifPresent(b -> b.setHidden(false));
+            model.getBone("right_ear2").ifPresent(b -> b.setHidden(false));
+            model.getBone("left_ear2").ifPresent(b -> b.setHidden(false));
+            model.getBone("tail2").ifPresent(b -> b.setHidden(true));
+            model.getBone("right_ear").ifPresent(b -> b.setHidden(true));
+            model.getBone("left_ear").ifPresent(b -> b.setHidden(true));
         }
 
-        super.render(entity, entityYaw, partialTick, poseStack, bufferSource, packedLight);
+        super.preRender(poseStack, this.animatable, model, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, red, green, blue, alpha);
     }
 
 }
