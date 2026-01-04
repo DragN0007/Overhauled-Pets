@@ -6,10 +6,7 @@ import com.dragn0007.dragnpets.entities.POEntityTypes;
 import com.dragn0007.dragnpets.entities.axolotl.OAxolotl;
 import com.dragn0007.dragnpets.entities.axolotl.OAxolotlMarkingLayer;
 import com.dragn0007.dragnpets.entities.axolotl.OAxolotlModel;
-import com.dragn0007.dragnpets.entities.cat.CatMarkingOverlay;
-import com.dragn0007.dragnpets.entities.cat.OCat;
-import com.dragn0007.dragnpets.entities.cat.OCatEyeLayer;
-import com.dragn0007.dragnpets.entities.cat.OCatModel;
+import com.dragn0007.dragnpets.entities.cat.*;
 import com.dragn0007.dragnpets.entities.dog.ODog;
 import com.dragn0007.dragnpets.entities.fox.OFox;
 import com.dragn0007.dragnpets.entities.fox.OFoxMarkingLayer;
@@ -411,13 +408,16 @@ public class SpawnReplacer {
                         oCat.setGender(random.nextInt(OCat.Gender.values().length));
 
                         if (LivestockOverhaulCommonConfig.SPAWN_BY_BREED.get()) {
+                            oCat.setBreedByBiome();
+                            oCat.setColor();
+                            oCat.setMarking();
                             oCat.setEyeColor();
                         } else {
+                            oCat.setBreed(random.nextInt(CatBreed.values().length));
+                            oCat.setVariant(random.nextInt(OCatModel.Variant.values().length));
+                            oCat.setOverlayVariant(random.nextInt(CatMarkingOverlay.values().length));
                             oCat.setEyes(random.nextInt(OCatEyeLayer.Eyes.values().length));
                         }
-
-                        oCat.setVariant(random.nextInt(OCatModel.Variant.values().length));
-                        oCat.setOverlayVariant(random.nextInt(CatMarkingOverlay.values().length));
 
                         if (event.getLevel().isClientSide) {
                             cat.remove(Entity.RemovalReason.DISCARDED);
@@ -435,10 +435,18 @@ public class SpawnReplacer {
                         oDog.setOwnerUUID(cat.getOwnerUUID());
 
                         oDog.setGender(random.nextInt(ODog.Gender.values().length));
-                        oDog.setBreedByBiome();
-                        oDog.setColor();
-                        oDog.setMarking();
-                        oDog.setFluffChance();
+
+                        if (LivestockOverhaulCommonConfig.SPAWN_BY_BREED.get()) {
+                            oDog.setBreedByBiome();
+                            oDog.setColor();
+                            oDog.setMarking();
+                            oDog.setFluffChance();
+                        } else {
+                            oDog.setBreed(random.nextInt(CatBreed.values().length));
+                            oDog.setVariant(random.nextInt(OCatModel.Variant.values().length));
+                            oDog.setOverlayVariant(random.nextInt(CatMarkingOverlay.values().length));
+                            oDog.setFluffChance();
+                        }
 
                         if (PetsOverhaulCommonConfig.ALLOW_CROPPED_DOG_SPAWNS.get()) {
                             oDog.setCropChance();

@@ -11,8 +11,8 @@ public class PetsOverhaulCommonConfig {
     public static final ForgeConfigSpec.BooleanValue REPLACE_FOXES;
     public static final ForgeConfigSpec.BooleanValue REPLACE_AXOLOTLS;
     public static final ForgeConfigSpec.BooleanValue REPLACE_PARROTS;
-    public static final ForgeConfigSpec.BooleanValue REPLACE_CATS;
     public static final ForgeConfigSpec.BooleanValue REPLACE_TROPICAL_FISH;
+    public static final ForgeConfigSpec.BooleanValue REPLACE_CATS;
     public static final ForgeConfigSpec.BooleanValue CATS_GIVE_GIFTS;
     public static final ForgeConfigSpec.BooleanValue ALLOW_CROPPED_DOG_SPAWNS;
     public static final ForgeConfigSpec.BooleanValue WOLF_PACKS_ATTACK_PLAYERS;
@@ -38,11 +38,11 @@ public class PetsOverhaulCommonConfig {
         REPLACE_PARROTS = BUILDER.comment("Should parrots be replaced by O-Parrots?")
                 .define("Replace Parrots", true);
 
-        REPLACE_CATS = BUILDER.comment("Should cats be replaced by O-Cats & O-Dogs?")
-                .define("Replace Cats & Add Dogs", true);
-
         REPLACE_TROPICAL_FISH = BUILDER.comment("Should tropical fish be replaced by O-Tropical Fish?")
                 .define("Replace Tropical Fish", true);
+
+        REPLACE_CATS = BUILDER.comment("Should cats be replaced by O-Cats & O-Dogs?")
+                .define("Replace Cats & Add Dogs", true);
         BUILDER.pop();
 
 

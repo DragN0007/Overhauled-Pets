@@ -22,13 +22,13 @@ public class BiomeHitter {
         var placedFeatures = context.lookup(Registries.PLACED_FEATURE);
         var biomes = context.lookup(Registries.BIOME);
 
-        context.register(WOLF, new ForgeBiomeModifiers.AddSpawnsBiomeModifier(
-                biomes.getOrThrow(BiomeTags.IS_OVERWORLD),
-                List.of(new MobSpawnSettings.SpawnerData(POEntityTypes.O_WOLF_ENTITY.get(),
-                        10,
-                        1,
-                        3
-                ))));
+//        context.register(WOLF, new ForgeBiomeModifiers.AddSpawnsBiomeModifier(
+//                biomes.getOrThrow(BiomeTags.IS_OVERWORLD),
+//                List.of(new MobSpawnSettings.SpawnerData(POEntityTypes.O_WOLF_ENTITY.get(),
+//                        10,
+//                        1,
+//                        3
+//                ))));
 
     }
 

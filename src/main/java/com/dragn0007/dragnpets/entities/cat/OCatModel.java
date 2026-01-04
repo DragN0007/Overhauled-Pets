@@ -2,6 +2,7 @@ package com.dragn0007.dragnpets.entities.cat;
 
 import com.dragn0007.dragnlivestock.LivestockOverhaul;
 import com.dragn0007.dragnpets.PetsOverhaul;
+import com.dragn0007.dragnpets.entities.dog.DogBreed;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import software.bernie.geckolib.constant.DataTickets;
@@ -63,12 +64,12 @@ public class OCatModel extends DefaultedEntityGeoModel<OCat> {
         }
     }
 
-    public static final ResourceLocation MODEL = new ResourceLocation(PetsOverhaul.MODID, "geo/cat/o_cat.geo.json");
+//    public static final ResourceLocation MODEL = new ResourceLocation(PetsOverhaul.MODID, "geo/cat/o_cat.geo.json");
     public static final ResourceLocation ANIMATION = new ResourceLocation(PetsOverhaul.MODID, "animations/o_cat.animation.json");
 
     @Override
     public ResourceLocation getModelResource(OCat object) {
-        return MODEL;
+        return CatBreed.breedFromOrdinal(object.getBreed()).resourceLocation;
     }
 
     @Override

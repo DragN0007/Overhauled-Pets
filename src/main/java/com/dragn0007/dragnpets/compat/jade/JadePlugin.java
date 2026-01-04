@@ -1,5 +1,6 @@
 package com.dragn0007.dragnpets.compat.jade;
 
+import com.dragn0007.dragnpets.compat.jade.breed.CatBreedTooltip;
 import com.dragn0007.dragnpets.compat.jade.breed.DogBreedTooltip;
 import com.dragn0007.dragnpets.compat.jade.gender.*;
 import com.dragn0007.dragnpets.entities.cat.OCat;
@@ -25,5 +26,6 @@ public class JadePlugin implements IWailaPlugin {
         registration.registerEntityComponent(new ParrotGenderTooltip(), OParrot.class);
 
         registration.registerEntityComponent(new DogBreedTooltip(), ODog.class);
+        registration.registerEntityComponent(new CatBreedTooltip(), OCat.class);
     }
 }

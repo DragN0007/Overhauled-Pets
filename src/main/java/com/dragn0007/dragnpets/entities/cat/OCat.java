@@ -6,6 +6,10 @@ import com.dragn0007.dragnlivestock.util.LivestockOverhaulCommonConfig;
 import com.dragn0007.dragnpets.PetsOverhaul;
 import com.dragn0007.dragnpets.entities.POEntityTypes;
 import com.dragn0007.dragnpets.entities.ai.CatFollowOwnerGoal;
+import com.dragn0007.dragnpets.entities.dog.DogBreed;
+import com.dragn0007.dragnpets.entities.dog.DogMarkingOverlay;
+import com.dragn0007.dragnpets.entities.dog.ODog;
+import com.dragn0007.dragnpets.entities.dog.ODogModel;
 import com.dragn0007.dragnpets.items.POItems;
 import com.dragn0007.dragnpets.util.POTags;
 import com.dragn0007.dragnpets.util.PetsOverhaulCommonConfig;
@@ -40,6 +44,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.common.Tags;
 import net.minecraftforge.fml.ModList;
 import org.jetbrains.annotations.NotNull;
 import software.bernie.geckolib.animatable.GeoEntity;
@@ -132,7 +137,7 @@ public class OCat extends TamableAnimal implements GeoEntity {
       return Mob.createMobAttributes()
               .add(Attributes.MAX_HEALTH, 8.0D).
               add(Attributes.MOVEMENT_SPEED, (double)0.3F)
-              .add(Attributes.ATTACK_DAMAGE, 3.0D);
+              .add(Attributes.ATTACK_DAMAGE, 1.5D);
    }
 
    public int giftTime = this.random.nextInt(24000) + 48000;
@@ -333,14 +338,6 @@ public class OCat extends TamableAnimal implements GeoEntity {
 
    public void setTame(boolean p_30443_) {
       super.setTame(p_30443_);
-      if (p_30443_) {
-         this.getAttribute(Attributes.MAX_HEALTH).setBaseValue(10.0D);
-         this.setHealth(10.0F);
-      } else {
-         this.getAttribute(Attributes.MAX_HEALTH).setBaseValue(8.0D);
-      }
-
-      this.getAttribute(Attributes.ATTACK_DAMAGE).setBaseValue(2.0D);
    }
 
    public InteractionResult mobInteract(Player player, InteractionHand hand) {
@@ -353,34 +350,43 @@ public class OCat extends TamableAnimal implements GeoEntity {
          return InteractionResult.sidedSuccess(this.level().isClientSide);
       }
 
-      if (itemstack.is(LOItems.BREED_OSCILLATOR.get()) && player.getAbilities().instabuild) {
-         return InteractionResult.PASS;
-      }
-
-      if (itemstack.is(LOItems.COAT_OSCILLATOR.get()) && player.getAbilities().instabuild) {
-         if (player.isShiftKeyDown()) {
-            if (this.getVariant() > 0) {
-               this.setVariant(this.getVariant() - 1);
-               this.playSound(SoundEvents.BEEHIVE_EXIT, 0.5f, 1f);
-               return InteractionResult.SUCCESS;
+      if (player.getAbilities().instabuild) {
+         if (itemstack.is(LOItems.COAT_OSCILLATOR.get())) {
+            if (player.isShiftKeyDown()) {
+               if (this.getVariant() > 0) {
+                  this.setVariant(this.getVariant() - 1);
+                  this.playSound(SoundEvents.BEEHIVE_EXIT, 0.5f, 1f);
+                  return InteractionResult.SUCCESS;
+               }
             }
-         }
-         this.setVariant(this.getVariant() + 1);
-         this.playSound(SoundEvents.BEEHIVE_EXIT, 0.5f, 1f);
-         return InteractionResult.SUCCESS;
-      }
-
-      if (itemstack.is(LOItems.MARKING_OSCILLATOR.get()) && player.getAbilities().instabuild) {
-         if (player.isShiftKeyDown()) {
-            if (this.getOverlayVariant() > 0) {
-               this.setOverlayVariant(this.getOverlayVariant() - 1);
-               this.playSound(SoundEvents.BEEHIVE_EXIT, 0.5f, 1f);
-               return InteractionResult.SUCCESS;
+            this.setVariant(this.getVariant() + 1);
+            this.playSound(SoundEvents.BEEHIVE_EXIT, 0.5f, 1f);
+            return InteractionResult.sidedSuccess(this.level().isClientSide);
+         } else if (itemstack.is(LOItems.MARKING_OSCILLATOR.get())) {
+            if (player.isShiftKeyDown()) {
+               if (this.getOverlayVariant() > 0) {
+                  this.setOverlayVariant(this.getOverlayVariant() - 1);
+                  this.playSound(SoundEvents.BEEHIVE_EXIT, 0.5f, 1f);
+                  return InteractionResult.sidedSuccess(this.level().isClientSide);
+               }
             }
+            this.setOverlayVariant(this.getOverlayVariant() + 1);
+            this.playSound(SoundEvents.BEEHIVE_EXIT, 0.5f, 1f);
+            return InteractionResult.sidedSuccess(this.level().isClientSide);
+         } else if (itemstack.is(LOItems.BREED_OSCILLATOR.get())) {
+            if (player.isShiftKeyDown()) {
+               if (this.getBreed() > 0) {
+                  this.setBreed(this.getBreed() - 1);
+                  this.playSound(SoundEvents.BEEHIVE_EXIT, 0.5f, 1f);
+                  return InteractionResult.SUCCESS;
+               }
+            }
+            CatBreed currentBreed = CatBreed.values()[this.getBreed()];
+            CatBreed nextBreed = currentBreed.next();
+            this.setBreed(nextBreed.ordinal());
+            this.playSound(SoundEvents.BEEHIVE_EXIT, 0.5f, 1f);
+            return InteractionResult.SUCCESS;
          }
-         this.setOverlayVariant(this.getOverlayVariant() + 1);
-         this.playSound(SoundEvents.BEEHIVE_EXIT, 0.5f, 1f);
-         return InteractionResult.SUCCESS;
       }
 
       if (itemstack.is(LOItems.GENDER_TEST_STRIP.get()) && this.isFemale()) {
@@ -473,15 +479,12 @@ public class OCat extends TamableAnimal implements GeoEntity {
    }
 
    public boolean toldToWander = false;
-
    public boolean wasToldToWander() {
       return this.toldToWander;
    }
-
    public boolean getToldToWander() {
       return this.toldToWander;
    }
-
    public void setToldToWander(boolean toldToWander) {
       this.toldToWander = toldToWander;
    }
@@ -503,6 +506,17 @@ public class OCat extends TamableAnimal implements GeoEntity {
 
 
    // Generates the base texture
+
+   public static final EntityDataAccessor<Integer> BREED = SynchedEntityData.defineId(OCat.class, EntityDataSerializers.INT);
+   public ResourceLocation getModelResource() {
+      return CatBreed.breedFromOrdinal(getBreed()).resourceLocation;
+   }
+   public int getBreed() {
+      return this.entityData.get(BREED);
+   }
+   public void setBreed(int breed) {
+      this.entityData.set(BREED, breed);
+   }
 
    public static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(OCat.class, EntityDataSerializers.INT);
    public ResourceLocation getTextureLocation() {
@@ -543,6 +557,7 @@ public class OCat extends TamableAnimal implements GeoEntity {
 
    public void defineSynchedData() {
       super.defineSynchedData();
+      this.entityData.define(BREED, 0);
       this.entityData.define(VARIANT, 0);
       this.entityData.define(OVERLAY, 0);
       this.entityData.define(EYES, 0);
@@ -554,6 +569,10 @@ public class OCat extends TamableAnimal implements GeoEntity {
 
    public void readAdditionalSaveData(CompoundTag tag) {
       super.readAdditionalSaveData(tag);
+
+      if (tag.contains("Breed")) {
+         setBreed(tag.getInt("Breed"));
+      }
 
       if (tag.contains("Variant")) {
          setVariant(tag.getInt("Variant"));
@@ -585,6 +604,7 @@ public class OCat extends TamableAnimal implements GeoEntity {
 
    public void addAdditionalSaveData(CompoundTag tag) {
       super.addAdditionalSaveData(tag);
+      tag.putInt("Breed", getBreed());
       tag.putInt("Variant", getVariant());
       tag.putInt("Overlay", getOverlayVariant());
       tag.putInt("Eyes", getEyes());
@@ -602,15 +622,18 @@ public class OCat extends TamableAnimal implements GeoEntity {
       }
       Random random = new Random();
 
+      setGender(random.nextInt(OCat.Gender.values().length));
+      this.setBreed(random.nextInt(CatBreed.values().length));
+
       if (LivestockOverhaulCommonConfig.SPAWN_BY_BREED.get()) {
+         this.setColor();
+         this.setMarking();
          this.setEyeColor();
       } else {
          setEyes(random.nextInt(OCatEyeLayer.Eyes.values().length));
+         setVariant(random.nextInt(OCatModel.Variant.values().length));
+         setOverlayVariant(random.nextInt(CatMarkingOverlay.values().length));
       }
-
-      setVariant(random.nextInt(OCatModel.Variant.values().length));
-      setOverlayVariant(random.nextInt(CatMarkingOverlay.values().length));
-      setGender(random.nextInt(OCat.Gender.values().length));
 
       return super.finalizeSpawn(serverLevelAccessor, instance, spawnType, data, tag);
    }
@@ -686,6 +709,31 @@ public class OCat extends TamableAnimal implements GeoEntity {
       OCat kitten;
       OCat partner = (OCat) ageableMob;
       kitten = POEntityTypes.O_CAT_ENTITY.get().create(serverLevel);
+
+      int breedChance = this.random.nextInt(100);
+      int breed;
+      if (this.getBreed() == partner.getBreed()) {
+         if (breedChance < 40) {
+            breed = this.getBreed();
+         } else if (breedChance < 80) {
+            breed = partner.getBreed();
+         } else if (breedChance < 95) {
+            breed = 0;
+         } else {
+            breed = this.random.nextInt(DogBreed.values().length);
+         }
+      } else {
+         if (breedChance < 20) {
+            breed = this.getBreed();
+         } else if (breedChance < 40) {
+            breed = partner.getBreed();
+         } else if (breedChance < 95) {
+            breed = 0;
+         } else {
+            breed = this.random.nextInt(DogBreed.values().length);
+         }
+      }
+      kitten.setBreed(breed);
 
       int variantChance = this.random.nextInt(14);
       int variant;
@@ -792,6 +840,158 @@ public class OCat extends TamableAnimal implements GeoEntity {
 
       public boolean canScare() {
          return super.canScare();
+      }
+   }
+
+   public void setColor() {
+      if (this.getBreed() == 0) {
+         setVariant(random.nextInt(OCatModel.Variant.values().length));
+      }
+
+      if (this.getBreed() == 1) {
+         setVariant(random.nextInt(OCatModel.Variant.values().length));
+      }
+
+      if (this.getBreed() == 2) {
+         setVariant(random.nextInt(OCatModel.Variant.values().length));
+      }
+
+      if (this.getBreed() == 3) {
+         setVariant(random.nextInt(OCatModel.Variant.values().length));
+      }
+
+      if (this.getBreed() == 4) {
+         setVariant(random.nextInt(OCatModel.Variant.values().length));
+      }
+
+      if (this.getBreed() == 5) {
+         setVariant(random.nextInt(OCatModel.Variant.values().length));
+      }
+
+      if (this.getBreed() == 6) {
+         setVariant(random.nextInt(OCatModel.Variant.values().length));
+      }
+
+      if (this.getBreed() == 7) {
+         setVariant(random.nextInt(OCatModel.Variant.values().length));
+      }
+
+      if (this.getBreed() == 8) {
+         if (random.nextDouble() < 0.05) {
+            setVariant(random.nextInt(OCatModel.Variant.values().length));
+         } else if (random.nextDouble() > 0.05) {
+            this.setVariant(9);
+         }
+      }
+
+      if (this.getBreed() == 9) {
+         if (random.nextDouble() < 0.05) {
+            setVariant(random.nextInt(OCatModel.Variant.values().length));
+         } else if (random.nextDouble() > 0.05) {
+            this.setVariant(1);
+         }
+      }
+
+      if (this.getBreed() == 10) {
+         if (random.nextDouble() < 0.05) {
+            setVariant(random.nextInt(OCatModel.Variant.values().length));
+         } else if (random.nextDouble() > 0.05) {
+            int[] variants = {2, 5, 10};
+            int randomIndex = new Random().nextInt(variants.length);
+            this.setVariant(variants[randomIndex]);
+         }
+      }
+   }
+
+   public void setMarking() {
+      if (this.getBreed() == 0) {
+         setOverlayVariant(random.nextInt(CatMarkingOverlay.values().length));
+      }
+
+      if (this.getBreed() == 1) {
+         setOverlayVariant(random.nextInt(CatMarkingOverlay.values().length));
+      }
+
+      if (this.getBreed() == 2) {
+         setOverlayVariant(random.nextInt(CatMarkingOverlay.values().length));
+      }
+
+      if (this.getBreed() == 3) {
+         setOverlayVariant(random.nextInt(CatMarkingOverlay.values().length));
+      }
+
+      if (this.getBreed() == 4) {
+         setOverlayVariant(random.nextInt(CatMarkingOverlay.values().length));
+      }
+
+      if (this.getBreed() == 5) {
+         setOverlayVariant(random.nextInt(CatMarkingOverlay.values().length));
+      }
+
+      if (this.getBreed() == 6) {
+         setOverlayVariant(random.nextInt(CatMarkingOverlay.values().length));
+      }
+
+      if (this.getBreed() == 7) {
+         setOverlayVariant(random.nextInt(CatMarkingOverlay.values().length));
+      }
+
+      if (this.getBreed() == 8) {
+         if (random.nextDouble() < 0.05) {
+            setOverlayVariant(random.nextInt(CatMarkingOverlay.values().length));
+         } else if (random.nextDouble() > 0.05) {
+            this.setOverlayVariant(0);
+         }
+      }
+
+      if (this.getBreed() == 9) {
+         if (random.nextDouble() < 0.05) {
+            setOverlayVariant(random.nextInt(CatMarkingOverlay.values().length));
+         } else if (random.nextDouble() > 0.05) {
+            this.setOverlayVariant(0);
+         }
+      }
+
+      if (this.getBreed() == 10) {
+         if (random.nextDouble() < 0.05) {
+            setOverlayVariant(random.nextInt(CatMarkingOverlay.values().length));
+         } else if (random.nextDouble() > 0.05) {
+            this.setOverlayVariant(0);
+         }
+      }
+   }
+
+   public void setBreedByBiome() {
+      if (LivestockOverhaulCommonConfig.SPAWN_BY_BREED.get()) {
+         if (this.level().getBiome(this.blockPosition()).is(Tags.Biomes.IS_HOT_OVERWORLD)) {
+            if (random.nextDouble() < 0.20) {
+               this.setBreed(random.nextInt(CatBreed.values().length));
+            } else {
+               int[] variants = {0, 3, 7, 10};
+               int randomIndex = new Random().nextInt(variants.length);
+               this.setBreed(variants[randomIndex]);
+            }
+
+         } else if (this.level().getBiome(this.blockPosition()).is(Tags.Biomes.IS_COLD_OVERWORLD)) {
+            if (random.nextDouble() < 0.20) {
+               this.setBreed(random.nextInt(CatBreed.values().length));
+            } else {
+               int[] variants = {0, 2, 5, 6, 8, 9};
+               int randomIndex = new Random().nextInt(variants.length);
+               this.setBreed(variants[randomIndex]);
+            }
+
+         } else {
+            if (random.nextDouble() < 0.20) {
+               this.setBreed(random.nextInt(CatBreed.values().length));
+            } else {
+               int[] variants = {0, 1, 4};
+               int randomIndex = new Random().nextInt(variants.length);
+               this.setBreed(variants[randomIndex]);
+            }
+         }
+      } else {
+         this.setBreed(random.nextInt(CatBreed.values().length));
       }
    }
 }
