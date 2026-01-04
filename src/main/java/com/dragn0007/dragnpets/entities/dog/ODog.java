@@ -510,30 +510,28 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity, Chesta
 
       //TODO; Fix armor bug in survival, inventories
       if (this.isOwnedBy(player)) {
-         if (itemstack.getItem() instanceof DogArmorItem && this.getArmor().is(Items.AIR) && !this.hasVest() && this.canWearArmor()) {
+         if (itemstack.getItem() instanceof DogArmorItem && (this.getArmor().is(Items.AIR) || this.getArmor().isEmpty()) && !this.hasVest() && this.canWearArmor()) {
             this.setArmor(itemstack);
             this.updateInventory();
             this.playSound(SoundEvents.HORSE_ARMOR, 0.5f, 1f);
             if (!player.getAbilities().instabuild) {
                itemstack.shrink(1);
             }
-            return InteractionResult.SUCCESS;
+            return InteractionResult.sidedSuccess(this.level().isClientSide);
          }
 
          if (itemstack.is(Items.SHEARS)) {
             this.setCollared(false);
             this.setVest(false);
             if (!this.getArmor().isEmpty() && this.getArmor().getItem() instanceof DogArmorItem armorItem) {
-               this.spawnAtLocation(armorItem);
                this.setArmor(Items.AIR.getDefaultInstance());
             }
             this.playSound(SoundEvents.SHEEP_SHEAR, 0.5f, 1f);
             this.dropEquipment();
             this.inventory.removeAllItems();
             this.updateInventory();
-            return InteractionResult.SUCCESS;
+            return InteractionResult.sidedSuccess(this.level().isClientSide);
          }
-         return super.mobInteract(player, hand);
       }
 
       if (player.getAbilities().instabuild) {
@@ -1000,6 +998,11 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity, Chesta
          this.setChested(tag.getBoolean("Chested"));
       }
 
+      if(tag.contains("ArmorItem")) {
+         ItemStack armorItem = ItemStack.of(tag.getCompound("ArmorItem"));
+         this.setArmorEquipment(armorItem);
+      }
+
       this.updateInventory();
       if(this.isChested()) {
          ListTag listTag = tag.getList("Items", 10);
@@ -1030,6 +1033,10 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity, Chesta
       tag.putBoolean("Collared", this.isCollared());
       tag.putByte("VestColor", (byte)this.getVestColor().getId());
       tag.putBoolean("Vest", this.hasVest());
+
+      if (!this.inventory.getItem(1).isEmpty()) {
+         tag.put("ArmorItem", this.getArmor().save(new CompoundTag()));
+      }
 
       tag.putBoolean("Chested", this.isChested());
 
@@ -1253,6 +1260,8 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity, Chesta
    public void updateInventory() {
       SimpleContainer tempInventory = this.inventory;
       this.inventory = new SimpleContainer(this.getInventorySize());
+
+      this.setArmorEquipment(this.getArmor());
 
       if(tempInventory != null) {
          tempInventory.removeListener(this);
@@ -1813,7 +1822,7 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity, Chesta
             if (random.nextDouble() < 0.10) {
                this.setBreed(random.nextInt(DogBreed.values().length));
             } else {
-               int[] variants = {0, 2, 6};
+               int[] variants = {0, 2, 6, 21, 22, 24};
                int randomIndex = new Random().nextInt(variants.length);
                this.setBreed(variants[randomIndex]);
             }
@@ -1822,7 +1831,7 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity, Chesta
             if (random.nextDouble() < 0.10) {
                this.setBreed(random.nextInt(DogBreed.values().length));
             } else {
-               int[] variants = {0, 4, 11, 14};
+               int[] variants = {0, 4, 11, 14, 20, 23};
                int randomIndex = new Random().nextInt(variants.length);
                this.setBreed(variants[randomIndex]);
             }
@@ -1840,7 +1849,5 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity, Chesta
          this.setBreed(random.nextInt(DogBreed.values().length));
       }
    }
-
-
 
 }
