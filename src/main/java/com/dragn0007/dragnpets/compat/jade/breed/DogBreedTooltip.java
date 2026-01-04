@@ -44,6 +44,11 @@ public class DogBreedTooltip implements IEntityComponentProvider {
             case 17: return "American Pitbull";
             case 18: return "German Shepherd";
             case 19: return "Borzoi";
+            case 20: return "Newfoundland";
+            case 21: return "Kangal";
+            case 22: return "Belgian Malinois";
+            case 23: return "Tibetan Mastiff";
+            case 24: return "Collie";
             default: return "Unknown";
         }
     }

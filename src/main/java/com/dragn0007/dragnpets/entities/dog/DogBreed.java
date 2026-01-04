@@ -24,6 +24,11 @@ public enum DogBreed {
     PITBULL(new ResourceLocation(PetsOverhaul.MODID, "geo/dog/o_dog.geo.json")),
     GERMAN_SHEPHERD(new ResourceLocation(PetsOverhaul.MODID, "geo/dog/o_dog.geo.json")),
     BORZOI(new ResourceLocation(PetsOverhaul.MODID, "geo/dog/o_dog.geo.json")),
+    NEWFOUNDLAND(new ResourceLocation(PetsOverhaul.MODID, "geo/dog/o_dog.geo.json")),
+    KANGAL(new ResourceLocation(PetsOverhaul.MODID, "geo/dog/o_dog.geo.json")),
+    BELGIAN_MALINOIS(new ResourceLocation(PetsOverhaul.MODID, "geo/dog/o_dog.geo.json")),
+    TIBETAN_MASTIFF(new ResourceLocation(PetsOverhaul.MODID, "geo/dog/o_dog.geo.json")),
+    COLLIE(new ResourceLocation(PetsOverhaul.MODID, "geo/dog/o_dog.geo.json")),
     ;
 
     public final ResourceLocation resourceLocation;
