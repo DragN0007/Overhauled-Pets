@@ -83,5 +83,28 @@ public class ODogDecorLayer extends GeoRenderLayer<ODog> {
                     bufferSource.getBuffer(renderType1), partialTick, packedLight, OverlayTexture.NO_OVERLAY,
                     1, 1, 1, 1);
         }
+
+        if (animatable.isChested() && animatable.isChestable()) {
+            if (animatable.getBreed() == 4) {
+                resourceLocation = new ResourceLocation(PetsOverhaul.MODID, "textures/entity/dog/harness/barrel.png");
+            } else if (animatable.getBreed() == 11) {
+                resourceLocation = new ResourceLocation(PetsOverhaul.MODID, "textures/entity/dog/harness/harness.png");
+            } else {
+                return;
+            }
+
+            RenderType renderType1 = RenderType.entityCutout(resourceLocation);
+            poseStack.pushPose();
+            poseStack.scale(1.0f, 1.0f, 1.0f);
+            poseStack.translate(0.0d, 0.0d, 0.0d);
+            poseStack.popPose();
+            getRenderer().reRender(getDefaultBakedModel(animatable),
+                    poseStack,
+                    bufferSource,
+                    animatable,
+                    renderType1,
+                    bufferSource.getBuffer(renderType1), partialTick, packedLight, OverlayTexture.NO_OVERLAY,
+                    1, 1, 1, 1);
+        }
     }
 }

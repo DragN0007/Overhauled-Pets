@@ -10,11 +10,11 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 
-public class BerneseScreen extends AbstractContainerScreen<BerneseMenu> {
+public class DogScreen extends AbstractContainerScreen<DogMenu> {
     public static final ResourceLocation LOCATION = new ResourceLocation(PetsOverhaul.MODID, "textures/gui/bernese_mountain_dog.png");
     public final ODog bernese;
 
-    public BerneseScreen(BerneseMenu berneseMenu, Inventory inventory, Component component) {
+    public DogScreen(DogMenu berneseMenu, Inventory inventory, Component component) {
         super(berneseMenu, inventory, component);
         this.bernese = berneseMenu.bernese;
     }
@@ -28,9 +28,13 @@ public class BerneseScreen extends AbstractContainerScreen<BerneseMenu> {
         int y = (this.height - this.imageHeight) / 2;
         graphics.blit(LOCATION, x, y, 0, 0, this.imageWidth, this.imageHeight);
 
-//        if (this.bernese.isChested()) {
-//            graphics.blit(LOCATION, x + 25, y + 17, 0, this.imageHeight, 145, 54);
-//        }
+        if (this.bernese.isChested()) {
+            graphics.blit(LOCATION, x + 25, y + 17, 0, this.imageHeight, 145, 54);
+        }
+
+        if (this.bernese.isHuntingDog()) {
+            graphics.blit(LOCATION, x + 25, y + 17, 0, this.imageHeight, 36, 54);
+        }
     }
 
     @Override

@@ -10,29 +10,35 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
-public class BerneseMenu extends AbstractContainerMenu {
+public class DogMenu extends AbstractContainerMenu {
 
     public Container container;
     public ODog bernese;
 
-    public BerneseMenu(int containerId, Inventory inventory, FriendlyByteBuf extraData) {
+    public DogMenu(int containerId, Inventory inventory, FriendlyByteBuf extraData) {
         this(containerId, inventory, new SimpleContainer(extraData.readInt()), (ODog) inventory.player.level().getEntity(extraData.readInt()));
     }
 
-    public BerneseMenu(int containerId, Inventory inventory, Container container, ODog bernese) {
+    public DogMenu(int containerId, Inventory inventory, Container container, ODog bernese) {
         super(POMenuTypes.BERNESE_MENU.get(), containerId);
         this.container = container;
         this.bernese = bernese;
 
         int berneseSlots = 0;
 
-//        if (this.bernese.isChested()) {
-//            for (int y = 0; y < 3; y++) {
-//                for (int x = 0; x < 7; x++) {
-//                    this.addSlot(new Slot(this.container, berneseSlots++, 26 + x * 18, 18 + y * 18));
-//                }
-//            }
-//        }
+        if (this.bernese.isChested() && (this.bernese.getBreed() == 4 || this.bernese.getBreed() == 11)) {
+            for (int y = 0; y < 3; y++) {
+                for (int x = 0; x < 7; x++) {
+                    this.addSlot(new Slot(this.container, berneseSlots++, 26 + x * 18, 18 + y * 18));
+                }
+            }
+        } else if (this.bernese.isHuntingDog()) {
+            for (int y = 0; y < 3; y++) {
+                for (int x = 0; x < 2; x++) {
+                    this.addSlot(new Slot(this.container, berneseSlots++, 26 + x * 18, 18 + y * 18));
+                }
+            }
+        }
 
         int playerSlots = 0;
         for (int x = 0; x < 9; x++) {

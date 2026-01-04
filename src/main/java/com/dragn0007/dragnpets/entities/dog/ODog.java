@@ -9,7 +9,7 @@ import com.dragn0007.dragnlivestock.util.LivestockOverhaulCommonConfig;
 import com.dragn0007.dragnpets.PetsOverhaul;
 import com.dragn0007.dragnpets.entities.POEntityTypes;
 import com.dragn0007.dragnpets.entities.ai.*;
-import com.dragn0007.dragnpets.gui.BerneseMenu;
+import com.dragn0007.dragnpets.gui.DogMenu;
 import com.dragn0007.dragnpets.items.custom.DogArmorItem;
 import com.dragn0007.dragnpets.items.custom.VestItem;
 import com.dragn0007.dragnpets.util.POTags;
@@ -143,7 +143,7 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity, Chesta
                  entity -> entity instanceof Slime && this.isTame() && this.wasToldToGuard()));
       }
 
-      if (this.isBigGameHunter() && this.getBreed() == 5) {
+      if (this.isBigGameHunter() && (this.getBreed() == 5 || this.getBreed() == 8)) {
          this.goalSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, LivingEntity.class, 2, true, false,
                  entity ->
                          (entity.getType().is(POTags.Entity_Types.GAME) && this.isTame() && this.wasToldToHunt())
@@ -507,11 +507,10 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity, Chesta
       ItemStack itemstack = player.getItemInHand(hand);
       Item item = itemstack.getItem();
 
-
-      //TODO; Fix armor bug in survival, inventories
+      //TODO; Fix armor bug in survival
       if (this.isOwnedBy(player)) {
-         if (itemstack.getItem() instanceof DogArmorItem && (this.getArmor().is(Items.AIR) || this.getArmor().isEmpty()) && !this.hasVest() && this.canWearArmor()) {
-            this.setArmor(itemstack);
+         if (itemstack.getItem() instanceof DogArmorItem && this.getArmor().isEmpty() && !this.hasVest() && this.canWearArmor()) {
+            this.setArmorEquipment(itemstack);
             this.updateInventory();
             this.playSound(SoundEvents.HORSE_ARMOR, 0.5f, 1f);
             if (!player.getAbilities().instabuild) {
@@ -524,7 +523,8 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity, Chesta
             this.setCollared(false);
             this.setVest(false);
             if (!this.getArmor().isEmpty() && this.getArmor().getItem() instanceof DogArmorItem armorItem) {
-               this.setArmor(Items.AIR.getDefaultInstance());
+               this.spawnAtLocation(armorItem);
+               this.setArmor(ItemStack.EMPTY);
             }
             this.playSound(SoundEvents.SHEEP_SHEAR, 0.5f, 1f);
             this.dropEquipment();
@@ -594,11 +594,10 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity, Chesta
                itemstack.shrink(1);
             }
             this.setChested(true);
-
             return InteractionResult.sidedSuccess(this.level().isClientSide);
          }
 
-         if (this.isOwnedBy(player) && !itemstack.is(Items.SHEARS) && this.isChested() && !this.isBaby()) {
+         if (this.isOwnedBy(player) && !itemstack.is(Items.SHEARS) && !this.isBaby() && (this.isChested() || this.isHuntingDog())) {
             if (this.isTame() && player.isSecondaryUseActive() && this.isOrderedToSit()) {
                this.openInventory(player);
                return InteractionResult.SUCCESS;
@@ -830,7 +829,7 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity, Chesta
    }
 
    public boolean isHuntingDog() {
-      return this.getBreed() == 3 || this.getBreed() == 7 || this.getBreed() == 8 || this.getBreed() == 10 ||
+      return this.getBreed() == 3 || this.getBreed() == 7 || this.getBreed() == 10 ||
               this.getBreed() == 12 || this.getBreed() == 13 || this.getBreed() == 16;
    }
 
@@ -843,7 +842,7 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity, Chesta
    }
 
    public boolean isBigGameHunter() {
-      return this.getBreed() == 1 || this.getBreed() == 5 || this.getBreed() == 19;
+      return this.getBreed() == 1 || this.getBreed() == 5 || this.getBreed() == 8 || this.getBreed() == 19;
    }
 
    // Generates the base texture
@@ -1247,7 +1246,7 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity, Chesta
 
    @Override
    public boolean isChestable() {
-      return this.isAlive() && !this.isBaby();
+      return this.isAlive() && !this.isBaby() && (this.getBreed() == 4 || this.getBreed() == 11);
    }
 
    @Override
@@ -1309,7 +1308,11 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity, Chesta
    }
 
    public int getInventorySize() {
-      return 24;
+      if (this.isHuntingDog()) {
+         return 6;
+      } else {
+         return 21;
+      }
    }
 
    public void playChestEquipsSound() {
@@ -1319,7 +1322,7 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity, Chesta
    public void openInventory(Player player) {
       if(player instanceof ServerPlayer serverPlayer && this.isTame()) {
          NetworkHooks.openScreen(serverPlayer, new SimpleMenuProvider((containerId, inventory, p) -> {
-            return new BerneseMenu(containerId, inventory, this.inventory, this);
+            return new DogMenu(containerId, inventory, this.inventory, this);
          }, this.getDisplayName()), (data) -> {
             data.writeInt(this.getInventorySize());
             data.writeInt(this.getId());
