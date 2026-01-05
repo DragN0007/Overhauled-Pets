@@ -507,7 +507,7 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity, Chesta
       ItemStack itemstack = player.getItemInHand(hand);
       Item item = itemstack.getItem();
 
-      //TODO; Fix armor bug in survival
+      //TODO; Fix armor bug in survival (client issue?)
       if (this.isOwnedBy(player)) {
          if (itemstack.getItem() instanceof DogArmorItem && this.getArmor().isEmpty() && !this.hasVest() && this.canWearArmor()) {
             this.setArmorEquipment(itemstack);
