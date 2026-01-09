@@ -1084,7 +1084,7 @@
 				},
 				"tail": {
 					"rotation": {
-						"vector": [-80, 0, "math.cos(query.anim_time * 140) * 7"]
+						"vector": [-62.5, 0, "math.cos(query.anim_time*560)*25"]
 					}
 				},
 				"tail_bottom": {

@@ -10,6 +10,8 @@ import com.dragn0007.dragnpets.PetsOverhaul;
 import com.dragn0007.dragnpets.entities.POEntityTypes;
 import com.dragn0007.dragnpets.entities.ai.CanineFollowPackLeaderGoal;
 import com.dragn0007.dragnpets.entities.ai.WolfFollowOwnerGoal;
+import com.dragn0007.dragnpets.entities.dog.DogBase;
+import com.dragn0007.dragnpets.entities.dog.ODog;
 import com.dragn0007.dragnpets.items.custom.DogArmorItem;
 import com.dragn0007.dragnpets.util.POTags;
 import com.dragn0007.dragnpets.util.PetsOverhaulCommonConfig;
@@ -58,16 +60,15 @@ import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.pathfinder.BlockPathTypes;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.fml.ModList;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.core.animatable.GeoAnimatable;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
-import software.bernie.geckolib.core.animation.AnimatableManager;
-import software.bernie.geckolib.core.animation.Animation;
-import software.bernie.geckolib.core.animation.AnimationController;
-import software.bernie.geckolib.core.animation.RawAnimation;
+import software.bernie.geckolib.core.animation.AnimationState;
+import software.bernie.geckolib.core.animation.*;
 import software.bernie.geckolib.core.object.PlayState;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
@@ -77,7 +78,7 @@ import java.util.UUID;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-public class OWolf extends TamableAnimal implements NeutralMob, GeoEntity {
+public class OWolf extends DogBase implements NeutralMob, GeoEntity {
 
    public static final ResourceLocation LOOT_TABLE = new ResourceLocation(PetsOverhaul.MODID, "entities/o_wolf");
    public static final ResourceLocation VANILLA_LOOT_TABLE = new ResourceLocation("minecraft", "entities/wolf");
@@ -124,7 +125,7 @@ public class OWolf extends TamableAnimal implements NeutralMob, GeoEntity {
 
    public void registerGoals() {
       this.goalSelector.addGoal(1, new FloatGoal(this));
-      this.goalSelector.addGoal(1, new OWolf.WolfPanicGoal(1.4D));
+      this.goalSelector.addGoal(1, new WolfPanicGoal(1.4D));
       this.goalSelector.addGoal(2, new SitWhenOrderedToGoal(this));
       this.goalSelector.addGoal(3, new AvoidEntityGoal<>(this, OLlama.class, 24.0F, 1.5D, 1.5D));
       this.goalSelector.addGoal(3, new AvoidEntityGoal<>(this, Camel.class, 24.0F, 1.5D, 1.5D));
@@ -155,7 +156,7 @@ public class OWolf extends TamableAnimal implements NeutralMob, GeoEntity {
    public static AttributeSupplier.Builder createAttributes() {
       return Mob.createMobAttributes()
               .add(Attributes.MOVEMENT_SPEED, 0.28F)
-              .add(Attributes.MAX_HEALTH, 14.0D)
+              .add(Attributes.MAX_HEALTH, 24.0D)
               .add(Attributes.ATTACK_DAMAGE, 4.0D);
    }
 
@@ -180,7 +181,7 @@ public class OWolf extends TamableAnimal implements NeutralMob, GeoEntity {
 
    public final AnimatableInstanceCache geoCache = GeckoLibUtil.createInstanceCache(this);
 
-   public <T extends GeoAnimatable> PlayState predicate(software.bernie.geckolib.core.animation.AnimationState<T> tAnimationState) {
+   public <T extends GeoAnimatable> PlayState predicate(AnimationState<T> tAnimationState) {
       double currentSpeed = this.getDeltaMovement().lengthSqr();
       double speedThreshold = 0.015;
 
@@ -388,14 +389,6 @@ public class OWolf extends TamableAnimal implements NeutralMob, GeoEntity {
 
    public void setTame(boolean p_30443_) {
       super.setTame(p_30443_);
-      if (p_30443_) {
-         this.getAttribute(Attributes.MAX_HEALTH).setBaseValue(20.0D);
-         this.setHealth(20.0F);
-      } else {
-         this.getAttribute(Attributes.MAX_HEALTH).setBaseValue(8.0D);
-      }
-
-      this.getAttribute(Attributes.ATTACK_DAMAGE).setBaseValue(4.0D);
    }
 
    protected float getStandingEyeHeight(Pose pose, EntityDimensions entityDimensions) {
@@ -408,18 +401,25 @@ public class OWolf extends TamableAnimal implements NeutralMob, GeoEntity {
 
       if (this.isOwnedBy(player)) {
          if (itemstack.getItem() instanceof DogArmorItem && this.getArmor().isEmpty()) {
-            this.setArmor(itemstack);
+            ItemStack armorStack = itemstack.copy();
+            armorStack.setCount(1);
+            this.setArmorEquipment(armorStack);
+            if (!player.getAbilities().instabuild) {
+               itemstack.shrink(1);
+            }
             this.playSound(SoundEvents.HORSE_ARMOR, 0.5f, 1f);
+
             return InteractionResult.sidedSuccess(this.level().isClientSide);
          }
 
-         if (itemstack.is(Items.SHEARS) && (this.isCollared() || !this.getArmor().isEmpty())) {
+         if (itemstack.is(Items.SHEARS)) {
             this.setCollared(false);
             if (!this.getArmor().isEmpty() && this.getArmor().getItem() instanceof DogArmorItem armorItem) {
                this.spawnAtLocation(armorItem);
-               this.setArmor(Items.AIR.getDefaultInstance());
+               this.setArmor(ItemStack.EMPTY);
             }
             this.playSound(SoundEvents.SHEEP_SHEAR, 0.5f, 1f);
+            this.dropEquipment();
             return InteractionResult.sidedSuccess(this.level().isClientSide);
          }
       }
@@ -551,7 +551,7 @@ public class OWolf extends TamableAnimal implements NeutralMob, GeoEntity {
             itemstack.shrink(1);
          }
 
-         if (this.random.nextInt(3) == 0 && !net.minecraftforge.event.ForgeEventFactory.onAnimalTame(this, player)) {
+         if (this.random.nextInt(3) == 0 && !ForgeEventFactory.onAnimalTame(this, player)) {
             this.tame(player);
             this.navigation.stop();
             this.setTarget((LivingEntity)null);
@@ -756,7 +756,7 @@ public class OWolf extends TamableAnimal implements NeutralMob, GeoEntity {
       Random random = new Random();
       setVariant(random.nextInt(OWolfModel.Variant.values().length));
       setOverlayVariant(random.nextInt(OWolfMarkingLayer.Overlay.values().length));
-      setGender(random.nextInt(OWolf.Gender.values().length));
+      setGender(random.nextInt(Gender.values().length));
 
       setPredatorSpawn(this.getSpawnType() == MobSpawnType.NATURAL && this.level().isNight());
 
@@ -768,78 +768,60 @@ public class OWolf extends TamableAnimal implements NeutralMob, GeoEntity {
       return this.isPredatorSpawn();
    }
 
-   public enum Gender {
-      FEMALE,
-      MALE
-   }
-   public boolean isFemale() {
-      return this.getGender() == 0;
-   }
-   public boolean isMale() {
-      return this.getGender() == 1;
-   }
-   public static final EntityDataAccessor<Integer> GENDER = SynchedEntityData.defineId(OWolf.class, EntityDataSerializers.INT);
-   public int getGender() {
-      return this.entityData.get(GENDER);
-   }
-   public void setGender(int gender) {
-      this.entityData.set(GENDER, gender);
-   }
-
-   public boolean canParent() {
-      return !this.isBaby() && this.getHealth() >= this.getMaxHealth() && this.isInLove();
-   }
-
-   public boolean canMate(Animal animal) {
-      if (animal == this) {
-         return false;
-      } else if (!(animal instanceof OWolf)) {
-         return false;
-      } else {
-         if (!LivestockOverhaulCommonConfig.GENDERS_AFFECT_BREEDING.get()) {
-            return this.canParent() && ((OWolf) animal).canParent();
-         } else {
-            OWolf partner = (OWolf) animal;
-            if (this.canParent() && partner.canParent() && this.getGender() != partner.getGender()) {
-               return isFemale();
-            }
-         }
-      }
-      return false;
-   }
-
    @Override
    public AgeableMob getBreedOffspring(ServerLevel serverLevel, AgeableMob ageableMob) {
-      OWolf pup;
-      OWolf partner = (OWolf) ageableMob;
-      pup = POEntityTypes.O_WOLF_ENTITY.get().create(serverLevel);
+      DogBase pup;
+      if (ageableMob instanceof ODog dogPartner) {
+         pup = POEntityTypes.O_DOG_ENTITY.get().create(serverLevel);
 
-      int variantChance = this.random.nextInt(14);
-      int variant;
-      if (variantChance < 6) {
-         variant = this.getVariant();
-      } else if (variantChance < 12) {
-         variant = partner.getVariant();
+         ((ODog) pup).setBreed(25);
+
+         int variantChance = this.random.nextInt(100);
+         if (variantChance < 50) {
+            ((ODog) pup).setVariant(dogPartner.getVariant());
+         } else {
+            ((ODog) pup).setColor();
+         }
+
+         int overlayChance = this.random.nextInt(100);
+         if (overlayChance < 40) {
+            ((ODog) pup).setOverlayVariant(dogPartner.getOverlayVariant());
+         } else if (overlayChance < 80) {
+            ((ODog) pup).setOverlayVariant(20);
+         } else {
+            ((ODog) pup).setMarking();
+         }
+
+         ((ODog) pup).setFluffChance();
+
       } else {
-         variant = this.random.nextInt(OWolfModel.Variant.values().length);
+         OWolf partner = (OWolf) ageableMob;
+         pup = POEntityTypes.O_WOLF_ENTITY.get().create(serverLevel);
+
+         int variantChance = this.random.nextInt(100);
+         int variant;
+         if (variantChance < 40) {
+            variant = this.getVariant();
+         } else if (variantChance < 80) {
+            variant = partner.getVariant();
+         } else {
+            variant = this.random.nextInt(OWolfModel.Variant.values().length);
+         }
+         ((OWolf) pup).setVariant(variant);
+
+         int overlayChance = this.random.nextInt(100);
+         int overlay;
+         if (overlayChance < 40) {
+            overlay = this.getOverlayVariant();
+         } else if (overlayChance < 80) {
+            overlay = partner.getOverlayVariant();
+         } else {
+            overlay = this.random.nextInt(OWolfMarkingLayer.Overlay.values().length);
+         }
+         ((OWolf) pup).setOverlayVariant(overlay);
       }
-      pup.setVariant(variant);
 
-      int overlayChance = this.random.nextInt(10);
-      int overlay;
-      if (overlayChance < 4) {
-         overlay = this.getOverlayVariant();
-      } else if (overlayChance < 8) {
-         overlay = partner.getOverlayVariant();
-      } else {
-         overlay = this.random.nextInt(OWolfMarkingLayer.Overlay.values().length);
-      }
-      pup.setOverlayVariant(overlay);
-
-      int gender;
-      gender = this.random.nextInt(OWolf.Gender.values().length);
-      pup.setGender(gender);
-
+      pup.setGender(random.nextInt(DogBase.Gender.values().length));
       return pup;
    }
 

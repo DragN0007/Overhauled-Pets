@@ -13,29 +13,29 @@ import net.minecraft.world.item.ItemStack;
 public class DogMenu extends AbstractContainerMenu {
 
     public Container container;
-    public ODog bernese;
+    public ODog dog;
 
     public DogMenu(int containerId, Inventory inventory, FriendlyByteBuf extraData) {
         this(containerId, inventory, new SimpleContainer(extraData.readInt()), (ODog) inventory.player.level().getEntity(extraData.readInt()));
     }
 
-    public DogMenu(int containerId, Inventory inventory, Container container, ODog bernese) {
+    public DogMenu(int containerId, Inventory inventory, Container container, ODog dog) {
         super(POMenuTypes.BERNESE_MENU.get(), containerId);
         this.container = container;
-        this.bernese = bernese;
+        this.dog = dog;
 
-        int berneseSlots = 0;
+        int dogSlots = 0;
 
-        if (this.bernese.isChested() && (this.bernese.getBreed() == 4 || this.bernese.getBreed() == 11)) {
+        if (this.dog.isChested() && (this.dog.getBreed() == 4 || this.dog.getBreed() == 11)) {
             for (int y = 0; y < 3; y++) {
                 for (int x = 0; x < 7; x++) {
-                    this.addSlot(new Slot(this.container, berneseSlots++, 26 + x * 18, 18 + y * 18));
+                    this.addSlot(new Slot(this.container, dogSlots++, 26 + x * 18, 18 + y * 18));
                 }
             }
-        } else if (this.bernese.isHuntingDog()) {
+        } else if (this.dog.isHuntingDog() || this.dog.isGuardDog()) {
             for (int y = 0; y < 3; y++) {
                 for (int x = 0; x < 2; x++) {
-                    this.addSlot(new Slot(this.container, berneseSlots++, 26 + x * 18, 18 + y * 18));
+                    this.addSlot(new Slot(this.container, dogSlots++, 26 + x * 18, 18 + y * 18));
                 }
             }
         }
@@ -53,7 +53,7 @@ public class DogMenu extends AbstractContainerMenu {
     }
 
         public boolean stillValid(Player player) {
-        return this.container.stillValid(player) && this.bernese.isAlive() && this.bernese.distanceTo(player) < 8.0F;
+        return this.container.stillValid(player) && this.dog.isAlive() && this.dog.distanceTo(player) < 8.0F;
     }
 
     @Override

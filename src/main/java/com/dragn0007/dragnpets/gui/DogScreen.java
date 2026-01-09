@@ -11,12 +11,12 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 
 public class DogScreen extends AbstractContainerScreen<DogMenu> {
-    public static final ResourceLocation LOCATION = new ResourceLocation(PetsOverhaul.MODID, "textures/gui/bernese_mountain_dog.png");
-    public final ODog bernese;
+    public static final ResourceLocation LOCATION = new ResourceLocation(PetsOverhaul.MODID, "textures/gui/dog.png");
+    public final ODog dog;
 
-    public DogScreen(DogMenu berneseMenu, Inventory inventory, Component component) {
-        super(berneseMenu, inventory, component);
-        this.bernese = berneseMenu.bernese;
+    public DogScreen(DogMenu dogMenu, Inventory inventory, Component component) {
+        super(dogMenu, inventory, component);
+        this.dog = dogMenu.dog;
     }
 
     public void renderBg(GuiGraphics graphics, float p_282998_, int p_282929_, int p_283133_) {
@@ -28,11 +28,11 @@ public class DogScreen extends AbstractContainerScreen<DogMenu> {
         int y = (this.height - this.imageHeight) / 2;
         graphics.blit(LOCATION, x, y, 0, 0, this.imageWidth, this.imageHeight);
 
-        if (this.bernese.isChested()) {
+        if (this.dog.isChested()) {
             graphics.blit(LOCATION, x + 25, y + 17, 0, this.imageHeight, 145, 54);
         }
 
-        if (this.bernese.isHuntingDog()) {
+        if (this.dog.isHuntingDog() || this.dog.isGuardDog()) {
             graphics.blit(LOCATION, x + 25, y + 17, 0, this.imageHeight, 36, 54);
         }
     }

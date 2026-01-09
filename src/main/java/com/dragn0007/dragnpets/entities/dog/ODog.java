@@ -1,14 +1,13 @@
 package com.dragn0007.dragnpets.entities.dog;
 
 import com.dragn0007.dragnlivestock.entities.Chestable;
-import com.dragn0007.dragnlivestock.entities.chicken.OChicken;
-import com.dragn0007.dragnlivestock.entities.rabbit.ORabbit;
 import com.dragn0007.dragnlivestock.entities.util.AbstractOMount;
 import com.dragn0007.dragnlivestock.items.LOItems;
 import com.dragn0007.dragnlivestock.util.LivestockOverhaulCommonConfig;
 import com.dragn0007.dragnpets.PetsOverhaul;
 import com.dragn0007.dragnpets.entities.POEntityTypes;
 import com.dragn0007.dragnpets.entities.ai.*;
+import com.dragn0007.dragnpets.entities.wolf.OWolf;
 import com.dragn0007.dragnpets.gui.DogMenu;
 import com.dragn0007.dragnpets.items.custom.DogArmorItem;
 import com.dragn0007.dragnpets.items.custom.VestItem;
@@ -40,6 +39,7 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.ai.goal.target.*;
 import net.minecraft.world.entity.animal.horse.AbstractHorse;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.monster.Ghast;
 import net.minecraft.world.entity.monster.Monster;
@@ -71,12 +71,14 @@ import software.bernie.geckolib.core.animation.*;
 import software.bernie.geckolib.core.object.PlayState;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-public class ODog extends TamableAnimal implements NeutralMob, GeoEntity, Chestable, ContainerListener {
+public class ODog extends DogBase implements NeutralMob, GeoEntity, Chestable, ContainerListener {
 
    public static final ResourceLocation LOOT_TABLE = new ResourceLocation(PetsOverhaul.MODID, "entities/o_wolf");
    public static final ResourceLocation VANILLA_LOOT_TABLE = new ResourceLocation("minecraft", "entities/wolf");
@@ -123,7 +125,10 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity, Chesta
       this.goalSelector.addGoal(7, new DogFollowPackLeaderGoal(this));
       this.goalSelector.addGoal(6, new DogFollowOwnerGoal(this, 1.0D, 10.0F, 2.0F, false));
 
-      if (this.isHerdingDog()) {
+      this.goalSelector.addGoal(3, new GuarderSearchForItemsGoal());
+      this.goalSelector.addGoal(3, new HunterSearchForItemsGoal());
+
+      if (this.isHerdingDog() || this.isLivestockGuardian()) {
          this.goalSelector.addGoal(7, new FollowSheepGoal(this, 1.5D, 4.0F, 7.0F));
          this.goalSelector.addGoal(7, new FollowGoatGoal(this, 1.5D, 4.0F, 7.0F));
          this.goalSelector.addGoal(8, new FollowCowGoal(this, 1.5D, 4.0F, 7.0F));
@@ -153,13 +158,18 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity, Chesta
       }
 
       if (this.getBreed() == 3 || this.getBreed() == 16) {
-         this.goalSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, ORabbit.class, 2, true, false,
-                 entity -> entity instanceof ORabbit && (entity instanceof TamableAnimal && !((TamableAnimal) entity).isTame() && this.isTame() && this.wasToldToHunt())));
-      }
+         this.goalSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, LivingEntity.class, 2, true, false,
+                 entity ->
+                         (entity.getType().is(POTags.Entity_Types.GAME_RODENTS) && this.isTame() && this.wasToldToHunt())
+                                 || (entity.getType().is(POTags.Entity_Types.GAME_RODENTS) && entity instanceof TamableAnimal && !((TamableAnimal) entity).isTame() && this.isTame() && this.wasToldToHunt())
+         ));}
 
       if (this.getBreed() == 7 || this.getBreed() == 12 || this.getBreed() == 13) {
-         this.goalSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, OChicken.class, 2, true, false,
-                 entity -> entity instanceof OChicken && (this.isTame() && this.wasToldToHunt())));
+         this.goalSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, LivingEntity.class, 2, true, false,
+                 entity ->
+                         (entity.getType().is(POTags.Entity_Types.GAME_BIRDS) && this.isTame() && this.wasToldToHunt())
+                                 || (entity.getType().is(POTags.Entity_Types.GAME_BIRDS) && entity instanceof TamableAnimal && !((TamableAnimal) entity).isTame() && this.isTame() && this.wasToldToHunt())
+         ));
       }
 
       if (this.getBreed() == 10 || this.getBreed() == 12) {
@@ -211,6 +221,8 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity, Chesta
          return 18.0D;
       } else if (this.isLivestockGuardian()) {
          return 20.0D;
+      } else if (this.getBreed() == 25) {
+         return 24.0D;
       } else {
          return 12.0D;
       }
@@ -225,6 +237,8 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity, Chesta
          return 0.26F;
       } else if (this.isLivestockGuardian()) {
          return 0.24F;
+      } else if (this.getBreed() == 25) {
+         return 0.28F;
       } else {
          return 0.26F;
       }
@@ -239,6 +253,8 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity, Chesta
          return 4.0D;
       } else if (this.isLivestockGuardian()) {
          return 3.0D;
+      } else if (this.getBreed() == 25) {
+         return 4.0D;
       } else {
          return 2.0D;
       }
@@ -500,22 +516,24 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity, Chesta
    }
 
    public boolean hasInventory() {
-      return this.getBreed() == 4 || this.getBreed() == 11 || this.isHuntingDog();
+      return this.getBreed() == 4 || this.getBreed() == 11 || this.isHuntingDog() || this.isGuardDog();
    }
 
    public InteractionResult mobInteract(Player player, InteractionHand hand) {
       ItemStack itemstack = player.getItemInHand(hand);
       Item item = itemstack.getItem();
 
-      //TODO; Fix armor bug in survival (client issue?)
       if (this.isOwnedBy(player)) {
          if (itemstack.getItem() instanceof DogArmorItem && this.getArmor().isEmpty() && !this.hasVest() && this.canWearArmor()) {
-            this.setArmorEquipment(itemstack);
-            this.updateInventory();
-            this.playSound(SoundEvents.HORSE_ARMOR, 0.5f, 1f);
+            ItemStack armorStack = itemstack.copy();
+            armorStack.setCount(1);
+            this.setArmorEquipment(armorStack);
             if (!player.getAbilities().instabuild) {
                itemstack.shrink(1);
             }
+            this.updateInventory();
+            this.playSound(SoundEvents.HORSE_ARMOR, 0.5f, 1f);
+
             return InteractionResult.sidedSuccess(this.level().isClientSide);
          }
 
@@ -597,7 +615,7 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity, Chesta
             return InteractionResult.sidedSuccess(this.level().isClientSide);
          }
 
-         if (this.isOwnedBy(player) && !itemstack.is(Items.SHEARS) && !this.isBaby() && (this.isChested() || this.isHuntingDog())) {
+         if (this.isOwnedBy(player) && !itemstack.is(Items.SHEARS) && !this.isBaby() && (this.isChested() || this.isHuntingDog() || this.isGuardDog())) {
             if (this.isTame() && player.isSecondaryUseActive() && this.isOrderedToSit()) {
                this.openInventory(player);
                return InteractionResult.SUCCESS;
@@ -1064,7 +1082,7 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity, Chesta
          data = new AgeableMobGroupData(0.2F);
       }
       Random random = new Random();
-      this.setGender(random.nextInt(DogBase.Gender.values().length));
+      this.setGender(random.nextInt(ODog.Gender.values().length));
 
       if (ModList.get().isLoaded("deadlydinos")) {
          this.setBreed(random.nextInt(DogBreed.values().length));
@@ -1088,110 +1106,109 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity, Chesta
       return super.finalizeSpawn(serverLevelAccessor, instance, spawnType, data, tag);
    }
 
-   public enum Gender {
-      FEMALE,
-      MALE
-   }
-   public boolean isFemale() {
-      return this.getGender() == 0;
-   }
-   public boolean isMale() {
-      return this.getGender() == 1;
-   }
-   public static final EntityDataAccessor<Integer> GENDER = SynchedEntityData.defineId(ODog.class, EntityDataSerializers.INT);
-   public int getGender() {
-      return this.entityData.get(GENDER);
-   }
-   public void setGender(int gender) {
-      this.entityData.set(GENDER, gender);
-   }
-
-   public boolean canParent() {
-      return !this.isBaby() && this.getHealth() >= this.getMaxHealth() && this.isInLove();
-   }
-
    @Override
    public AgeableMob getBreedOffspring(ServerLevel serverLevel, AgeableMob ageableMob) {
       ODog pup;
-      ODog partner = (ODog) ageableMob;
       pup = POEntityTypes.O_DOG_ENTITY.get().create(serverLevel);
+      if (ageableMob instanceof OWolf) {
+         pup.setBreed(25);
 
-      int breedChance = this.random.nextInt(100);
-      int breed;
-      if (this.getBreed() == partner.getBreed()) {
-         if (breedChance < 40) {
-            breed = this.getBreed();
-         } else if (breedChance < 80) {
-            breed = partner.getBreed();
-         } else if (breedChance < 95) {
-            breed = 0;
-         } else {
-            breed = this.random.nextInt(DogBreed.values().length);
-         }
-      } else {
-         if (breedChance < 20) {
-            breed = this.getBreed();
-         } else if (breedChance < 40) {
-            breed = partner.getBreed();
-         } else if (breedChance < 95) {
-            breed = 0;
-         } else {
-            breed = this.random.nextInt(DogBreed.values().length);
-         }
-      }
-      pup.setBreed(breed);
-
-      if (!(breedChance == 0)) {
          int variantChance = this.random.nextInt(100);
-         int variant;
-         if (variantChance < 40) {
-            variant = this.getVariant();
-         } else if (variantChance < 80) {
-            variant = partner.getVariant();
+         if (variantChance < 50) {
+            pup.setVariant(this.getVariant());
          } else {
-            variant = this.random.nextInt(ODogModel.Variant.values().length);
+            pup.setColor();
          }
-         pup.setVariant(variant);
-      } else if (breedChance == 0 && random.nextDouble() < 0.50) {
-         pup.setColor();
-      }
 
-      if (!(breedChance == 0)) {
          int overlayChance = this.random.nextInt(100);
-         int overlay;
          if (overlayChance < 40) {
-            overlay = this.getOverlayVariant();
+            pup.setOverlayVariant(this.getOverlayVariant());
          } else if (overlayChance < 80) {
-            overlay = partner.getOverlayVariant();
+            pup.setOverlayVariant(20);
          } else {
-            overlay = this.random.nextInt(DogMarkingOverlay.values().length);
+            pup.setMarking();
          }
-         pup.setOverlayVariant(overlay);
-      } else if (breedChance == 0 && random.nextDouble() < 0.50) {
-         pup.setMarking();
-      }
 
-      int fluffyChance = this.random.nextInt(10);
-      int fluff;
-      if (fluffyChance < 5) {
-         fluff = this.getFluff();
+         pup.setFluffChance();
+         pup.setGender(random.nextInt(ODog.Gender.values().length));
+         pup.setODogAttributes();
+
       } else {
-         fluff = partner.getFluff();
+         ODog partner = (ODog) ageableMob;
+
+         int breedChance = this.random.nextInt(100);
+         int breed;
+         if (this.getBreed() == partner.getBreed()) {
+            if (breedChance < 40) {
+               breed = this.getBreed();
+            } else if (breedChance < 80) {
+               breed = partner.getBreed();
+            } else if (breedChance < 95) {
+               breed = 0;
+            } else {
+               breed = this.random.nextInt(DogBreed.values().length);
+            }
+         } else {
+            if (breedChance < 20) {
+               breed = this.getBreed();
+            } else if (breedChance < 40) {
+               breed = partner.getBreed();
+            } else if (breedChance < 95) {
+               breed = 0;
+            } else {
+               breed = this.random.nextInt(DogBreed.values().length);
+            }
+         }
+         pup.setBreed(breed);
+
+         if (!(breedChance == 0)) {
+            int variantChance = this.random.nextInt(100);
+            int variant;
+            if (variantChance < 40) {
+               variant = this.getVariant();
+            } else if (variantChance < 80) {
+               variant = partner.getVariant();
+            } else {
+               variant = this.random.nextInt(ODogModel.Variant.values().length);
+            }
+            pup.setVariant(variant);
+         } else if (breedChance == 0 && random.nextDouble() < 0.25) {
+            pup.setColor();
+         }
+
+         if (!(breedChance == 0)) {
+            int overlayChance = this.random.nextInt(100);
+            int overlay;
+            if (overlayChance < 40) {
+               overlay = this.getOverlayVariant();
+            } else if (overlayChance < 80) {
+               overlay = partner.getOverlayVariant();
+            } else {
+               overlay = this.random.nextInt(DogMarkingOverlay.values().length);
+            }
+            pup.setOverlayVariant(overlay);
+         } else if (breedChance == 0 && random.nextDouble() < 0.25) {
+            pup.setMarking();
+         }
+
+         int fluffyChance = this.random.nextInt(10);
+         int fluff;
+         if (fluffyChance < 5) {
+            fluff = this.getFluff();
+         } else {
+            fluff = partner.getFluff();
+         }
+         pup.setFluff(fluff);
       }
-      pup.setFluff(fluff);
 
-      int gender;
-      gender = this.random.nextInt(DogBase.Gender.values().length);
-      pup.setGender(gender);
-
-      if (PetsOverhaulCommonConfig.ALLOW_CROPPED_DOG_SPAWNS.get()){
+      if (PetsOverhaulCommonConfig.ALLOW_CROPPED_DOG_SPAWNS.get()) {
          pup.setCropChance();
       } else {
          pup.setCropped(0);
       }
 
+      pup.setGender(random.nextInt(ODog.Gender.values().length));
       pup.setODogAttributes();
-
       return pup;
    }
 
@@ -1308,7 +1325,7 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity, Chesta
    }
 
    public int getInventorySize() {
-      if (this.isHuntingDog()) {
+      if (this.isHuntingDog() || this.isGuardDog()) {
          return 6;
       } else {
          return 21;
@@ -1321,9 +1338,7 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity, Chesta
 
    public void openInventory(Player player) {
       if(player instanceof ServerPlayer serverPlayer && this.isTame()) {
-         NetworkHooks.openScreen(serverPlayer, new SimpleMenuProvider((containerId, inventory, p) -> {
-            return new DogMenu(containerId, inventory, this.inventory, this);
-         }, this.getDisplayName()), (data) -> {
+         NetworkHooks.openScreen(serverPlayer, new SimpleMenuProvider((containerId, inventory, p) -> new DogMenu(containerId, inventory, this.inventory, this), this.getDisplayName()), (data) -> {
             data.writeInt(this.getInventorySize());
             data.writeInt(this.getId());
          });
@@ -1332,7 +1347,6 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity, Chesta
 
    @Override
    public void containerChanged(Container p_18983_) {
-      return;
    }
 
    public void setColor() {
@@ -1499,12 +1513,27 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity, Chesta
       }
 
       if (this.getBreed() == 17) {
+         setVariant(random.nextInt(ODogModel.Variant.values().length));
       }
 
       if (this.getBreed() == 18) {
+         if (random.nextDouble() < 0.07) {
+            setVariant(random.nextInt(ODogModel.Variant.values().length));
+         } else if (random.nextDouble() > 0.07) {
+            int[] variants = {2, 3, 12};
+            int randomIndex = new Random().nextInt(variants.length);
+            this.setVariant(variants[randomIndex]);
+         }
       }
 
       if (this.getBreed() == 19) {
+         if (random.nextDouble() < 0.07) {
+            setVariant(random.nextInt(ODogModel.Variant.values().length));
+         } else if (random.nextDouble() > 0.07) {
+            int[] variants = {1, 7, 11, 13};
+            int randomIndex = new Random().nextInt(variants.length);
+            this.setVariant(variants[randomIndex]);
+         }
       }
    }
 
@@ -1650,18 +1679,41 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity, Chesta
             int[] variants = {13, 14};
             int randomIndex = new Random().nextInt(variants.length);
             this.setOverlayVariant(variants[randomIndex]);
-         } else if (random.nextDouble() > 0.40) {
+         } else if (random.nextDouble() > 0.30) {
             this.setOverlayVariant(0);
          }
       }
 
       if (this.getBreed() == 17) {
+         if (random.nextDouble() < 0.10) {
+            setOverlayVariant(random.nextInt(DogMarkingOverlay.values().length));
+         } else if (random.nextDouble() > 0.10 && random.nextDouble() < 0.60) {
+            int[] variants = {3, 13, 14};
+            int randomIndex = new Random().nextInt(variants.length);
+            this.setOverlayVariant(variants[randomIndex]);
+         } else if (random.nextDouble() > 0.60) {
+            this.setOverlayVariant(0);
+         }
       }
 
       if (this.getBreed() == 18) {
+         if (random.nextDouble() < 0.05) {
+            setOverlayVariant(random.nextInt(DogMarkingOverlay.values().length));
+         } else if (random.nextDouble() >= 0.05) {
+            this.setOverlayVariant(19);
+         }
       }
 
       if (this.getBreed() == 19) {
+         if (random.nextDouble() < 0.10) {
+            setOverlayVariant(random.nextInt(DogMarkingOverlay.values().length));
+         } else if (random.nextDouble() > 0.10 && random.nextDouble() < 0.50) {
+            int[] variants = {2, 10, 17};
+            int randomIndex = new Random().nextInt(variants.length);
+            this.setOverlayVariant(variants[randomIndex]);
+         } else if (random.nextDouble() > 0.50) {
+            this.setOverlayVariant(0);
+         }
       }
    }
 
@@ -1702,7 +1754,7 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity, Chesta
          }
       }
 
-      if (this.getBreed() == 3 || this.getBreed() == 8 || this.getBreed() == 13 || this.getBreed() == 14 || this.getBreed() == 16) {
+      if (this.getBreed() == 3 || this.getBreed() == 8 || this.getBreed() == 13 || this.getBreed() == 14 || this.getBreed() == 16 || this.getBreed() == 19) {
          if (random.nextDouble() <= 0.02) {
             this.setCropped(3); // full crop
          } else if (random.nextDouble() > 0.02 && random.nextDouble() < 0.05) {
@@ -1750,7 +1802,7 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity, Chesta
          }
       }
 
-      if (this.getBreed() == 11 || this.getBreed() == 18) {
+      if (this.getBreed() == 11 || this.getBreed() == 18 || this.getBreed() == 17) {
          if (random.nextDouble() <= 0.02) {
             this.setCropped(3); // full crop
          } else if (random.nextDouble() > 0.02 && random.nextDouble() < 0.07) {
@@ -1762,7 +1814,7 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity, Chesta
          }
       }
 
-      if (this.getBreed() == 15 || this.getBreed() == 17) {
+      if (this.getBreed() == 15) {
          if (random.nextDouble() <= 0.02) {
             this.setCropped(3); // full crop
          } else if (random.nextDouble() > 0.02 && random.nextDouble() < 0.07) {
@@ -1825,7 +1877,7 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity, Chesta
             if (random.nextDouble() < 0.10) {
                this.setBreed(random.nextInt(DogBreed.values().length));
             } else {
-               int[] variants = {0, 2, 6, 21, 22, 24};
+               int[] variants = {0, 2, 6, 18, 21, 22, 24};
                int randomIndex = new Random().nextInt(variants.length);
                this.setBreed(variants[randomIndex]);
             }
@@ -1834,7 +1886,7 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity, Chesta
             if (random.nextDouble() < 0.10) {
                this.setBreed(random.nextInt(DogBreed.values().length));
             } else {
-               int[] variants = {0, 4, 11, 14, 20, 23};
+               int[] variants = {0, 4, 11, 14, 20, 23, 19};
                int randomIndex = new Random().nextInt(variants.length);
                this.setBreed(variants[randomIndex]);
             }
@@ -1843,7 +1895,7 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity, Chesta
             if (random.nextDouble() < 0.10) {
                this.setBreed(random.nextInt(DogBreed.values().length));
             } else {
-               int[] variants = {0, 3, 5, 7, 8, 9, 10, 12, 13, 15, 16, 17, 18, 19};
+               int[] variants = {0, 3, 5, 7, 8, 9, 10, 12, 13, 15, 16, 17};
                int randomIndex = new Random().nextInt(variants.length);
                this.setBreed(variants[randomIndex]);
             }
@@ -1853,4 +1905,185 @@ public class ODog extends TamableAnimal implements NeutralMob, GeoEntity, Chesta
       }
    }
 
+   public boolean isInventoryFull() {
+      for (int i = 0; i < inventory.getContainerSize(); i++) {
+         if (inventory.getItem(i).isEmpty()) {
+            return false;
+         }
+      }
+      return true;
+   }
+
+   public SimpleContainer getInventory() {
+      return this.inventory;
+   }
+
+   static final Predicate<ItemEntity> ANIMAL_LOOT = (itemEntity) -> {
+      return !itemEntity.hasPickUpDelay() && itemEntity.isAlive() && itemEntity.getItem().is(POTags.Items.ANIMAL_LOOT);
+   };
+
+   public class HunterSearchForItemsGoal extends Goal {
+
+      public HunterSearchForItemsGoal() {
+         this.setFlags(EnumSet.of(Flag.MOVE));
+      }
+
+      public boolean canUse() {
+         if (isOrderedToSit()) {
+            return false;
+         } else if (isInventoryFull()) {
+            return false;
+         } else if (!isHuntingDog()) {
+            return false;
+         } else if (ODog.this.getTarget() == null && ODog.this.getLastHurtByMob() == null) {
+            if (ODog.this.getRandom().nextInt(reducedTickDelay(10)) != 0) {
+               return false;
+            } else {
+               List<ItemEntity> list = ODog.this.level().getEntitiesOfClass(ItemEntity.class, ODog.this.getBoundingBox().inflate(8.0D, 8.0D, 8.0D), ODog.ANIMAL_LOOT);
+               return !list.isEmpty();
+            }
+         } else {
+            return false;
+         }
+      }
+
+      @Override
+      public void tick() {
+         List<ItemEntity> itemEntities = level().getEntitiesOfClass(ItemEntity.class, getBoundingBox().inflate(8.0D, 8.0D, 8.0D), ODog.ANIMAL_LOOT);
+
+         if (!itemEntities.isEmpty() && !isInventoryFull()) {
+            ItemEntity itemEntity = itemEntities.get(0);
+            getNavigation().moveTo(itemEntity, 1.2D);
+
+            if (distanceToSqr(itemEntity) < 2.0D && itemEntity.getItem().is(POTags.Items.ANIMAL_LOOT)) {
+               pickUpItem(itemEntity);
+            }
+         }
+      }
+
+      @Override
+      public void start() {
+         List<ItemEntity> itemEntities = level().getEntitiesOfClass(ItemEntity.class, getBoundingBox().inflate(8.0D, 8.0D, 8.0D), ODog.ANIMAL_LOOT);
+         if (!itemEntities.isEmpty()) {
+            getNavigation().moveTo(itemEntities.get(0), 1.2D);
+         }
+      }
+
+      private void pickUpItem(ItemEntity itemEntity) {
+         if (!isInventoryFull() && itemEntity.getItem().is(POTags.Items.ANIMAL_LOOT) && this.canUse()) {
+            ItemStack itemStack = itemEntity.getItem();
+
+            for (int i = 0; i < getInventory().getContainerSize(); i++) {
+               ItemStack inventoryStack = getInventory().getItem(i);
+
+               if (!inventoryStack.isEmpty() && inventoryStack.is(itemStack.getItem()) && inventoryStack.getCount() < inventoryStack.getMaxStackSize() && itemStack.is(POTags.Items.ANIMAL_LOOT)) {
+                  int j = inventoryStack.getMaxStackSize() - inventoryStack.getCount();
+                  int k = Math.min(j, itemStack.getCount());
+                  inventoryStack.grow(k);
+                  itemStack.shrink(k);
+
+                  if (itemStack.isEmpty()) {
+                     itemEntity.discard();
+                     break;
+                  }
+               }
+            }
+
+            if (!itemStack.isEmpty() && itemStack.is(POTags.Items.ANIMAL_LOOT) && this.canUse()) {
+               for (int i = 0; i < getInventory().getContainerSize(); i++) {
+                  if (getInventory().getItem(i).isEmpty()) {
+                     getInventory().setItem(i, itemStack);
+                     itemEntity.discard();
+                     break;
+                  }
+               }
+            }
+         }
+      }
+   }
+
+
+   static final Predicate<ItemEntity> MONSTER_LOOT = (itemEntity) -> {
+      return !itemEntity.hasPickUpDelay() && itemEntity.isAlive() && itemEntity.getItem().is(POTags.Items.MONSTER_LOOT);
+   };
+
+   public class GuarderSearchForItemsGoal extends Goal {
+
+      public GuarderSearchForItemsGoal() {
+         this.setFlags(EnumSet.of(Flag.MOVE));
+      }
+
+      public boolean canUse() {
+         if (isOrderedToSit()) {
+            return false;
+         } else if (isInventoryFull()) {
+            return false;
+         } else if (!isGuardDog()) {
+            return false;
+         } else if (ODog.this.getTarget() == null && ODog.this.getLastHurtByMob() == null) {
+            if (ODog.this.getRandom().nextInt(reducedTickDelay(10)) != 0) {
+               return false;
+            } else {
+               List<ItemEntity> list = ODog.this.level().getEntitiesOfClass(ItemEntity.class, ODog.this.getBoundingBox().inflate(8.0D, 8.0D, 8.0D), ODog.MONSTER_LOOT);
+               return !list.isEmpty();
+            }
+         } else {
+            return false;
+         }
+      }
+
+      @Override
+      public void tick() {
+         List<ItemEntity> itemEntities = level().getEntitiesOfClass(ItemEntity.class, getBoundingBox().inflate(8.0D, 8.0D, 8.0D), ODog.MONSTER_LOOT);
+
+         if (!itemEntities.isEmpty() && !isInventoryFull()) {
+            ItemEntity itemEntity = itemEntities.get(0);
+            getNavigation().moveTo(itemEntity, 1.2D);
+
+            if (distanceToSqr(itemEntity) < 2.0D && itemEntity.getItem().is(POTags.Items.MONSTER_LOOT)) {
+               pickUpItem(itemEntity);
+            }
+         }
+      }
+
+      @Override
+      public void start() {
+         List<ItemEntity> itemEntities = level().getEntitiesOfClass(ItemEntity.class, getBoundingBox().inflate(8.0D, 8.0D, 8.0D), ODog.MONSTER_LOOT);
+         if (!itemEntities.isEmpty()) {
+            getNavigation().moveTo(itemEntities.get(0), 1.2D);
+         }
+      }
+
+      private void pickUpItem(ItemEntity itemEntity) {
+         if (!isInventoryFull() && itemEntity.getItem().is(POTags.Items.MONSTER_LOOT) && this.canUse()) {
+            ItemStack itemStack = itemEntity.getItem();
+
+            for (int i = 0; i < getInventory().getContainerSize(); i++) {
+               ItemStack inventoryStack = getInventory().getItem(i);
+
+               if (!inventoryStack.isEmpty() && inventoryStack.is(itemStack.getItem()) && inventoryStack.getCount() < inventoryStack.getMaxStackSize() && itemStack.is(POTags.Items.MONSTER_LOOT)) {
+                  int j = inventoryStack.getMaxStackSize() - inventoryStack.getCount();
+                  int k = Math.min(j, itemStack.getCount());
+                  inventoryStack.grow(k);
+                  itemStack.shrink(k);
+
+                  if (itemStack.isEmpty()) {
+                     itemEntity.discard();
+                     break;
+                  }
+               }
+            }
+
+            if (!itemStack.isEmpty() && itemStack.is(POTags.Items.MONSTER_LOOT) && this.canUse()) {
+               for (int i = 0; i < getInventory().getContainerSize(); i++) {
+                  if (getInventory().getItem(i).isEmpty()) {
+                     getInventory().setItem(i, itemStack);
+                     itemEntity.discard();
+                     break;
+                  }
+               }
+            }
+         }
+      }
+   }
 }

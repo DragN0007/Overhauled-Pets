@@ -1,0 +1,15 @@
+{
+  "replace": false,
+  "values": [
+    "dragnlivestock:o_rabbit",
+
+    {
+      "id": "radrats:rat",
+      "required": false
+    },
+    {
+      "id": "giddypigs:guinea_pig",
+      "required": false
+    }
+  ]
+}

@@ -34,12 +34,11 @@ public class POTags {
         public static final TagKey<EntityType<?>> WOLVES = forgeTag("wolves");
         public static final TagKey<EntityType<?>> FOX = forgeTag("fox");
         public static final TagKey<EntityType<?>> CATS = forgeTag("cats");
-        public static final TagKey<EntityType<?>> HERDING_DOGS = forgeTag("herding_dogs");
-        public static final TagKey<EntityType<?>> DOGS = forgeTag("dogs");
-        public static final TagKey<EntityType<?>> HUNTING_DOGS = forgeTag("hunting_dogs");
         public static final TagKey<EntityType<?>> GUARDIAN_DOGS_ATTACK = forgeTag("guardian_dogs_attack");
         public static final TagKey<EntityType<?>> GAME = forgeTag("game");
         public static final TagKey<EntityType<?>> DDD_GAME = forgeTag("ddd_game");
+        public static final TagKey<EntityType<?>> GAME_BIRDS = forgeTag("game_birds");
+        public static final TagKey<EntityType<?>> GAME_RODENTS = forgeTag("game_rodents");
         public static final TagKey<EntityType<?>> FOXES_HUNT = forgeTag("foxes_hunt");
         public static final TagKey<EntityType<?>> CATS_HUNT = forgeTag("cats_hunt");
 

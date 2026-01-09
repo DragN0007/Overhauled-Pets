@@ -1,0 +1,27 @@
+{
+  "name": "O-Dog",
+  "icon": "minecraft:bone",
+  "category": "dragnpets:animals_category",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "O-Dogs come in a few new different breeds. They spawn alongside cats in villages. O-Dogs, much like O-Wolves, slowly regenerate their health if hurt, and run away from fights if under 33% health. $(br2)-Guarding Breeds can wear armor and can be set to Guard Mode by shift-left-clicking them. $(br2)-Hunting Breeds can hunt certain animals and can be set to Hunting Mode by shift-left-clicking them. Big Game Hunters can hunt larger animals such as Caribou. $(br2)-Herding Breeds can herd animals like O-Cows and O-Sheep automatically. $(br2)-Livestock Guardian Breeds can follow animals like O-Cows and O-Sheep automatically and protect them from predators like wolves and foxes."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(br2)Specific dog breed types, such as Hunting and Guard dogs, have inventories and can pick up animal or monster loot automatically. Some other dogs, such as Bernese Mountain Dogs and Huskies, can wear chests. To open a dog's inventory, make sure it's sitting and shift-right-click it."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(l)Dog Breed Types$()$(br2)-Mutt: Default/ No Type $(br2)-Australian Shepherd: Herding Dog $(br2)-Beagle: Hunting Dog (Rabbits) $(br2)-Bernese Mountain Dog: Livestock Guardian (Chest-able) $(br2)-Bloodhound: Big Game Hunter $(br2)-Border Collie: Herding Dog $(br2)-Cocker Spaniel: Hunting Dog (Poultry) $(br2)-Coonhound: Big Game Hunter $(br2)-Doberman Pinscher: Guard Dog $(br2)-Foxhound: Hunting Dog (Foxes)"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(l)Dog Breed Types$()$(br2)-Husky: Default/ No Type (Chest-able) $(br2)-Jack Russell Terrier: Hunting Dog (Poultry) $(br2)-Labrador Retriever: Hunting Dog (Poultry) $(br2)-Great Pyrenees: Livestock Guardian $(br2)-Rottweiler: Guard Dog $(br2)-Whippet: Hunting Dog (Rabbits) $(br2)-American Pitbull: Guard Dog $(br2)-German Shepherd: Guard Dog $(br2)-Borzoi: Big Game Hunter (Wolves) $(br2)-Newfoundland: Default/ No Type (Chest-able)"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(l)Dog Breed Types$()$(br2)$(br2)-Kangal Shepherd: Livestock Guardian $(br2)-Belgian Malinois: Guard Dog -Tibetan Mastiff: Livestock Guardian $(br2)-Collie: Herding Dog $(br2)-American Ridgeback (DDD Compat): Big Game Hunter (Mid-Sized Dinosaurs)"
+    }
+  ]
+}

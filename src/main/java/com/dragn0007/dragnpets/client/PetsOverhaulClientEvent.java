@@ -13,8 +13,6 @@ import com.dragn0007.dragnpets.entities.parrot.RingneckRender;
 import com.dragn0007.dragnpets.entities.tropical_fish.OTropicalFishRender;
 import com.dragn0007.dragnpets.entities.wolf.OWolfRender;
 import com.dragn0007.dragnpets.gui.DogScreen;
-import com.dragn0007.dragnpets.gui.HuskyScreen;
-import com.dragn0007.dragnpets.gui.LabradorScreen;
 import com.dragn0007.dragnpets.gui.POMenuTypes;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.entity.EntityRenderers;
@@ -39,8 +37,6 @@ public class PetsOverhaulClientEvent {
         EntityRenderers.register(POEntityTypes.RINGNECK_ENTITY.get(), RingneckRender::new);
         EntityRenderers.register(POEntityTypes.O_CAT_ENTITY.get(), OCatRender::new);
         EntityRenderers.register(POEntityTypes.O_DOG_ENTITY.get(), ODogRender::new);
-        MenuScreens.register(POMenuTypes.HUSKY_MENU.get(), HuskyScreen::new);
         MenuScreens.register(POMenuTypes.BERNESE_MENU.get(), DogScreen::new);
-        MenuScreens.register(POMenuTypes.LABRADOR_MENU.get(), LabradorScreen::new);
     }
 }

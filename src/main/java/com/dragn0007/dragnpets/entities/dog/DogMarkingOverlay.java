@@ -23,6 +23,8 @@ public enum DogMarkingOverlay {
         COONHOUND_SPECKLE(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/dog/overlay/coonhound_speckle.png")),
         FOXHOUND_SPLASH(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/dog/overlay/foxhound_splash.png")),
         RUSSEL_FEW_SPOT(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/dog/overlay/russel_few_spot.png")),
+        GERMAN_SHEPHERD_SPOT(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/dog/overlay/german_shepherd_spot.png")),
+        WOLF(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/wolf/overlay/wolf.png"))
         ;
 
         public final ResourceLocation resourceLocation;
