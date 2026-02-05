@@ -1,4 +1,4 @@
-package com.dragn0007.dragnpets.gui;
+package com.dragn0007.dragnpets.common.gui;
 
 import com.dragn0007.dragnpets.entities.dog.ODog;
 import net.minecraft.network.FriendlyByteBuf;
@@ -26,7 +26,7 @@ public class DogMenu extends AbstractContainerMenu {
 
         int dogSlots = 0;
 
-        if (this.dog.isChested() && (this.dog.getBreed() == 4 || this.dog.getBreed() == 11)) {
+        if (this.dog.isChested() && (this.dog.getBreed() == 4 || this.dog.getBreed() == 11 || this.dog.getBreed() == 20)) {
             for (int y = 0; y < 3; y++) {
                 for (int x = 0; x < 7; x++) {
                     this.addSlot(new Slot(this.container, dogSlots++, 26 + x * 18, 18 + y * 18));

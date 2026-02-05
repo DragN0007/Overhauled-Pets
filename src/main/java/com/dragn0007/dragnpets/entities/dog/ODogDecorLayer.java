@@ -87,7 +87,7 @@ public class ODogDecorLayer extends GeoRenderLayer<ODog> {
         if (animatable.isChested() && animatable.isChestable()) {
             if (animatable.getBreed() == 4) {
                 resourceLocation = new ResourceLocation(PetsOverhaul.MODID, "textures/entity/dog/harness/barrel.png");
-            } else if (animatable.getBreed() == 11) {
+            } else if (animatable.getBreed() == 11 || animatable.getBreed() == 20) {
                 resourceLocation = new ResourceLocation(PetsOverhaul.MODID, "textures/entity/dog/harness/harness.png");
             } else {
                 return;

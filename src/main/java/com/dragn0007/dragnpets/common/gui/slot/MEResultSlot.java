@@ -1,4 +1,4 @@
-package com.dragn0007.dragnpets.gui.slot;
+package com.dragn0007.dragnpets.common.gui.slot;
 
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;

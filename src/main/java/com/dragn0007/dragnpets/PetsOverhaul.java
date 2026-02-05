@@ -1,7 +1,7 @@
 package com.dragn0007.dragnpets;
 
 import com.dragn0007.dragnpets.entities.POEntityTypes;
-import com.dragn0007.dragnpets.gui.POMenuTypes;
+import com.dragn0007.dragnpets.common.gui.POMenuTypes;
 import com.dragn0007.dragnpets.items.POItemGroupModifier;
 import com.dragn0007.dragnpets.items.POItems;
 import com.dragn0007.dragnpets.util.PetsOverhaulClientConfig;

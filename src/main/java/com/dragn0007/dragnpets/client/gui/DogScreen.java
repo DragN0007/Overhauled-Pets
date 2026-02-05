@@ -1,6 +1,7 @@
-package com.dragn0007.dragnpets.gui;
+package com.dragn0007.dragnpets.client.gui;
 
 import com.dragn0007.dragnpets.PetsOverhaul;
+import com.dragn0007.dragnpets.common.gui.DogMenu;
 import com.dragn0007.dragnpets.entities.dog.ODog;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.GuiGraphics;

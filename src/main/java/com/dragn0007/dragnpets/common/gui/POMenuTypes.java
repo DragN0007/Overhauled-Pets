@@ -1,4 +1,4 @@
-package com.dragn0007.dragnpets.gui;
+package com.dragn0007.dragnpets.common.gui;
 
 import com.dragn0007.dragnpets.PetsOverhaul;
 import net.minecraft.world.inventory.AbstractContainerMenu;

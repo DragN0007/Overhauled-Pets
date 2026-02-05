@@ -8,7 +8,7 @@ import com.dragn0007.dragnpets.PetsOverhaul;
 import com.dragn0007.dragnpets.entities.POEntityTypes;
 import com.dragn0007.dragnpets.entities.ai.*;
 import com.dragn0007.dragnpets.entities.wolf.OWolf;
-import com.dragn0007.dragnpets.gui.DogMenu;
+import com.dragn0007.dragnpets.common.gui.DogMenu;
 import com.dragn0007.dragnpets.items.custom.DogArmorItem;
 import com.dragn0007.dragnpets.items.custom.VestItem;
 import com.dragn0007.dragnpets.util.POTags;
@@ -451,7 +451,7 @@ public class ODog extends DogBase implements NeutralMob, GeoEntity, Chestable, C
    public boolean hurt(DamageSource damageSource, float amount) {
       if (damageSource.getEntity() instanceof Player player) {
 
-         if (this.isHuntingDog() && this.isOwnedBy(player) && player.isShiftKeyDown()) {
+         if ((this.isHuntingDog() || this.isBigGameHunter()) && this.isOwnedBy(player) && player.isShiftKeyDown()) {
             if (!this.level().isClientSide && this.isTame() && !this.isOrderedToSit() && !this.isInSittingPose() && !this.wasToldToHunt()) {
                this.setToldToHunt(true);
                player.displayClientMessage(Component.translatable("tooltip.dragnpets.hunting.tooltip").withStyle(ChatFormatting.GOLD), true);
@@ -507,7 +507,7 @@ public class ODog extends DogBase implements NeutralMob, GeoEntity, Chestable, C
    }
 
    public boolean hasInventory() {
-      return this.getBreed() == 4 || this.getBreed() == 11 || this.isHuntingDog() || this.isGuardDog();
+      return this.getBreed() == 4 || this.getBreed() == 11 || this.getBreed() == 20 || this.isHuntingDog() || this.isGuardDog();
    }
 
    public InteractionResult mobInteract(Player player, InteractionHand hand) {
@@ -834,7 +834,7 @@ public class ODog extends DogBase implements NeutralMob, GeoEntity, Chestable, C
    }
 
    public boolean isHerdingDog() {
-      return this.getBreed() == 2 || this.getBreed() == 6;
+      return this.getBreed() == 2 || this.getBreed() == 6 || this.getBreed() == 24;
    }
 
    public boolean isHuntingDog() {
@@ -843,11 +843,11 @@ public class ODog extends DogBase implements NeutralMob, GeoEntity, Chestable, C
    }
 
    public boolean isGuardDog() {
-      return this.getBreed() == 9 || this.getBreed() == 15 || this.getBreed() == 17 || this.getBreed() == 18;
+      return this.getBreed() == 9 || this.getBreed() == 15 || this.getBreed() == 17 || this.getBreed() == 18 || this.getBreed() == 22;
    }
 
    public boolean isLivestockGuardian() {
-      return this.getBreed() == 4 || this.getBreed() == 14;
+      return this.getBreed() == 4 || this.getBreed() == 14 || this.getBreed() == 21 || this.getBreed() == 23;
    }
 
    public boolean isBigGameHunter() {
@@ -1255,7 +1255,7 @@ public class ODog extends DogBase implements NeutralMob, GeoEntity, Chestable, C
 
    @Override
    public boolean isChestable() {
-      return this.isAlive() && !this.isBaby() && (this.getBreed() == 4 || this.getBreed() == 11);
+      return this.isAlive() && !this.isBaby() && (this.getBreed() == 4 || this.getBreed() == 11 || this.getBreed() == 20);
    }
 
    @Override

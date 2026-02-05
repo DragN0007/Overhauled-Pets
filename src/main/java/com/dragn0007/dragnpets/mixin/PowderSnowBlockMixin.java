@@ -17,7 +17,7 @@ public abstract class PowderSnowBlockMixin extends Block implements BucketPickup
         super(p_49795_);
     }
 
-    @Inject(method = "canEntityWalkOnPowderSnow", at = @At("HEAD"))
+    @Inject(method = "canEntityWalkOnPowderSnow", at = @At("HEAD"), cancellable = true)
     private static void canEntityWalkOnPowderSnow(Entity entity, CallbackInfoReturnable<Boolean> cir) {
         if (entity instanceof ODog dog && (dog.getBreed() == 11 || dog.getBreed() == 25)) {
             cir.setReturnValue(true);
