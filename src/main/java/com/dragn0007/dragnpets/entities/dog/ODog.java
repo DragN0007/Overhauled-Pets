@@ -152,41 +152,42 @@ public class ODog extends DogBase implements NeutralMob, GeoEntity, Chestable, C
                  && this.isBigGameHunter() && (this.getBreed() == 5 || this.getBreed() == 8)
          ));
 
-         this.goalSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, LivingEntity.class, 2, true, false,
-                 entity ->
-                         (entity.getType().is(POTags.Entity_Types.GAME_RODENTS) && this.isTame() && this.wasToldToHunt())
-                                 || (entity.getType().is(POTags.Entity_Types.GAME_RODENTS) && entity instanceof TamableAnimal && !((TamableAnimal) entity).isTame() && this.isTame() && this.wasToldToHunt())
-                 && this.getBreed() == 3 || this.getBreed() == 16
-         ));
+      this.goalSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, LivingEntity.class, 2, true, false,
+              entity ->
+                      (entity.getType().is(POTags.Entity_Types.GAME_RODENTS) && this.isTame() && this.wasToldToHunt())
+                              || (entity.getType().is(POTags.Entity_Types.GAME_RODENTS) && entity instanceof TamableAnimal && !((TamableAnimal) entity).isTame() && this.isTame() && this.wasToldToHunt())
+                              && this.isHuntingDog() && (this.getBreed() == 3 || this.getBreed() == 16)
+      ));
 
-         this.goalSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, LivingEntity.class, 2, true, false,
-                 entity ->
-                         (entity.getType().is(POTags.Entity_Types.GAME_BIRDS) && this.isTame() && this.wasToldToHunt())
-                                 || ((entity.getType().is(POTags.Entity_Types.GAME_BIRDS) && entity instanceof TamableAnimal && !((TamableAnimal) entity).isTame()) && this.isTame() && this.wasToldToHunt())
-                 && this.getBreed() == 7 || this.getBreed() == 12 || this.getBreed() == 13
-         ));
+      this.goalSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, LivingEntity.class, 2, true, false,
+              entity ->
+                      (entity.getType().is(POTags.Entity_Types.GAME_BIRDS) && this.isTame() && this.wasToldToHunt())
+                              || (entity.getType().is(POTags.Entity_Types.GAME_BIRDS) && entity instanceof TamableAnimal && !((TamableAnimal) entity).isTame() && this.isTame() && this.wasToldToHunt())
+                              && this.isHuntingDog() && (this.getBreed() == 7 || this.getBreed() == 12 || this.getBreed() == 13)
+      ));
 
-         this.goalSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, LivingEntity.class, 2, true, false,
-                 entity ->
-                         (entity.getType().is(POTags.Entity_Types.FOX) && this.isTame() && this.wasToldToHunt())
-                                 || (entity.getType().is(POTags.Entity_Types.FOX) && entity instanceof TamableAnimal && !((TamableAnimal) entity).isTame() && this.isTame() && this.wasToldToHunt())
-                 && this.getBreed() == 10 || this.getBreed() == 12
-         ));
 
-         this.goalSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, LivingEntity.class, 2, true, false,
-                 entity ->
-                         (entity.getType().is(POTags.Entity_Types.WOLVES) && this.isTame() && this.wasToldToHunt())
-                                 || (entity.getType().is(POTags.Entity_Types.WOLVES) && entity instanceof TamableAnimal && !((TamableAnimal) entity).isTame() && this.isTame() && this.wasToldToHunt())
-                 && this.getBreed() == 19
-         ));
+      this.goalSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, LivingEntity.class, 2, true, false,
+              entity ->
+                      (entity.getType().is(POTags.Entity_Types.FOX) && this.isTame() && this.wasToldToHunt())
+                              || (entity.getType().is(POTags.Entity_Types.FOX) && entity instanceof TamableAnimal && !((TamableAnimal) entity).isTame() && this.isTame() && this.wasToldToHunt())
+              && (this.getBreed() == 10 || this.getBreed() == 12)
+      ));
 
-         this.goalSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, LivingEntity.class, 2, true, false,
-                 entity ->
-                         (entity.getType().is(POTags.Entity_Types.DDD_GAME) && this.isTame() && this.wasToldToHunt())
-                                 || (entity.getType().is(POTags.Entity_Types.DDD_GAME) && entity instanceof TamableAnimal && !((TamableAnimal) entity).isTame() && this.isTame() && this.wasToldToHunt())
-                                 || (entity.getType().is(POTags.Entity_Types.DDD_GAME) && entity instanceof AbstractOMount && !((AbstractOMount) entity).isTamed() && this.isTame() && this.wasToldToHunt())
-                 && this.getBreed() == 1
-         ));
+      this.goalSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, LivingEntity.class, 2, true, false,
+              entity ->
+                      (entity.getType().is(POTags.Entity_Types.WOLVES) && this.isTame() && this.wasToldToHunt())
+                              || (entity.getType().is(POTags.Entity_Types.WOLVES) && entity instanceof TamableAnimal && !((TamableAnimal) entity).isTame() && this.isTame() && this.wasToldToHunt())
+              && (this.getBreed() == 19)
+      ));
+
+      this.goalSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, LivingEntity.class, 2, true, false,
+              entity ->
+                      (entity.getType().is(POTags.Entity_Types.DDD_GAME) && this.isTame() && this.wasToldToHunt())
+                              || (entity.getType().is(POTags.Entity_Types.DDD_GAME) && entity instanceof TamableAnimal && !((TamableAnimal) entity).isTame() && this.isTame() && this.wasToldToHunt())
+                              || (entity.getType().is(POTags.Entity_Types.DDD_GAME) && entity instanceof AbstractOMount && !((AbstractOMount) entity).isTamed() && this.isTame() && this.wasToldToHunt())
+              && (this.getBreed() == 1)
+      ));
    }
 
    public static AttributeSupplier.Builder createAttributes() {
