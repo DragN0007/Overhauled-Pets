@@ -113,7 +113,7 @@ public class ODog extends DogBase implements NeutralMob, GeoEntity, Chestable, C
       this.goalSelector.addGoal(2, new SitWhenOrderedToGoal(this));
       this.goalSelector.addGoal(4, new LeapAtTargetGoal(this, 0.4F));
       this.goalSelector.addGoal(5, new MeleeAttackGoal(this, 1.5D, true));
-      this.goalSelector.addGoal(7, new BreedGoal(this, 1.0D));
+      this.goalSelector.addGoal(7, new BreedGoal(this, 1.0D, DogBase.class));
       this.goalSelector.addGoal(8, new WaterAvoidingRandomStrollGoal(this, 1.0D));
       this.goalSelector.addGoal(10, new LookAtPlayerGoal(this, Player.class, 8.0F));
       this.goalSelector.addGoal(10, new RandomLookAroundGoal(this));
@@ -1100,8 +1100,8 @@ public class ODog extends DogBase implements NeutralMob, GeoEntity, Chestable, C
    @Override
    public AgeableMob getBreedOffspring(ServerLevel serverLevel, AgeableMob ageableMob) {
       ODog pup;
+      pup = POEntityTypes.O_DOG_ENTITY.get().create(serverLevel);
       if (ageableMob instanceof OWolf) {
-         pup = POEntityTypes.O_DOG_ENTITY.get().create(serverLevel);
          pup.setBreed(25);
 
          int variantChance = this.random.nextInt(100);
@@ -1120,13 +1120,13 @@ public class ODog extends DogBase implements NeutralMob, GeoEntity, Chestable, C
             pup.setMarking();
          }
 
+         pup.setCropped(1);
          pup.setFluffChance();
          pup.setGender(random.nextInt(ODog.Gender.values().length));
          pup.setODogAttributes();
 
       } else {
          ODog partner = (ODog) ageableMob;
-         pup = POEntityTypes.O_DOG_ENTITY.get().create(serverLevel);
 
          int breedChance = this.random.nextInt(100);
          int breed;

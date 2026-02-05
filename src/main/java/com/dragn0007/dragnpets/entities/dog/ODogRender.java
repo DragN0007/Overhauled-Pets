@@ -87,6 +87,15 @@ public class ODogRender extends GeoEntityRenderer<ODog> {
             model.getBone("left_ear").ifPresent(b -> b.setHidden(true));
         }
 
+        if (entity.getBreed() == 25) {
+            model.getBone("tail").ifPresent(b -> b.setHidden(false));
+            model.getBone("right_ear2").ifPresent(b -> b.setHidden(true));
+            model.getBone("left_ear2").ifPresent(b -> b.setHidden(true));
+            model.getBone("tail2").ifPresent(b -> b.setHidden(true));
+            model.getBone("right_ear").ifPresent(b -> b.setHidden(false));
+            model.getBone("left_ear").ifPresent(b -> b.setHidden(false));
+        }
+
         super.preRender(poseStack, this.animatable, model, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, red, green, blue, alpha);
     }
 

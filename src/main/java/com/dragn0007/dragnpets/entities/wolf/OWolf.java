@@ -133,7 +133,7 @@ public class OWolf extends DogBase implements NeutralMob, GeoEntity {
       this.goalSelector.addGoal(3, new AvoidEntityGoal<>(this, OMule.class, 24.0F, 1.5D, 1.5D));
       this.goalSelector.addGoal(4, new LeapAtTargetGoal(this, 0.4F));
       this.goalSelector.addGoal(5, new MeleeAttackGoal(this, 1.8D, true));
-      this.goalSelector.addGoal(7, new BreedGoal(this, 1.0D));
+      this.goalSelector.addGoal(7, new BreedGoal(this, 1.0D, DogBase.class));
       this.goalSelector.addGoal(8, new WaterAvoidingRandomStrollGoal(this, 1.0D));
       this.goalSelector.addGoal(10, new LookAtPlayerGoal(this, Player.class, 8.0F));
       this.goalSelector.addGoal(10, new RandomLookAroundGoal(this));
@@ -791,7 +791,9 @@ public class OWolf extends DogBase implements NeutralMob, GeoEntity {
             ((ODog) pup).setMarking();
          }
 
+         ((ODog) pup).setCropped(1);
          ((ODog) pup).setFluffChance();
+         ((ODog) pup).setODogAttributes();
 
       } else {
          OWolf partner = (OWolf) ageableMob;
