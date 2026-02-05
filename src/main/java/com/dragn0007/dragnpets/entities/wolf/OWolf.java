@@ -640,7 +640,6 @@ public class OWolf extends DogBase implements NeutralMob, GeoEntity {
       this.entityData.set(VARIANT, variant);
    }
 
-
    public static final EntityDataAccessor<Integer> OVERLAY = SynchedEntityData.defineId(OWolf.class, EntityDataSerializers.INT);
    public ResourceLocation getOverlayLocation() {return OWolfMarkingLayer.Overlay.overlayFromOrdinal(getOverlayVariant()).resourceLocation;}
    public int getOverlayVariant() {

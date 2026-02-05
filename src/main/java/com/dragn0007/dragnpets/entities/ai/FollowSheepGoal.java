@@ -1,6 +1,7 @@
 package com.dragn0007.dragnpets.entities.ai;
 
 import com.dragn0007.dragnlivestock.entities.sheep.OSheep;
+import com.dragn0007.dragnpets.entities.dog.ODog;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.control.LookControl;
 import net.minecraft.world.entity.ai.goal.Goal;
@@ -15,7 +16,7 @@ import java.util.List;
 import java.util.function.Predicate;
 
 public class FollowSheepGoal extends Goal {
-   public final Mob mob;
+   public final ODog mob;
    public final Predicate<Mob> followPredicate;
    @Nullable
    public OSheep oSheep;
@@ -26,7 +27,7 @@ public class FollowSheepGoal extends Goal {
    public float oldWaterCost;
    public final float areaSize;
 
-   public FollowSheepGoal(Mob dog, double speedMod, float stopDist, float areaSize) {
+   public FollowSheepGoal(ODog dog, double speedMod, float stopDist, float areaSize) {
       this.mob = dog;
       this.followPredicate = (p_25278_) -> {
          return p_25278_ != null && dog.getClass() != p_25278_.getClass();
@@ -44,7 +45,7 @@ public class FollowSheepGoal extends Goal {
    public boolean canUse() {
       List<OSheep> list = this.mob.level().getEntitiesOfClass(OSheep.class, this.mob.getBoundingBox().inflate((double)this.areaSize), this.followPredicate);
 
-      if (!list.isEmpty()) {
+      if (!list.isEmpty() && (mob.isHerdingDog() || mob.isLivestockGuardian())) {
          for(OSheep mob : list) {
             if (!mob.isInvisible()) {
                this.oSheep = mob;
@@ -57,7 +58,7 @@ public class FollowSheepGoal extends Goal {
    }
 
    public boolean canContinueToUse() {
-      return this.oSheep != null && !this.navigation.isDone() && this.mob.distanceToSqr(this.oSheep) > (double)(this.stopDistance * this.stopDistance);
+      return this.oSheep != null && (mob.isHerdingDog() || mob.isLivestockGuardian()) && !this.navigation.isDone() && this.mob.distanceToSqr(this.oSheep) > (double)(this.stopDistance * this.stopDistance);
    }
 
    public void start() {

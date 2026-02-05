@@ -24,12 +24,12 @@ public enum DogBreed {
     PITBULL(new ResourceLocation(PetsOverhaul.MODID, "geo/dog/pitbull.geo.json")),
     GERMAN_SHEPHERD(new ResourceLocation(PetsOverhaul.MODID, "geo/dog/german_shepherd.geo.json")),
     BORZOI(new ResourceLocation(PetsOverhaul.MODID, "geo/dog/borzoi.geo.json")),
-    NEWFOUNDLAND(new ResourceLocation(PetsOverhaul.MODID, "geo/dog/o_dog.geo.json")), //todo
-    KANGAL(new ResourceLocation(PetsOverhaul.MODID, "geo/dog/o_dog.geo.json")), //todo
-    BELGIAN_MALINOIS(new ResourceLocation(PetsOverhaul.MODID, "geo/dog/o_dog.geo.json")), //todo
-    TIBETAN_MASTIFF(new ResourceLocation(PetsOverhaul.MODID, "geo/dog/o_dog.geo.json")), //todo
-    COLLIE(new ResourceLocation(PetsOverhaul.MODID, "geo/dog/o_dog.geo.json")), //todo
-    WOLFDOG(new ResourceLocation(PetsOverhaul.MODID, "geo/o_wolf.geo.json")), //todo
+    NEWFOUNDLAND(new ResourceLocation(PetsOverhaul.MODID, "geo/dog/newfoundland.geo.json")),
+    KANGAL(new ResourceLocation(PetsOverhaul.MODID, "geo/dog/kangal_shepherd.geo.json")),
+    BELGIAN_MALINOIS(new ResourceLocation(PetsOverhaul.MODID, "geo/dog/belgian_shepherd.geo.json")),
+    TIBETAN_MASTIFF(new ResourceLocation(PetsOverhaul.MODID, "geo/dog/o_dog.geo.json")),
+    COLLIE(new ResourceLocation(PetsOverhaul.MODID, "geo/dog/o_dog.geo.json")),
+    WOLFDOG(new ResourceLocation(PetsOverhaul.MODID, "geo/o_wolf.geo.json")),
     ;
 
     public final ResourceLocation resourceLocation;

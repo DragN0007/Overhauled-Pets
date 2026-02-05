@@ -396,6 +396,15 @@ public class OAxolotl extends Animal implements GeoEntity, Bucketable {
 	}
 
 	@Override
+	public void finalizeSpawnChildFromBreeding(ServerLevel pLevel, Animal pAnimal, @org.jetbrains.annotations.Nullable AgeableMob pBaby) {
+		super.finalizeSpawnChildFromBreeding(pLevel, pAnimal, pBaby);
+		if (pAnimal instanceof OAxolotl partner) {
+			this.setAge(LivestockOverhaulCommonConfig.FEMALE_COOLDOWN.get());
+			partner.setAge(LivestockOverhaulCommonConfig.FEMALE_COOLDOWN.get());
+		}
+	}
+
+	@Override
 	public AgeableMob getBreedOffspring(ServerLevel serverLevel, AgeableMob ageableMob) {
 		OAxolotl oAxolotl = (OAxolotl) ageableMob;
 		if (ageableMob instanceof OAxolotl) {

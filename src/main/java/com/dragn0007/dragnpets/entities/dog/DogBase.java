@@ -1,6 +1,7 @@
 package com.dragn0007.dragnpets.entities.dog;
 
 import com.dragn0007.dragnlivestock.util.LivestockOverhaulCommonConfig;
+import com.dragn0007.dragnpets.entities.wolf.OWolf;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -19,7 +20,6 @@ import software.bernie.geckolib.core.animation.AnimatableManager;
 import java.util.UUID;
 
 public class DogBase extends TamableAnimal implements NeutralMob, GeoEntity {
-
 
    protected DogBase(EntityType<? extends TamableAnimal> p_21803_, Level p_21804_) {
       super(p_21803_, p_21804_);
@@ -89,10 +89,11 @@ public class DogBase extends TamableAnimal implements NeutralMob, GeoEntity {
       return !this.isBaby() && this.isInLove();
    }
 
+   @Override
    public boolean canMate(Animal animal) {
       if (animal == this) {
          return false;
-      } else if (!(animal instanceof DogBase)) {
+      } else if (!(animal instanceof ODog) && !(animal instanceof OWolf)) {
          return false;
       } else {
          if (!LivestockOverhaulCommonConfig.GENDERS_AFFECT_BREEDING.get()) {
@@ -105,5 +106,27 @@ public class DogBase extends TamableAnimal implements NeutralMob, GeoEntity {
          }
       }
       return false;
+   }
+
+   @Override
+   public void finalizeSpawnChildFromBreeding(ServerLevel pLevel, Animal pAnimal, @org.jetbrains.annotations.Nullable AgeableMob pBaby) {
+      super.finalizeSpawnChildFromBreeding(pLevel, pAnimal, pBaby);
+      if (pAnimal instanceof DogBase partner) {
+         if (LivestockOverhaulCommonConfig.GENDERS_AFFECT_BREEDING.get()) {
+            if (this.isMale()) {
+               this.setAge(LivestockOverhaulCommonConfig.MALE_COOLDOWN.get());
+            } else {
+               this.setAge(LivestockOverhaulCommonConfig.FEMALE_COOLDOWN.get());
+            }
+            if (partner.isMale()) {
+               partner.setAge(LivestockOverhaulCommonConfig.MALE_COOLDOWN.get());
+            } else {
+               partner.setAge(LivestockOverhaulCommonConfig.FEMALE_COOLDOWN.get());
+            }
+         } else {
+            this.setAge(LivestockOverhaulCommonConfig.FEMALE_COOLDOWN.get());
+            partner.setAge(LivestockOverhaulCommonConfig.FEMALE_COOLDOWN.get());
+         }
+      }
    }
 }

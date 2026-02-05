@@ -40,7 +40,9 @@ import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.ai.util.LandRandomPos;
+import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.animal.FlyingAnimal;
+import net.minecraft.world.entity.animal.ShoulderRidingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -70,7 +72,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.function.Predicate;
 
-public class OParrot extends TamableAnimal implements GeoEntity, FlyingAnimal {
+public class OParrot extends ShoulderRidingEntity implements GeoEntity, FlyingAnimal {
 
    public static final ResourceLocation LOOT_TABLE = new ResourceLocation(PetsOverhaul.MODID, "entities/o_parrot");
    public static final ResourceLocation VANILLA_LOOT_TABLE = new ResourceLocation("minecraft", "entities/parrot");
@@ -94,6 +96,15 @@ public class OParrot extends TamableAnimal implements GeoEntity, FlyingAnimal {
       return FOOD_ITEMS.test(itemStack);
    }
 
+   private int rideCooldownCounter;
+
+   public boolean ridingShoulder = false;
+   public boolean isRidingShoulder() {
+      return this.ridingShoulder;
+   }
+   public void setRidingShoulder(boolean ridingShoulder) {
+      this.ridingShoulder = ridingShoulder;
+   }
 
    static final Map<EntityType<?>, SoundEvent> MOB_SOUND_MAP = Util.make(Maps.newHashMap(), (p_29398_) -> {
       p_29398_.put(EntityType.BLAZE, SoundEvents.PARROT_IMITATE_BLAZE);
@@ -179,6 +190,7 @@ public class OParrot extends TamableAnimal implements GeoEntity, FlyingAnimal {
       this.goalSelector.addGoal(2, new OParrot.ParrotWanderGoal(this, 1.0D));
       this.goalSelector.addGoal(3, new FollowMobGoal(this, 1.0D, 3.0F, 7.0F));
       this.goalSelector.addGoal(1, new BreedGoal(this, 1.0D));
+      this.goalSelector.addGoal(3, new LandOnOwnersShoulderGoal(this));
    }
 
    public static AttributeSupplier.Builder createAttributes() {
@@ -234,6 +246,8 @@ public class OParrot extends TamableAnimal implements GeoEntity, FlyingAnimal {
    @Override
    public void tick() {
       super.tick();
+
+      ++this.rideCooldownCounter;
 
       regenHealthCounter++;
 
@@ -467,6 +481,28 @@ public class OParrot extends TamableAnimal implements GeoEntity, FlyingAnimal {
 
       if (tag.contains("Wandering")) {
          this.setToldToWander(tag.getBoolean("Wandering"));
+      }
+   }
+
+   @Override
+   public void finalizeSpawnChildFromBreeding(ServerLevel pLevel, Animal pAnimal, @org.jetbrains.annotations.Nullable AgeableMob pBaby) {
+      super.finalizeSpawnChildFromBreeding(pLevel, pAnimal, pBaby);
+      if (pAnimal instanceof OParrot partner) {
+         if (LivestockOverhaulCommonConfig.GENDERS_AFFECT_BREEDING.get()) {
+            if (this.isMale()) {
+               this.setAge(LivestockOverhaulCommonConfig.MALE_COOLDOWN.get());
+            } else {
+               this.setAge(LivestockOverhaulCommonConfig.FEMALE_COOLDOWN.get());
+            }
+            if (partner.isMale()) {
+               partner.setAge(LivestockOverhaulCommonConfig.MALE_COOLDOWN.get());
+            } else {
+               partner.setAge(LivestockOverhaulCommonConfig.FEMALE_COOLDOWN.get());
+            }
+         } else {
+            this.setAge(LivestockOverhaulCommonConfig.FEMALE_COOLDOWN.get());
+            partner.setAge(LivestockOverhaulCommonConfig.FEMALE_COOLDOWN.get());
+         }
       }
    }
 

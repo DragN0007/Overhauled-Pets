@@ -644,6 +644,28 @@ public class OOcelot extends TamableAnimal implements GeoEntity {
    }
 
    @Override
+   public void finalizeSpawnChildFromBreeding(ServerLevel pLevel, Animal pAnimal, @org.jetbrains.annotations.Nullable AgeableMob pBaby) {
+      super.finalizeSpawnChildFromBreeding(pLevel, pAnimal, pBaby);
+      if (pAnimal instanceof OOcelot partner) {
+         if (LivestockOverhaulCommonConfig.GENDERS_AFFECT_BREEDING.get()) {
+            if (this.isMale()) {
+               this.setAge(LivestockOverhaulCommonConfig.MALE_COOLDOWN.get());
+            } else {
+               this.setAge(LivestockOverhaulCommonConfig.FEMALE_COOLDOWN.get());
+            }
+            if (partner.isMale()) {
+               partner.setAge(LivestockOverhaulCommonConfig.MALE_COOLDOWN.get());
+            } else {
+               partner.setAge(LivestockOverhaulCommonConfig.FEMALE_COOLDOWN.get());
+            }
+         } else {
+            this.setAge(LivestockOverhaulCommonConfig.FEMALE_COOLDOWN.get());
+            partner.setAge(LivestockOverhaulCommonConfig.FEMALE_COOLDOWN.get());
+         }
+      }
+   }
+
+   @Override
    public AgeableMob getBreedOffspring(ServerLevel serverLevel, AgeableMob ageableMob) {
       OOcelot kitten;
       OOcelot partner = (OOcelot) ageableMob;

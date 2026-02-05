@@ -98,15 +98,14 @@ repositories {
 
 dependencies {
     minecraft "net.minecraftforge:forge:1.20.1-47.3.0" // 47.2.0 is Recommended
-    implementation fg.deobf("curse.maven:dragns-livestock-overhaul-1131669:7273128")
+    implementation fg.deobf("curse.maven:dragns-livestock-overhaul-1131669:7578482")
     implementation fg.deobf('software.bernie.geckolib:geckolib-forge-1.20.1:4.4.4')
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 
     compileOnly fg.deobf("vazkii.patchouli:Patchouli:1.20.1-84.1-FORGE:api")
     runtimeOnly fg.deobf("vazkii.patchouli:Patchouli:1.20.1-84.1-FORGE")
 
-//    implementation fg.deobf("curse.maven:dragns-deadly-dinos-reconstructed-1293235:6689976")
-
+    implementation fg.deobf("curse.maven:dragns-deadly-dinos-reconstructed-1293235:7414857")
     implementation fg.deobf("curse.maven:jade-324717:5876199")
     implementation fg.deobf("curse.maven:xaeros-minimap-263420:6012833")
     implementation fg.deobf("curse.maven:jei-238222:6075247")

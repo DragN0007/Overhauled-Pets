@@ -121,8 +121,8 @@ public class OFox extends TamableAnimal implements GeoEntity {
       ));
 
       this.goalSelector.addGoal(1, new AvoidEntityGoal<>(this, LivingEntity.class, 15.0F, 1.8F, 1.8F, entity ->
-              (entity.getType().is(LOTags.Entity_Types.HUNTING_DOGS) && !this.isTame()) ||
-                      (entity.getType().is(LOTags.Entity_Types.HUNTING_DOGS) && (entity instanceof TamableAnimal && !((TamableAnimal) entity).isTame())) && this.isTame()
+              (entity.getType().is(LOTags.Entity_Types.DOGS) && !this.isTame()) ||
+                      (entity.getType().is(LOTags.Entity_Types.DOGS) && (entity instanceof TamableAnimal && !((TamableAnimal) entity).isTame())) && this.isTame()
       ));
 
       this.goalSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, LivingEntity.class, 2, true, false,
@@ -566,18 +566,33 @@ public class OFox extends TamableAnimal implements GeoEntity {
          } else {
             OFox partner = (OFox) animal;
             if (this.canParent() && partner.canParent() && this.getGender() != partner.getGender()) {
-               return true;
-            }
-
-            boolean partnerIsFemale = partner.isFemale();
-            boolean partnerIsMale = partner.isMale();
-            if (LivestockOverhaulCommonConfig.GENDERS_AFFECT_BREEDING.get() && this.canParent() && partner.canParent()
-                    && ((isFemale() && partnerIsMale) || (isMale() && partnerIsFemale))) {
                return isFemale();
             }
          }
       }
       return false;
+   }
+
+   @Override
+   public void finalizeSpawnChildFromBreeding(ServerLevel pLevel, Animal pAnimal, @org.jetbrains.annotations.Nullable AgeableMob pBaby) {
+      super.finalizeSpawnChildFromBreeding(pLevel, pAnimal, pBaby);
+      if (pAnimal instanceof OFox partner) {
+         if (LivestockOverhaulCommonConfig.GENDERS_AFFECT_BREEDING.get()) {
+            if (this.isMale()) {
+               this.setAge(LivestockOverhaulCommonConfig.MALE_COOLDOWN.get());
+            } else {
+               this.setAge(LivestockOverhaulCommonConfig.FEMALE_COOLDOWN.get());
+            }
+            if (partner.isMale()) {
+               partner.setAge(LivestockOverhaulCommonConfig.MALE_COOLDOWN.get());
+            } else {
+               partner.setAge(LivestockOverhaulCommonConfig.FEMALE_COOLDOWN.get());
+            }
+         } else {
+            this.setAge(LivestockOverhaulCommonConfig.FEMALE_COOLDOWN.get());
+            partner.setAge(LivestockOverhaulCommonConfig.FEMALE_COOLDOWN.get());
+         }
+      }
    }
 
    @Override

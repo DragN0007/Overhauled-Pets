@@ -1,4 +1,4 @@
-package com.dragn0007.dragnpets.client;
+package com.dragn0007.dragnpets.client.event;
 
 import com.dragn0007.dragnpets.PetsOverhaul;
 import com.dragn0007.dragnpets.entities.POEntityTypes;

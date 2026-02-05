@@ -128,74 +128,65 @@ public class ODog extends DogBase implements NeutralMob, GeoEntity, Chestable, C
       this.goalSelector.addGoal(3, new GuarderSearchForItemsGoal());
       this.goalSelector.addGoal(3, new HunterSearchForItemsGoal());
 
-      if (this.isHerdingDog() || this.isLivestockGuardian()) {
-         this.goalSelector.addGoal(7, new FollowSheepGoal(this, 1.5D, 4.0F, 7.0F));
-         this.goalSelector.addGoal(7, new FollowGoatGoal(this, 1.5D, 4.0F, 7.0F));
-         this.goalSelector.addGoal(8, new FollowCowGoal(this, 1.5D, 4.0F, 7.0F));
-      }
+      //guardians only v
+      this.goalSelector.addGoal(7, new FollowGoatGoal(this, 1.5D, 4.0F, 7.0F));
+      //herders && guardians v
+      this.goalSelector.addGoal(7, new FollowSheepGoal(this, 1.5D, 4.0F, 7.0F));
+      this.goalSelector.addGoal(8, new FollowCowGoal(this, 1.5D, 4.0F, 7.0F));
 
-      if (this.isLivestockGuardian()) {
-         this.goalSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, LivingEntity.class, 2, true, false,
-                 entity -> entity.getType().is(POTags.Entity_Types.GUARDIAN_DOGS_ATTACK) && (entity instanceof TamableAnimal && !((TamableAnimal) entity).isTame())) {
-         });
-      }
+      this.goalSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, LivingEntity.class, 2, true, false,
+              entity -> entity.getType().is(POTags.Entity_Types.GUARDIAN_DOGS_ATTACK) && this.isLivestockGuardian() && (entity instanceof TamableAnimal && !((TamableAnimal) entity).isTame())) {
+      });
 
-      if (this.isGuardDog()) {
-         this.goalSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, Monster.class, 2, true, false,
-                 entity -> entity instanceof Monster && this.isTame() && this.wasToldToGuard()));
+      this.goalSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, Monster.class, 2, true, false,
+              entity -> entity instanceof Monster && this.isGuardDog() && this.isTame() && this.wasToldToGuard()));
 
-         this.goalSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, Slime.class, 2, true, false,
-                 entity -> entity instanceof Slime && this.isTame() && this.wasToldToGuard()));
-      }
+      this.goalSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, Slime.class, 2, true, false,
+              entity -> entity instanceof Slime && this.isGuardDog() && this.isTame() && this.wasToldToGuard()));
 
-      if (this.isBigGameHunter() && (this.getBreed() == 5 || this.getBreed() == 8)) {
-         this.goalSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, LivingEntity.class, 2, true, false,
-                 entity ->
-                         (entity.getType().is(POTags.Entity_Types.GAME) && this.isTame() && this.wasToldToHunt())
-                                 || (entity.getType().is(POTags.Entity_Types.GAME) && entity instanceof TamableAnimal && !((TamableAnimal) entity).isTame() && this.isTame() && this.wasToldToHunt())
-                                 || (entity.getType().is(POTags.Entity_Types.GAME) && entity instanceof AbstractOMount && !((AbstractOMount) entity).isTamed() && this.isTame() && this.wasToldToHunt())
+      this.goalSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, LivingEntity.class, 2, true, false,
+              entity ->
+                      (entity.getType().is(POTags.Entity_Types.GAME) && this.isTame() && this.wasToldToHunt())
+                              || (entity.getType().is(POTags.Entity_Types.GAME) && entity instanceof TamableAnimal && !((TamableAnimal) entity).isTame() && this.isTame() && this.wasToldToHunt())
+                              || (entity.getType().is(POTags.Entity_Types.GAME) && entity instanceof AbstractOMount && !((AbstractOMount) entity).isTamed() && this.isTame() && this.wasToldToHunt())
+                 && this.isBigGameHunter() && (this.getBreed() == 5 || this.getBreed() == 8)
          ));
-      }
 
-      if (this.getBreed() == 3 || this.getBreed() == 16) {
          this.goalSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, LivingEntity.class, 2, true, false,
                  entity ->
                          (entity.getType().is(POTags.Entity_Types.GAME_RODENTS) && this.isTame() && this.wasToldToHunt())
                                  || (entity.getType().is(POTags.Entity_Types.GAME_RODENTS) && entity instanceof TamableAnimal && !((TamableAnimal) entity).isTame() && this.isTame() && this.wasToldToHunt())
-         ));}
+                 && this.getBreed() == 3 || this.getBreed() == 16
+         ));
 
-      if (this.getBreed() == 7 || this.getBreed() == 12 || this.getBreed() == 13) {
          this.goalSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, LivingEntity.class, 2, true, false,
                  entity ->
                          (entity.getType().is(POTags.Entity_Types.GAME_BIRDS) && this.isTame() && this.wasToldToHunt())
-                                 || (entity.getType().is(POTags.Entity_Types.GAME_BIRDS) && entity instanceof TamableAnimal && !((TamableAnimal) entity).isTame() && this.isTame() && this.wasToldToHunt())
+                                 || ((entity.getType().is(POTags.Entity_Types.GAME_BIRDS) && entity instanceof TamableAnimal && !((TamableAnimal) entity).isTame()) && this.isTame() && this.wasToldToHunt())
+                 && this.getBreed() == 7 || this.getBreed() == 12 || this.getBreed() == 13
          ));
-      }
 
-      if (this.getBreed() == 10 || this.getBreed() == 12) {
          this.goalSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, LivingEntity.class, 2, true, false,
                  entity ->
                          (entity.getType().is(POTags.Entity_Types.FOX) && this.isTame() && this.wasToldToHunt())
                                  || (entity.getType().is(POTags.Entity_Types.FOX) && entity instanceof TamableAnimal && !((TamableAnimal) entity).isTame() && this.isTame() && this.wasToldToHunt())
+                 && this.getBreed() == 10 || this.getBreed() == 12
          ));
-      }
 
-      if (this.getBreed() == 19) {
          this.goalSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, LivingEntity.class, 2, true, false,
                  entity ->
                          (entity.getType().is(POTags.Entity_Types.WOLVES) && this.isTame() && this.wasToldToHunt())
                                  || (entity.getType().is(POTags.Entity_Types.WOLVES) && entity instanceof TamableAnimal && !((TamableAnimal) entity).isTame() && this.isTame() && this.wasToldToHunt())
+                 && this.getBreed() == 19
          ));
-      }
 
-      if (this.getBreed() == 1) {
          this.goalSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, LivingEntity.class, 2, true, false,
                  entity ->
                          (entity.getType().is(POTags.Entity_Types.DDD_GAME) && this.isTame() && this.wasToldToHunt())
                                  || (entity.getType().is(POTags.Entity_Types.DDD_GAME) && entity instanceof TamableAnimal && !((TamableAnimal) entity).isTame() && this.isTame() && this.wasToldToHunt())
                                  || (entity.getType().is(POTags.Entity_Types.DDD_GAME) && entity instanceof AbstractOMount && !((AbstractOMount) entity).isTamed() && this.isTame() && this.wasToldToHunt())
+                 && this.getBreed() == 1
          ));
-      }
    }
 
    public static AttributeSupplier.Builder createAttributes() {
@@ -1109,8 +1100,8 @@ public class ODog extends DogBase implements NeutralMob, GeoEntity, Chestable, C
    @Override
    public AgeableMob getBreedOffspring(ServerLevel serverLevel, AgeableMob ageableMob) {
       ODog pup;
-      pup = POEntityTypes.O_DOG_ENTITY.get().create(serverLevel);
       if (ageableMob instanceof OWolf) {
+         pup = POEntityTypes.O_DOG_ENTITY.get().create(serverLevel);
          pup.setBreed(25);
 
          int variantChance = this.random.nextInt(100);
@@ -1135,6 +1126,7 @@ public class ODog extends DogBase implements NeutralMob, GeoEntity, Chestable, C
 
       } else {
          ODog partner = (ODog) ageableMob;
+         pup = POEntityTypes.O_DOG_ENTITY.get().create(serverLevel);
 
          int breedChance = this.random.nextInt(100);
          int breed;
@@ -1535,6 +1527,64 @@ public class ODog extends DogBase implements NeutralMob, GeoEntity, Chestable, C
             this.setVariant(variants[randomIndex]);
          }
       }
+
+      if (this.getBreed() == 20) {
+         if (random.nextDouble() < 0.07) {
+            setVariant(random.nextInt(ODogModel.Variant.values().length));
+         } else if (random.nextDouble() > 0.07) {
+            int[] variants = {0, 3, 8, 10};
+            int randomIndex = new Random().nextInt(variants.length);
+            this.setVariant(variants[randomIndex]);
+         }
+      }
+
+      if (this.getBreed() == 21) {
+         if (random.nextDouble() < 0.07) {
+            setVariant(random.nextInt(ODogModel.Variant.values().length));
+         } else if (random.nextDouble() > 0.07) {
+            int[] variants = {4, 5, 12};
+            int randomIndex = new Random().nextInt(variants.length);
+            this.setVariant(variants[randomIndex]);
+         }
+      }
+
+      if (this.getBreed() == 22) {
+         if (random.nextDouble() < 0.07) {
+            setVariant(random.nextInt(ODogModel.Variant.values().length));
+         } else if (random.nextDouble() > 0.07) {
+            this.setVariant(12);
+         }
+      }
+
+      if (this.getBreed() == 23) {
+         if (random.nextDouble() < 0.07) {
+            setVariant(random.nextInt(ODogModel.Variant.values().length));
+         } else if (random.nextDouble() > 0.07) {
+            int[] variants = {0, 4, 5, 8, 9, 12};
+            int randomIndex = new Random().nextInt(variants.length);
+            this.setVariant(variants[randomIndex]);
+         }
+      }
+
+      if (this.getBreed() == 24) {
+         if (random.nextDouble() < 0.07) {
+            setVariant(random.nextInt(ODogModel.Variant.values().length));
+         } else if (random.nextDouble() > 0.07) {
+            int[] variants = {2, 3};
+            int randomIndex = new Random().nextInt(variants.length);
+            this.setVariant(variants[randomIndex]);
+         }
+      }
+
+      if (this.getBreed() == 25) {
+         if (random.nextDouble() < 0.07) {
+            setVariant(random.nextInt(ODogModel.Variant.values().length));
+         } else if (random.nextDouble() > 0.07) {
+            int[] variants = {0, 1, 2, 3, 8, 9, 11, 12, 13};
+            int randomIndex = new Random().nextInt(variants.length);
+            this.setVariant(variants[randomIndex]);
+         }
+      }
    }
 
    public void setMarking() {
@@ -1715,10 +1765,62 @@ public class ODog extends DogBase implements NeutralMob, GeoEntity, Chestable, C
             this.setOverlayVariant(0);
          }
       }
+
+      if (this.getBreed() == 20) {
+         if (random.nextDouble() < 0.10) {
+            setOverlayVariant(random.nextInt(DogMarkingOverlay.values().length));
+         } else if (random.nextDouble() >= 0.10) {
+            this.setOverlayVariant(0);
+         }
+      }
+
+      if (this.getBreed() == 21) {
+         if (random.nextDouble() < 0.10) {
+            setOverlayVariant(random.nextInt(DogMarkingOverlay.values().length));
+         } else if (random.nextDouble() >= 0.10) {
+            this.setOverlayVariant(21);
+         }
+      }
+
+      if (this.getBreed() == 22) {
+         if (random.nextDouble() < 0.10) {
+            setOverlayVariant(random.nextInt(DogMarkingOverlay.values().length));
+         } else if (random.nextDouble() >= 0.10) {
+            this.setOverlayVariant(22);
+         }
+      }
+
+      if (this.getBreed() == 23) {
+         if (random.nextDouble() < 0.10) {
+            setOverlayVariant(random.nextInt(DogMarkingOverlay.values().length));
+         } else if (random.nextDouble() > 0.10 && random.nextDouble() < 0.50) {
+            int[] variants = {4, 5};
+            int randomIndex = new Random().nextInt(variants.length);
+            this.setOverlayVariant(variants[randomIndex]);
+         } else if (random.nextDouble() > 0.50) {
+            this.setOverlayVariant(0);
+         }
+      }
+
+      if (this.getBreed() == 24) {
+         if (random.nextDouble() < 0.10) {
+            setOverlayVariant(random.nextInt(DogMarkingOverlay.values().length));
+         } else if (random.nextDouble() >= 0.10) {
+            this.setOverlayVariant(23);
+         }
+      }
+
+      if (this.getBreed() == 25) {
+         if (random.nextDouble() < 0.15) {
+            setOverlayVariant(random.nextInt(DogMarkingOverlay.values().length));
+         } else if (random.nextDouble() >= 0.15) {
+            this.setOverlayVariant(20);
+         }
+      }
    }
 
    public void setCropChance() {
-      if (this.getBreed() == 0) {
+      if (this.getBreed() == 0) { //fairly even
          if (random.nextDouble() <= 0.10) {
             this.setCropped(3); // full crop
          } else if (random.nextDouble() > 0.10 && random.nextDouble() < 0.25) {
@@ -1730,8 +1832,8 @@ public class ODog extends DogBase implements NeutralMob, GeoEntity, Chestable, C
          }
       }
 
-      if (this.getBreed() == 1 || this.getBreed() == 6) {
-         if (random.nextDouble() <= 0.02) {
+      if (this.getBreed() == 1 || this.getBreed() == 6 || this.getBreed() == 24) {
+         if (random.nextDouble() <= 0.02) { //favors cropped ears
             this.setCropped(3); // full crop
          } else if (random.nextDouble() > 0.02 && random.nextDouble() < 0.07) {
             this.setCropped(2); // tail only
@@ -1742,20 +1844,10 @@ public class ODog extends DogBase implements NeutralMob, GeoEntity, Chestable, C
          }
       }
 
-      if (this.getBreed() == 2 || this.getBreed() == 4 || this.getBreed() == 5 || this.getBreed() == 19) {
-         if (random.nextDouble() <= 0.02) {
-            this.setCropped(3); // full crop
-         } else if (random.nextDouble() > 0.02 && random.nextDouble() < 0.07) {
-            this.setCropped(2); // tail only
-         } else if (random.nextDouble() > 0.07 && random.nextDouble() < 0.14) {
-            this.setCropped(1); // ears only
-         } else {
-            this.setCropped(0); // no crop
-         }
-      }
-
-      if (this.getBreed() == 3 || this.getBreed() == 8 || this.getBreed() == 13 || this.getBreed() == 14 || this.getBreed() == 16 || this.getBreed() == 19) {
-         if (random.nextDouble() <= 0.02) {
+      if (this.getBreed() == 2 || this.getBreed() == 4 || this.getBreed() == 5 || this.getBreed() == 19 ||
+              this.getBreed() == 3 || this.getBreed() == 8 || this.getBreed() == 13 || this.getBreed() == 14 ||
+              this.getBreed() == 16 || this.getBreed() == 20 || this.getBreed() == 21 || this.getBreed() == 23) {
+         if (random.nextDouble() <= 0.02) { //favors not cropped
             this.setCropped(3); // full crop
          } else if (random.nextDouble() > 0.02 && random.nextDouble() < 0.05) {
             this.setCropped(2); // tail only
@@ -1766,7 +1858,7 @@ public class ODog extends DogBase implements NeutralMob, GeoEntity, Chestable, C
          }
       }
 
-      if (this.getBreed() == 7) {
+      if (this.getBreed() == 7 || this.getBreed() == 15) { //mostly cropped tail
          if (random.nextDouble() <= 0.02) {
             this.setCropped(3); // full crop
          } else if (random.nextDouble() > 0.02 && random.nextDouble() < 0.07) {
@@ -1778,7 +1870,7 @@ public class ODog extends DogBase implements NeutralMob, GeoEntity, Chestable, C
          }
       }
 
-      if (this.getBreed() == 9) {
+      if (this.getBreed() == 9) { //mostly fully cropped
          if (random.nextDouble() <= 0.50) {
             this.setCropped(3); // full crop
          } else if (random.nextDouble() > 0.50 && random.nextDouble() < 0.70) {
@@ -1791,7 +1883,7 @@ public class ODog extends DogBase implements NeutralMob, GeoEntity, Chestable, C
       }
 
       if (this.getBreed() == 10 || this.getBreed() == 12) {
-         if (random.nextDouble() <= 0.02) {
+         if (random.nextDouble() <= 0.02) { //sometimes cropped tail
             this.setCropped(3); // full crop
          } else if (random.nextDouble() > 0.02 && random.nextDouble() < 0.20) {
             this.setCropped(2); // tail only
@@ -1802,8 +1894,8 @@ public class ODog extends DogBase implements NeutralMob, GeoEntity, Chestable, C
          }
       }
 
-      if (this.getBreed() == 11 || this.getBreed() == 18 || this.getBreed() == 17) {
-         if (random.nextDouble() <= 0.02) {
+      if (this.getBreed() == 11 || this.getBreed() == 18 || this.getBreed() == 17 || this.getBreed() == 22) {
+         if (random.nextDouble() <= 0.02) { //favors cropped ears
             this.setCropped(3); // full crop
          } else if (random.nextDouble() > 0.02 && random.nextDouble() < 0.07) {
             this.setCropped(2); // tail only
@@ -1814,38 +1906,23 @@ public class ODog extends DogBase implements NeutralMob, GeoEntity, Chestable, C
          }
       }
 
-      if (this.getBreed() == 15) {
-         if (random.nextDouble() <= 0.02) {
-            this.setCropped(3); // full crop
-         } else if (random.nextDouble() > 0.02 && random.nextDouble() < 0.07) {
-            this.setCropped(1); // ears only
-         } else if (random.nextDouble() > 0.07 && random.nextDouble() < 0.55) {
-            this.setCropped(2); // tail only
-         } else {
-            this.setCropped(0); // no crop
-         }
+      if (this.getBreed() == 25) {
+         this.setCropped(1);
       }
    }
 
    public void setFluffChance() {
-      if (this.getBreed() == 0) {
-         if (random.nextDouble() <= 0.30) {
+      if (this.getBreed() == 0 || this.getBreed() == 22 || this.getBreed() == 25) {
+         if (random.nextDouble() <= 0.30) { //mostly not fluffy
             this.setFluff(1);
          } else {
             this.setFluff(0);
          }
       }
 
-      if (this.getBreed() == 1 || this.getBreed() == 6 || this.getBreed() == 11) {
-         if (random.nextDouble() <= 0.90) {
-            this.setFluff(1);
-         } else {
-            this.setFluff(0);
-         }
-      }
-
-      if (this.getBreed() == 2 || this.getBreed() == 4 || this.getBreed() == 14 || this.getBreed() == 19) {
-         if (random.nextDouble() <= 0.95) {
+      if (this.getBreed() == 1 || this.getBreed() == 6 || this.getBreed() == 11 || this.getBreed() == 2 ||
+              this.getBreed() == 4 || this.getBreed() == 14 || this.getBreed() == 19 || this.getBreed() == 20 || this.getBreed() == 23) {
+         if (random.nextDouble() <= 0.90) { //favors fluffy
             this.setFluff(1);
          } else {
             this.setFluff(0);
@@ -1855,15 +1932,15 @@ public class ODog extends DogBase implements NeutralMob, GeoEntity, Chestable, C
       if (this.getBreed() == 3 || this.getBreed() == 5 || this.getBreed() == 8 || this.getBreed() == 9
               || this.getBreed() == 10 || this.getBreed() == 12 || this.getBreed() == 13 || this.getBreed() == 15
               || this.getBreed() == 16 || this.getBreed() == 17) {
-         if (random.nextDouble() <= 0.02) {
+         if (random.nextDouble() <= 0.02) { //favors not fluffy
             this.setFluff(1);
          } else {
             this.setFluff(0);
          }
       }
 
-      if (this.getBreed() == 7 || this.getBreed() == 18) {
-         if (random.nextDouble() <= 0.80) {
+      if (this.getBreed() == 7 || this.getBreed() == 18 || this.getBreed() == 21 || this.getBreed() == 24) {
+         if (random.nextDouble() <= 0.80) { //mostly fluffy
             this.setFluff(1);
          } else {
             this.setFluff(0);
@@ -1874,7 +1951,7 @@ public class ODog extends DogBase implements NeutralMob, GeoEntity, Chestable, C
    public void setBreedByBiome() {
       if (LivestockOverhaulCommonConfig.SPAWN_BY_BREED.get()) {
          if (this.level().getBiome(this.blockPosition()).is(Tags.Biomes.IS_HOT_OVERWORLD)) {
-            if (random.nextDouble() < 0.10) {
+            if (random.nextDouble() < 0.05) {
                this.setBreed(random.nextInt(DogBreed.values().length));
             } else {
                int[] variants = {0, 2, 6, 18, 21, 22, 24};
@@ -1883,7 +1960,7 @@ public class ODog extends DogBase implements NeutralMob, GeoEntity, Chestable, C
             }
 
          } else if (this.level().getBiome(this.blockPosition()).is(Tags.Biomes.IS_COLD_OVERWORLD)) {
-            if (random.nextDouble() < 0.10) {
+            if (random.nextDouble() < 0.05) {
                this.setBreed(random.nextInt(DogBreed.values().length));
             } else {
                int[] variants = {0, 4, 11, 14, 20, 23, 19};
@@ -1892,7 +1969,7 @@ public class ODog extends DogBase implements NeutralMob, GeoEntity, Chestable, C
             }
 
          } else {
-            if (random.nextDouble() < 0.10) {
+            if (random.nextDouble() < 0.05) {
                this.setBreed(random.nextInt(DogBreed.values().length));
             } else {
                int[] variants = {0, 3, 5, 7, 8, 9, 10, 12, 13, 15, 16, 17};
