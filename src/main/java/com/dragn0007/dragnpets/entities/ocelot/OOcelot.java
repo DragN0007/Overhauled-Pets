@@ -435,6 +435,10 @@ public class OOcelot extends TamableAnimal implements GeoEntity {
       this.entityData.set(DATA_COLLAR_COLOR, p_30398_.getId());
    }
 
+   @Override
+   public boolean removeWhenFarAway(double p_27598_) {
+      return !this.isTame() && this.tickCount > 2400;
+   }
 
    // Generates the base texture
    public static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(OOcelot.class, EntityDataSerializers.INT);
