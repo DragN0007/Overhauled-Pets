@@ -407,15 +407,12 @@ public class OOcelot extends TamableAnimal implements GeoEntity {
    }
 
    public boolean toldToWander = false;
-
    public boolean wasToldToWander() {
       return this.toldToWander;
    }
-
    public boolean getToldToWander() {
       return this.toldToWander;
    }
-
    public void setToldToWander(boolean toldToWander) {
       this.toldToWander = toldToWander;
    }
@@ -430,7 +427,6 @@ public class OOcelot extends TamableAnimal implements GeoEntity {
    public DyeColor getCollarColor() {
       return DyeColor.byId(this.entityData.get(DATA_COLLAR_COLOR));
    }
-
    public void setCollarColor(DyeColor p_30398_) {
       this.entityData.set(DATA_COLLAR_COLOR, p_30398_.getId());
    }
