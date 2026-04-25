@@ -783,9 +783,9 @@ public class OWolf extends DogBase implements NeutralMob, GeoEntity {
          }
 
          int overlayChance = this.random.nextInt(100);
-         if (overlayChance < 40) {
+         if (overlayChance < ((100 - LivestockOverhaulCommonConfig.COAT_CHANCE.get()) / 2)) {
             ((ODog) pup).setOverlayVariant(dogPartner.getOverlayVariant());
-         } else if (overlayChance < 80) {
+         } else if (overlayChance < (100 - LivestockOverhaulCommonConfig.MARKING_CHANCE.get())) {
             ((ODog) pup).setOverlayVariant(20);
          } else {
             ((ODog) pup).setMarking();
@@ -801,9 +801,9 @@ public class OWolf extends DogBase implements NeutralMob, GeoEntity {
 
          int variantChance = this.random.nextInt(100);
          int variant;
-         if (variantChance < 40) {
+         if (variantChance < ((100 - LivestockOverhaulCommonConfig.COAT_CHANCE.get()) / 2)) {
             variant = this.getVariant();
-         } else if (variantChance < 80) {
+         } else if (variantChance < (100 - LivestockOverhaulCommonConfig.COAT_CHANCE.get())) {
             variant = partner.getVariant();
          } else {
             variant = this.random.nextInt(OWolfModel.Variant.values().length);
@@ -812,9 +812,9 @@ public class OWolf extends DogBase implements NeutralMob, GeoEntity {
 
          int overlayChance = this.random.nextInt(100);
          int overlay;
-         if (overlayChance < 40) {
+         if (overlayChance < ((100 - LivestockOverhaulCommonConfig.MARKING_CHANCE.get()) / 2)) {
             overlay = this.getOverlayVariant();
-         } else if (overlayChance < 80) {
+         } else if (overlayChance < (100 - LivestockOverhaulCommonConfig.MARKING_CHANCE.get())) {
             overlay = partner.getOverlayVariant();
          } else {
             overlay = this.random.nextInt(OWolfMarkingLayer.Overlay.values().length);

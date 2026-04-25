@@ -411,31 +411,31 @@ public class OAxolotl extends Animal implements GeoEntity, Bucketable {
 			OAxolotl oAxolotl1 = (OAxolotl) ageableMob;
 			oAxolotl = POEntityTypes.O_AXOLOTL_ENTITY.get().create(serverLevel);
 
-			int i = this.random.nextInt(9);
+			int i = this.random.nextInt(100);
 			int variant;
-			if (i < 4) {
+			if (i < ((100 - LivestockOverhaulCommonConfig.COAT_CHANCE.get()) / 2)) {
 				variant = this.getVariant();
-			} else if (i < 8) {
+			} else if (i < (100 - LivestockOverhaulCommonConfig.COAT_CHANCE.get())) {
 				variant = oAxolotl1.getVariant();
 			} else {
 				variant = this.random.nextInt(OAxolotlModel.Variant.values().length);
 			}
 
-			int j = this.random.nextInt(9);
+			int j = this.random.nextInt(100);
 			int overlay;
-			if (j < 4) {
+			if (j < ((100 - LivestockOverhaulCommonConfig.MARKING_CHANCE.get()) / 2)) {
 				overlay = this.getOverlayVariant();
-			} else if (j < 8) {
+			} else if (j < (100 - LivestockOverhaulCommonConfig.MARKING_CHANCE.get())) {
 				overlay = oAxolotl1.getOverlayVariant();
 			} else {
 				overlay = this.random.nextInt(OAxolotlMarkingLayer.Overlay.values().length);
 			}
 
-			int k = this.random.nextInt(9);
+			int k = this.random.nextInt(100);
 			int gills;
-			if (k < 4) {
+			if (k < ((100 - LivestockOverhaulCommonConfig.OTHER_CHANCE.get()) / 2)) {
 				gills = this.getGills();
-			} else if (k < 8) {
+			} else if (k < (100 - LivestockOverhaulCommonConfig.OTHER_CHANCE.get())) {
 				gills = oAxolotl1.getGills();
 			} else {
 				gills = this.random.nextInt(OAxolotl.Gills.values().length);

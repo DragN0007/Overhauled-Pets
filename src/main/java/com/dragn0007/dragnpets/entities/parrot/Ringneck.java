@@ -146,11 +146,11 @@ public class Ringneck extends OParrot implements GeoEntity, FlyingAnimal {
          Ringneck parrot = (Ringneck) ageableMob;
          parrot1 = POEntityTypes.RINGNECK_ENTITY.get().create(serverLevel);
 
-         int i = this.random.nextInt(9);
+         int i = this.random.nextInt(100);
          int variant;
-         if (i < 4) {
+         if (i < ((100 - LivestockOverhaulCommonConfig.COAT_CHANCE.get()) / 2)) {
             variant = this.getVariant();
-         } else if (i < 8) {
+         } else if (i < (100 - LivestockOverhaulCommonConfig.COAT_CHANCE.get())) {
             variant = parrot.getVariant();
          } else {
             variant = this.random.nextInt(RingneckModel.Variant.values().length);

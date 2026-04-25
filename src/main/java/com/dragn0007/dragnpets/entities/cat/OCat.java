@@ -160,8 +160,6 @@ public class OCat extends TamableAnimal implements GeoEntity {
          } else if (i < 55) {
             this.spawnAtLocation(Items.STICK);
          } else if (i < 65) {
-            this.spawnAtLocation(LOItems.CHICKEN_THIGH.get());
-         } else if (i < 70) {
             this.spawnAtLocation(POItems.PARROT_THIGH.get());
          } else if (i < 75) {
             this.spawnAtLocation(LOItems.FROG.get());
@@ -175,8 +173,6 @@ public class OCat extends TamableAnimal implements GeoEntity {
             this.spawnAtLocation(Items.GUNPOWDER);
          } else if (i < 98.5) {
             this.spawnAtLocation(Items.RABBIT_FOOT);
-         } else if (i < 99.0) {
-            this.spawnAtLocation(LOItems.COOKED_CHICKEN_THIGH.get());
          } else if (i < 99.5) {
             this.spawnAtLocation(Items.MUSIC_DISC_CAT);
          } else if (i < 100) {
@@ -732,11 +728,11 @@ public class OCat extends TamableAnimal implements GeoEntity {
       int breedChance = this.random.nextInt(100);
       int breed;
       if (this.getBreed() == partner.getBreed()) {
-         if (breedChance < 40) {
+         if (breedChance < ((100 - LivestockOverhaulCommonConfig.BREED_CHANCE.get()) / 2)) {
             breed = this.getBreed();
-         } else if (breedChance < 80) {
+         } else if (breedChance < (100 - LivestockOverhaulCommonConfig.BREED_CHANCE.get())) {
             breed = partner.getBreed();
-         } else if (breedChance < 95) {
+         } else if (breedChance < (100 - (LivestockOverhaulCommonConfig.BREED_CHANCE.get() / 2))) {
             breed = 0;
          } else {
             breed = this.random.nextInt(DogBreed.values().length);
@@ -754,33 +750,33 @@ public class OCat extends TamableAnimal implements GeoEntity {
       }
       kitten.setBreed(breed);
 
-      int variantChance = this.random.nextInt(14);
+      int variantChance = this.random.nextInt(100);
       int variant;
-      if (variantChance < 6) {
+      if (variantChance < ((100 - LivestockOverhaulCommonConfig.COAT_CHANCE.get()) / 2)) {
          variant = this.getVariant();
-      } else if (variantChance < 12) {
+      } else if (variantChance < (100 - LivestockOverhaulCommonConfig.COAT_CHANCE.get())) {
          variant = partner.getVariant();
       } else {
          variant = this.random.nextInt(OCatModel.Variant.values().length);
       }
       kitten.setVariant(variant);
 
-      int overlayChance = this.random.nextInt(10);
+      int overlayChance = this.random.nextInt(100);
       int overlay;
-      if (overlayChance < 4) {
+      if (overlayChance < ((100 - LivestockOverhaulCommonConfig.MARKING_CHANCE.get()) / 2)) {
          overlay = this.getOverlayVariant();
-      } else if (overlayChance < 8) {
+      } else if (overlayChance < (100 - LivestockOverhaulCommonConfig.MARKING_CHANCE.get())) {
          overlay = partner.getOverlayVariant();
       } else {
          overlay = this.random.nextInt(CatMarkingOverlay.values().length);
       }
       kitten.setOverlayVariant(overlay);
 
-      int eyeChance = this.random.nextInt(10);
+      int eyeChance = this.random.nextInt(100);
       int eyes;
-      if (eyeChance < 4) {
+      if (eyeChance < ((100 - LivestockOverhaulCommonConfig.OTHER_CHANCE.get()) / 2)) {
          eyes = this.getEyes();
-      } else if (eyeChance < 8) {
+      } else if (eyeChance < (100 - LivestockOverhaulCommonConfig.OTHER_CHANCE.get())) {
          eyes = partner.getEyes();
       } else {
          eyes = this.random.nextInt(OCatEyeLayer.Eyes.values().length);

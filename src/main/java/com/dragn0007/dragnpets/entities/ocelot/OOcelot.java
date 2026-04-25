@@ -671,33 +671,33 @@ public class OOcelot extends TamableAnimal implements GeoEntity {
       OOcelot partner = (OOcelot) ageableMob;
       kitten = POEntityTypes.O_OCELOT_ENTITY.get().create(serverLevel);
 
-      int variantChance = this.random.nextInt(14);
+      int variantChance = this.random.nextInt(100);
       int variant;
-      if (variantChance < 6) {
+      if (variantChance < ((100 - LivestockOverhaulCommonConfig.COAT_CHANCE.get()) / 2)) {
          variant = this.getVariant();
-      } else if (variantChance < 12) {
+      } else if (variantChance < (100 - LivestockOverhaulCommonConfig.COAT_CHANCE.get())) {
          variant = partner.getVariant();
       } else {
          variant = this.random.nextInt(OOcelotModel.Variant.values().length);
       }
       kitten.setVariant(variant);
 
-      int overlayChance = this.random.nextInt(10);
+      int overlayChance = this.random.nextInt(100);
       int overlay;
-      if (overlayChance < 4) {
+      if (overlayChance < ((100 - LivestockOverhaulCommonConfig.MARKING_CHANCE.get()) / 2)) {
          overlay = this.getOverlayVariant();
-      } else if (overlayChance < 8) {
+      } else if (overlayChance < (100 - LivestockOverhaulCommonConfig.MARKING_CHANCE.get())) {
          overlay = partner.getOverlayVariant();
       } else {
          overlay = this.random.nextInt(OOcelotMarkingLayer.Overlay.values().length);
       }
       kitten.setOverlayVariant(overlay);
 
-      int eyeChance = this.random.nextInt(10);
+      int eyeChance = this.random.nextInt(100);
       int eyes;
-      if (eyeChance < 4) {
+      if (eyeChance < ((100 - LivestockOverhaulCommonConfig.OTHER_CHANCE.get()) / 2)) {
          eyes = this.getEyes();
-      } else if (eyeChance < 8) {
+      } else if (eyeChance < (100 - LivestockOverhaulCommonConfig.OTHER_CHANCE.get())) {
          eyes = partner.getEyes();
       } else {
          eyes = this.random.nextInt(OOcelotEyeLayer.Eyes.values().length);

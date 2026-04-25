@@ -1132,11 +1132,11 @@ public class ODog extends DogBase implements NeutralMob, GeoEntity, Chestable, C
          int breedChance = this.random.nextInt(100);
          int breed;
          if (this.getBreed() == partner.getBreed()) {
-            if (breedChance < 40) {
+            if (breedChance < ((100 - LivestockOverhaulCommonConfig.BREED_CHANCE.get()) / 2)) {
                breed = this.getBreed();
-            } else if (breedChance < 80) {
+            } else if (breedChance < (100 - LivestockOverhaulCommonConfig.BREED_CHANCE.get())) {
                breed = partner.getBreed();
-            } else if (breedChance < 95) {
+            } else if (breedChance < (100 - (LivestockOverhaulCommonConfig.BREED_CHANCE.get() / 2))) {
                breed = 0;
             } else {
                breed = this.random.nextInt(DogBreed.values().length);
@@ -1154,33 +1154,33 @@ public class ODog extends DogBase implements NeutralMob, GeoEntity, Chestable, C
          }
          pup.setBreed(breed);
 
-         if (!(breedChance == 0)) {
+         if (!(breedChance <= LivestockOverhaulCommonConfig.BREED_CHANCE.get())) {
             int variantChance = this.random.nextInt(100);
             int variant;
-            if (variantChance < 40) {
+            if (variantChance < ((100 - LivestockOverhaulCommonConfig.COAT_CHANCE.get()) / 2)) {
                variant = this.getVariant();
-            } else if (variantChance < 80) {
+            } else if (variantChance < (100 - LivestockOverhaulCommonConfig.COAT_CHANCE.get())) {
                variant = partner.getVariant();
             } else {
                variant = this.random.nextInt(ODogModel.Variant.values().length);
             }
             pup.setVariant(variant);
-         } else if (breedChance == 0 && random.nextDouble() < 0.25) {
+         } else if (breedChance <= LivestockOverhaulCommonConfig.BREED_CHANCE.get() && random.nextDouble() < 0.25) {
             pup.setColor();
          }
 
-         if (!(breedChance == 0)) {
+         if (!(breedChance <= LivestockOverhaulCommonConfig.BREED_CHANCE.get())) {
             int overlayChance = this.random.nextInt(100);
             int overlay;
-            if (overlayChance < 40) {
+            if (overlayChance < ((100 - LivestockOverhaulCommonConfig.MARKING_CHANCE.get()) / 2)) {
                overlay = this.getOverlayVariant();
-            } else if (overlayChance < 80) {
+            } else if (overlayChance < (100 - LivestockOverhaulCommonConfig.MARKING_CHANCE.get())) {
                overlay = partner.getOverlayVariant();
             } else {
                overlay = this.random.nextInt(DogMarkingOverlay.values().length);
             }
             pup.setOverlayVariant(overlay);
-         } else if (breedChance == 0 && random.nextDouble() < 0.25) {
+         } else if (breedChance <= LivestockOverhaulCommonConfig.BREED_CHANCE.get() && random.nextDouble() < 0.25) {
             pup.setMarking();
          }
 
