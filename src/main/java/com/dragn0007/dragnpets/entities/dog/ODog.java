@@ -855,6 +855,11 @@ public class ODog extends DogBase implements NeutralMob, GeoEntity, Chestable, C
       return this.getBreed() == 1 || this.getBreed() == 5 || this.getBreed() == 8 || this.getBreed() == 19;
    }
 
+   @Override
+   public boolean removeWhenFarAway(double p_27598_) {
+      return !this.isTame() && this.tickCount > 2400;
+   }
+
    // Generates the base texture
    public static final EntityDataAccessor<Boolean> CHESTED = SynchedEntityData.defineId(ODog.class, EntityDataSerializers.BOOLEAN);
 

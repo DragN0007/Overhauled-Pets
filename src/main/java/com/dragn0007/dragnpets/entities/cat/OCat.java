@@ -497,9 +497,12 @@ public class OCat extends TamableAnimal implements GeoEntity {
       this.entityData.set(DATA_COLLAR_COLOR, p_30398_.getId());
    }
 
+   @Override
+   public boolean removeWhenFarAway(double p_27598_) {
+      return !this.isTame() && this.tickCount > 2400;
+   }
 
    // Generates the base texture
-
    public static final EntityDataAccessor<Integer> BREED = SynchedEntityData.defineId(OCat.class, EntityDataSerializers.INT);
    public ResourceLocation getModelResource() {
       return CatBreed.breedFromOrdinal(getBreed()).resourceLocation;
@@ -783,10 +786,7 @@ public class OCat extends TamableAnimal implements GeoEntity {
       }
       kitten.setEyes(eyes);
 
-      int gender;
-      gender = this.random.nextInt(OCat.Gender.values().length);
-      kitten.setGender(gender);
-
+      kitten.setGender(random.nextInt(OCat.Gender.values().length));
       return kitten;
    }
 

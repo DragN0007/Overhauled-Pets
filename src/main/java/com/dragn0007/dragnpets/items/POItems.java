@@ -24,25 +24,25 @@ public class POItems {
 
     //Spawn Eggs
     public static final RegistryObject<Item> O_WOLF_SPAWN_EGG = ITEMS.register("o_wolf_spawn_egg",
-            () -> new ForgeSpawnEggItem(POEntityTypes.O_WOLF_ENTITY, 0xbbbbbb, 0x6d6d6d, new Item.Properties().stacksTo(64)));
+            () -> new ForgeSpawnEggItem(POEntityTypes.O_WOLF_ENTITY, 0x00FFFFFF, 0x00FFFFFF, new Item.Properties().stacksTo(64)));
     public static final RegistryObject<Item> O_OCELOT_SPAWN_EGG = ITEMS.register("o_ocelot_spawn_egg",
-            () -> new ForgeSpawnEggItem(POEntityTypes.O_OCELOT_ENTITY, 0xf6d587, 0x5e381b, new Item.Properties().stacksTo(64)));
+            () -> new ForgeSpawnEggItem(POEntityTypes.O_OCELOT_ENTITY, 0x00FFFFFF, 0x00FFFFFF, new Item.Properties().stacksTo(64)));
     public static final RegistryObject<Item> O_FOX_SPAWN_EGG = ITEMS.register("o_fox_spawn_egg",
-            () -> new ForgeSpawnEggItem(POEntityTypes.O_FOX_ENTITY, 0xd5701c, 0x62483c, new Item.Properties().stacksTo(64)));
+            () -> new ForgeSpawnEggItem(POEntityTypes.O_FOX_ENTITY, 0x00FFFFFF, 0x00FFFFFF, new Item.Properties().stacksTo(64)));
     public static final RegistryObject<Item> O_AXOLOTL_SPAWN_EGG = ITEMS.register("o_axolotl_spawn_egg",
-            () -> new ForgeSpawnEggItem(POEntityTypes.O_AXOLOTL_ENTITY, 0xeed0cb, 0xc7a49e, new Item.Properties().stacksTo(64)));
+            () -> new ForgeSpawnEggItem(POEntityTypes.O_AXOLOTL_ENTITY, 0x00FFFFFF, 0x00FFFFFF, new Item.Properties().stacksTo(64)));
     public static final RegistryObject<Item> O_TROPICAL_FISH_SPAWN_EGG = ITEMS.register("o_tropical_fish_spawn_egg",
-            () -> new ForgeSpawnEggItem(POEntityTypes.O_TROPICAL_FISH_ENTITY, 0xce7b22, 0xffffff, new Item.Properties().stacksTo(64)));
+            () -> new ForgeSpawnEggItem(POEntityTypes.O_TROPICAL_FISH_ENTITY, 0x00FFFFFF, 0x00FFFFFF, new Item.Properties().stacksTo(64)));
     public static final RegistryObject<Item> O_CAT_SPAWN_EGG = ITEMS.register("o_cat_spawn_egg",
-            () -> new ForgeSpawnEggItem(POEntityTypes.O_CAT_ENTITY, 0xd5913f, 0xa7631a, new Item.Properties().stacksTo(64)));
+            () -> new ForgeSpawnEggItem(POEntityTypes.O_CAT_ENTITY, 0x00FFFFFF, 0x00FFFFFF, new Item.Properties().stacksTo(64)));
     public static final RegistryObject<Item> O_DOG_SPAWN_EGG = ITEMS.register("o_dog_spawn_egg",
-            () -> new ForgeSpawnEggItem(POEntityTypes.O_DOG_ENTITY, 0x95715f, 0xb8947a, new Item.Properties().stacksTo(64)));
+            () -> new ForgeSpawnEggItem(POEntityTypes.O_DOG_ENTITY, 0x00FFFFFF, 0x00FFFFFF, new Item.Properties().stacksTo(64)));
     public static final RegistryObject<Item> MACAW_SPAWN_EGG = ITEMS.register("macaw_spawn_egg",
-            () -> new ForgeSpawnEggItem(POEntityTypes.MACAW_ENTITY, 0xab2f23, 0xda9e35, new Item.Properties().stacksTo(64)));
+            () -> new ForgeSpawnEggItem(POEntityTypes.MACAW_ENTITY, 0x00FFFFFF, 0x00FFFFFF, new Item.Properties().stacksTo(64)));
     public static final RegistryObject<Item> COCKATIEL_SPAWN_EGG = ITEMS.register("cockatiel_spawn_egg",
-            () -> new ForgeSpawnEggItem(POEntityTypes.COCKATIEL_ENTITY, 0x9d9d9d, 0xfff469, new Item.Properties().stacksTo(64)));
+            () -> new ForgeSpawnEggItem(POEntityTypes.COCKATIEL_ENTITY, 0x00FFFFFF, 0x00FFFFFF, new Item.Properties().stacksTo(64)));
     public static final RegistryObject<Item> RINGNECK_SPAWN_EGG = ITEMS.register("ringneck_spawn_egg",
-            () -> new ForgeSpawnEggItem(POEntityTypes.RINGNECK_ENTITY, 0xa3a855, 0x2f3515, new Item.Properties().stacksTo(64)));
+            () -> new ForgeSpawnEggItem(POEntityTypes.RINGNECK_ENTITY, 0x00FFFFFF, 0x00FFFFFF, new Item.Properties().stacksTo(64)));
 
     //Food
     public static final RegistryObject<Item> WOLF = ITEMS.register("wolf",

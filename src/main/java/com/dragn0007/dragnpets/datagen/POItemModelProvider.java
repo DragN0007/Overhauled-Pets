@@ -19,6 +19,17 @@ public class POItemModelProvider extends ItemModelProvider {
     public void registerModels() {
         simpleItem(POItems.PETS_OVERHAUL);
 
+        simpleItem(POItems.O_WOLF_SPAWN_EGG);
+        simpleItem(POItems.O_OCELOT_SPAWN_EGG);
+        simpleItem(POItems.O_DOG_SPAWN_EGG);
+        simpleItem(POItems.O_CAT_SPAWN_EGG);
+        simpleItem(POItems.O_FOX_SPAWN_EGG);
+        simpleItem(POItems.O_AXOLOTL_SPAWN_EGG);
+        simpleItem(POItems.O_TROPICAL_FISH_SPAWN_EGG);
+        simpleItem(POItems.MACAW_SPAWN_EGG);
+        simpleItem(POItems.COCKATIEL_SPAWN_EGG);
+        simpleItem(POItems.RINGNECK_SPAWN_EGG);
+
         simpleItem(POItems.WOLF);
         simpleItem(POItems.COOKED_WOLF);
         simpleItem(POItems.CAT);

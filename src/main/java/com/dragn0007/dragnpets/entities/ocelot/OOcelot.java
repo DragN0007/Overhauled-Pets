@@ -6,6 +6,7 @@ import com.dragn0007.dragnlivestock.util.LivestockOverhaulCommonConfig;
 import com.dragn0007.dragnpets.PetsOverhaul;
 import com.dragn0007.dragnpets.entities.POEntityTypes;
 import com.dragn0007.dragnpets.entities.ai.OcelotFollowOwnerGoal;
+import com.dragn0007.dragnpets.entities.cat.OCat;
 import com.dragn0007.dragnpets.util.POTags;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.particles.ParticleOptions;
@@ -704,10 +705,7 @@ public class OOcelot extends TamableAnimal implements GeoEntity {
       }
       kitten.setEyes(eyes);
 
-      int gender;
-      gender = this.random.nextInt(OOcelot.Gender.values().length);
-      kitten.setGender(gender);
-
+      kitten.setGender(random.nextInt(OCat.Gender.values().length));
       return kitten;
    }
 
