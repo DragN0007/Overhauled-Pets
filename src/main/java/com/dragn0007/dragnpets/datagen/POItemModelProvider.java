@@ -1,9 +1,11 @@
 package com.dragn0007.dragnpets.datagen;
 
+import com.dragn0007.dragnlivestock.items.LOItems;
 import com.dragn0007.dragnpets.PetsOverhaul;
 import com.dragn0007.dragnpets.items.POItems;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.client.model.generators.ItemModelBuilder;
 import net.minecraftforge.client.model.generators.ItemModelProvider;
@@ -53,22 +55,9 @@ public class POItemModelProvider extends ItemModelProvider {
         simpleItem(POItems.NETHERITE_DOG_ARMOR);
         simpleItem(POItems.OBSIDIAN_DOG_ARMOR);
 
-        simpleItem(POItems.BLACK_VEST);
-        simpleItem(POItems.BLUE_VEST);
-        simpleItem(POItems.BROWN_VEST);
-        simpleItem(POItems.CYAN_VEST);
-        simpleItem(POItems.GREEN_VEST);
-        simpleItem(POItems.GREY_VEST);
-        simpleItem(POItems.LIGHT_BLUE_VEST);
-        simpleItem(POItems.LIGHT_GREY_VEST);
-        simpleItem(POItems.LIME_VEST);
-        simpleItem(POItems.MAGENTA_VEST);
-        simpleItem(POItems.ORANGE_VEST);
-        simpleItem(POItems.PINK_VEST);
-        simpleItem(POItems.PURPLE_VEST);
-        simpleItem(POItems.RED_VEST);
-        simpleItem(POItems.WHITE_VEST);
-        simpleItem(POItems.YELLOW_VEST);
+        for (DyeColor color : DyeColor.values()) {
+            simpleItem(POItems.VESTS.get(color));
+        }
     }
 
     public ItemModelBuilder simpleItem(RegistryObject<Item> item) {

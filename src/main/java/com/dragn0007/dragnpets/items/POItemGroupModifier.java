@@ -7,6 +7,7 @@ import com.dragn0007.dragnlivestock.items.custom.WagonItem;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModList;
@@ -73,22 +74,9 @@ public class POItemGroupModifier {
                         output.accept(POItems.OBSIDIAN_DOG_ARMOR.get());
                         }
 
-                        output.accept(POItems.BLACK_VEST.get());
-                        output.accept(POItems.BLUE_VEST.get());
-                        output.accept(POItems.BROWN_VEST.get());
-                        output.accept(POItems.CYAN_VEST.get());
-                        output.accept(POItems.GREEN_VEST.get());
-                        output.accept(POItems.GREY_VEST.get());
-                        output.accept(POItems.LIGHT_BLUE_VEST.get());
-                        output.accept(POItems.LIGHT_GREY_VEST.get());
-                        output.accept(POItems.LIME_VEST.get());
-                        output.accept(POItems.MAGENTA_VEST.get());
-                        output.accept(POItems.ORANGE_VEST.get());
-                        output.accept(POItems.PINK_VEST.get());
-                        output.accept(POItems.PURPLE_VEST.get());
-                        output.accept(POItems.RED_VEST.get());
-                        output.accept(POItems.WHITE_VEST.get());
-                        output.accept(POItems.YELLOW_VEST.get());
+                        for (DyeColor color : DyeColor.values()) {
+                            output.accept(POItems.VESTS.get(color).get());
+                        }
 
                     }).build());
 

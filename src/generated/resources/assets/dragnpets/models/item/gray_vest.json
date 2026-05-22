@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "dragnpets:item/grey_vest"
+    "layer0": "dragnpets:item/gray_vest"
   }
 }

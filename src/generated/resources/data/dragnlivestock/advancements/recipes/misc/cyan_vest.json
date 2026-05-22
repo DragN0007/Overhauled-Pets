@@ -3,7 +3,7 @@
   "criteria": {
     "has_the_recipe": {
       "conditions": {
-        "recipe": "dragnpets:pink_vest"
+        "recipe": "dragnlivestock:cyan_vest"
       },
       "trigger": "minecraft:recipe_unlocked"
     },
@@ -26,7 +26,7 @@
   ],
   "rewards": {
     "recipes": [
-      "dragnpets:pink_vest"
+      "dragnlivestock:cyan_vest"
     ]
   },
   "sends_telemetry_event": false

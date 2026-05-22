@@ -3,7 +3,7 @@
   "criteria": {
     "has_the_recipe": {
       "conditions": {
-        "recipe": "dragnpets:cyan_vest"
+        "recipe": "dragnlivestock:lime_vest"
       },
       "trigger": "minecraft:recipe_unlocked"
     },
@@ -26,7 +26,7 @@
   ],
   "rewards": {
     "recipes": [
-      "dragnpets:cyan_vest"
+      "dragnlivestock:lime_vest"
     ]
   },
   "sends_telemetry_event": false

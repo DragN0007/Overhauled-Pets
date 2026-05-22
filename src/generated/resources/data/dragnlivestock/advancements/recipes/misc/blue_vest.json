@@ -3,7 +3,7 @@
   "criteria": {
     "has_the_recipe": {
       "conditions": {
-        "recipe": "dragnpets:green_vest"
+        "recipe": "dragnlivestock:blue_vest"
       },
       "trigger": "minecraft:recipe_unlocked"
     },
@@ -26,7 +26,7 @@
   ],
   "rewards": {
     "recipes": [
-      "dragnpets:green_vest"
+      "dragnlivestock:blue_vest"
     ]
   },
   "sends_telemetry_event": false

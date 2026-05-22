@@ -3,7 +3,7 @@
   "criteria": {
     "has_the_recipe": {
       "conditions": {
-        "recipe": "dragnpets:light_grey_vest"
+        "recipe": "dragnlivestock:yellow_vest"
       },
       "trigger": "minecraft:recipe_unlocked"
     },
@@ -26,7 +26,7 @@
   ],
   "rewards": {
     "recipes": [
-      "dragnpets:light_grey_vest"
+      "dragnlivestock:yellow_vest"
     ]
   },
   "sends_telemetry_event": false
