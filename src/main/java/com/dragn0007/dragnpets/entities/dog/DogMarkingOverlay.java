@@ -28,6 +28,8 @@ public enum DogMarkingOverlay {
         KANGAL_SNOUT(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/dog/overlay/kangal_snout.png")),
         BELGIAN_FACE(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/dog/overlay/belgian_face.png")),
         COLLIE_WHITE(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/dog/overlay/collie_white.png")),
+        DALMATIAN_SPOTTED(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/dog/overlay/dalmatian_spotted.png")),
+        BLACK_BACKED(new ResourceLocation(PetsOverhaul.MODID, "textures/entity/dog/overlay/black_backed.png")),
         ;
 
         public final ResourceLocation resourceLocation;

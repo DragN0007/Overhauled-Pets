@@ -287,6 +287,7 @@ public class OWolf extends DogBase implements NeutralMob, GeoEntity {
    }
 
    public void removeFollower() {
+      if (this.leader != null)
       --this.packSize;
    }
 
